@@ -1,0 +1,95 @@
+import { React, connect, MenuHolder, PropTypes } from "perun-core";
+import AgriCultureHolding from "./FarmRegistration/AgriCultureHolding";
+import ERZS from "./FarmRegistration/ERZS";
+import Registration from './FarmRegistration/Registration'
+import CalendarComponent from './FarmRegistration/CalendarComponent'
+import CompanyRegFarm from "./FarmRegistration/CompanyRegFarm";
+import AnimalsComp from "./FarmRegistration/AnimalsComp";
+
+class FarmRegistry extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      componentToRender: null,
+    };
+    this.checkComponent = this.checkComponent.bind(this)
+  }
+
+
+  componentDidMount() {
+    if (document.getElementById("identificationScreen")) {
+      document.getElementById("identificationScreen").className =
+        "identificationScreen";
+      document.getElementById("identificationScreen").innerText =
+        "Фарм регистар";
+    }
+    this.checkComponent();
+  }
+
+  checkComponent() {
+    let path = window.location.hash
+    let component
+    this.setState({ componentToRender: null }, () => {
+      if (path) {
+        switch (true) {
+          case path.includes('#/main/farm-registry/registration/search'): {
+            component = <Registration paramsComponent={'search'} />
+            break;
+          }
+          case path.includes('#/main/farm-registry/registration'): {
+            component = <Registration paramsComponent={ this.props.match.params} />
+            break;
+          }
+          case path === '#/main/farm-registry': {
+            component = <ERZS />
+            break;
+          }
+          case path === '#/main/farm-registry/animal': {
+            component = <AnimalsComp />
+            break;
+          }
+          case path === '#/main/farm-registry/cad-parcel': {
+            component = <CompanyRegFarm />
+            break;
+          }
+          case path === '#/main/farm-registry/calendar': {
+            component = <CalendarComponent />
+            break;
+          }
+          case path === '#/main/farm-registry/show_holding': {
+            component = <AgriCultureHolding />
+            break;
+          }
+        }
+        this.setState({ componentToRender: component })
+      }
+    })
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.props.menuIsClicked !== nextProps.menuIsClicked) {
+      this.setState({ componentToRender: null }, () => this.checkComponent())
+    }
+  }
+
+  render() {
+    const { componentToRender } = this.state
+    return (
+      <div id="gridHolder">
+        <MenuHolder moduleNameProp={"farm-registry"} wsConfGetMenuProp={"WsConf/getMenu"} />
+        {componentToRender}
+        {/* <AgriCultureHolding /> */}
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = (state) => ({
+  menuIsClicked: state.clickedMenuReducer.isClicked
+});
+
+FarmRegistry.contextTypes = {
+  intl: PropTypes.object.isRequired,
+};
+
+export default connect(mapStateToProps)(FarmRegistry);

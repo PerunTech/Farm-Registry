@@ -1,0 +1,28 @@
+.erzs-container {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  grid-template-columns: 25% 25% 25% 25%;
+}
+
+.erzs-holder {
+  margin: auto;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+}
+
+.card {
+  border: 1px solid #ffffff;
+  width: 90%;
+  margin: auto;
+  background: white;
+  box-shadow: 2px 2px 5px #888888;
+  border-radius: 3px;
+  padding: 4%;
+}
+
+.title {
+  margin-left: 1%;
+}

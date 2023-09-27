@@ -1,0 +1,12 @@
+*.retry
+# ignore build folder
+/backend/build/*
+/backend/.classpath
+/backend/.settings
+/backend/.directory
+/backend/.project
+/backend/build/
+/backend/doc/
+/backend/target/
+/backend/bin/
+node_modules

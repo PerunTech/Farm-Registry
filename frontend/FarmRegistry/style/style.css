@@ -1,0 +1,23 @@
+
+.ag-header-container{
+  background: #5b7065;
+  color: white;
+  font-size: 15px;
+}
+.ag-header-icon{
+  color: white;
+  opacity: 100%!important;
+}
+.ag-theme-balham{
+  font-size: 15px;
+}
+.ag-cell{
+  font-size: 15px;
+}
+.ag-icon{
+  color: white!important;
+}
+.farm-registry-forms .field-string,.farm-registry-forms .field-integer,.farm-registry-forms .field-number,.farm-registry-forms .field-boolean {
+  width: 33%;
+  }
+  

@@ -1,0 +1,29 @@
+{
+	"perun.farm_registry.module_menu.navigation": {
+		"farm_registry.module_menu.items": [
+			{
+				"labelCode": "perun.farm_registry.mi.farmer",
+				"id": "FARMER",
+				"tableName": "FARMER",
+				"menuItemLevel": 1,
+				"readOnly": true,
+				"order": 130,
+				"permissionCode": "yes",
+				"contextMenuLabelCode": null,
+				"route": "/main/farm-registry/registration/search",
+				"icon": "registrationFarm"
+			},
+			{
+				"labelCode": "perun.farm_registry.calendar",
+				"id": "CALENDAR",
+				"menuItemLevel": 1,
+				"order": 131,
+				"permissionCode": "yes",
+				"readOnly": true,
+				"contextMenuLabelCode": null,
+				"icon": "revisionControls",
+				"route": "/main/farm-registry/calendar"
+			}
+		]
+	}
+}

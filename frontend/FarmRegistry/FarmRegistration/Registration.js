@@ -1,0 +1,552 @@
+import { React, connect, GridManager, Link, PropTypes, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
+const { alertUser } = elements
+import style from "../style/registration.module.css";
+import { iconManager } from "../../assets/svgHolder";
+import PrivateRegFarm from "./PrivateRegFarm";
+import CompanyRegFarm from "./CompanyRegFarm";
+import { labelsManager } from "../utils_tools/LabelsExport";
+import Animal from "../RegistrationComp/Animal";
+import Lpis from "../RegistrationComp/Lpis";
+import Bank from "../RegistrationComp/Bank";
+import AddDocuments from "../RegistrationComp/AddDocuments";
+import FarmMembers from "../RegistrationComp/FarmMembers";
+import TransitionToSubmission from "./TransitionToSubmission";
+import Parcel from "../RegistrationComp/Parcel";
+import SearchComponent from '../SearchComp/SearchComponent';
+import Intersection from '../RegistrationComp/Intersection'
+import FarmEquipment from "../RegistrationComp/FarmEquipment";
+
+const { store } = redux
+
+class Registration extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showGrid: false,
+      formContainer: "",
+      tableName: 'FARMER',
+      bankAcc: false,
+      dataForm: false,
+      showSearchForm: true,
+      fullName: '',
+      fic: '',
+      farmType: '',
+      id_no: '',
+      tax_no: '',
+      showCapacities: false,
+      hideSearchForm: true,
+
+    };
+    this.hashHistory = createHashHistory();
+  }
+
+  componentDidMount = () => {
+    if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search') {
+      this.displayComponent(this.props.paramsComponent.params);
+      this.generateInfo()
+    }
+  }
+
+  displayPrivateRegForm = () => {
+    GridManager.reloadGridData("FARM_GRID");
+    this.setState({
+      componentAddReg: false,
+      showGrid: false,
+      formKey: "private_farm",
+      hideSearchForm: false,
+      showSearchForm: false,
+      dataForm: <PrivateRegFarm parentCallBackFunc={this.getPersonId} />,
+    });
+  };
+
+  displayCompanyRegForm = () => {
+    GridManager.reloadGridData("FARM_GRID");
+    this.setState({
+      componentAddReg: false,
+      showGrid: false,
+      formKey: "reg_company",
+      hideSearchForm: false,
+      showSearchForm: false,
+      dataForm: <CompanyRegFarm parentCallBackFunc={this.getPersonId} />,
+    });
+  };
+
+  getPersonId = (personObj) => {
+    this.setState({ personObj: personObj });
+  };
+
+  displayGridFarmer = () => {
+    store.dispatch({ type: 'RESET_FR_MAP_DATA' })
+    const { fullName, fic, farmType, id_no, tax_no, tableName } = this.state
+    const { svSession } = this.props
+    if (!fullName && !fic && !farmType && !id_no && !tax_no) {
+      alertUser(true, 'error', 'Немате внесено вредности за пребарување.', 'Ве молиме внесете вредност/и по кои сакате да пребарате.')
+    } else {
+      let multipleFilterData = []
+      if (fullName) {
+        multipleFilterData.push({ fieldName: 'FULL_NAME', fieldValue: fullName, operand: 'AND' })
+      }
+      if (fic) {
+        multipleFilterData.push({ fieldName: 'FIC', fieldValue: fic, operand: 'AND' })
+      }
+      if (farmType) {
+        multipleFilterData.push({ fieldName: 'FARM_TYPE', fieldValue: farmType, operand: 'AND' })
+      }
+      if (id_no) {
+        multipleFilterData.push({ fieldName: 'ID_NO', fieldValue: id_no, operand: 'AND' })
+      }
+      if (tax_no) {
+        multipleFilterData.push({ fieldName: 'TAX_NO', fieldValue: tax_no, operand: 'AND' })
+      }
+      const names = multipleFilterData.map((element) => element.fieldName).join(',');
+      const values = multipleFilterData.map((element) => element.fieldValue).join(',');
+
+      let operandFinal = []
+      multipleFilterData.map((element) => {
+        operandFinal.push(element.operand)
+      });
+
+      if (operandFinal.length > 1) {
+        operandFinal.pop();
+        operandFinal = JSON.stringify(operandFinal)
+      }
+
+      const gridId = `INITIAL_${tableName}_GRID`
+      const gridConfig = `/ReactElements/getTableFieldList/${svSession}/${tableName}`
+      const gridData = `/ReactElements/getTableWithMultipleFilters/${svSession}/${tableName}/${names}/${operandFinal}/${values}/1000`
+      let grid = (
+        <GenericGrid
+          gridType={"READ_URL"}
+          key={gridId}
+          id={gridId}
+          configTableName={gridConfig}
+          dataTableName={gridData}
+          onRowClickFunct={this.onRowClick}
+          minHeight={610}
+        />
+      )
+
+      ComponentManager.setStateForComponent(gridId, null, {
+        onRowClickFunct: this.onRowClick,
+        rowClicked: undefined,
+      });
+
+      ComponentManager.cleanComponentReducerState(gridId)
+      this.setState({ dataHolder: undefined, showGrid: true, dataForm: false, }, () => this.setState({ dataHolder: grid }));
+    };
+  }
+
+  handleSearchByTheEnterKey = e => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      this.displayGridFarmer()
+    }
+  }
+
+  resetFields = () => {
+    this.setState({ fullName: '', fic: '', farmType: '' })
+  }
+
+  refreshAgriParcels () {
+    const { svSession, farmObjId } = this.props
+    const resturl = window.server + '/farmer/refreshFarmData/' + svSession
+    let params = ''
+    params = { 'farmId': farmObjId }
+    alertUser(true, 'info',
+      labelsManager.importLabel('data_refreshing', this.context, 'iacs_claims'),
+      labelsManager.importLabel('please_wait', this.context, 'iacs_claims'),
+      null, null, null, null, null, null, null, null, null, true
+    )
+    axios({
+      method: 'post',
+      data: params,
+      url: resturl,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).then((response) => {
+      if (response.data) {
+        const wrapper = document.createElement('div')
+        if (response.data.data) {
+          let isNotError = true
+          for (const [key, value] of Object.entries(response.data.data)) {
+            const parentGrid = document.createElement('div')
+            parentGrid.setAttribute('id', 'parentgrid')
+            parentGrid.classList.add(style.parentgrid);
+            let keySplit = key.split('_')[1]
+            let icon
+            switch (keySplit) {
+              case 'ERROR':
+                isNotError === false
+                parentGrid.setAttribute('style', 'border-left: 3px solid red')
+                icon = document.createElement('div')
+                icon.style.cssText = 'width: 25px; height:25px; border: 2px solid red; border-radius: 25px;'
+                icon.innerHTML = '<i class="fa fa-times" style="color:red; margin-left: 24%;"></i>'
+                break;
+              case 'WARNING':
+                parentGrid.setAttribute('style', 'border-left: 3px solid #c7c226')
+                icon = document.createElement('div')
+                icon.style.cssText = 'width: 27px; height:27px; border: 2px solid #c7c226; border-radius: 25px;'
+                icon.innerHTML = '<i class="fa fa-exclamation-triangle" style="color:#c7c226; margin-left: 3px;"></i>'
+                break;
+              case 'SUCCESS':
+                parentGrid.setAttribute('style', 'border-left: 4px solid green')
+                icon = document.createElement('div')
+                icon.style.cssText = 'width: 25px; height:25px; border: 2px solid green; border-radius: 25px;'
+                icon.innerHTML = '<i class="fa fa-check" style="color:green; margin-left: 13%;"></i>'
+              default:
+                break;
+            }
+            parentGrid.appendChild(icon)
+            /* js way to solve sweetalert custom html  */
+            let childEl = document.createElement('div')
+            let arrayIds = ''
+            childEl.setAttribute('id', 'childEl')
+            if (typeof value === 'object') {
+              for (const [id, label] of Object.entries(value)) {
+                arrayIds += (` ${id},`)
+              }
+              if (arrayIds) {
+                arrayIds = arrayIds.substr(0, arrayIds.length - 1)
+                childEl.innerHTML = `СИЗП парцелите (${arrayIds}) имаат тополошки грешки`
+              }
+            } else {
+              childEl.innerHTML = value
+            }
+            parentGrid.appendChild(childEl)
+            wrapper.appendChild(parentGrid)
+          }
+          alertUser(true, response.data.type.toLowerCase(), response.data.title, null, isNotError ? this.reload : null, null, null, null, null, null, null, null, wrapper)
+        }
+      }
+    }).catch((err) => {
+      if (err.data) {
+        alertUser(true, err.data.type.toLowerCase(), err.data.message)
+      }
+    })
+  }
+
+  displayComponent = (component) => {
+    let componentAddReg;
+    let href = '/main/farm-registry/registration/'
+    switch (component) {
+      case "AHV_HOLDING":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = (
+          <Animal farmObjId={this.props.farmObjId} grid={component} paramsComponent={component} />
+        );
+        break;
+      case "LPIS":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = <Lpis farmObjId={this.props.farmObjId} paramsComponent={component} />;
+        break;
+      case "INTERSECTIONS":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = <Intersection farmObjId={this.props.farmObjId} paramsComponent={component} />;
+        break;
+      case "BANKACC":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = (
+          <Bank personObjId={this.state.personObj} farmObjId={this.props.farmObjId} grid={component} paramsComponent={component} />
+        );
+        break;
+      case "FARM_MEMBERS":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = (
+          <FarmMembers
+            farmObjId={this.props.farmObjId}
+            personObjId={this.state.personObj}
+            grid={component}
+            paramsComponent={component}
+          />
+        );
+        break;
+      case "DOCS":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = <AddDocuments key="addDoc" paramsComponent={component} />;
+        break;
+      case "SUBMISSION":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = <TransitionToSubmission key="submission" paramsComponent={component} />;
+        break;
+      case "SIZP":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        this.setState({ showCapacities: true })
+        componentAddReg = <Parcel farmObjId={this.props.farmObjId} paramsComponent={component} />
+        break;
+      case "FARM_EQUIPMENT":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        this.setState({ showCapacities: true })
+        componentAddReg = <FarmEquipment farmObjId={this.props.farmObjId} paramsComponent={component} />
+        break;
+      default:
+        console.log("default");
+    }
+    this.setState({
+      componentAddReg: componentAddReg,
+      showGrid: false,
+      showSearchForm: false,
+      hideSearchForm: false
+
+    });
+  };
+
+  onRowClick = (rowId, rowPosition, rowsData) => {
+    const objectId = rowsData["FARMER.OBJECT_ID"]
+    const objectTypeId = rowsData["FARMER.OBJECT_TYPE"]
+    store.dispatch({ type: 'WRITE_FARMER_INFO', payload: rowsData })
+    store.dispatch({ type: 'GET_FR_MAP_DATA', payload: { objectId, objectTypeId, rowsData, tableName: "FARMER" } })
+    this.setState({
+      showCapacities: true,
+      farmObjId: rowsData["FARMER.OBJECT_ID"],
+      personObj: rowsData["FARMER.PERSON_OBJECT_ID"],
+      farmFic: rowsData["FARMER.FIC"],
+      archiveNumber: rowsData["FARMER.ARCHIVE_NUMBER"],
+      status: rowsData["FARMER.STATUS"],
+      allFarmData: rowsData,
+      farmFullName: rowsData["FARMER.FULL_NAME"]
+    }, () => this.generateInfo(true));
+  };
+
+  generateInfo = (isFromRowClick) => {
+    let { status, farmFic, archiveNumber, farmFullName } = this.state
+    const { farmData } = this.props
+    if (farmData?.rowsData && !isFromRowClick) {
+      const rowData = farmData.rowsData
+      status = rowData['FARMER.STATUS']
+      farmFic = rowData['FARMER.FIC']
+      archiveNumber = rowData['FARMER.ARCHIVE_NUMBER'] || ''
+      farmFullName = rowData['FARMER.FULL_NAME']
+    }
+    let htmlElement
+    let elementArr = []
+    let labelStatus
+    if (status === 'VALID') {
+      labelStatus = 'АКТИВНО'
+    }
+    if (status === 'PENDING') {
+      labelStatus = 'ВО ТЕК'
+    }
+    if (status === 'CLOSED') {
+      labelStatus = 'НЕАКТИВНО'
+    }
+    htmlElement = <div style={{ color: 'white' }} className={`${style['farmerInfo']}`}>
+      <div className={`${style['farmer-info-right']}`}>
+        <p>{labelsManager.importLabel("status", this.context, "farm_registry")}: <b>{labelStatus}</b></p>
+        <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{farmFullName}</b></p>
+        <p>{labelsManager.importLabel("fic", this.context, "farm_registry")}: <b>{farmFic}</b></p>
+        <p>{labelsManager.importLabel("archive_number", this.context, "farm_registry")}: <b>{archiveNumber}</b></p>
+      </div>
+    </div>
+
+    elementArr.push(htmlElement)
+    this.setState({ generateInfoState: elementArr })
+  }
+
+  onChange = (e) => {
+    this.setState({ [e.target.id]: e.target.value });
+  };
+
+
+  render () {
+    const {
+      dataHolder,
+      showGrid,
+      formKey,
+      componentAddReg,
+      dataForm,
+      showSearchForm,
+      fullName,
+      fic,
+      farmType,
+      id_no,
+      tax_no,
+      showCapacities,
+      hideSearchForm,
+      generateInfoState,
+      componentToRender
+    } = this.state;
+
+    return (
+      <div style={{ height: '100vh' }} className={`${style["registrationHolder"]}`} id="registrationHolder">
+        <div style={{ height: '100vh' }} className={`${style["listButton"]}`} id="listButton">
+          <div className={`${style["btnHolder"]}`}>
+            {/* <Link
+                className={`${style["iconHolderBack"]}`}
+                to="/main/farm-registry"
+              >
+                {iconManager.getIcon("back")} Назад
+              </Link> */}
+            <button
+              className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
+              onClick={this.displayPrivateRegForm}
+            >
+              {iconManager.getIcon("add")}
+              {labelsManager.importLabel(
+                "add_family_agri_holding",
+                this.context,
+                "farm_registry"
+              )}
+            </button>
+            <button
+              className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
+              onClick={this.displayCompanyRegForm}
+            >
+              {iconManager.getIcon("add")}
+              {labelsManager.importLabel(
+                "add_agri_holding",
+                this.context,
+                "farm_registry"
+              )}
+            </button>
+          </div>
+          <div className={`${style["btnHolder"]}`}>
+            {generateInfoState}
+          </div>
+          {showCapacities && (
+            <div
+              className={`${style["registrationbtnCapacitiesHolder"]}`}
+              id="btnCapacities"
+            >
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("BANKACC")}
+              >
+                {iconManager.getIcon("bankAccount")}
+                {labelsManager.importLabel(
+                  "bank_acc",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("FARM_MEMBERS")}
+              >
+                {iconManager.getIcon("group")}
+                {labelsManager.importLabel(
+                  "agri_members",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("AHV_HOLDING")}
+              >
+                {iconManager.getIcon("animal")}
+                {labelsManager.importLabel(
+                  "livestock",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("LPIS")}
+              >
+                {iconManager.getIcon("parcel")}
+                {labelsManager.importLabel(
+                  "parcels",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("INTERSECTIONS")}
+              >
+                {iconManager.getIcon("parcel")}
+                Пресек во катастар
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("SIZP")}
+              >
+                {iconManager.getIcon("parcelIcon")}
+                {'СИЗП'}
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("FARM_EQUIPMENT")}
+              >
+                {iconManager.getIcon("docs")}
+                {'МАШИНСКА ОПРЕМА'}
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("DOCS")}
+              >
+                {iconManager.getIcon("docs")}
+                {labelsManager.importLabel(
+                  "docs",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.displayComponent("SUBMISSION")}
+              >
+                {iconManager.getIcon("docs")}
+                {labelsManager.importLabel(
+                  "submission",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={`${style["btn_sub"]}`}
+                onClick={() => this.refreshAgriParcels()}
+              >
+                {iconManager.getIcon("parcel")}
+                Освежи податоци
+              </button>
+            </div>)}
+        </div>
+        <div className={`${style["search-container"]}`} id="search-container">
+          <div className={`${style["gridHolder"]}`} id="gridHolder">
+            {showSearchForm && (
+              <div>
+                <SearchComponent onRowClick={this.onRowClick} />
+              </div>
+            )}
+          </div>
+
+          <div id="dataHolder" className={`${style["dataHolder"]}`}>
+            {showGrid && dataHolder}
+            {componentAddReg}
+            {dataForm && (
+              <div
+                key={formKey}
+                id="createRegForm"
+                className={`${style["createFormHolder"]}`}
+              >
+                {dataForm}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = (state) => ({
+  svSession: state.security.svSession,
+  farmData: state['farm_registry.mapData']?.farmData,
+  farmObjId: state['farm_registry.mapData']?.farmData?.objectId
+});
+
+Registration.contextTypes = {
+  intl: PropTypes.object.isRequired,
+};
+
+export default connect(mapStateToProps)(Registration);
