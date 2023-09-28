@@ -26,7 +26,7 @@ after_script:
     #- npm install
     - pnpm install
     # - npm run test
-    - npm run build
+    - pnpm run build
 
 1_build_test_java:
   stage: 2_build_and_install
@@ -44,7 +44,7 @@ after_script:
     - rm -rf node_modules
     - pnpm install
     - rm -rf backend/www/*.js
-    - npm run build
+    - pnpm run build
     - cd backend
     - ls -al www/
     - pwd
@@ -61,7 +61,7 @@ after_script:
     - rm -rf node_modules
     - pnpm install
     - rm -rf backend/www/*.js
-    - npm run build
+    - pnpm run build
     - cd backend
     - ls -al www/
     - pwd
