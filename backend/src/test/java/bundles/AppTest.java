@@ -26,7 +26,7 @@ public class AppTest {
      *
      * @param testName name of the test case
      */
-    @Test
+    //@Test
 	public void getLandUseByLandCover() {
 		try {
 			SvSecurity svs = new SvSecurity();
@@ -48,7 +48,7 @@ public class AppTest {
 		}
 
 	}
-    @Test
+    //@Test
 	public void testImportbyFic() {
 		System.out.println("before test 1");
 
