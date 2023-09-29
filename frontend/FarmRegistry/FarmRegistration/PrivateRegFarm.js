@@ -157,7 +157,7 @@ class PrivateRegFarm extends React.Component {
       addSaveFunction={this.searchComponentCallbackFromForm}
       hideBtns={'closeAndDelete'}
       customSave={true}
-      customSaveButtonName={'Пребарај'}
+      customSaveButtonName={this.context.intl.formatMessage({ id: 'perun.farm_registry.search', defaultMessage: 'perun.farm_registry.search' })}
       className={'form-test farm-registry-forms'}
     />
     this.prepareModalData(modalContent, 'personForm')

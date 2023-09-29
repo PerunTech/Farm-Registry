@@ -157,7 +157,7 @@ class CompanyRegFarm extends React.Component {
       addSaveFunction={this.searchComponentCallbackFromForm}
       hideBtns={'closeAndDelete'}
       customSave={true}
-      customSaveButtonName={'Пребарај'}
+      customSaveButtonName={this.context.intl.formatMessage({ id: 'perun.farm_registry.search', defaultMessage: 'perun.farm_registry.search' })}
       className={'farm-registry-forms form-test'}
     />
     this.prepareModalData(modalContent, 'personForm')
