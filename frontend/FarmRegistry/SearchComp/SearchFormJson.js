@@ -19,16 +19,16 @@ export function jsonData(context) {
       type: 'object',
       title: `${context.intl.formatMessage({ id: 'perun.farm_registry.searching', defaultMessage: 'perun.farm_registry.searching' })}`,
       properties: {
-        inputVal: {
-          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.searching_val', defaultMessage: 'perun.farm_registry.searching_val' })}`,
-          type: 'string'
-        },
         dropDownVal: {
           type: 'string',
           title: `${context.intl.formatMessage({ id: 'perun.farm_registry.column_search', defaultMessage: 'perun.farm_registry.column_search' })}`,
           enum: enumValues,
           enumNames: enumLabels,
           default: "FIC"
+        },
+        inputVal: {
+          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.searching_val', defaultMessage: 'perun.farm_registry.searching_val' })}`,
+          type: 'string'
         }
       }
     }
