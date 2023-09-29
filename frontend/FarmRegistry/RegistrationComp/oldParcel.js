@@ -15,7 +15,7 @@ class Parcel extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { farmerObjId } = this.props
     this.initialAgriParcelGrid();
     GridManager.reloadGridData(gridId + "_" + farmerObjId);
@@ -53,7 +53,7 @@ class Parcel extends React.Component {
   }
 
   /* on row click function */
-  onRowClick(id, idx, row) {
+  onRowClick (id, idx, row) {
     console.log(row);
     this.setState(
       { cadParcelObjId: row[`${tableName}.OBJECT_ID`] },
@@ -111,14 +111,11 @@ class Parcel extends React.Component {
     history.push(`/main/farm-registry/map?${params}`)
   }
 
-  render() {
+  render () {
     const { grid } = this.state;
     return (
       <div>
-        <button className={`${style.mapBtn}`} onClick={() => this.openMap()}>
-          {iconManager.getIcon("parcel")}
-          {this.context.intl.formatMessage({ id: 'perun.farm_registry.graphic_rep_parcel', defaultMessage: 'perun.farm_registry.graphic_rep_parcel' })}
-        </button>
+        <button className={`${style.mapBtn}`} onClick={() => this.openMap()}>{iconManager.getIcon("parcel")}Графички приказ на  парцели</button>
         <div id="parcel">
           {grid}
         </div>

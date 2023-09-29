@@ -22,7 +22,7 @@ class FarmEquipment extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     let grid = (
       <GenericGrid
         gridType={"READ_URL"}
@@ -114,7 +114,7 @@ class FarmEquipment extends React.Component {
         <Modal
           key={this.state.parentId}
           id={this.state.parentId}
-          modalTitle={context.intl.formatMessage({ id: 'perun.farm_registry.machine_equipment', defaultMessage: 'perun.farm_registry.machine_equipment' })}
+          modalTitle="Машинска опрема"
           nameSubmitBtn="close"
           closeModal={() => this.closeModalFn()}
           modalContent={dataForm}
@@ -169,7 +169,7 @@ class FarmEquipment extends React.Component {
     th1s.closeModalFn();
   };
 
-  render() {
+  render () {
     const { equipmentGrid, showModal, stateDataForm } = this.state;
     return (
       <div id="equipmentGrid">

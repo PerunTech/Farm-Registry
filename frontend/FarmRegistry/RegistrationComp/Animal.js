@@ -222,8 +222,6 @@ class Animal extends React.Component {
       </div>
     );
 
-    const breedingGroundNum = context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' });
-    const animalType = context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' });
     this.setState({
       showModal: true,
       stateDataForm: (
@@ -231,9 +229,9 @@ class Animal extends React.Component {
           key={row["AHV_HOLDING.OBJECT_ID"]}
           id={row["AHV_HOLDING.OBJECT_ID"]}
           modalTitle={
-            `${breedingGroundNum}` +
+            "Добиток во одгледувалиште број - " +
             row["AHV_HOLDING.HOLDING_ID"] +
-            `${animalType}` +
+            " тип на животни " +
             row["AHV_HOLDING.HOLDING_ANIMAL_TYPE"]
           }
           nameSubmitBtn="close"

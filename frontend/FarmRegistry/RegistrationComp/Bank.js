@@ -21,7 +21,7 @@ class Bank extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     let grid = (
       <GenericGrid
         gridType={"READ_URL"}
@@ -106,13 +106,14 @@ class Bank extends React.Component {
       "close",
       null
     );
+
     this.setState({
       showModal: true,
       stateDataForm: (
         <Modal
           key={this.state.parentId}
           id={this.state.parentId}
-          modalTitle={context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' })}
+          modalTitle="Банкарска сметка"
           nameSubmitBtn="close"
           closeModal={() => this.closeModalFn()}
           modalContent={dataForm}
@@ -167,7 +168,7 @@ class Bank extends React.Component {
     th1s.closeModalFn();
   };
 
-  render() {
+  render () {
     const { bankGrid, showModal, stateDataForm } = this.state;
     return (
       <div id="bankGrid">

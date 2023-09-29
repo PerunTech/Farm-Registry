@@ -76,7 +76,7 @@ class Lpis extends React.Component {
         hideBtns="all"
       />
     );
-    this.genrateModal(context.intl.formatMessage({ id: 'perun.farm_registry.cadastral_parcel', defaultMessage: 'perun.farm_registry.cadastral_parcel' }), form);
+    this.genrateModal("Преглед на Катастарска парцела", form);
   }
 
   /* create modal fn */
@@ -102,7 +102,7 @@ class Lpis extends React.Component {
       <div>
         <div id="lpis">
           {showModal}
-
+          
           {grid}
         </div>
       </div>
