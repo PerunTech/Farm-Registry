@@ -153,8 +153,8 @@ class Registration extends React.Component {
     let params = ''
     params = { 'farmId': farmObjId }
     alertUser(true, 'info',
-      labelsManager.importLabel('data_refreshing', this.context, 'iacs_claims'),
-      labelsManager.importLabel('please_wait', this.context, 'iacs_claims'),
+      labelsManager.importLabel('data_refreshing', this.context, 'farm_registry'),
+      labelsManager.importLabel('please_wait', this.context, 'farm_registry'),
       null, null, null, null, null, null, null, null, null, true
     )
     axios({

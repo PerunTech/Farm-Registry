@@ -51,7 +51,7 @@ class AdminComopnent extends React.Component {
             {labelsManager.importLabel(
               "search",
               this.context,
-              "iacs_claims"
+              "farm_registry"
             )}{" "}
           </button>
         </div>
@@ -154,11 +154,11 @@ class AdminComopnent extends React.Component {
         alertUser(
           true,
           "info",
-          labelsManager.importLabel("info", this.context, "iacs_claims"),
+          labelsManager.importLabel("info", this.context, "farm_registry"),
           labelsManager.importLabel(
             "please_enter_characters",
             this.context,
-            "iacs_claims"
+            "farm_registry"
           )
         );
       }
@@ -166,11 +166,11 @@ class AdminComopnent extends React.Component {
       alertUser(
         true,
         "info",
-        labelsManager.importLabel("info", this.context, "iacs_claims"),
+        labelsManager.importLabel("info", this.context, "farm_registry"),
         labelsManager.importLabel(
           "please_fill_empty_fields",
           this.context,
-          "iacs_claims"
+          "farm_registry"
         )
       );
     }
