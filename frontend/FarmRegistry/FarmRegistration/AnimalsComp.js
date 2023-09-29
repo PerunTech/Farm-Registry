@@ -23,23 +23,23 @@ class AnimalsComp extends React.Component {
     const { holdingId, earTagMother, earTagNumber, animalType, animalRace, tableName } = this.state
     const { svSession } = this.props
     if (!holdingId && !earTagMother && !earTagNumber && !animalType && !animalRace) {
-      alertUser(true, 'error', this.context.intl.formatMessage({ id: 'perun.farm_registry.no_search_val', defaultMessage: 'perun.farm_registry.no_search_val' }), this.context.intl.formatMessage({ id: 'perun.farm_registry.please_enter_search_val', defaultMessage: 'perun.farm_registry.please_enter_search_val' }))
+      alertUser(true, 'error', 'Немате внесено вредности за пребарување.', 'Ве молиме внесете вредност/и по кои сакате да пребарате.')
     } else {
       let multipleFilterData = []
       if (holdingId) {
-        multipleFilterData.push({ fieldName: 'HOLDING_ID', fieldValue: holdingId, operand: 'AND' })
+        multipleFilterData.push({ fieldName: 'HOLDING_ID', fieldValue: holdingId, operand: 'AND'})
       }
       if (earTagMother) {
         multipleFilterData.push({ fieldName: 'EAR_TAG_MOTHER', fieldValue: earTagMother, operand: 'AND' })
       }
       if (earTagNumber) {
-        multipleFilterData.push({ fieldName: 'EAR_TAG_NUMBER', fieldValue: earTagNumber, operand: 'AND' })
+        multipleFilterData.push({ fieldName: 'EAR_TAG_NUMBER', fieldValue: earTagNumber, operand: 'AND'})
       }
       if (animalType) {
-        multipleFilterData.push({ fieldName: 'ANIMAL_TYPE', fieldValue: animalType, operand: 'AND' })
+        multipleFilterData.push({ fieldName: 'ANIMAL_TYPE', fieldValue: animalType, operand: 'AND'})
       }
       if (animalRace) {
-        multipleFilterData.push({ fieldName: 'ANIMAL_RACE', fieldValue: animalRace, operand: 'AND' })
+        multipleFilterData.push({ fieldName: 'ANIMAL_RACE', fieldValue: animalRace, operand: 'AND'})
       }
       const names = multipleFilterData.map((data) => data.fieldName).join(',');
       const values = multipleFilterData.map((val) => val.fieldValue).join(',');
@@ -50,11 +50,11 @@ class AnimalsComp extends React.Component {
       });
 
 
-      if (operandFinal.length > 1) {
+      if(operandFinal.length > 1) {
         operandFinal.pop();
         operandFinal = JSON.stringify(operandFinal)
-      }
-
+      } 
+     
       const gridId = `INITIAL_${tableName}_GRID`
       const gridConfig = `/ReactElements/getTableFieldList/${svSession}/${tableName}`
       const gridData = `/ReactElements/getTableWithMultipleFilters/${svSession}/${tableName}/${names}/${operandFinal}/${values}/1000`
@@ -118,7 +118,7 @@ class AnimalsComp extends React.Component {
               />
             </section>
             <section className={`${style["flex"]}`}>
-              <label>{labelsManager.importLabel("ear_tag_number", this.context, "farm_registry")}</label>
+              <label>{labelsManager.importLabel("ear_tag_number", this.context, "farm_registry")}</label> 
               <input
                 value={earTagNumber}
                 onChange={this.onChange}
@@ -146,30 +146,30 @@ class AnimalsComp extends React.Component {
             </section>
           </div>
           <div className={`${style["btn-holder"]}`}>
-            <button
-              className={`${style["search-button"]}`}
-              onClick={this.displayAnimalsGrid}
-              onKeyDown={this.handleSearchByTheEnterKey}
-            >
-              {iconManager.getIcon("search")}
-              {labelsManager.importLabel(
-                "search",
-                this.context,
-                "farm_registry"
-              )}
-            </button>
-            <button
-              className={`${style["reset-button"]}`}
-              onClick={this.resetFields}
-              title={this.context.intl.formatMessage({ id: 'perun.farm_registry.erase_entered_val', defaultMessage: 'perun.farm_registry.erase_entered_val' })}
-            >
-              {iconManager.getIcon("reset")}
-              {labelsManager.importLabel(
-                "reset",
-                this.context,
-                "farm_registry"
-              )}
-            </button>
+              <button
+                className={`${style["search-button"]}`}
+                onClick={this.displayAnimalsGrid}
+                onKeyDown={this.handleSearchByTheEnterKey}
+              >
+                {iconManager.getIcon("search")}
+                {labelsManager.importLabel(
+                  "search",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={`${style["reset-button"]}`}
+                onClick={this.resetFields}
+                title={'Избришeте ги внесените вредностите од полињата'}
+              >
+                {iconManager.getIcon("reset")}
+                {labelsManager.importLabel(
+                  "reset",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
           </div>
         </div>
         <div id="grid-holder" className={`${style["grid-holder"]}`}>

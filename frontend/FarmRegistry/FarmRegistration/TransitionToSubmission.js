@@ -1,4 +1,6 @@
 import { React, connect, createHashHistory } from "perun-core";
+import style from "../style/registration.module.css";
+import Iframe from "react-iframe";
 
 class TransitionToSubmission extends React.Component {
   constructor(props) {

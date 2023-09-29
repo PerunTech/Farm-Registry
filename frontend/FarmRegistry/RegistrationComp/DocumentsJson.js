@@ -1,101 +1,100 @@
-export default function DocumentsJson(context) {
-  const listDocs = [
+export const DocumentsJson = {
+  listDocs: [
     {
-      name: `${context.intl.formatMessage({ id: 'perun.farm_registry.organizational_form_doc', defaultMessage: 'perun.farm_registry.organizational_form_doc' })}`,
+      name: "Документи за сите организациски форми",
       allDocs: [
         {
           id: "proof_possession_availability",
-          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.proof_possession_availability', defaultMessage: 'perun.farm_registry.proof_possession_availability' })}`,
+          title: "Доказ за поседување или располагање",
           isAdded: true,
         },
         {
           id: "proof_ownership_of_livestock",
-          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.proof_ownership_of_livestock', defaultMessage: 'perun.farm_registry.proof_ownership_of_livestock' })}`,
+          title: "Доказ за сопственост на добиток",
           isAdded: true,
         },
         {
           id: "account_copy_physical_entity",
-          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.account_copy_physical_entity', defaultMessage: 'perun.farm_registry.account_copy_physical_entity' })}`,
+          title: "Копија од сметка на носителот на земјоделското стопанство",
           isAdded: true,
         },
       ],
     },
     {
-      name: `${context.intl.formatMessage({ id: 'perun.farm_registry.family_entity_additional', defaultMessage: 'perun.farm_registry.family_entity_additional' })}`,
+      name: "Документи дополнително за Семејно земјоделско стопанство",
       allDocs: [
         {
           id: "statement_of_physical_entity",
-          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.statement_of_physical_entity', defaultMessage: 'perun.farm_registry.statement_of_physical_entity' })}`,
+          title: "Изјава од членови на семејно земјоделско стопанство",
           isAdded: false,
         },
       ],
     },
     {
-      name: `${context.intl.formatMessage({ id: 'perun.farm_registry.physical_entity_additional', defaultMessage: 'perun.farm_registry.physical_entity_additional' })}`,
+      name: "Документи. Дополнително за земјоделско стопанство",
       allDocs: [
         {
           id: "proof_current_condition_legal_entity",
           title:
-            `${context.intl.formatMessage({ id: 'perun.farm_registry.proof_current_condition_legal_entity', defaultMessage: 'perun.farm_registry.proof_current_condition_legal_entity' })}`,
+            "Дoказ за тековна состојба на правното лице не постара од 6 мсесеци",
           isAdded: true,
         },
         {
           id: "statement_for_legal_entity",
-          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.statement_for_legal_entity', defaultMessage: 'perun.farm_registry.statement_for_legal_entity' })}`,
+          title: "Изјава на одговорното лице на правното лице",
           isAdded: true,
         },
         {
           id: "copy_of_deposited_signitures_legal_entity",
-          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.copy_of_deposited_signitures_legal_entity', defaultMessage: 'perun.farm_registry.copy_of_deposited_signitures_legal_entity' })}`,
+          title: "Копија од депонирани потписи за правни лица",
           isAdded: true,
         },
       ],
     },
     {
-      name: `${context.intl.formatMessage({ id: 'perun.farm_registry.depending_bearer', defaultMessage: 'perun.farm_registry.depending_bearer' })}`,
+      name: "Документи. Носителот Зависно",
       allDocs: [
         {
           id: "certificate_organic_production",
           title:
-            `${context.intl.formatMessage({ id: 'perun.farm_registry.certificate_organic_production', defaultMessage: 'perun.farm_registry.certificate_organic_production' })}`,
+            "Сертификат за органско производство или производство во конверзија за органски производители",
           isAdded: false,
         },
         {
           id: "property_list_of_greenhouses",
           title:
-            `${context.intl.formatMessage({ id: 'perun.farm_registry.property_list_of_greenhouses', defaultMessage: 'perun.farm_registry.property_list_of_greenhouses' })}`,
+            "имотен лист во кој се запишани оранжериите за оранжериското производство за запишување на оранжерии",
           isAdded: false,
         },
         {
           id: "statement_breeding_snails",
           title:
-            `${context.intl.formatMessage({ id: 'perun.farm_registry.statement_breeding_snails', defaultMessage: 'perun.farm_registry.statement_breeding_snails' })}`,
+            "изјава за одгледување полжави, вид полжави, производствен капацитет во метри квадратни и обем на производство за запишување на производство на полжави",
           isAdded: false,
         },
         {
           id: "property_list_physical_entity",
           title:
-            `${context.intl.formatMessage({ id: 'perun.farm_registry.property_list_physical_entity', defaultMessage: 'perun.farm_registry.property_list_physical_entity' })}`,
+            "имотен лист за објектот во кој ја извршува дејноста сточарско производство за запишување на земјоделско стопанство кое се занимава со сточарско производство и не располага со земјоделско земјиште",
           isAdded: false,
         },
         {
           id: "statement_mushrooms_production",
           title:
-            `${context.intl.formatMessage({ id: 'perun.farm_registry.statement_mushrooms_production', defaultMessage: 'perun.farm_registry.statement_mushrooms_production' })}`,
+            "изјава за производство на печурки, вид на печурки, производствен капацитет во метри квадратни и обем на производство за запишување на печуркарник",
           isAdded: false,
         },
       ],
     },
     {
-      name: `${context.intl.formatMessage({ id: 'perun.farm_registry.requirements', defaultMessage: 'perun.farm_registry.requirements' })}`,
+      name: "Документи - барања",
       allDocs: [
         {
           id: "scaned_documents",
-          title: `${context.intl.formatMessage({ id: 'perun.farm_registry.scaned_documents', defaultMessage: 'perun.farm_registry.scaned_documents' })}`,
+          title: "Скенирани",
           isAdded: true,
         },
       ],
     },
-  ];
-  return listDocs
+  ],
 };
