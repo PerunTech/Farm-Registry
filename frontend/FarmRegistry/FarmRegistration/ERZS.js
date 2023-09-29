@@ -1,21 +1,18 @@
 import { React, connect, PropTypes } from "perun-core";
 import style from '../style/ERZS.module.css'
-// import { labelsManager } from "../utils_tools/LabelsExport";
-import cards from './ErszCards.json'
-
+import getERZSCards from './ErszCards'
 
 class ERZS extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cardsItems: cards
+      cardsItems: getERZSCards()
     };
   }
 
   componentDidMount() {
     this.iterateCards(this.state.cardsItems);
   }
-
 
   iterateCards = (cardsItems) => {
     let htmlElement
@@ -46,26 +43,6 @@ class ERZS extends React.Component {
           </div>
         </div>
       </div>
-      // <div id="erzs-container" className={`${style['erzs-container']}`} >
-      //   <div id='erzs-holder' className={`${style['erzs-holder']}`}>
-      //       <div className={`${style['card']}`}>
-      //         <p className={`${style['card-title']}`}>{labelsManager.importLabel("zs", this.context, "farm_registry")}</p>
-      //         <span>0</span>
-      //       </div>
-      //       <div className={`${style['card']}`}>
-      //         <p className={`${style['card-title']}`}>Активен ЗС</p>
-      //         <span>0</span>
-      //       </div>
-      //       <div className={`${style['card']}`}>
-      //         <p className={`${style['card-title']}`}>Документи - барања</p>
-      //         <span>0</span>
-      //       </div>
-      //       <div className={`${style['card']}`}>
-      //         <p className={`${style['card-title']}`}>Денешни средби</p>
-      //         <span>0</span>
-      //       </div>
-      //     </div>
-      //   </div>
     );
   }
 }
