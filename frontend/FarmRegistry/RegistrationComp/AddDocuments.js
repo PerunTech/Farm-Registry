@@ -2,7 +2,7 @@ import { React, PropTypes, connect, elements } from "perun-core";
 const { alertUser } = elements;
 import style from "../style/AddDocuments.module.css";
 import { iconManager } from "../../assets/svgHolder";
-import { DocumentsJson } from "./DocumentsJson";
+import DocumentsJson from "./DocumentsJson";
 import { labelsManager } from "../utils_tools/LabelsExport";
 
 class AddDocuments extends React.Component {
@@ -168,20 +168,23 @@ class AddDocuments extends React.Component {
 
   /* delete selected document */
   deleteDocument = (id, title) => {
+    const deleteDocWithTitle = context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' })
+    const labelOK = context.intl.formatMessage({ id: 'perun.farm_registry.ok', defaultMessage: 'perun.farm_registry.ok' })
+    const labelBack = context.intl.formatMessage({ id: 'perun.farm_registry.back', defaultMessage: 'perun.farm_registry.back' })
     console.log(id);
     this.setState({
       alert: alertUser(
         true,
         "info",
-        `Дали сте сигурни дека сакате да го избришете документот со наслов: ${title}`,
+        `${deleteDocWithTitle} ${title}`,
         null,
         () => {
           console.log("test");
         },
         null,
         true,
-        "Во ред",
-        "Назад"
+        `${labelOK}`,
+        `${labelBack}`
       ),
     });
     // let type
@@ -212,7 +215,7 @@ class AddDocuments extends React.Component {
       <React.Fragment>
         <div className={`${style.componentHolder}`}>
           <div className={`${style.dataHolder}`}>
-          <p className={style["titleHolder"]}>
+            <p className={style["titleHolder"]}>
               {" "}
               {labelsManager.importLabel(
                 "docs",
@@ -221,7 +224,7 @@ class AddDocuments extends React.Component {
               )}{" "}
             </p>
           </div>
-          <div className={`${style.rightContainer}`}>           
+          <div className={`${style.rightContainer}`}>
             {documentsRender}
           </div>
         </div>

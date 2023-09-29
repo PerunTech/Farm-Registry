@@ -14,7 +14,7 @@ import { labelsManager } from "../utils_tools/LabelsExport";
 import { logOut } from "../utils_tools/LogOut";
 
 const { alertUser } = elements;
-const dynamicKey = function() {
+const dynamicKey = function () {
   return (+ new Date() + Math.floor(Math.random() * 999999)).toString(36)
 }
 
@@ -88,7 +88,7 @@ class CompanyRegFarm extends React.Component {
             type = response.data.type;
             type = type.toLowerCase();
             th1s.setState({
-              alert: alertUser(true, "success", "Успешно зачувано", null, () =>
+              alert: alertUser(true, "success", this.context.intl.formatMessage({ id: 'perun.farm_registry.saved_success', defaultMessage: 'perun.farm_registry.saved_success' }), null, () =>
                 th1s.setState({ dataForm: "" })
               ),
             });
@@ -101,7 +101,7 @@ class CompanyRegFarm extends React.Component {
           type = response.data.type;
           type = type.toLowerCase();
           th1s.setState({
-            alert: alertUser(true, "success", "Успешно зачувано", null, () =>
+            alert: alertUser(true, "success", this.context.intl.formatMessage({ id: 'perun.farm_registry.saved_success', defaultMessage: 'perun.farm_registry.saved_success' }), null, () =>
               th1s.setState({ dataForm: "" })
             ),
           });
@@ -129,7 +129,7 @@ class CompanyRegFarm extends React.Component {
     this.setState({ dataForm: dataForm, showForm: true });
   };
 
- 
+
   makeField = () => {
     let field = document.getElementById("root_PERSON_OBJECT_ID");
     if (field) {
@@ -147,11 +147,11 @@ class CompanyRegFarm extends React.Component {
 
   getPersonId = () => {
     let formId = 'PERSON'
-    let modalContent = <GenericForm 
-      params={'READ_URL'} 
-      key={formId + 'search'} 
+    let modalContent = <GenericForm
+      params={'READ_URL'}
+      key={formId + 'search'}
       id={formId + 'search'}
-      method={'/ReactElements/getTableSearchJSONSchema/%session/' + formId} 
+      method={'/ReactElements/getTableSearchJSONSchema/%session/' + formId}
       uiSchemaConfigMethod={'/ReactElements/getTableUISchema/%session/' + formId}
       tableFormDataMethod={'/ReactElements/getTableFormData/%session/0/' + formId}
       addSaveFunction={this.searchComponentCallbackFromForm}
@@ -168,22 +168,23 @@ class CompanyRegFarm extends React.Component {
     let arr = this.state.modalContent
     if (caseToRender === 'personForm') {
       let initialRender = <div>{renderContent}</div>
-      this.setState({ modalContent: [...this.state.modalContent, initialRender] }, ()=> {this.generateModal(this.state.modalContent)})
+      this.setState({ modalContent: [...this.state.modalContent, initialRender] }, () => { this.generateModal(this.state.modalContent) })
     } else if (caseToRender === 'renderSearchResults') {
       let secondRender = <div>{renderContent}</div>
       arr.splice(1, 2, secondRender)
-      this.setState({modalContent: [...arr]}, () => {this.generateModal(this.state.modalContent)})
+      this.setState({ modalContent: [...arr] }, () => { this.generateModal(this.state.modalContent) })
     }
   }
 
   generateModal = (dataArr) => {
-    this.setState({ showEditModal : 
-    <Modal 
-      key={'connection'}
-      modalTitle={this.context.intl.formatMessage({ id: 'perun.ipardSpa.connect', defaultMessage: 'perun.ipardSpa.connect' })} 
-      closeModal={() => this.closeModal('closeCreateConnection')} 
-      modalContent={dataArr} />
-    }) 
+    this.setState({
+      showEditModal:
+        <Modal
+          key={'connection'}
+          modalTitle={this.context.intl.formatMessage({ id: 'perun.ipardSpa.connect', defaultMessage: 'perun.ipardSpa.connect' })}
+          closeModal={() => this.closeModal('closeCreateConnection')}
+          modalContent={dataArr} />
+    })
   }
 
   searchComponentCallbackFromForm = (formData, form) => {
@@ -191,7 +192,7 @@ class CompanyRegFarm extends React.Component {
     this.searchComponent(formData, form, this.callBack, svSession)
   }
 
-  searchComponent (formData, form, callback, session) {
+  searchComponent(formData, form, callback, session) {
     var form_params
     if (formData.formData) {
       form_params = formData.formData
@@ -208,9 +209,9 @@ class CompanyRegFarm extends React.Component {
         form_params["TAX_NO"] = dataTmp.trim()
       }
     }
-  
+
     var isUndefined = Object.keys(form_params).reduce((res, k) => res && !(!!form_params[k] || form_params[k] === false || !isNaN(parseInt(form_params[k]))), true)
-  
+
     if (isUndefined === false) {
       let restUrl = `${window.server}/ReactElements/searchTable/${session}/PERSON/1000`
       axios({
@@ -219,46 +220,46 @@ class CompanyRegFarm extends React.Component {
         url: restUrl,
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       })
-      .then(function (response) {
-        if (response.data) {
-          if (
-            response.data.type === "ERROR" &&
-            response.data.title === "Невалидна сесија"
-          ) {
-            alertUser(
-              true,
-              response.data.type.toLowerCase(),
-              response.data.title,
-              response.data.message
-            );
-            logOut(session);
-          } else {
-            callback(response.data)
+        .then(function (response) {
+          if (response.data) {
+            if (
+              response.data.type === "ERROR" &&
+              response.data.title === "Невалидна сесија"
+            ) {
+              alertUser(
+                true,
+                response.data.type.toLowerCase(),
+                response.data.title,
+                response.data.message
+              );
+              logOut(session);
+            } else {
+              callback(response.data)
+            }
           }
-        }
-      })
-      .catch(function (error) {
-        if (error.data) {
-          alertUser(true, error.type.toLowerCase(), error.message, error.message)
-        }
-      });
+        })
+        .catch(function (error) {
+          if (error.data) {
+            alertUser(true, error.type.toLowerCase(), error.message, error.message)
+          }
+        });
     } else {
       callback('inside_error')
     }
   }
 
   callBack = (res) => {
-    if (res !== 'inside_error') { 
+    if (res !== 'inside_error') {
       let gridId = 'PERSON' + '_' + dynamicKey()
-      let grid =  <GenericGrid 
-        gridType={'SEARCH_GRID_DATA'} 
+      let grid = <GenericGrid
+        gridType={'SEARCH_GRID_DATA'}
         key={gridId}
         id={gridId}
         configTableName={"/ReactElements/getTableFieldList/%session/PERSON"}
         dataTableName={res}
         onRowClickFunct={this.onRowClickWithModalSearch}
       />
-      
+
       ComponentManager.setStateForComponent(gridId, null, {
         onRowClickFunct: this.onRowClickWithModalSearch
       })
@@ -300,7 +301,7 @@ class CompanyRegFarm extends React.Component {
         <div className="formContainer">
           {modalDataGrid}
         </div>
-          {dataForm}
+        {dataForm}
         {showEditModal}
       </React.Fragment>
     );

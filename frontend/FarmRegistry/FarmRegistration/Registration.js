@@ -80,7 +80,7 @@ class Registration extends React.Component {
     const { fullName, fic, farmType, id_no, tax_no, tableName } = this.state
     const { svSession } = this.props
     if (!fullName && !fic && !farmType && !id_no && !tax_no) {
-      alertUser(true, 'error', 'Немате внесено вредности за пребарување.', 'Ве молиме внесете вредност/и по кои сакате да пребарате.')
+      alertUser(true, 'error', this.context.intl.formatMessage({ id: 'perun.farm_registry.no_search_val', defaultMessage: 'perun.farm_registry.no_search_val' }), this.context.intl.formatMessage({ id: 'perun.farm_registry.please_enter_search_val', defaultMessage: 'perun.farm_registry.please_enter_search_val' }))
     } else {
       let multipleFilterData = []
       if (fullName) {
@@ -147,7 +147,7 @@ class Registration extends React.Component {
     this.setState({ fullName: '', fic: '', farmType: '' })
   }
 
-  refreshAgriParcels () {
+  refreshAgriParcels() {
     const { svSession, farmObjId } = this.props
     const resturl = window.server + '/farmer/refreshFarmData/' + svSession
     let params = ''
@@ -206,7 +206,9 @@ class Registration extends React.Component {
               }
               if (arrayIds) {
                 arrayIds = arrayIds.substr(0, arrayIds.length - 1)
-                childEl.innerHTML = `СИЗП парцелите (${arrayIds}) имаат тополошки грешки`
+                const parcelLabel = context.intl.formatMessage({ id: 'perun.farm_registry.parcel', defaultMessage: 'perun.farm_registry.parcel' })
+                const errorLabel = context.intl.formatMessage({ id: 'perun.farm_registry.have_errors', defaultMessage: 'perun.farm_registry.have_errors' })
+                childEl.innerHTML = `(${parcelLabel}) (${arrayIds}) (${errorLabel})`
               }
             } else {
               childEl.innerHTML = value
@@ -329,13 +331,13 @@ class Registration extends React.Component {
     let elementArr = []
     let labelStatus
     if (status === 'VALID') {
-      labelStatus = 'АКТИВНО'
+      labelStatus = context.intl.formatMessage({ id: 'perun.farm_registry.active', defaultMessage: 'perun.farm_registry.active' })
     }
     if (status === 'PENDING') {
-      labelStatus = 'ВО ТЕК'
+      labelStatus = context.intl.formatMessage({ id: 'perun.farm_registry.in_progress', defaultMessage: 'perun.farm_registry.in_progress' })
     }
     if (status === 'CLOSED') {
-      labelStatus = 'НЕАКТИВНО'
+      labelStatus = context.intl.formatMessage({ id: 'perun.farm_registry.inactive', defaultMessage: 'perun.farm_registry.inactive' })
     }
     htmlElement = <div style={{ color: 'white' }} className={`${style['farmerInfo']}`}>
       <div className={`${style['farmer-info-right']}`}>
@@ -355,7 +357,7 @@ class Registration extends React.Component {
   };
 
 
-  render () {
+  render() {
     const {
       dataHolder,
       showGrid,
