@@ -222,8 +222,8 @@ class Animal extends React.Component {
       </div>
     );
 
-    const breedingGroundNum = context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' });
-    const animalType = context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' });
+    const breedingGroundNum = this.context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' });
+    const animalType = this.context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' });
     this.setState({
       showModal: true,
       stateDataForm: (

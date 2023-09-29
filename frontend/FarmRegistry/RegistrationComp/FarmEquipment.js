@@ -114,7 +114,7 @@ class FarmEquipment extends React.Component {
         <Modal
           key={this.state.parentId}
           id={this.state.parentId}
-          modalTitle={context.intl.formatMessage({ id: 'perun.farm_registry.machine_equipment', defaultMessage: 'perun.farm_registry.machine_equipment' })}
+          modalTitle={this.context.intl.formatMessage({ id: 'perun.farm_registry.machine_equipment', defaultMessage: 'perun.farm_registry.machine_equipment' })}
           nameSubmitBtn="close"
           closeModal={() => this.closeModalFn()}
           modalContent={dataForm}

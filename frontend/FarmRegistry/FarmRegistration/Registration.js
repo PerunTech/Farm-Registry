@@ -206,8 +206,8 @@ class Registration extends React.Component {
               }
               if (arrayIds) {
                 arrayIds = arrayIds.substr(0, arrayIds.length - 1)
-                const parcelLabel = context.intl.formatMessage({ id: 'perun.farm_registry.parcel', defaultMessage: 'perun.farm_registry.parcel' })
-                const errorLabel = context.intl.formatMessage({ id: 'perun.farm_registry.have_errors', defaultMessage: 'perun.farm_registry.have_errors' })
+                const parcelLabel = this.context.intl.formatMessage({ id: 'perun.farm_registry.parcel', defaultMessage: 'perun.farm_registry.parcel' })
+                const errorLabel = this.context.intl.formatMessage({ id: 'perun.farm_registry.have_errors', defaultMessage: 'perun.farm_registry.have_errors' })
                 childEl.innerHTML = `(${parcelLabel}) (${arrayIds}) (${errorLabel})`
               }
             } else {
@@ -331,13 +331,13 @@ class Registration extends React.Component {
     let elementArr = []
     let labelStatus
     if (status === 'VALID') {
-      labelStatus = context.intl.formatMessage({ id: 'perun.farm_registry.active', defaultMessage: 'perun.farm_registry.active' })
+      labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.active', defaultMessage: 'perun.farm_registry.active' })
     }
     if (status === 'PENDING') {
-      labelStatus = context.intl.formatMessage({ id: 'perun.farm_registry.in_progress', defaultMessage: 'perun.farm_registry.in_progress' })
+      labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.in_progress', defaultMessage: 'perun.farm_registry.in_progress' })
     }
     if (status === 'CLOSED') {
-      labelStatus = context.intl.formatMessage({ id: 'perun.farm_registry.inactive', defaultMessage: 'perun.farm_registry.inactive' })
+      labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.inactive', defaultMessage: 'perun.farm_registry.inactive' })
     }
     htmlElement = <div style={{ color: 'white' }} className={`${style['farmerInfo']}`}>
       <div className={`${style['farmer-info-right']}`}>

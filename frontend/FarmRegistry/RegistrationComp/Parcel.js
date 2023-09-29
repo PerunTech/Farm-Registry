@@ -1,4 +1,4 @@
-import { React, connect, axios, Loading, createHashHistory, elements, } from "perun-core";
+import { React, connect, axios, Loading, createHashHistory, elements, PropTypes } from "perun-core";
 const { useEffect, useState } = React;
 import { AgGridReact } from "ag-grid-react";
 import "../style/style.css";
@@ -119,7 +119,9 @@ const Parcel = (props) => {
   return (
     <React.Fragment>
       {loading && <Loading />}
-      <button className={`${style.mapBtn}`} onClick={() => openMap()}>{iconManager.getIcon("parcel")}Графички приказ на  парцели</button>
+      <button className={`${style.mapBtn}`} onClick={() => openMap()}>{iconManager.getIcon("parcel")}
+        {this.context.intl.formatMessage({ id: 'perun.farm_registry.lpis_map', defaultMessage: 'perun.farm_registry.lpis_map' })}
+      </button>
       {showGrid && <div
         style={{
           display: "flex",
@@ -144,5 +146,9 @@ const mapStateToProps = (state) => ({
   farmData: state['farm_registry.mapData']?.farmData,
   farmerObjId: state['farm_registry.mapData']?.farmData?.objectId
 });
+
+Parcel.contextTypes = {
+  intl: PropTypes.object.isRequired,
+};
 
 export default connect(mapStateToProps)(Parcel);

@@ -168,10 +168,9 @@ class AddDocuments extends React.Component {
 
   /* delete selected document */
   deleteDocument = (id, title) => {
-    const deleteDocWithTitle = context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' })
-    const labelOK = context.intl.formatMessage({ id: 'perun.farm_registry.ok', defaultMessage: 'perun.farm_registry.ok' })
-    const labelBack = context.intl.formatMessage({ id: 'perun.farm_registry.back', defaultMessage: 'perun.farm_registry.back' })
-    console.log(id);
+    const deleteDocWithTitle = this.context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' })
+    const labelOK = this.context.intl.formatMessage({ id: 'perun.farm_registry.ok', defaultMessage: 'perun.farm_registry.ok' })
+    const labelBack = this.context.intl.formatMessage({ id: 'perun.farm_registry.back', defaultMessage: 'perun.farm_registry.back' })
     this.setState({
       alert: alertUser(
         true,

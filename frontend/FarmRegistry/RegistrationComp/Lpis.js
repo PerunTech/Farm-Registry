@@ -76,7 +76,7 @@ class Lpis extends React.Component {
         hideBtns="all"
       />
     );
-    this.genrateModal(context.intl.formatMessage({ id: 'perun.farm_registry.cadastral_parcel', defaultMessage: 'perun.farm_registry.cadastral_parcel' }), form);
+    this.genrateModal(this.context.intl.formatMessage({ id: 'perun.farm_registry.cadastral_parcel', defaultMessage: 'perun.farm_registry.cadastral_parcel' }), form);
   }
 
   /* create modal fn */
