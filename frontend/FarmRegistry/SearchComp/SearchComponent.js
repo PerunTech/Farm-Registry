@@ -9,7 +9,7 @@ import {
   PropTypes,
 } from "perun-core";
 const { alertUser } = elements;
-import { exportJson } from "./SearchFormJson";
+import { jsonData } from "./SearchFormJson";
 import { labelsManager } from "../utils_tools/LabelsExport";
 import style from "../style/registration.module.css";
 let searchGridId;
@@ -32,8 +32,8 @@ class AdminComopnent extends React.Component {
 
   showSearchForm = () => {
     let searchForm;
-    let uischema = exportJson.getJsonData("uischema");
-    let JSONSchema = exportJson.getJsonData("JSONSchema");
+    let uischema = jsonData(uischema);
+    let JSONSchema = jsonData(JSONSchema);
     searchForm = (
       <Form
         schema={JSONSchema}
@@ -99,20 +99,20 @@ class AdminComopnent extends React.Component {
           this.setState({ gridResult });
         }
 
-       else if (
+        else if (
           (dropdownValue === "FIC" && fieldValue.length <= 11) ||
           (dropdownValue === "ID_NO" && fieldValue.length <= 13) ||
           (dropdownValue === "TAX_NO" && fieldValue.length <= 13)
         ) {
           let regExp = /^[0-9]*$/;
-          
+
           if (!regExp.test(fieldValue)) {
             alertUser(
               true,
               "info",
-              "Инфо",
-              "Дозволени се само нумерички вредности во полето за внес"
-            );
+              this.context.intl.formatMessage({ id: 'perun.farm_registry.info', defaultMessage: 'perun.farm_registry.info' }),
+              this.context.intl.formatMessage({ id: 'perun.farm_registry.only_num_val', defaultMessage: 'perun.farm_registry.only_num_val' })
+            )
           } else {
             searchGridId = gridId + "_GRID" + randomKey;
             let gridResult = (
@@ -146,9 +146,9 @@ class AdminComopnent extends React.Component {
           alertUser(
             true,
             "info",
-            "Инфо",
-            "Надминат е бројот на максимално дозволени карактери во полето за внес"
-          );
+            this.context.intl.formatMessage({ id: 'perun.farm_registry.info', defaultMessage: 'perun.farm_registry.info' }),
+            this.context.intl.formatMessage({ id: 'perun.farm_registry.character_limit_exceeded', defaultMessage: 'perun.farm_registry.character_limit_exceeded' })
+          )
         }
       } else {
         alertUser(
