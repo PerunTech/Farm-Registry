@@ -5,19 +5,17 @@ import getERZSCards from './ErszCards'
 class ERZS extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      cardsItems: getERZSCards()
-    };
+    this.state = {};
   }
 
   componentDidMount() {
-    this.iterateCards(this.state.cardsItems);
+    this.iterateCards();
   }
 
-  iterateCards = (cardsItems) => {
+  iterateCards = () => {
     let htmlElement
     let elementArr = []
-    let cards = cardsItems.navigation.cards
+    let cards = getERZSCards(this.context).navigation
     for (let i = 0; i < cards.length; i++) {
       htmlElement = <div className={style['card']}>
         <p className={`${style['card-title']}`} key={cards[i].id} id={cards[i].id}>{cards[i].labelCode}</p>

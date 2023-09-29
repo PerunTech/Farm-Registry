@@ -32,8 +32,8 @@ class AdminComopnent extends React.Component {
 
   showSearchForm = () => {
     let searchForm;
-    let uischema = jsonData(uischema);
-    let JSONSchema = jsonData(JSONSchema);
+    let uischema = jsonData(this.context).uischema;
+    let JSONSchema = jsonData(this.context).JSONSchema;
     searchForm = (
       <Form
         schema={JSONSchema}
