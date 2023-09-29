@@ -37,8 +37,8 @@ class ERZS extends React.Component {
     return (
       <div className={`${style['erzs']}`}>
         <div className={`${style['title']}`}>
-          <p style={{fontWeight: 'bold', fontSize: '20px'}}>ЕРЗС</p>
-          <p style={{marginTop: '-1%'}}>Најавен корисник:</p>
+          <p style={{ fontWeight: 'bold', fontSize: '20px' }}>{this.context.intl.formatMessage({ id: 'perun.farm_registry.unique_agricultural_holding_identifier', defaultMessage: 'perun.farm_registry.unique_agricultural_holding_identifier' })}</p>
+          <p style={{ marginTop: '-1%' }}>{this.context.intl.formatMessage({ id: 'perun.farm_registry.logged_in_user', defaultMessage: 'perun.farm_registry.logged_in_user' })}:</p>
         </div>
         <div id="erzs-container" className={`${style['erzs-container']}`} >
           <div id='erzs-holder' className={`${style['erzs-holder']}`}>

@@ -21,7 +21,7 @@ class FarmRegistry extends React.Component {
       document.getElementById("identificationScreen").className =
         "identificationScreen";
       document.getElementById("identificationScreen").innerText =
-        "Фарм регистар";
+        this.context.intl.formatMessage({ id: 'perun.plugin.farm_registry', defaultMessage: 'perun.plugin.farm_registry' });
     }
     this.checkComponent();
   }
@@ -37,7 +37,7 @@ class FarmRegistry extends React.Component {
             break;
           }
           case path.includes('#/main/farm-registry/registration'): {
-            component = <Registration paramsComponent={ this.props.match.params} />
+            component = <Registration paramsComponent={this.props.match.params} />
             break;
           }
           case path === '#/main/farm-registry': {
