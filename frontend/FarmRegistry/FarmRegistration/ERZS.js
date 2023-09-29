@@ -15,7 +15,7 @@ class ERZS extends React.Component {
   iterateCards = () => {
     let htmlElement
     let elementArr = []
-    let cards = getERZSCards(this.context).navigation
+    let cards = getERZSCards(this.context).navigation.cards
     for (let i = 0; i < cards.length; i++) {
       htmlElement = <div className={style['card']}>
         <p className={`${style['card-title']}`} key={cards[i].id} id={cards[i].id}>{cards[i].labelCode}</p>
