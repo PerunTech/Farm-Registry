@@ -97,7 +97,7 @@ class AnimalsComp extends React.Component {
     return (
       <div className={`${style["search-container"]}`} id="search-container">
         <div className={`${style["search-holder"]}`} id="search-holder">
-          <div className={`${style["search-holder-title"]}`}><b>Животни</b></div>
+          <div className={`${style["search-holder-title"]}`}><b>{labelsManager.importLabel("mi.animal", this.context, "farm_registry")}</b></div>
           <div id="searchForm" className={`${style["searchForm"]}`}>
             <section className={`${style["flex"]}`}>
               <label>{labelsManager.importLabel("holding_id", this.context, "farm_registry")}</label>

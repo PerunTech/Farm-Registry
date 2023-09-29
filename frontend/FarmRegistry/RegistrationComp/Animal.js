@@ -128,7 +128,7 @@ class Animal extends React.Component {
         <Modal
           key={tableName + this.props.farmObjId}
           id={tableName + this.props.farmObjId}
-          modalTitle={"Групен добиток"}
+          modalTitle={labelsManager.importLabel("livestock_group", this.context, "farm_registry")}
           nameSubmitBtn="close"
           closeModal={() => this.closeModalFn()}
           modalContent={grid}
@@ -204,7 +204,7 @@ class Animal extends React.Component {
     const divHolder = (
       <div id="holder" className={`${style["animalSingleGroup"]}`}>
         <div id="grid1">
-          <label>Добиток</label>
+          <label>{labelsManager.importLabel("livestock", this.context, "farm_registry")}</label>
           {singleAnimal}
         </div>
         <div id="vLine" className={`${style["vLine"]}`} />

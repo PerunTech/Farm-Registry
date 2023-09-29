@@ -363,7 +363,11 @@ class AgriCultureHolding extends React.Component {
                   onClick={() => this.displayComponent("FRMAP")}
                 >
                   {iconManager.getIcon("parcel")}
-                  {"ГРАФИЧКИ ПРИКАЗ - МАПА"}
+                  {labelsManager.importLabel(
+                    "lpis_map",
+                    this.context,
+                    "farm_registry"
+                  )}
                 </button>
                 <button
                   className={`${style["btn_sub"]}`}

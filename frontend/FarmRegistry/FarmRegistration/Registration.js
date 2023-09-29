@@ -466,21 +466,33 @@ class Registration extends React.Component {
                 onClick={() => this.displayComponent("INTERSECTIONS")}
               >
                 {iconManager.getIcon("parcel")}
-                Пресек во катастар
+                {labelsManager.importLabel(
+                  "cadastral_intersection",
+                  this.context,
+                  "farm_registry"
+                )}
               </button>
               <button
                 className={`${style["btn_sub"]}`}
                 onClick={() => this.displayComponent("SIZP")}
               >
                 {iconManager.getIcon("parcelIcon")}
-                {'СИЗП'}
+                {labelsManager.importLabel(
+                  "lpis",
+                  this.context,
+                  "farm_registry"
+                )}
               </button>
               <button
                 className={`${style["btn_sub"]}`}
                 onClick={() => this.displayComponent("FARM_EQUIPMENT")}
               >
                 {iconManager.getIcon("docs")}
-                {'МАШИНСКА ОПРЕМА'}
+                {labelsManager.importLabel(
+                  "farm_equipment",
+                  this.context,
+                  "farm_registry"
+                )}
               </button>
               <button
                 className={`${style["btn_sub"]}`}
@@ -509,7 +521,7 @@ class Registration extends React.Component {
                 onClick={() => this.refreshAgriParcels()}
               >
                 {iconManager.getIcon("parcel")}
-                Освежи податоци
+                {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
               </button>
             </div>)}
         </div>

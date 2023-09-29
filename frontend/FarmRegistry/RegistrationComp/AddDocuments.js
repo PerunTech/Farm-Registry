@@ -54,7 +54,7 @@ class AddDocuments extends React.Component {
                       key={el.id}
                       id={`uploadLabel-${el.id}`}
                       name={el.name}
-                      title="Одберете датотека"
+                      title={labelsManager.importLabel("choose_file", this.context, "farm_registry")}
                       onChange={(e) =>
                         this.onChange(e, "getUploadName", el.id, "isClicked")
                       }
@@ -64,7 +64,7 @@ class AddDocuments extends React.Component {
                       htmlFor={`uploadLabel-${el.id}`}
                       className={style["upload-label"]}
                     >
-                      {iconManager.getIcon("upload")}Прикачи
+                      {iconManager.getIcon("upload")}{labelsManager.importLabel("attach", this.context, "farm_registry")}
                     </label>
                     <button
                       className={style["btn_save_docs"]}
@@ -72,7 +72,7 @@ class AddDocuments extends React.Component {
                       key={`uploadBtn-${el.id}`}
                       onClick={() => this.saveDocument(el.id)}
                     >
-                      {iconManager.getIcon("save")}Зачувај
+                      {iconManager.getIcon("save")}{labelsManager.importLabel("attach", this.context, "farm_registry")}
                     </button>
                   </div>
                 )}
@@ -81,7 +81,7 @@ class AddDocuments extends React.Component {
                     className={style["btn_del_docs"]}
                     key={`deleteBtn-${el.id}`}
                     id={`deleteBtn-${el.id}`}
-                    title={"Избриши документ"}
+                    title={labelsManager.importLabel("delete_document", this.context, "farm_registry")}
                     onClick={() => this.detelteDocument(el.id, el.title)}
                   >
                     {iconManager.getIcon("delete")}
