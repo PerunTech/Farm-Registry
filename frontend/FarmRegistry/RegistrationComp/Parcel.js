@@ -7,45 +7,63 @@ import "ag-grid-community/dist/styles/ag-theme-balham.css"
 import style from "../style/registration.module.css";;
 const { alertUser } = elements;
 import { iconManager } from "../../assets/svgHolder";
+import { labelsManager } from '../utils_tools/LabelsExport';
 
-const land_cover_code = ['200', '210', '300', '310', '320', '400', '410', '420', '421', '422', '423', '430', '490', '500',
-  '600', '900']
-
-const land_cover_name = ['Нива (обработливо земјиште)', 'Оранжерии и пластеници на обработливо земјиште',
-  'Постојан тревник', 'Ливада', 'Пасиште', 'Долгогодишни култури (траен насад)', 'Лозов насад',
-  'Овоштарник', 'Маслинов насад', 'Овошен насад', 'Јаткасто овошје', 'Растенија со брзо растечка маса',
-  'Мешани трајни насади', 'Различна искористеност на земјиштето', 'Матични насади',
-  'Останати типови на употреба на земјиштето']
 const history = createHashHistory();
+
+const land_cover_code = ['200', '210', '300', '310', '320', '400', '410', '420', '421', '422', '423', '430', '490', '500', '600', '900']
 
 const Parcel = (props) => {
   const [collumns, setCollumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false)
   const [showGrid, setShowGrid] = useState(false)
+
   useEffect(() => {
     generateInterGrid();
   }, []);
+
   const translateBooleanValue = (value) => {
     let translatedValue = "";
     switch (true) {
       case value:
-        translatedValue = "Да";
+        translatedValue = `${labelsManager.importLabel('yes', context, 'farm_registry')}`;
         break;
       default:
-        translatedValue = "Не";
+        translatedValue = `${labelsManager.importLabel('no', context, 'farm_registry')}`;
         break;
     }
 
     return translatedValue;
   };
 
+  const getLandCoverNames = () => {
+    return [
+      `${labelsManager.importLabel('farmland', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('greenhouse', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('permanent_lawn', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('lawn', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('pasture', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('permanent_cropland', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('vineyard', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('orchard', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('olive_grove', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('fruit_garden', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('nuts', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('fast_growing_plants', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('mixed_permanent_crops', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('different_land_use', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('stem_plants', context, 'farm_registry')}`,
+      `${labelsManager.importLabel('other_types_of_land_use', context, 'farm_registry')}`,
+    ]
+  }
+
   const translateLandCoverCode = (code) => {
     let translatedValue = '/'
     // These are the available land cover codes
     const landCoverCodes = land_cover_code
     // These are their translated values (names)
-    const landCoverCodeNames = land_cover_name
+    const landCoverCodeNames = getLandCoverNames()
     // Get the position of the land cover code
     const landCoverCodeIndex = landCoverCodes.indexOf(code)
     // If it's found (therefore the number will be 0 or larger than 0), get the appropriate name for the code
