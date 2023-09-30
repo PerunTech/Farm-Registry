@@ -13,7 +13,7 @@ const history = createHashHistory();
 
 const land_cover_code = ['200', '210', '300', '310', '320', '400', '410', '420', '421', '422', '423', '430', '490', '500', '600', '900']
 
-const Parcel = (props) => {
+const Parcel = (props, context) => {
   const [collumns, setCollumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false)
@@ -138,7 +138,7 @@ const Parcel = (props) => {
     <React.Fragment>
       {loading && <Loading />}
       <button className={`${style.mapBtn}`} onClick={() => openMap()}>{iconManager.getIcon("parcel")}
-        {this.context.intl.formatMessage({ id: 'perun.farm_registry.lpis_map', defaultMessage: 'perun.farm_registry.lpis_map' })}
+        {context.intl.formatMessage({ id: 'perun.farm_registry.lpis_map', defaultMessage: 'perun.farm_registry.lpis_map' })}
       </button>
       {showGrid && <div
         style={{
