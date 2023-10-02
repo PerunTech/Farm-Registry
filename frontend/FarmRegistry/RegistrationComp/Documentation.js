@@ -54,7 +54,7 @@ class Documentation extends React.Component {
       null,
       null,
       null,
-      "form-container",
+      "form-test",
       null,
       "close",
       null

@@ -76,12 +76,15 @@ class PrivateRegFarm extends React.Component {
       .then(response => {
         if (response.data) {
           alertUser(true, response.data.type.toLowerCase(), response.data.title, response.data.message)
-          this.props.parentCallBackFunc(th1s.state.personId);
-          this.setState({ dataForm: "" })
           ComponentManager.setStateForComponent(`FARM_G`, null, {
             saveExecuted: false,
           });
-          this.props.showSearch()
+          if (response.data.type === 'SUCCESS') {
+            alertUser(true, response.data.type.toLowerCase(), response.data.title, response.data.message)
+            this.props.parentCallBackFunc(th1s.state.personId);
+            this.setState({ dataForm: "" })
+            this.props.showSearch()
+          }
         }
       })
       .catch(function (response) {
