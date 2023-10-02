@@ -31,9 +31,13 @@ import com.prtech.svarog.SvSecurity;
 import com.prtech.svarog.SvSequence;
 import com.prtech.svarog.SvUtil;
 import com.prtech.svarog.SvWriter;
+import com.prtech.svarog.svCONST;
 import com.prtech.svarog_common.DbDataArray;
 import com.prtech.svarog_common.DbDataObject;
+import com.prtech.svarog_common.DbSearch;
+import com.prtech.svarog_common.DbSearchCriterion;
 import com.prtech.svarog_common.ResponseHandler;
+import com.prtech.svarog_common.DbSearchCriterion.DbCompareOperand;
 import com.prtech.svarog_common.ResponseHandler.MessageType;
 
 @Path("/WsRegistration")
@@ -54,6 +58,7 @@ public class WsRegistration {
 		DbDataObject dbG = null;
 
 		try (SvReader svr = new SvReader(session); SvWriter svw = new SvWriter(svr);) {
+			String localeId = svr.getUserLocaleId(svr.getInstanceUser());
 			dbG = new DbDataObject();
 			if (formVals != null) {
 				for (Entry<String, List<String>> entry : formVals.entrySet()) {
@@ -77,6 +82,19 @@ public class WsRegistration {
 							dbG.setVal("PERSON_OBJECT_ID", jobj.get("PERSON_OBJECT_ID").getAsLong());
 						if (jobj.get("ARCHIVE_NUMBER") != null)
 							dbG.setVal("ARCHIVE_NUMBER", jobj.get("ARCHIVE_NUMBER").getAsLong());
+						
+						
+						if (jobj.get("PERSON_OBJECT_ID") != null) {
+							Long personId = jobj.get("PERSON_OBJECT_ID").getAsLong();
+							DbSearchCriterion crit = new DbSearchCriterion(CC.PARENT_CODE_VALUE, DbCompareOperand.EQUAL,
+									personId);
+							DbDataArray alls = svr.getObjects(crit, SvReader.getTypeIdByName("FARM"), null, 0, 0);
+							if (alls != null && !alls.getItems().isEmpty()) {
+								jrh.create(MessageType.ERROR, I18n.getText(localeId, "error create farm"),
+										I18n.getText(localeId, "already has farm"), new JsonObject());
+								return Response.status(200).entity(jrh.getAll().toString()).build();
+							}
+						}
 
 						dbG.setObjectType(SvReader.getTypeIdByName("FARM"));
 						dbG.setStatus("PENDING");
