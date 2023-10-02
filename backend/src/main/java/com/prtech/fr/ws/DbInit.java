@@ -2035,6 +2035,8 @@ public class DbInit implements IDbInit {
 		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createFarm();
 		dbtList.add(addSortOrder(dbtt));
+		dbtt = DbInit.createFarmer();
+		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createFarmMembers();
 		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createAhvSingleAnimal();
