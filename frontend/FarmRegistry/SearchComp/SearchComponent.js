@@ -66,6 +66,9 @@ class AdminComopnent extends React.Component {
   assignSearchResultGrid = (formParams) => {
     const { formData } = formParams
     if (formData) {
+      if (formData['FULL_NAME']) {
+        formData['FULL_NAME'] = formData['FULL_NAME']?.toUpperCase()
+      }
       let url = `${window.server}/ReactElements/searchTable/${this.props.svSession}/FARM/1000`
       axios({
         method: 'post',
