@@ -403,7 +403,7 @@ public class DbInit implements IDbInit {
 		dbe25.setGui_metadata(addReactGuiMeta(getUiWidth(getDefaultUiMeta(true, true, true, false), 76), CONST_FARMER,
 				dbe25.getDbFieldName()).toString());
 
-		DbDataField[] dbTableFields = new DbDataField[26];
+		DbDataField[] dbTableFields = new DbDataField[25];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
 		dbTableFields[2] = dbe3;
