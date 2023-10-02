@@ -37,7 +37,7 @@ export const svgIcons = {
   reset: <svg style={{ marginRight: '6px' }} width="23" height="23" viewBox="0 0 512 512" data-name="Layer 1" id="Layer_1">
     <path fill="currentColor" d="M64,256H34A222,222,0,0,1,430,118.15V85h30V190H355V160h67.27A192.21,192.21,0,0,0,256,64C150.13,64,64,150.13,64,256Zm384,0c0,105.87-86.13,192-192,192A192.21,192.21,0,0,1,89.73,352H157V322H52V427H82V393.85A222,222,0,0,0,478,256Z" />
   </svg>,
-  parcelIcon: <svg style={{ marginRight: '6px' }} width="23" height="23" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 502 502" enable-background="new 0 0 502 502">
+  parcelIcon: <svg style={{ marginRight: '6px', marginLeft: '4px' }} width="23" height="23" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 502 502" enable-background="new 0 0 502 502">
     <g>
       <g>
         <g>

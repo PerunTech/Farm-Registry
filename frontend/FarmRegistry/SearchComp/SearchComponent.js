@@ -21,6 +21,7 @@ class AdminComopnent extends React.Component {
     super(props);
     this.state = {
       formId: this.props.formId,
+      formState: {}
     };
     this.hashHistory = createHashHistory();
   }
@@ -63,22 +64,17 @@ class AdminComopnent extends React.Component {
   };
 
   assignSearchResultGrid = (formParams) => {
-    let gridId = "SEARCH_FARMER";
-    if (formParams.formData.dropDownVal && formParams.formData.inputVal) {
-      let dropdownValue = formParams.formData.dropDownVal;
-      let fieldValue = formParams.formData.inputVal;
-      let randomKey = (
-        +new Date() + Math.floor(Math.random() * 999999)
-      ).toString(36);
-      console.log(formParams)
+    const { formData } = formParams
+    if (formData) {
       let url = `${window.server}/ReactElements/searchTable/${this.props.svSession}/FARM/1000`
       axios({
         method: 'post',
-        data: formParams.formData,
+        data: formData,
         url,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then(res => {
         this.searchResult(res.data)
+        this.setState({ formState: formParams })
       }).catch(err => {
         console.error(err)
         alertUser(true, 'error', err)
@@ -100,6 +96,7 @@ class AdminComopnent extends React.Component {
       onRowClickFunct={this.props.onRowClick}
       heightRatio={0.6}
       className={"iacs-claim-grid"}
+      refreshData={() => this.assignSearchResultGrid(this.state.formState)}
     />
 
     ComponentManager.setStateForComponent(gridId + dynamic_key, null, {
