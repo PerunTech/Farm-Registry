@@ -137,7 +137,7 @@ const Parcel = (props, context) => {
   return (
     <React.Fragment>
       {loading && <Loading />}
-      <button className={`${style.mapBtn}`} onClick={() => openMap()}>{iconManager.getIcon("parcel")}
+      <button className={`${style.mapBtn}`} onClick={() => openMap()}>{iconManager.getIcon("parcelMap")}
         {context.intl.formatMessage({ id: 'perun.farm_registry.lpis_map', defaultMessage: 'perun.farm_registry.lpis_map' })}
       </button>
       {showGrid && <div
