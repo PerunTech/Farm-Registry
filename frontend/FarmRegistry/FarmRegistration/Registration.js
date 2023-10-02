@@ -49,6 +49,7 @@ class Registration extends React.Component {
 
   showSearch = () => {
     this.setState({ showSearchForm: true })
+    this.setState({ dataForm: '' })
   }
 
   displayPrivateRegForm = () => {

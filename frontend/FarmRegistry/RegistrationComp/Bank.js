@@ -101,7 +101,7 @@ class Bank extends React.Component {
       this.saveBankAcc,
       "",
       null,
-      "form-container",
+      "form-test",
       null,
       "close",
       null

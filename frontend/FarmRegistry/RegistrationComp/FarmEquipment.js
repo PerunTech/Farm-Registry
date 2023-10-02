@@ -102,7 +102,7 @@ class FarmEquipment extends React.Component {
       this.saveEquipment,
       "",
       null,
-      "form-container",
+      "form-test",
       null,
       "close",
       null
