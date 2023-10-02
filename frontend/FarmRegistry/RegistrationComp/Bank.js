@@ -101,7 +101,7 @@ class Bank extends React.Component {
       this.saveBankAcc,
       "",
       null,
-      "form-container",
+      "form-test",
       null,
       "close",
       null
@@ -112,7 +112,7 @@ class Bank extends React.Component {
         <Modal
           key={this.state.parentId}
           id={this.state.parentId}
-          modalTitle={this.context.intl.formatMessage({ id: 'perun.farm_registry.delete_doc_title', defaultMessage: 'perun.farm_registry.delete_doc_title' })}
+          modalTitle={this.context.intl.formatMessage({ id: 'perun.farm_registry.bank_acc', defaultMessage: 'perun.farm_registry.bank_acc' })}
           nameSubmitBtn="close"
           closeModal={() => this.closeModalFn()}
           modalContent={dataForm}
