@@ -47,6 +47,10 @@ class Registration extends React.Component {
     }
   }
 
+  showSearch = () => {
+    this.setState({ showSearchForm: true })
+  }
+
   displayPrivateRegForm = () => {
     GridManager.reloadGridData("FARM_GRID");
     this.setState({
@@ -55,7 +59,7 @@ class Registration extends React.Component {
       formKey: "private_farm",
       hideSearchForm: false,
       showSearchForm: false,
-      dataForm: <PrivateRegFarm parentCallBackFunc={this.getPersonId} />,
+      dataForm: <PrivateRegFarm parentCallBackFunc={this.getPersonId} showSearch={this.showSearch} />,
     });
   };
 
@@ -67,7 +71,7 @@ class Registration extends React.Component {
       formKey: "reg_company",
       hideSearchForm: false,
       showSearchForm: false,
-      dataForm: <CompanyRegFarm parentCallBackFunc={this.getPersonId} />,
+      dataForm: <CompanyRegFarm parentCallBackFunc={this.getPersonId} showSearch={this.showSearch} />,
     });
   };
 
