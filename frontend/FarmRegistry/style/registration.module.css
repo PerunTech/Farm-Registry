@@ -437,12 +437,14 @@
   background-size: 200% auto;
   color: white;
   box-shadow: 0 0 20px #eee;
-  height: 4vh;
-  width: 20%;
+  height: auto;
+  width: auto;
   border-radius: 4px;
   display: block;
   border: none;
   background-image: linear-gradient(to right, #304040 0%, #52695d 51%, #304040 100%);
+  display: flex;
+  align-items: center;
 }
 
 .mapBtn:hover {
@@ -460,7 +462,7 @@
   margin-top: 3%;
 }
 
-.farmer-info-right { 
+.farmer-info-right {
   margin: 0 4% 0 3%;
 }
 
@@ -610,7 +612,8 @@
     grid-template-columns: 40% 40%;
   }
 }
-.form-SC{
+
+.form-SC {
   padding: 0 20px 20px 20px;
   align-items: right;
   width: 100%;
