@@ -86,7 +86,7 @@ public class WsRegistration {
 						
 						if (jobj.get("PERSON_OBJECT_ID") != null) {
 							Long personId = jobj.get("PERSON_OBJECT_ID").getAsLong();
-							DbSearchCriterion crit = new DbSearchCriterion(CC.PARENT_CODE_VALUE, DbCompareOperand.EQUAL,
+							DbSearchCriterion crit = new DbSearchCriterion("PERSON_OBJECT_ID", DbCompareOperand.EQUAL,
 									personId);
 							DbDataArray alls = svr.getObjects(crit, SvReader.getTypeIdByName("FARM"), null, 0, 0);
 							if (alls != null && !alls.getItems().isEmpty()) {
