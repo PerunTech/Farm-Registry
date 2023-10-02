@@ -24,7 +24,7 @@ class Registration extends React.Component {
     this.state = {
       showGrid: false,
       formContainer: "",
-      tableName: 'FARMER',
+      tableName: 'FARM',
       bankAcc: false,
       dataForm: false,
       showSearchForm: true,
@@ -75,7 +75,7 @@ class Registration extends React.Component {
     this.setState({ personObj: personObj });
   };
 
-  displayGridFarmer = () => {
+  displayGridFARM = () => {
     store.dispatch({ type: 'RESET_FR_MAP_DATA' })
     const { fullName, fic, farmType, id_no, tax_no, tableName } = this.state
     const { svSession } = this.props
@@ -139,7 +139,7 @@ class Registration extends React.Component {
   handleSearchByTheEnterKey = e => {
     if (e.keyCode === 13) {
       e.preventDefault()
-      this.displayGridFarmer()
+      this.displayGridFARM()
     }
   }
 
@@ -149,7 +149,7 @@ class Registration extends React.Component {
 
   refreshAgriParcels() {
     const { svSession, farmObjId } = this.props
-    const resturl = window.server + '/farmer/refreshFarmData/' + svSession
+    const resturl = window.server + '/FARM/refreshFarmData/' + svSession
     let params = ''
     params = { 'farmId': farmObjId }
     alertUser(true, 'info',
@@ -301,19 +301,19 @@ class Registration extends React.Component {
   };
 
   onRowClick = (rowId, rowPosition, rowsData) => {
-    const objectId = rowsData["FARMER.OBJECT_ID"]
-    const objectTypeId = rowsData["FARMER.OBJECT_TYPE"]
-    store.dispatch({ type: 'WRITE_FARMER_INFO', payload: rowsData })
-    store.dispatch({ type: 'GET_FR_MAP_DATA', payload: { objectId, objectTypeId, rowsData, tableName: "FARMER" } })
+    const objectId = rowsData["FARM.OBJECT_ID"]
+    const objectTypeId = rowsData["FARM.OBJECT_TYPE"]
+    store.dispatch({ type: 'WRITE_FARM_INFO', payload: rowsData })
+    store.dispatch({ type: 'GET_FR_MAP_DATA', payload: { objectId, objectTypeId, rowsData, tableName: "FARM" } })
     this.setState({
       showCapacities: true,
-      farmObjId: rowsData["FARMER.OBJECT_ID"],
-      personObj: rowsData["FARMER.PERSON_OBJECT_ID"],
-      farmFic: rowsData["FARMER.FIC"],
-      archiveNumber: rowsData["FARMER.ARCHIVE_NUMBER"],
-      status: rowsData["FARMER.STATUS"],
+      farmObjId: rowsData["FARM.OBJECT_ID"],
+      personObj: rowsData["FARM.PERSON_OBJECT_ID"],
+      farmFic: rowsData["FARM.FIC"],
+      archiveNumber: rowsData["FARM.ARCHIVE_NUMBER"],
+      status: rowsData["FARM.STATUS"],
       allFarmData: rowsData,
-      farmFullName: rowsData["FARMER.FULL_NAME"]
+      farmFullName: rowsData["FARM.FULL_NAME"]
     }, () => this.generateInfo(true));
   };
 
@@ -322,10 +322,10 @@ class Registration extends React.Component {
     const { farmData } = this.props
     if (farmData?.rowsData && !isFromRowClick) {
       const rowData = farmData.rowsData
-      status = rowData['FARMER.STATUS']
-      farmFic = rowData['FARMER.FIC']
-      archiveNumber = rowData['FARMER.ARCHIVE_NUMBER'] || ''
-      farmFullName = rowData['FARMER.FULL_NAME']
+      status = rowData['FARM.STATUS']
+      farmFic = rowData['FARM.FIC']
+      archiveNumber = rowData['FARM.ARCHIVE_NUMBER'] || ''
+      farmFullName = rowData['FARM.FULL_NAME']
     }
     let htmlElement
     let elementArr = []
@@ -340,7 +340,7 @@ class Registration extends React.Component {
       labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.inactive', defaultMessage: 'perun.farm_registry.inactive' })
     }
     htmlElement = <div style={{ color: 'white' }} className={`${style['farmerInfo']}`}>
-      <div className={`${style['farmer-info-right']}`}>
+      <div className={`${style['FARM-info-right']}`}>
         <p>{labelsManager.importLabel("status", this.context, "farm_registry")}: <b>{labelStatus}</b></p>
         <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{farmFullName}</b></p>
         <p>{labelsManager.importLabel("fic", this.context, "farm_registry")}: <b>{farmFic}</b></p>
