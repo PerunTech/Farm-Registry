@@ -75,7 +75,7 @@ class Registration extends React.Component {
     this.setState({ personObj: personObj });
   };
 
-  displayGridFARM = () => {
+  displayGridFarm = () => {
     store.dispatch({ type: 'RESET_FR_MAP_DATA' })
     const { fullName, fic, farmType, id_no, tax_no, tableName } = this.state
     const { svSession } = this.props
@@ -139,7 +139,7 @@ class Registration extends React.Component {
   handleSearchByTheEnterKey = e => {
     if (e.keyCode === 13) {
       e.preventDefault()
-      this.displayGridFARM()
+      this.displayGridFarm()
     }
   }
 
