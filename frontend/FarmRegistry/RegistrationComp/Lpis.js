@@ -24,12 +24,10 @@ class Lpis extends React.Component {
         gridType={"READ_URL"}
         key={cadParcelTable + "_" + farmerObjId}
         id={cadParcelTable + "_" + farmerObjId}
-        configTableName={"/table/tableFieldList/%session/" + cadParcelTable}
+        configTableName={"/ReactElements/getTableFieldList/%session/" + cadParcelTable}
         dataTableName={
-          "/table/tableDataByParentId/%session/" +
-          cadParcelTable +
-          "/" +
-          farmerObjId
+          `/ReactElements/getObjectsByParentId/%session/${farmerObjId}/${cadParcelTable}/10000`
+
         }
         onRowClickFunct={this.onRowClick}
       />
@@ -63,12 +61,12 @@ class Lpis extends React.Component {
         className={'farm-registry-forms form-test'}
         key={cadParcelTable + "_FORM"}
         id={cadParcelTable + "_FORM"}
-        method={"/table/formStyleTableJsonSchema/%session/" + cadParcelTable}
+        method={"/ReactElements/getTableJSONSchema/%session/" + cadParcelTable}
         uiSchemaConfigMethod={
-          "/table/formStyleTableUiSchema/%session/" + cadParcelTable
+          "/ReactElements/getTableUISchema/%session/" + cadParcelTable
         }
         tableFormDataMethod={
-          "/table/formStyleTableData/%session/" +
+          "/ReactElements/getTableFormData/%session/" +
           cadParcelObjId +
           "/" +
           cadParcelTable
