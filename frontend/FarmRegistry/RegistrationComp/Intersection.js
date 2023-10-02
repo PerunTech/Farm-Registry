@@ -77,7 +77,7 @@ const Intersection = (props, context) => {
     axios.get(url).then((res) => {
       if (res.data) {
         let data = res.data.data;
-        let dataKeys = Object.keys(data[0]);
+        let dataKeys = Object.keys(data[0] || {});
         dataKeys.map((item) => {
           setCollumns((prev) => [
             ...prev,
@@ -112,6 +112,7 @@ const Intersection = (props, context) => {
       }
       setLoading(false)
     }).catch((err) => {
+      console.error(err)
       setLoading(false)
       setShowGrid(true)
       alertUser(
