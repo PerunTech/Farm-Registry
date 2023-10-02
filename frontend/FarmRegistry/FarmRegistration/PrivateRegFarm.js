@@ -73,29 +73,15 @@ class PrivateRegFarm extends React.Component {
       url: restUrl,
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     })
-      .then(function (response) {
+      .then(response => {
         if (response.data) {
-          if (
-            response.data.type === "ERROR" &&
-            response.data.title === "Невалидна сесија"
-          ) {
-            alertUser(
-              true,
-              response.data.type.toLowerCase(),
-              response.data.title,
-              response.data.message
-            );
-            logOut(th1s.props.svSession);
-          } else {
-            type = response.data.type;
-            type = type.toLowerCase();
-            th1s.setState({
-              alert: alertUser(true, "success", this.context.intl.formatMessage({ id: 'perun.farm_registry.saved_success', defaultMessage: 'perun.farm_registry.saved_success' }), null, () =>
-                th1s.setState({ dataForm: "" })
-              ),
-            });
-            th1s.props.parentCallBackFunc(th1s.state.personId);
-          }
+          alertUser(true, response.data.type.toLowerCase(), response.data.title, response.data.message)
+          this.props.parentCallBackFunc(th1s.state.personId);
+          this.setState({ dataForm: "" })
+          ComponentManager.setStateForComponent(`FARM_G`, null, {
+            saveExecuted: false,
+          });
+          this.props.showSearch()
         }
       })
       .catch(function (response) {
@@ -196,7 +182,7 @@ class PrivateRegFarm extends React.Component {
     if (formData.formData) {
       form_params = formData.formData
       if (form_params["NAME"] && form_params["NAME"].length > 0) {
-        let dataTmp = form_params["NAME"]
+        let dataTmp = form_params["NAME"]?.toUpperCase()
         form_params["NAME"] = dataTmp + "%25"
       }
       if (form_params["ID_NO"] && form_params["ID_NO"].length > 0) {
