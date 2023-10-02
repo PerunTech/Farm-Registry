@@ -149,7 +149,7 @@ class Registration extends React.Component {
 
   refreshAgriParcels() {
     const { svSession, farmObjId } = this.props
-    const resturl = window.server + '/FARM/refreshFarmData/' + svSession
+    const resturl = window.server + '/farmer/refreshFarmData/' + svSession
     let params = ''
     params = { 'farmId': farmObjId }
     alertUser(true, 'info',
@@ -340,7 +340,7 @@ class Registration extends React.Component {
       labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.inactive', defaultMessage: 'perun.farm_registry.inactive' })
     }
     htmlElement = <div style={{ color: 'white' }} className={`${style['farmerInfo']}`}>
-      <div className={`${style['FARM-info-right']}`}>
+      <div className={`${style['farmer-info-right']}`}>
         <p>{labelsManager.importLabel("status", this.context, "farm_registry")}: <b>{labelStatus}</b></p>
         <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{farmFullName}</b></p>
         <p>{labelsManager.importLabel("fic", this.context, "farm_registry")}: <b>{farmFic}</b></p>
