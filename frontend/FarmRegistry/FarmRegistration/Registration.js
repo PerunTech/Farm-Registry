@@ -402,7 +402,7 @@ class Registration extends React.Component {
                 "farm_registry"
               )}
             </button>
-            <button
+            {/* <button
               className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
               onClick={this.displayCompanyRegForm}
             >
@@ -412,7 +412,7 @@ class Registration extends React.Component {
                 this.context,
                 "farm_registry"
               )}
-            </button>
+            </button> */}
           </div>
           <div className={`${style["btnHolder"]}`}>
             {generateInfoState}
