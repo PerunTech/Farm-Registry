@@ -38,6 +38,25 @@ import com.prtech.svarog_common.ResponseHandler.MessageType;
 public class WsFarmUtils {
 
 	static final Logger log4j = SvConf.getLogger(WsFarmUtils.class);
+	
+	/**
+	 * Method for finding locale id per user, If not set returns default
+	 * 
+	 * @param svr SvReader instance
+	 */
+
+	public static String getLocaleId(SvReader svr) {
+		String locale = SvConf.getDefaultLocale();
+		try {
+			DbDataObject dboLocale = svr.getUserLocale(svr.getInstanceUser());
+			if (dboLocale != null && dboLocale.getVal("LOCALE_ID").toString() != null) {
+				locale = dboLocale.getVal("LOCALE_ID").toString();
+			}
+		} catch (SvException e) {
+			log4j.error(e.getFormattedMessage(), e);
+		}
+		return locale;
+	}
 
 	private Response setExceptionResponseHandler(Exception e, ResponseHandler jrh, String message) {
 		if (e instanceof SvException) {
@@ -159,6 +178,7 @@ public class WsFarmUtils {
 		ResponseHandler jrh = new ResponseHandler();
 		JsonObject jsonObjectResponse = new JsonObject();
 		try (SvExecManager svsec = new SvExecManager(sessionId); SvReader svr = new SvReader(svsec);) {
+			String localeId = getLocaleId(svr);
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("FARM_ID", farmId);
 			params.put("REFERENCE_DATE", null);
@@ -170,15 +190,15 @@ public class WsFarmUtils {
 			for (JsonElement jse : jsonObjectResponse.get("items").getAsJsonArray()) {
 				JsonObject jObj = jse.getAsJsonObject();
 				JsonObject tmp = new JsonObject();
-				tmp.add("Број на СИЗП", jObj.get("OLD_ID"));
-				tmp.add("Заедничка употреба", jObj.get("COMMON_USE"));
-				tmp.add("Место викано", jObj.get("HOME_NAME"));
-				tmp.add("Употреба на земјиште", jObj.get("LAND_COVER_CODE"));
-				tmp.add("Површина на СИЗП (m²)", jObj.get("ALLOWED_AREA"));
-				tmp.add("Катастарска општина", jObj.get("MUNICIPALITY_NAME"));
-				tmp.add("Број на КП", jObj.get("GR_PARCEL"));
-				tmp.add("Пријавена површина во ЕРЗС", jObj.get("FR_AREA"));
-				tmp.add("Површина на графички пресек помеѓу СИЗП и КП", jObj.get("OVERLAP_AREA"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.old_id"), jObj.get("OLD_ID"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.common_use"), jObj.get("COMMON_USE"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.home_name"), jObj.get("HOME_NAME"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.land_cover_code"), jObj.get("LAND_COVER_CODE"));
+				tmp.add(I18n.getText(localeId, "allowed.area"), jObj.get("ALLOWED_AREA"));
+				tmp.add(I18n.getText(localeId, "cad_intersections.MUNICIPALITY_NAME"), jObj.get("MUNICIPALITY_NAME"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.GR_PARCEL"), jObj.get("GR_PARCEL"));
+				tmp.add(I18n.getText(localeId, "cad_intersections.FR_AREA"), jObj.get("FR_AREA"));
+				tmp.add(I18n.getText(localeId, "overlap.area"), jObj.get("OVERLAP_AREA"));
 				finalList.add(tmp);
 			}
 			jrh.create(MessageType.SUCCESS, I18n.getText("success"), I18n.getText("success"), finalList);
@@ -197,6 +217,7 @@ public class WsFarmUtils {
 		ResponseHandler jrh = new ResponseHandler();
 		JsonObject jsonObjectResponse = new JsonObject();
 		try (SvExecManager svsec = new SvExecManager(sessionId); SvReader svr = new SvReader(svsec);) {
+			String localeId = getLocaleId(svr);
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("FARM_ID", farmId);
 			params.put("REFERENCE_DATE", null);
@@ -208,15 +229,15 @@ public class WsFarmUtils {
 			for (JsonElement jse : jsonObjectResponse.get("items").getAsJsonArray()) {
 				JsonObject jObj = jse.getAsJsonObject();
 				JsonObject tmp = new JsonObject();
-				tmp.add("Број на СИЗП", jObj.get("OLD_ID"));
-				tmp.add("Површина", jObj.get("ALLOWED_AREA"));
-				tmp.add("Вкупна површина", jObj.get("AREA"));
-				tmp.add("Заедничка употреба", jObj.get("COMMON_USE"));
-				tmp.add("Право на користење", jObj.get("CERTIFICATE_OF_USE"));
-				tmp.add("Број на КО", jObj.get("KO_ID"));
-				tmp.add("Место викано", jObj.get("HOME_NAME"));
-				tmp.add("Катастарска општина", jObj.get("MUNICIPALITY_NAME"));
-				tmp.add("Надморска висина", jObj.get("Z_AVG"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.old_id"), jObj.get("OLD_ID"));
+				tmp.add(I18n.getText(localeId, "allowed.area"), jObj.get("ALLOWED_AREA"));
+				tmp.add(I18n.getText(localeId, "common.area"), jObj.get("AREA"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.common_use"), jObj.get("COMMON_USE"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.certificate_of_use"), jObj.get("CERTIFICATE_OF_USE"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.cadastral_municipality"), jObj.get("KO_ID"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.home_name"), jObj.get("HOME_NAME"));
+				tmp.add(I18n.getText(localeId, "cad_intersections.MUNICIPALITY_NAME"), jObj.get("MUNICIPALITY_NAME"));
+				tmp.add(I18n.getText(localeId, "agri_parcel.z_avg"), jObj.get("Z_AVG"));
 				finalList.add(tmp);
 			}
 			jrh.create(MessageType.SUCCESS, I18n.getText("success"), I18n.getText("success"), finalList);
