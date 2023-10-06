@@ -1,4 +1,4 @@
-import { React, connect, MenuHolder, PropTypes } from "perun-core";
+import { React, connect, MenuHolder, PropTypes, redux } from "perun-core";
 import AgriCultureHolding from "./FarmRegistration/AgriCultureHolding";
 import ERZS from "./FarmRegistration/ERZS";
 import Registration from './FarmRegistration/Registration'
@@ -6,6 +6,7 @@ import CalendarComponent from './FarmRegistration/CalendarComponent'
 import CompanyRegFarm from "./FarmRegistration/CompanyRegFarm";
 import AnimalsComp from "./FarmRegistration/AnimalsComp";
 
+const { store } = redux
 class FarmRegistry extends React.Component {
   constructor(props) {
     super(props);
@@ -23,11 +24,24 @@ class FarmRegistry extends React.Component {
       document.getElementById("identificationScreen").innerText =
         this.context.intl.formatMessage({ id: 'perun.plugin.farm_registry', defaultMessage: 'perun.plugin.farm_registry' });
     }
-    this.checkComponent();
+
+    if (window.location.hash === '#/main/farm-registry') {
+      this.checkComponent("#/main/farm-registry/registration/search")
+      store.dispatch({ type: 'SET_ACTIVE_MODULE_MENU_ITEM', payload: 'FARMER' })
+      store.dispatch({ type: 'IS_CLICKED', payload: '#/main/farm-registry/registration/search' })
+    } else {
+      this.checkComponent();
+    }
+
   }
 
-  checkComponent() {
-    let path = window.location.hash
+  checkComponent(redirectUrl) {
+    let path
+    if (redirectUrl) {
+      path = redirectUrl
+    } else {
+      path = window.location.hash
+    }
     let component
     this.setState({ componentToRender: null }, () => {
       if (path) {
