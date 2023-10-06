@@ -1,4 +1,4 @@
-import { React, connect, MenuHolder, PropTypes, redux } from "perun-core";
+import { React, connect, MenuHolder, PropTypes, redux, createHashHistory, } from "perun-core";
 import AgriCultureHolding from "./FarmRegistration/AgriCultureHolding";
 import ERZS from "./FarmRegistration/ERZS";
 import Registration from './FarmRegistration/Registration'
@@ -14,6 +14,7 @@ class FarmRegistry extends React.Component {
       componentToRender: null,
     };
     this.checkComponent = this.checkComponent.bind(this)
+    this.hashHistory = createHashHistory();
   }
 
 
@@ -26,7 +27,8 @@ class FarmRegistry extends React.Component {
     }
 
     if (window.location.hash === '#/main/farm-registry') {
-      this.checkComponent("#/main/farm-registry/registration/search")
+      const href = '/main/farm-registry/registration/search'
+      this.hashHistory.push(href)
       store.dispatch({ type: 'SET_ACTIVE_MODULE_MENU_ITEM', payload: 'FARMER' })
       store.dispatch({ type: 'IS_CLICKED', payload: '#/main/farm-registry/registration/search' })
     } else {
