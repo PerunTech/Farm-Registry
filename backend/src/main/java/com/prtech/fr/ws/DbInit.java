@@ -2064,8 +2064,6 @@ public class DbInit implements IDbInit {
 
 		dbtt = DbInit.createEquipment();
 		dbtList.add(addSortOrder(dbtt));
-		dbtt = DbInit.createMachinery();
-		dbtList.add(addSortOrder(dbtt));
 
 
 		return dbtList;
@@ -2244,99 +2242,39 @@ public class DbInit implements IDbInit {
 
 		// Column 2
 		DbDataField dbf2 = new DbDataField();
-		dbf2.setDbFieldName("EQUIPMENT_TYPE");
+		dbf2.setDbFieldName("EQUIPMENT_REG_PLATE");
 		dbf2.setDbFieldType(DbFieldType.NVARCHAR);
-		dbf2.setCode_list_user_code("FARM_EQUIPMENT_TYPE");
-		dbf2.setDbFieldSize(2);
-		dbf2.setIsNull(false);
-		dbf2.setLabel_code("farm_equipment.equipment_type");
+		dbf2.setDbFieldSize(20);
+		dbf2.setIsNull(true);
+		dbf2.setLabel_code("farm_equipment.equipment_reg_plate");
 		dbf2.setSort_order(10002);
 
 		// Column 3
 		DbDataField dbf3 = new DbDataField();
-		dbf3.setDbFieldName("NUMBER");
-		dbf3.setDbFieldType(DbFieldType.NUMERIC);
+		dbf3.setDbFieldName("EQUIPMENT_TYPE");
+		dbf3.setDbFieldType(DbFieldType.NVARCHAR);
+		dbf3.setCode_list_user_code("FARM_EQUIPMENT_TYPE");
 		dbf3.setDbFieldSize(10);
 		dbf3.setIsNull(false);
-		dbf3.setLabel_code("farm_equipment.number");
+		dbf3.setLabel_code("farm_equipment.equipment_type");
 		dbf3.setSort_order(10003);
 
 		// Column 4
 		DbDataField dbf4 = new DbDataField();
-		dbf4.setDbFieldName("YEAR");
+		dbf4.setDbFieldName("PRODUCTION_YEAR");
 		dbf4.setDbFieldType(DbFieldType.NUMERIC);
 		dbf4.setDbFieldSize(4);
 		dbf4.setIsNull(false);
-		dbf4.setLabel_code("farm_equipment.year");
-		dbf4.setSort_order(10004);
-
-		DbDataField[] dbTableFields = new DbDataField[4];
-		dbTableFields[0] = dbf1;
-		dbTableFields[1] = dbf2;
-		dbTableFields[2] = dbf3;
-		dbTableFields[3] = dbf4;
-		dbe.setDbTableFields(dbTableFields);
-		return dbe;
-	}
-	
-	private static DbDataTable createMachinery() {
-		DbDataTable dbe = new DbDataTable();
-		dbe.setDbTableName("FARM_MACHINERY");
-		dbe.setDbRepoName(CONST_MASTER_REPO);
-		dbe.setDbSchema(CONST_DEFAULT_SCHEMA);
-		dbe.setIsSystemTable(false);
-		dbe.setIsRepoTable(false);
-		dbe.setLabel_code("master_repo.farm_machinery");
-		dbe.setUse_cache(false);
-		dbe.setIsConfigTable(false);
-		dbe.setParentName(CONST_FARMER);
-
-		// Column 1
-		DbDataField dbf1 = new DbDataField();
-		dbf1.setDbFieldName("PKID");
-		dbf1.setIsPrimaryKey(true);
-		dbf1.setDbFieldType(DbFieldType.NUMERIC);
-		dbf1.setDbFieldSize(18);
-		dbf1.setDbFieldScale(0);
-		dbf1.setIsNull(false);
-		dbf1.setLabel_code("master_repo.table_meta_pkid");
-
-		// Column 2
-		DbDataField dbf2 = new DbDataField();
-		dbf2.setDbFieldName("USE");
-		dbf2.setDbFieldType(DbFieldType.NVARCHAR);
-		dbf2.setDbFieldSize(1);
-		dbf2.setCode_list_user_code("FARM_MACHINERY_USE");
-		dbf2.setIsNull(false);
-		dbf2.setLabel_code("farm_machinery.use");
-		dbf2.setSort_order(10002);
-
-		// Column 3
-		DbDataField dbf3 = new DbDataField();
-		dbf3.setDbFieldName("MACHINERY_TYPE");
-		dbf3.setDbFieldType(DbFieldType.NVARCHAR);
-		dbf3.setCode_list_user_code("FARM_MACHINERY_TYPE");
-		dbf3.setDbFieldSize(2);
-		dbf3.setIsNull(false);
-		dbf3.setLabel_code("farm_machinery.machinery_type");
-		dbf3.setSort_order(10003);
-
-		// Column 4
-		DbDataField dbf4 = new DbDataField();
-		dbf4.setDbFieldName("NUMBER");
-		dbf4.setDbFieldType(DbFieldType.NUMERIC);
-		dbf4.setDbFieldSize(10);
-		dbf4.setIsNull(false);
-		dbf4.setLabel_code("farm_machinery.number");
+		dbf4.setLabel_code("farm_equipment.production_year");
 		dbf4.setSort_order(10004);
 
 		// Column 5
 		DbDataField dbf5 = new DbDataField();
-		dbf5.setDbFieldName("YEAR");
+		dbf5.setDbFieldName("ENGINE_POWER");
 		dbf5.setDbFieldType(DbFieldType.NUMERIC);
-		dbf5.setDbFieldSize(4);
+		dbf5.setDbFieldSize(12);
 		dbf5.setIsNull(true);
-		dbf5.setLabel_code("farm_machinery.year");
+		dbf5.setLabel_code("farm_equipment.engine_power");
 
 		DbDataField[] dbTableFields = new DbDataField[5];
 		dbTableFields[0] = dbf1;
