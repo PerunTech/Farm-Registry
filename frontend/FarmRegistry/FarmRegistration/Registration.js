@@ -15,6 +15,8 @@ import Parcel from "../RegistrationComp/Parcel";
 import SearchComponent from '../SearchComp/SearchComponent';
 import Intersection from '../RegistrationComp/Intersection'
 import FarmEquipment from "../RegistrationComp/FarmEquipment";
+import Equipment from "../RegistrationComp/Equipment";
+import Machinery from "../RegistrationComp/Machinery";
 
 const { store } = redux
 
@@ -35,9 +37,15 @@ class Registration extends React.Component {
       tax_no: '',
       showCapacities: false,
       hideSearchForm: true,
-
+      showSubMenu: false
     };
     this.hashHistory = createHashHistory();
+  }
+
+  toggleSubMeu = () => {
+    this.setState((prevState) => ({
+      showSubMenu: !prevState.showSubMenu
+    }))
   }
 
   componentDidMount = () => {
@@ -293,6 +301,16 @@ class Registration extends React.Component {
         this.setState({ showCapacities: true })
         componentAddReg = <FarmEquipment farmObjId={this.props.farmObjId} paramsComponent={component} />
         break;
+      case "MACHINERY":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = <Machinery />
+        break;
+      case "EQUIPMENT":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = <Equipment />
+        break;
       default:
         console.log("default");
     }
@@ -378,7 +396,8 @@ class Registration extends React.Component {
       showCapacities,
       hideSearchForm,
       generateInfoState,
-      componentToRender
+      componentToRender,
+      showSubMenu
     } = this.state;
 
     return (
@@ -490,7 +509,7 @@ class Registration extends React.Component {
               </button>
               <button
                 className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("FARM_EQUIPMENT")}
+                onClick={() => this.toggleSubMeu()}
               >
                 {iconManager.getIcon("docs")}
                 {labelsManager.importLabel(
@@ -499,6 +518,32 @@ class Registration extends React.Component {
                   "farm_registry"
                 )}
               </button>
+              {showSubMenu && (
+                <>
+                  <button
+                    className={`${style["btn_sub"]}`}
+                    onClick={() => this.displayComponent("MACHINERY")}
+                  >
+                    {iconManager.getIcon("machinery")}
+                    {labelsManager.importLabel(
+                      "machinery",
+                      this.context,
+                      "farm_registry"
+                    )}
+                  </button>
+                  <button
+                    className={`${style["btn_sub"]}`}
+                    onClick={() => this.displayComponent("EQUIPMENT")}
+                  >
+                    {iconManager.getIcon("equipment")}
+                    {labelsManager.importLabel(
+                      "equipment",
+                      this.context,
+                      "farm_registry"
+                    )}
+                  </button>
+                </>
+              )}
               <button
                 className={`${style["btn_sub"]}`}
                 onClick={() => this.displayComponent("DOCS")}
