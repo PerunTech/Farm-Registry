@@ -11,7 +11,11 @@ import {
     Form
 } from 'perun-core'
 
-class Equipment extends React.Component { }
+class Equipment extends React.Component {
+    render() {
+        return (<> </>)
+    }
+}
 
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
