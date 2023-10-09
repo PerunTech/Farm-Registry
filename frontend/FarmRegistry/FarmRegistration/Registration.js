@@ -521,7 +521,7 @@ class Registration extends React.Component {
               {showSubMenu && (
                 <>
                   <button
-                    className={`${style["btn_sub"]}`}
+                    className={`${style["btn_sub"]} ${style["submenu"]}`}
                     onClick={() => this.displayComponent("MACHINERY")}
                   >
                     {iconManager.getIcon("machinery")}
@@ -532,7 +532,7 @@ class Registration extends React.Component {
                     )}
                   </button>
                   <button
-                    className={`${style["btn_sub"]}`}
+                    className={`${style["btn_sub"]} ${style["submenu"]}`}
                     onClick={() => this.displayComponent("EQUIPMENT")}
                   >
                     {iconManager.getIcon("equipment")}

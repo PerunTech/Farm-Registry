@@ -175,6 +175,10 @@
   outline: none;
 }
 
+.submenu {
+  margin-left: 5vh;
+}
+
 .livestock_btn_reg {
   text-align: center;
   transition: 0.5s;
