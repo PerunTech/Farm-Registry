@@ -1,4 +1,4 @@
-import { React, connect, GridManager, Link, PropTypes, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
+import { React, connect, GridManager, Link, PropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
 const { alertUser } = elements
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
@@ -37,7 +37,8 @@ class Registration extends React.Component {
       tax_no: '',
       showCapacities: false,
       hideSearchForm: true,
-      showSubMenu: false
+      showSubMenu: false,
+      showPrintBtn: false
     };
     this.hashHistory = createHashHistory();
   }
@@ -71,6 +72,17 @@ class Registration extends React.Component {
       dataForm: <PrivateRegFarm parentCallBackFunc={this.getPersonId} showSearch={this.showSearch} />,
     });
   };
+
+  getReports = (objid) => {
+    this.setState({ loading: true })
+    let url = window.server + `/mdfr/get-configuration/sid/${this.props.svSession}/component-name/FARM-EXTENDED/object-id/${objid}`
+    axios.get(url).then(res => {
+      this.setState({ reports: res.data, loading: false })
+    }).catch(err => {
+      console.error(err)
+      this.setState({ loading: false })
+    })
+  }
 
   displayCompanyRegForm = () => {
     GridManager.reloadGridData("FARM_GRID");
@@ -337,7 +349,10 @@ class Registration extends React.Component {
       status: rowsData["FARM.STATUS"],
       allFarmData: rowsData,
       farmFullName: rowsData["FARM.FULL_NAME"]
-    }, () => this.generateInfo(true));
+    }, () => {
+      this.generateInfo(true)
+      this.getReports(rowsData["FARM.OBJECT_ID"])
+    });
   };
 
   generateInfo = (isFromRowClick) => {
@@ -379,7 +394,34 @@ class Registration extends React.Component {
     this.setState({ [e.target.id]: e.target.value });
   };
 
+  generatePrints = () => {
+    if (this.state.reports) {
+      return this.state.reports.data.map(el => {
+        return <div>
+          <button className={`${style["btn_sub"]} ${style["submenu"]}`} onClick={() => this.generateChild(el.ID, el.data)}>{el.label}</button>
+          <div>
+            {this.state[el.ID]}
+          </div>
+        </div>
+      })
+    } else {
+      return <></>
+    }
+  }
+  generateChild = (id, children) => {
+    if (this.state[id]) {
+      this.setState({ [id]: null })
+    } else {
+      let html = children.map(el => {
+        return <button onClick={() => {
+          let url = window.server + el.onSubmit
+          window.open(url, '_blank')
+        }} className={`${style["btn_sub"]} ${style["submenu-print"]} `} id={el.ID}>{el.label}</button>
+      })
+      this.setState({ [id]: html })
+    }
 
+  }
   render() {
     const {
       dataHolder,
@@ -397,31 +439,35 @@ class Registration extends React.Component {
       hideSearchForm,
       generateInfoState,
       componentToRender,
-      showSubMenu
+      showSubMenu,
+      showPrintBtn, loading
     } = this.state;
 
     return (
-      <div style={{ height: '100vh' }} className={`${style["registrationHolder"]}`} id="registrationHolder">
-        <div style={{ height: '100vh' }} className={`${style["listButton"]}`} id="listButton">
-          <div className={`${style["btnHolder"]}`}>
-            {/* <Link
+
+      <>
+        {loading && <Loading />}
+        <div style={{ height: '100vh' }} className={`${style["registrationHolder"]}`} id="registrationHolder">
+          <div style={{ height: '100vh' }} className={`${style["listButton"]}`} id="listButton">
+            <div className={`${style["btnHolder"]}`}>
+              {/* <Link
                 className={`${style["iconHolderBack"]}`}
                 to="/main/farm-registry"
               >
                 {iconManager.getIcon("back")} Назад
               </Link> */}
-            <button
-              className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
-              onClick={this.displayPrivateRegForm}
-            >
-              {iconManager.getIcon("add")}
-              {labelsManager.importLabel(
-                "add_family_agri_holding",
-                this.context,
-                "farm_registry"
-              )}
-            </button>
-            {/* <button
+              <button
+                className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
+                onClick={this.displayPrivateRegForm}
+              >
+                {iconManager.getIcon("add")}
+                {labelsManager.importLabel(
+                  "add_family_agri_holding",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              {/* <button
               className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
               onClick={this.displayCompanyRegForm}
             >
@@ -432,173 +478,184 @@ class Registration extends React.Component {
                 "farm_registry"
               )}
             </button> */}
-          </div>
-          <div className={`${style["btnHolder"]}`}>
-            {generateInfoState}
-          </div>
-          {showCapacities && (
-            <div
-              className={`${style["registrationbtnCapacitiesHolder"]}`}
-              id="btnCapacities"
-            >
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("BANKACC")}
-              >
-                {iconManager.getIcon("bankAccount")}
-                {labelsManager.importLabel(
-                  "bank_acc",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("FARM_MEMBERS")}
-              >
-                {iconManager.getIcon("group")}
-                {labelsManager.importLabel(
-                  "agri_members",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("AHV_HOLDING")}
-              >
-                {iconManager.getIcon("animal")}
-                {labelsManager.importLabel(
-                  "livestock",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("LPIS")}
-              >
-                {iconManager.getIcon("parcel")}
-                {labelsManager.importLabel(
-                  "parcels",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("INTERSECTIONS")}
-              >
-                {iconManager.getIcon("parcel")}
-                {labelsManager.importLabel(
-                  "cadastral_intersection",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("SIZP")}
-              >
-                {iconManager.getIcon("parcelIcon")}
-                {labelsManager.importLabel(
-                  "lpis",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.toggleSubMeu()}
-              >
-                {iconManager.getIcon("docs")}
-                {labelsManager.importLabel(
-                  "farm_equipment",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              {showSubMenu && (
-                <>
-                  <button
-                    className={`${style["btn_sub"]} ${style["submenu"]}`}
-                    onClick={() => this.displayComponent("MACHINERY")}
-                  >
-                    {iconManager.getIcon("machinery")}
-                    {labelsManager.importLabel(
-                      "machinery",
-                      this.context,
-                      "farm_registry"
-                    )}
-                  </button>
-                  <button
-                    className={`${style["btn_sub"]} ${style["submenu"]}`}
-                    onClick={() => this.displayComponent("EQUIPMENT")}
-                  >
-                    {iconManager.getIcon("equipment")}
-                    {labelsManager.importLabel(
-                      "equipment",
-                      this.context,
-                      "farm_registry"
-                    )}
-                  </button>
-                </>
-              )}
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("DOCS")}
-              >
-                {iconManager.getIcon("docs")}
-                {labelsManager.importLabel(
-                  "docs",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.displayComponent("SUBMISSION")}
-              >
-                {iconManager.getIcon("docs")}
-                {labelsManager.importLabel(
-                  "submission",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]}`}
-                onClick={() => this.refreshAgriParcels()}
-              >
-                {iconManager.getIcon("parcel")}
-                {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
-              </button>
-            </div>)}
-        </div>
-        <div className={`${style["search-container"]}`} id="search-container">
-          <div className={`${style["gridHolder"]}`} id="gridHolder">
-            {showSearchForm && (
-              <div>
-                <SearchComponent onRowClick={this.onRowClick} />
-              </div>
-            )}
-          </div>
-
-          <div id="dataHolder" className={`${style["dataHolder"]}`}>
-            {showGrid && dataHolder}
-            {componentAddReg}
-            {dataForm && (
+            </div>
+            <div className={`${style["btnHolder"]}`}>
+              {generateInfoState}
+            </div>
+            {showCapacities && (
               <div
-                key={formKey}
-                id="createRegForm"
-                className={`${style["createFormHolder"]}`}
+                className={`${style["registrationbtnCapacitiesHolder"]}`}
+                id="btnCapacities"
               >
-                {dataForm}
-              </div>
-            )}
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("BANKACC")}
+                >
+                  {iconManager.getIcon("bankAccount")}
+                  {labelsManager.importLabel(
+                    "bank_acc",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("FARM_MEMBERS")}
+                >
+                  {iconManager.getIcon("group")}
+                  {labelsManager.importLabel(
+                    "agri_members",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("AHV_HOLDING")}
+                >
+                  {iconManager.getIcon("animal")}
+                  {labelsManager.importLabel(
+                    "livestock",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("LPIS")}
+                >
+                  {iconManager.getIcon("parcel")}
+                  {labelsManager.importLabel(
+                    "parcels",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("INTERSECTIONS")}
+                >
+                  {iconManager.getIcon("parcel")}
+                  {labelsManager.importLabel(
+                    "cadastral_intersection",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("SIZP")}
+                >
+                  {iconManager.getIcon("parcelIcon")}
+                  {labelsManager.importLabel(
+                    "lpis",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.toggleSubMeu()}
+                >
+                  {iconManager.getIcon("docs")}
+                  {labelsManager.importLabel(
+                    "farm_equipment",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                {showSubMenu && (
+                  <>
+                    <button
+                      className={`${style["btn_sub"]} ${style["submenu"]}`}
+                      onClick={() => this.displayComponent("MACHINERY")}
+                    >
+                      {iconManager.getIcon("machinery")}
+                      {labelsManager.importLabel(
+                        "machinery",
+                        this.context,
+                        "farm_registry"
+                      )}
+                    </button>
+                    <button
+                      className={`${style["btn_sub"]} ${style["submenu"]}`}
+                      onClick={() => this.displayComponent("EQUIPMENT")}
+                    >
+                      {iconManager.getIcon("equipment")}
+                      {labelsManager.importLabel(
+                        "equipment",
+                        this.context,
+                        "farm_registry"
+                      )}
+                    </button>
+                  </>
+                )}
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("DOCS")}
+                >
+                  {iconManager.getIcon("docs")}
+                  {labelsManager.importLabel(
+                    "docs",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("SUBMISSION")}
+                >
+                  {iconManager.getIcon("docs")}
+                  {labelsManager.importLabel(
+                    "submission",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.refreshAgriParcels()}
+                >
+                  {iconManager.getIcon("parcel")}
+                  {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
+                </button>
+
+                <button className={`${style["btn_sub"]}`}
+                  onClick={() => { this.setState({ showPrintBtn: !this.state.showPrintBtn, active: '' }) }}
+                >{iconManager.getIcon("printIcon")}
+                  {labelsManager.importLabel('print', this.context, 'farm_registry')}</button>
+                {showPrintBtn && (
+                  <>
+                    {this.generatePrints()}
+                  </>
+                )}
+              </div>)}
           </div>
-        </div>
-      </div>
+          <div className={`${style["search-container"]}`} id="search-container">
+            <div className={`${style["gridHolder"]}`} id="gridHolder">
+              {showSearchForm && (
+                <div>
+                  <SearchComponent onRowClick={this.onRowClick} />
+                </div>
+              )}
+            </div>
+
+            <div id="dataHolder" className={`${style["dataHolder"]}`}>
+              {showGrid && dataHolder}
+              {componentAddReg}
+              {dataForm && (
+                <div
+                  key={formKey}
+                  id="createRegForm"
+                  className={`${style["createFormHolder"]}`}
+                >
+                  {dataForm}
+                </div>
+              )}
+            </div>
+          </div>
+        </div >
+      </>
     );
   }
 }
