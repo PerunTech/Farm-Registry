@@ -189,7 +189,7 @@ class Registration extends React.Component {
     alertUser(true, 'info',
       labelsManager.importLabel('data_refreshing', this.context, 'farm_registry'),
       labelsManager.importLabel('please_wait', this.context, 'farm_registry'),
-      null, null, true, 'yes', 'no', null, null, null, null, false
+      null, null, null, null, null, null, null, null, null, true
     )
     axios({
       method: 'post',
