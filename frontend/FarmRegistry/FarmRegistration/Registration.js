@@ -172,30 +172,30 @@ class Registration extends React.Component {
     this.setState({ fullName: '', fic: '', farmType: '' })
   }
 
-  refreshAgriParcels() {
-    const { svSession, farmObjId } = this.props;
-
-    const showAlert = () => {
-      const yes = labelsManager.importLabel('yes', this.context, 'farm_registry');
-      const no = labelsManager.importLabel('no', this.context, 'farm_registry');
-      const confirmationMessage = labelsManager.importLabel('confirm_refresh', this.context, 'farm_registry');
-      alertUser(true, 'info', confirmationMessage, '',
-        () => this.makePostCall(svSession, farmObjId), null, true, yes, no
-      );
-    };
-
-    showAlert();
+  showAlert = () => {
+    const yes = labelsManager.importLabel('yes', this.context, 'farm_registry');
+    const no = labelsManager.importLabel('no', this.context, 'farm_registry');
+    const confirmationMessage = labelsManager.importLabel('confirm_refresh', this.context, 'farm_registry');
+    alertUser(true, 'info', confirmationMessage, '',
+      () => this.refreshAgriParcels(), null, true, yes, no
+    );
   }
 
-  makePostCall(svSession, farmObjId) {
-    const resturl = window.server + '/farmer/refreshFarmData/' + svSession;
-    const params = { 'farmId': farmObjId };
-
+  refreshAgriParcels() {
+    const { svSession, farmObjId } = this.props
+    const resturl = window.server + '/farmer/refreshFarmData/' + svSession
+    let params = ''
+    params = { 'farmId': farmObjId }
+    alertUser(true, 'info',
+      labelsManager.importLabel('data_refreshing', this.context, 'farm_registry'),
+      labelsManager.importLabel('please_wait', this.context, 'farm_registry'),
+      null, null, true, 'yes', 'no', null, null, null, null, false
+    )
     axios({
       method: 'post',
       data: params,
       url: resturl,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then((response) => {
       if (response.data) {
         const wrapper = document.createElement('div')
@@ -259,85 +259,6 @@ class Registration extends React.Component {
       }
     })
   }
-
-  // refreshAgriParcels() {
-  //   const { svSession, farmObjId } = this.props
-  //   const resturl = window.server + '/farmer/refreshFarmData/' + svSession
-  //   let params = ''
-  //   params = { 'farmId': farmObjId }
-  //   alertUser(true, 'info',
-  //     labelsManager.importLabel('data_refreshing', this.context, 'farm_registry'),
-  //     labelsManager.importLabel('please_wait', this.context, 'farm_registry'),
-  //     null, null, true, 'yes', 'no', null, null, null, null, false
-  //   )
-  //   axios({
-  //     method: 'post',
-  //     data: params,
-  //     url: resturl,
-  //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-  //   }).then((response) => {
-  //     if (response.data) {
-  //       const wrapper = document.createElement('div')
-  //       if (response.data.data) {
-  //         let isNotError = true
-  //         for (const [key, value] of Object.entries(response.data.data)) {
-  //           const parentGrid = document.createElement('div')
-  //           parentGrid.setAttribute('id', 'parentgrid')
-  //           parentGrid.classList.add(style.parentgrid);
-  //           let keySplit = key.split('_')[1]
-  //           let icon
-  //           switch (keySplit) {
-  //             case 'ERROR':
-  //               isNotError === false
-  //               parentGrid.setAttribute('style', 'border-left: 3px solid red')
-  //               icon = document.createElement('div')
-  //               icon.style.cssText = 'width: 25px; height:25px; border: 2px solid red; border-radius: 25px;'
-  //               icon.innerHTML = '<i class="fa fa-times" style="color:red; margin-left: 24%;"></i>'
-  //               break;
-  //             case 'WARNING':
-  //               parentGrid.setAttribute('style', 'border-left: 3px solid #c7c226')
-  //               icon = document.createElement('div')
-  //               icon.style.cssText = 'width: 27px; height:27px; border: 2px solid #c7c226; border-radius: 25px;'
-  //               icon.innerHTML = '<i class="fa fa-exclamation-triangle" style="color:#c7c226; margin-left: 3px;"></i>'
-  //               break;
-  //             case 'SUCCESS':
-  //               parentGrid.setAttribute('style', 'border-left: 4px solid green')
-  //               icon = document.createElement('div')
-  //               icon.style.cssText = 'width: 25px; height:25px; border: 2px solid green; border-radius: 25px;'
-  //               icon.innerHTML = '<i class="fa fa-check" style="color:green; margin-left: 13%;"></i>'
-  //             default:
-  //               break;
-  //           }
-  //           parentGrid.appendChild(icon)
-  //           /* js way to solve sweetalert custom html  */
-  //           let childEl = document.createElement('div')
-  //           let arrayIds = ''
-  //           childEl.setAttribute('id', 'childEl')
-  //           if (typeof value === 'object') {
-  //             for (const [id, label] of Object.entries(value)) {
-  //               arrayIds += (` ${id},`)
-  //             }
-  //             if (arrayIds) {
-  //               arrayIds = arrayIds.substr(0, arrayIds.length - 1)
-  //               const parcelLabel = this.context.intl.formatMessage({ id: 'perun.farm_registry.parcel', defaultMessage: 'perun.farm_registry.parcel' })
-  //               const errorLabel = this.context.intl.formatMessage({ id: 'perun.farm_registry.have_errors', defaultMessage: 'perun.farm_registry.have_errors' })
-  //               childEl.innerHTML = `(${parcelLabel}) (${arrayIds}) (${errorLabel})`
-  //             }
-  //           } else {
-  //             childEl.innerHTML = value
-  //           }
-  //           parentGrid.appendChild(childEl)
-  //           wrapper.appendChild(parentGrid)
-  //         }
-  //         alertUser(true, response.data.type.toLowerCase(), response.data.title, null, isNotError ? this.reload : null, null, null, null, null, null, null, null, wrapper)
-  //       }
-  //     }
-  //   }).catch((err) => {
-  //     if (err.data) {
-  //       alertUser(true, err.data.type.toLowerCase(), err.data.message)
-  //     }
-  //   })
-  // }
 
   displayComponent = (component) => {
     let componentAddReg;
@@ -702,7 +623,7 @@ class Registration extends React.Component {
                 </button>
                 <button
                   className={`${style["btn_sub"]}`}
-                  onClick={() => this.refreshAgriParcels()}
+                  onClick={() => this.showAlert()}
                 >
                   {iconManager.getIcon("parcel")}
                   {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
