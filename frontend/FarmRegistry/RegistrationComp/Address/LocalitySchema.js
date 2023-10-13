@@ -1,8 +1,8 @@
-export default function localitySchema(locality) {
+export default function localitySchema(locality, dynamicId) {
     let values = []
     let labels = []
-    locality.forEach(option => {
-        values.push(option['SVAROG_CODES.PARENT_CODE_VALUE'])
+    locality.forEach((option, i) => {
+        values.push(`${option['SVAROG_CODES.CODE_VALUE']}`)
         labels.push(option['SVAROG_CODES.LABEL_CODE'])
     })
     return {
@@ -10,8 +10,8 @@ export default function localitySchema(locality) {
             title: 'test',
             type: 'object',
             properties: {
-                ADDRESS: {
-                    type: 'number', title: 'test',
+                [dynamicId]: {
+                    type: 'string', title: 'test',
                     enum: values, enumNames: labels
                 },
 

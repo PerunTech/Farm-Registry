@@ -14,27 +14,40 @@ import localitySchema from './LocalitySchema'
 const { useState, useEffect } = React
 const Address = (props) => {
     useEffect(() => {
-        // generateMainForm()
+        generateMainForm()
         generateDropDown('CUATM0')
+
     }, [])
 
     const [mainForm, setMainForm] = useState(undefined)
     const [arrOfDD, setArrOfDD] = useState([])
+    const [flag, setFlag] = useState(false)
+    const [formDataObj, setFormData] = useState({})
 
     const generateDropDown = (data) => {
+        let tempData = formDataObj
+        let order = arrOfDD.length + 1
+        let formId = `LOCALITY${order}`
         let tempArrHtml = arrOfDD
         let url = window.server + `/ReactElements/getTableWithFilter/${props.svSession}/SVAROG_CODES/PARENT_CODE_VALUE/${data}/10000`
         let form
+        console.log(formDataObj[order])
         axios.get(url).then(res => {
-            const { schema, uiSchema } = localitySchema(res.data);
-            console.log(schema);
-            console.log(uiSchema);
+            const { schema, uiSchema } = localitySchema(res.data, `LOCALITY`);
             form = (
                 <Form
+                    id={formId}
                     schema={schema}
                     uiSchema={uiSchema}
-                    onSubmit={() => {
-                        console.log(formData);
+                    onSubmit={(e) => {
+                    }}
+                    onChange={(e) => {
+                        if (e.formData?.LOCALITY) {
+                            setFlag(false)
+                            generateDropDown(e.formData['LOCALITY'])
+                            tempData[`LOCALITY${arrOfDD.length}`] = e.formData['LOCALITY']
+                            setFormData(tempData)
+                        }
                     }}
                     className={`farm-registry-forms`}
                 >
@@ -43,12 +56,13 @@ const Address = (props) => {
             );
             tempArrHtml.push(form)
             setArrOfDD(tempArrHtml)
+            setFlag(true)
         }).catch(err => {
             console.error(err)
         })
-
     }
     const generateMainForm = (formData) => {
+        console.log(formData);
         const urlS = window.server + `/ReactElements/getTableJSONSchema/${props.svSession}/ADDRESS_MLD`
         const urlU = window.server + `/ReactElements/getTableUISchema/${props.svSession}/ADDRESS_MLD`
         let schema
@@ -62,19 +76,19 @@ const Address = (props) => {
                     <Form
                         schema={schema}
                         uiSchema={uiSchema}
-                        formData={formData}
-                        onSubmit={() => {
-                            console.log();
-                        }}
+                        onSubmit={(e) => saveDataAndNewForm(e)}
                         className={`farm-registry-forms`}
+                        formData={formData}
                     >
                         <></>
+                        <button type='submit'>test</button>
                         <div>
                             {arrOfDD}
                         </div>
                     </Form>
                 );
-                return form
+                setMainForm(form)
+                setFlag(true)
             }).catch(err => {
                 console.error(err)
             })
@@ -82,8 +96,17 @@ const Address = (props) => {
             console.error(err)
         })
     };
+
+    const saveDataAndNewForm = (e) => {
+        let formData = e.formData
+        for (const [key, value] of Object.entries(formDataObj)) {
+            formData[key] = value
+        }
+        setFlag(false)
+        generateMainForm(formData)
+    }
     return (
-        <>{generateMainForm()}</>
+        <>{flag && mainForm}</>
     )
 }
 
