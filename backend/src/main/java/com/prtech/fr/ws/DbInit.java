@@ -277,7 +277,7 @@ public class DbInit implements IDbInit {
 		dbe12.setDbFieldName("FTYPE");
 		dbe12.setDbFieldType(DbFieldType.NVARCHAR);
 		dbe12.setDbFieldSize(20);
-		dbe12.setCode_list_user_code("FTYPE");
+		//dbe12.setCode_list_user_code("FTYPE");
 		dbe12.setGui_metadata(addReactGuiMeta(getUiWidth(getDefaultUiMeta(false, false, true, false), 133),
 				CONST_FARMER, dbe12.getDbFieldName()).toString());
 		dbe12.setLabel_code("farmer.ftype");
@@ -383,27 +383,9 @@ public class DbInit implements IDbInit {
 		dbe23.setGui_metadata(addReactGuiMeta(getUiForm(getDefaultUiMeta(false, true, true, false), 16, 2),
 				CONST_FARMER, dbe23.getDbFieldName()).toString());
 		dbe23.setLabel_code("farmer.address");
-		// Column 24
-		DbDataField dbe24 = new DbDataField();
-		dbe24.setDbFieldName("FTYPE_SOP");
-		dbe24.setDbFieldType(DbFieldType.NVARCHAR);
-		dbe24.setDbFieldSize(20);
-		dbe24.setCode_list_user_code("SOP_FARMER_TYPE");
-		dbe24.setGui_metadata(addReactGuiMeta(getUiWidth(getDefaultUiMeta(false, true, true, false), 133), CONST_FARMER,
-				dbe24.getDbFieldName()).toString());
-		dbe24.setLabel_code("farmer.ftype_sop");
-		// Column 25
-		DbDataField dbe25 = new DbDataField();
-		dbe25.setDbFieldName("IPARD_NO");
-		dbe25.setDbFieldType(DbFieldType.NVARCHAR);
-		dbe25.setDbFieldScale(0);
-		dbe25.setDbFieldSize(16);
-		dbe25.setIndexName("FARMER_IPDARDNO_IDX");
-		dbe25.setLabel_code("farmer.ipdard_no");
-		dbe25.setGui_metadata(addReactGuiMeta(getUiWidth(getDefaultUiMeta(true, true, true, false), 76), CONST_FARMER,
-				dbe25.getDbFieldName()).toString());
+		
 
-		DbDataField[] dbTableFields = new DbDataField[25];
+		DbDataField[] dbTableFields = new DbDataField[23];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
 		dbTableFields[2] = dbe3;
@@ -427,8 +409,7 @@ public class DbInit implements IDbInit {
 		dbTableFields[20] = dbe21;
 		dbTableFields[21] = dbe22;
 		dbTableFields[22] = dbe23;
-		dbTableFields[23] = dbe24;
-		dbTableFields[24] = dbe25;
+
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
