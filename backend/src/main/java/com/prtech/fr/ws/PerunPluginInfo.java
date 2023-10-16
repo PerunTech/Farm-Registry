@@ -25,7 +25,7 @@ public class PerunPluginInfo implements IPerunPlugin {
 	@Override
 	public int getVersion() {
 		// TODO Auto-generated method stub
-		return 49;
+		return 50;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class PerunPluginInfo implements IPerunPlugin {
 
 	@Override
 	public String getIconPath() {
-		return "/mdfr-assets/img/access_cards/mdfr.svg";
+		return "/perun-assets/img/access_cards/fr.jpg";
 	}
 
 	@Override
