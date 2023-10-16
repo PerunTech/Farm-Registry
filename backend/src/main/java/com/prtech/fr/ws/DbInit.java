@@ -2036,8 +2036,8 @@ public class DbInit implements IDbInit {
 		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createLandUseCode();
 		dbtList.add(addSortOrder(dbtt));
-		dbtt = DbInit.createReceiptMilk();
-		dbtList.add(addSortOrder(dbtt));
+//		dbtt = DbInit.createReceiptMilk();
+//		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createCadParcel();
 		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createLandUseYear();
