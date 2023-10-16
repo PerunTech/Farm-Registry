@@ -25,13 +25,15 @@ const Address = (props) => {
     const [formDataObj, setFormData] = useState({})
 
     const generateDropDown = (data) => {
+        console.log(formDataObj)
+        console.log('========================================================');
         let tempData = formDataObj
         let order = arrOfDD.length + 1
         let formId = `LOCALITY${order}`
         let tempArrHtml = arrOfDD
         let url = window.server + `/ReactElements/getTableWithFilter/${props.svSession}/SVAROG_CODES/PARENT_CODE_VALUE/${data}/10000`
         let form
-        console.log(formDataObj[order])
+        console.log(order);
         axios.get(url).then(res => {
             const { schema, uiSchema } = localitySchema(res.data, `LOCALITY`);
             form = (
@@ -39,6 +41,7 @@ const Address = (props) => {
                     id={formId}
                     schema={schema}
                     uiSchema={uiSchema}
+                    formData={{ 'LOCALITY': `${formDataObj[order]}` }}
                     onSubmit={(e) => {
                     }}
                     onChange={(e) => {
@@ -47,14 +50,18 @@ const Address = (props) => {
                             generateDropDown(e.formData['LOCALITY'])
                             tempData[`LOCALITY${arrOfDD.length}`] = e.formData['LOCALITY']
                             setFormData(tempData)
+                            console.log(e.formData);
+                            console.log(formDataObj)
                         }
                     }}
-                    className={`farm-registry-forms`}
+                    className={`farm-registry-forms farm-reg-dd `}
                 >
                     <></>
                 </Form>
             );
-            tempArrHtml.push(form)
+            if (res.data.length > 0) {
+                tempArrHtml.push(form)
+            }
             setArrOfDD(tempArrHtml)
             setFlag(true)
         }).catch(err => {
@@ -62,7 +69,6 @@ const Address = (props) => {
         })
     }
     const generateMainForm = (formData) => {
-        console.log(formData);
         const urlS = window.server + `/ReactElements/getTableJSONSchema/${props.svSession}/ADDRESS_MLD`
         const urlU = window.server + `/ReactElements/getTableUISchema/${props.svSession}/ADDRESS_MLD`
         let schema
@@ -81,8 +87,8 @@ const Address = (props) => {
                         formData={formData}
                     >
                         <></>
-                        <button type='submit'>test</button>
-                        <div>
+                        <button className='btn-success btn_save_form' type='submit'>Submit  </button>
+                        <div className='dd-form-con'>
                             {arrOfDD}
                         </div>
                     </Form>
