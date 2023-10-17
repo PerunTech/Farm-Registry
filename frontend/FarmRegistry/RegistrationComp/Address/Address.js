@@ -8,111 +8,88 @@ import {
     axios,
     ComponentManager,
     PropTypes,
+    Loading,
     Form,
 } from 'perun-core'
-import localitySchema from './LocalitySchema'
 const { useState, useEffect } = React
 const Address = (props) => {
     useEffect(() => {
         generateMainForm()
-        generateDropDown('CUATM0')
-
     }, [])
-
-    const [mainForm, setMainForm] = useState(undefined)
-    const [arrOfDD, setArrOfDD] = useState([])
+    const [schema, setSchema] = useState({})
+    const [uiSchema, setUiSchema] = useState({})
     const [flag, setFlag] = useState(false)
-    const [formDataObj, setFormData] = useState({})
-
-    const generateDropDown = (data) => {
-        console.log(formDataObj)
-        console.log('========================================================');
-        let tempData = formDataObj
-        let order = arrOfDD.length + 1
-        let formId = `LOCALITY${order}`
-        let tempArrHtml = arrOfDD
-        let url = window.server + `/ReactElements/getTableWithFilter/${props.svSession}/SVAROG_CODES/PARENT_CODE_VALUE/${data}/10000`
-        let form
-        console.log(order);
-        axios.get(url).then(res => {
-            const { schema, uiSchema } = localitySchema(res.data, `LOCALITY`);
-            form = (
-                <Form
-                    id={formId}
-                    schema={schema}
-                    uiSchema={uiSchema}
-                    formData={{ 'LOCALITY': `${formDataObj[order]}` }}
-                    onSubmit={(e) => {
-                    }}
-                    onChange={(e) => {
-                        if (e.formData?.LOCALITY) {
-                            setFlag(false)
-                            generateDropDown(e.formData['LOCALITY'])
-                            tempData[`LOCALITY${arrOfDD.length}`] = e.formData['LOCALITY']
-                            setFormData(tempData)
-                            console.log(e.formData);
-                            console.log(formDataObj)
-                        }
-                    }}
-                    className={`farm-registry-forms farm-reg-dd `}
-                >
-                    <></>
-                </Form>
-            );
-            if (res.data.length > 0) {
-                tempArrHtml.push(form)
-            }
-            setArrOfDD(tempArrHtml)
-            setFlag(true)
-        }).catch(err => {
-            console.error(err)
-        })
-    }
-    const generateMainForm = (formData) => {
+    const [loading, setLoading] = useState(false)
+    const [formData, setFormData] = useState({})
+    const [permaSchema, setPermaSchema] = useState({})
+    const generateMainForm = () => {
         const urlS = window.server + `/ReactElements/getTableJSONSchema/${props.svSession}/ADDRESS_MLD`
         const urlU = window.server + `/ReactElements/getTableUISchema/${props.svSession}/ADDRESS_MLD`
-        let schema
-        let uiSchema
-        let form
+        setLoading(true)
+        setFlag(false)
         axios.get(urlS).then(res => {
-            schema = res.data
+            setSchema(res.data)
+            setPermaSchema(res.data)
             axios.get(urlU).then(res => {
-                uiSchema = res.data
-                form = (
-                    <Form
-                        schema={schema}
-                        uiSchema={uiSchema}
-                        onSubmit={(e) => saveDataAndNewForm(e)}
-                        className={`farm-registry-forms`}
-                        formData={formData}
-                    >
-                        <></>
-                        <button className='btn-success btn_save_form' type='submit'>Submit  </button>
-                        <div className='dd-form-con'>
-                            {arrOfDD}
-                        </div>
-                    </Form>
-                );
-                setMainForm(form)
+                setUiSchema(res.data)
                 setFlag(true)
+                setLoading(false)
             }).catch(err => {
                 console.error(err)
+                setLoading(false)
             })
         }).catch(err => {
             console.error(err)
+            setLoading(false)
         })
     };
 
-    const saveDataAndNewForm = (e) => {
-        let formData = e.formData
-        for (const [key, value] of Object.entries(formDataObj)) {
-            formData[key] = value
+    const generateNewTest = (id) => {
+        console.log(permaSchema);
+        if (id) {
+            if (formData['LOCALITY1'] !== id) {
+                setFlag(false)
+                let tempSchema = { ...permaSchema };
+                let tempEnum = []
+                let tempEnumNames = []
+                let innerId
+                let innerOpt
+                innerId = id.split('_') //array of two elements (string example: parentid_childid)
+                tempSchema.properties['LOCALITY2'].enum.map((option, i) => {
+                    innerOpt = option.split('_')
+                    if (innerId[1] === innerOpt[0]) {
+                        tempEnum.push(option)
+                        tempEnumNames.push(tempSchema.properties['LOCALITY2'].enumNames[i])
+                    }
+                })
+                tempSchema.properties['LOCALITY2'].enum = tempEnum
+                tempSchema.properties['LOCALITY2'].enumNames = tempEnumNames
+                setSchema(tempSchema)
+                setFlag(true)
+            }
         }
-        setFlag(false)
-        generateMainForm(formData)
     }
+
     return (
-        <>{flag && mainForm}</>
+        <>{loading && <Loading />}
+            {flag && <Form
+                schema={schema}
+                uiSchema={uiSchema}
+                onSubmit={(e) => console.log(e)}
+                className={`farm-registry-forms`}
+                formData={formData}
+                onChange={(e) => {
+                    setFormData(e.formData)
+                    generateNewTest(e.formData['LOCALITY1'])
+                }}
+            >
+                <></>
+                <div>
+
+                </div>
+                <button className='btn-success btn_save_form' type='submit'>Submit</button>
+            </Form>}
+        </>
     )
 }
 
