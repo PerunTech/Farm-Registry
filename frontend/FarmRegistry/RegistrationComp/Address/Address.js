@@ -20,8 +20,9 @@ const Address = (props) => {
     const [uiSchema, setUiSchema] = useState({})
     const [flag, setFlag] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [formData, setFormData] = useState({})
+    const [formData, setFormData] = useState({ 'COUNTRY': 'MDA' })
     const [permaSchema, setPermaSchema] = useState({})
+    const [permaUi, setPermaUi] = useState({})
     const generateMainForm = () => {
         const urlS = window.server + `/ReactElements/getTableJSONSchema/${props.svSession}/ADDRESS_MLD`
         const urlU = window.server + `/ReactElements/getTableUISchema/${props.svSession}/ADDRESS_MLD`
@@ -32,6 +33,7 @@ const Address = (props) => {
             setPermaSchema(res.data)
             axios.get(urlU).then(res => {
                 setUiSchema(res.data)
+                setPermaUi(res.data)
                 setFlag(true)
                 setLoading(false)
             }).catch(err => {
@@ -44,30 +46,40 @@ const Address = (props) => {
         })
     };
 
-    const generateNewTest = (id) => {
-        console.log(permaSchema);
-        if (id) {
-            if (formData['LOCALITY1'] !== id) {
-                setFlag(false)
-                let tempSchema = { ...permaSchema };
-                let tempEnum = []
-                let tempEnumNames = []
-                let innerId
-                let innerOpt
-                innerId = id.split('_') //array of two elements (string example: parentid_childid)
-                tempSchema.properties['LOCALITY2'].enum.map((option, i) => {
-                    innerOpt = option.split('_')
-                    if (innerId[1] === innerOpt[0]) {
-                        tempEnum.push(option)
-                        tempEnumNames.push(tempSchema.properties['LOCALITY2'].enumNames[i])
-                    }
-                })
-                tempSchema.properties['LOCALITY2'].enum = tempEnum
-                tempSchema.properties['LOCALITY2'].enumNames = tempEnumNames
-                setSchema(tempSchema)
-                setFlag(true)
+    const generateNewTest = (id, country) => {
+        let tempUi = JSON.parse(JSON.stringify(permaUi))
+        if (country === 'MDA') {
+            tempUi.LOCALITY3 = { 'ui:widget': 'hidden' }
+            tempUi.LOCALITY4 = { 'ui:widget': 'hidden' }
+            setUiSchema(tempUi)
+            if (id) {
+                if (formData['LOCALITY1'] !== id) {
+                    setFlag(false)
+                    let tempSchema = JSON.parse(JSON.stringify(permaSchema))
+                    let tempEnum = []
+                    let tempEnumNames = []
+                    let innerId
+                    let innerOpt
+                    innerId = id.split('_') //array of two elements (string example: parentid_childid)
+                    tempSchema.properties['LOCALITY2'].enum.map((option, i) => {
+                        innerOpt = option.split('_')
+                        if (innerId[1] === innerOpt[0]) {
+                            tempEnum.push(option)
+                            tempEnumNames.push(tempSchema.properties['LOCALITY2'].enumNames[i])
+                        }
+                    })
+                    tempSchema.properties['LOCALITY2'].enum = tempEnum
+                    tempSchema.properties['LOCALITY2'].enumNames = tempEnumNames
+                    setSchema(tempSchema)
+                    setFlag(true)
+                }
             }
+        } else {
+            tempUi.LOCALITY1 = { 'ui:widget': 'hidden' }
+            tempUi.LOCALITY2 = { 'ui:widget': 'hidden' }
+            setUiSchema(tempUi)
         }
+
     }
 
     return (
@@ -80,7 +92,7 @@ const Address = (props) => {
                 formData={formData}
                 onChange={(e) => {
                     setFormData(e.formData)
-                    generateNewTest(e.formData['LOCALITY1'])
+                    generateNewTest(e.formData['LOCALITY1'], e.formData['COUNTRY'])
                 }}
             >
                 <></>
