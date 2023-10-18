@@ -17,7 +17,7 @@ import Intersection from '../RegistrationComp/Intersection'
 import FarmEquipment from "../RegistrationComp/FarmEquipment";
 import Equipment from "../RegistrationComp/Equipment";
 import Machinery from "../RegistrationComp/Machinery";
-
+import Address from '../RegistrationComp/Address/Address';
 const { store } = redux
 
 class Registration extends React.Component {
@@ -332,6 +332,11 @@ class Registration extends React.Component {
         this.hashHistory.push(href)
         componentAddReg = <Equipment />
         break;
+      case "ADDRESS":
+        href = `/main/farm-registry/registration/${component}`
+        this.hashHistory.push(href)
+        componentAddReg = <Address />
+        break;
       default:
         console.log("default");
     }
@@ -599,6 +604,17 @@ class Registration extends React.Component {
                     </button>
                   </>
                 )}
+                <button
+                  className={`${style["btn_sub"]}`}
+                  onClick={() => this.displayComponent("ADDRESS")}
+                >
+                  {iconManager.getIcon("address")}
+                  {labelsManager.importLabel(
+                    "address",
+                    this.context,
+                    "farm_registry"
+                  )}
+                </button>
                 <button
                   className={`${style["btn_sub"]}`}
                   onClick={() => this.displayComponent("DOCS")}
