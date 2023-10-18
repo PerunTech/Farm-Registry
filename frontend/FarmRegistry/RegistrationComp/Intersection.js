@@ -98,7 +98,7 @@ const Intersection = (props, context) => {
             if (typeof value === "boolean") {
               obj[key] = translateBooleanValue(value)
             }
-            else if (key == "Употреба на земјиште") {
+            else if (key == "Land Use Code") {
               obj[key] = translateLandCoverCode(value)
             }
             else {
