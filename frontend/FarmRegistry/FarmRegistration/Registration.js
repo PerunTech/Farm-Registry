@@ -172,6 +172,15 @@ class Registration extends React.Component {
     this.setState({ fullName: '', fic: '', farmType: '' })
   }
 
+  showAlert = () => {
+    const yes = labelsManager.importLabel('yes', this.context, 'farm_registry');
+    const no = labelsManager.importLabel('no', this.context, 'farm_registry');
+    const confirmationMessage = labelsManager.importLabel('confirm_refresh', this.context, 'farm_registry');
+    alertUser(true, 'info', confirmationMessage, '',
+      () => this.refreshAgriParcels(), null, true, yes, no
+    );
+  }
+
   refreshAgriParcels() {
     const { svSession, farmObjId } = this.props
     const resturl = window.server + '/farmer/refreshFarmData/' + svSession
@@ -244,9 +253,9 @@ class Registration extends React.Component {
           alertUser(true, response.data.type.toLowerCase(), response.data.title, null, isNotError ? this.reload : null, null, null, null, null, null, null, null, wrapper)
         }
       }
-    }).catch((err) => {
-      if (err.data) {
-        alertUser(true, err.data.type.toLowerCase(), err.data.message)
+    }).catch((error) => {
+      if (error) {
+        alertUser(true, 'error', 'Error', error.message, null)
       }
     })
   }
@@ -630,7 +639,7 @@ class Registration extends React.Component {
                 </button>
                 <button
                   className={`${style["btn_sub"]}`}
-                  onClick={() => this.refreshAgriParcels()}
+                  onClick={() => this.showAlert()}
                 >
                   {iconManager.getIcon("parcel")}
                   {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
