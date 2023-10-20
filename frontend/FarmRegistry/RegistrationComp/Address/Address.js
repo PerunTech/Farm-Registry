@@ -147,7 +147,10 @@ const Address = (props, context) => {
                     true,
                     res.data.type?.toLowerCase(),
                     res.data.title,
-                    res.data.message, () => { GridManager.reloadGridData("ADDRESS_GRID" + props.farmObjId) }
+                    res.data.message, () => {
+                        GridManager.reloadGridData("ADDRESS_GRID" + props.farmObjId)
+                        setShow(false)
+                    }
                 );
             })
             .catch(err => {
