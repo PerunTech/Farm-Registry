@@ -14,7 +14,9 @@ import style from "../../style/registration.module.css"
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
-const Address = (props) => {
+import { labelsManager } from '../../utils_tools/LabelsExport';
+
+const Address = (props, context) => {
     useEffect(() => {
         return () => {
             ComponentManager.cleanComponentReducerState("ADDRESS_GRID" + props.farmObjId);
@@ -158,7 +160,11 @@ const Address = (props) => {
             refreshData={true}
             toggleCustomButton={true}
             customButton={() => generateMainForm()}
-            customButtonLabel={"Создади контролна листа"}
+            customButtonLabel={labelsManager.importLabel(
+                "add_address",
+                context,
+                "farm_registry"
+            )}
         />
         return grid
     }
@@ -172,7 +178,11 @@ const Address = (props) => {
                 {generateAddressGrid()}
                 {show && <Modal className={style["farm-registry-modal"]} show={show} onHide={() => setShow(false)}>
                     <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
-                        <Modal.Title>Создади контролна листа</Modal.Title>
+                        <Modal.Title>{labelsManager.importLabel(
+                            "add_address",
+                            context,
+                            "farm_registry"
+                        )}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className={style["farm-registry-modal-body"]}>
                         {flagForm && <Form
@@ -187,7 +197,11 @@ const Address = (props) => {
                             }}
                         >
                             <></>
-                            <button className='btn-success btn_save_form' type='submit'>Submit</button>
+                            <button className='btn-success btn_save_form' type='submit'>{labelsManager.importLabel(
+                                "add_address",
+                                context,
+                                "farm_registry"
+                            )}</button>
                         </Form>}
                     </Modal.Body>
                     <Modal.Footer className={style["farm-registry-modal-footer"]}></Modal.Footer>
