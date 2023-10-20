@@ -35,7 +35,6 @@ const FarmMembers = (props, context) => {
 
   //edit on row click
   const handleRowClick = (_id, _rowIdx, row) => {
-    console.log(row);
     setMemberId(row["FARM_MEMBERS.OBJECT_ID"] || 0)
     setShow(true)
   };
