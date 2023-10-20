@@ -64,31 +64,47 @@ class AdminComopnent extends React.Component {
   };
 
   assignSearchResultGrid = (formParams) => {
-    const { formData } = formParams
-    if (formData) {
-      if (formData['FULL_NAME']) {
-        formData['FULL_NAME'] = formData['FULL_NAME']?.toUpperCase()
+    let formData = {}
+    let tableName
+    if (this.props.person) {
+      if (formParams.formData['FULL_NAME']) {
+        formData['NAME'] = formParams.formData['FULL_NAME']?.toUpperCase()
       }
-      let url = `${window.server}/ReactElements/searchTable/${this.props.svSession}/FARM/1000`
-      axios({
-        method: 'post',
-        data: formData,
-        url,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      }).then(res => {
-        this.searchResult(res.data)
-        this.setState({ formState: formParams })
-      }).catch(err => {
-        console.error(err)
-        alertUser(true, 'error', err)
-      })
+      if (formParams.formData['FIC']) {
+        formData['ID_NO'] = formParams.formData['FIC']
+      }
+
+      tableName = 'PERSON'
+    } else {
+      formData = formParams.formData
+      formData['FULL_NAME'] = formData['FULL_NAME']?.toUpperCase()
+      tableName = 'FARM'
     }
+
+    let url = `${window.server}/ReactElements/searchTable/${this.props.svSession}/${tableName}/1000`
+    axios({
+      method: 'post',
+      data: formData,
+      url,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).then(res => {
+      this.searchResult(res.data)
+      this.setState({ formState: formParams })
+    }).catch(err => {
+      console.error(err)
+      alertUser(true, 'error', err)
+    })
+
   };
 
   searchResult = (data) => {
+    let tableName = 'FARM'
+    if (this.props.person) {
+      tableName = 'PERSON'
+    }
     ComponentManager.cleanComponentReducerState(searchGridId);
     let dynamic_key = Math.floor(Math.random() * 999999).toString(36)
-    let gridId = 'FARM'
+    let gridId = tableName
     searchGridId = gridId + dynamic_key
     let grid = <GenericGrid
       gridType={'SEARCH_GRID_DATA'}

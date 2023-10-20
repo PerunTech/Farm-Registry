@@ -47,10 +47,18 @@ const Address = (props, context) => {
                 setShow(true)
             }).catch(err => {
                 console.error(err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg);
+
                 setLoading(false)
             })
         }).catch(err => {
             console.error(err)
+            const title = err.response?.data?.title || err
+            const msg = err.response?.data?.message || ''
+            alertUser(true, "error", title, msg);
+
             setLoading(false)
         })
         let id = row?.['ADDRESS_MLD.OBJECT_ID'] || 0
@@ -64,6 +72,10 @@ const Address = (props, context) => {
             }
         }).catch(err => {
             console.error(err)
+            const title = err.response?.data?.title || err
+            const msg = err.response?.data?.message || ''
+            alertUser(true, "error", title, msg);
+
             setLoading(false)
         })
 
@@ -135,12 +147,18 @@ const Address = (props, context) => {
                     true,
                     res.data.type?.toLowerCase(),
                     res.data.title,
-                    res.data.message, () => { GridManager.reloadGridData("ADDRESS_GRID" + props.farmObjId) }
+                    res.data.message, () => {
+                        GridManager.reloadGridData("ADDRESS_GRID" + props.farmObjId)
+                        setShow(false)
+                    }
                 );
             })
             .catch(err => {
                 console.error(err)
-                alertUser(true, 'error', err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg);
+
             });
     };
 

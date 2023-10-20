@@ -1,225 +1,175 @@
 import {
   React,
   connect,
+  elements,
   GenericGrid,
-  GridManager,
-  GenericForm,
-  Modal,
-  axios,
   ComponentManager,
   PropTypes,
+  axios,
+  GridManager,
+  GenericForm,
 } from "perun-core";
-import { Connector } from "persons-registry";
-import { labelsManager } from "../utils_tools/LabelsExport";
-import { logOut } from "../utils_tools/LogOut";
+import style from "../style/registration.module.css";
+const { useState, useEffect } = React;
+const { alertUser } = elements;
+const { ReactBootstrap } = elements;
+const { Modal } = ReactBootstrap;
+import FarmMembersWrapper from "./FarmMembersWrapper";
+const tableName = "FARM_MEMBERS";
+let gridId = `${tableName}_GRID`;
+import { labelsManager } from '../utils_tools/LabelsExport';
+const FarmMembers = (props, context) => {
+  const [grid, setGrid] = useState(undefined);
+  const [show, setShow] = useState(false);
+  const [memberId, setMemberId] = useState(undefined)
+  useEffect(() => {
+    generateFarmMembersGrid();
+  }, []);
 
-class FarmMember extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      gridToDisplay: this.props.grid,
+  useEffect(() => {
+    return () => {
+      ComponentManager.cleanComponentReducerState(gridId);
     };
-  }
+  }, []);
+  //handle infinite loading
 
-  componentDidMount() {
+  //edit on row click
+  const handleRowClick = (_id, _rowIdx, row) => {
+    setMemberId(row["FARM_MEMBERS.OBJECT_ID"] || 0)
+    setShow(true)
+  };
+  //togglemodal
+  //initial grid of FarmMembers
+  const generateFarmMembersGrid = () => {
+    const { svSession } = props;
+    gridId = `${tableName}_GRID`;
     let grid = (
       <GenericGrid
         gridType={"READ_URL"}
-        key={this.state.gridToDisplay + "_GRID" + this.props.farmObjId}
-        id={this.state.gridToDisplay + "_GRID" + this.props.farmObjId}
-        configTableName={
-          "/ReactElements/getTableFieldList/%session/" +
-          this.state.gridToDisplay
-        }
+        key={gridId}
+        id={gridId}
+        configTableName={`/ReactElements/getTableFieldList/${svSession}/${tableName}`}
         dataTableName={
-          "/ReactElements/getObjectsByParentId/%session/" +
-          this.props.farmObjId +
-          "/" +
-          this.state.gridToDisplay +
-          "/100000"
-        }
+          `/ReactElements/getObjectsByParentId/${props.svSession}/${props.farmObjId}/${tableName}/100000`}
+        onRowClickFunct={handleRowClick}
+        refreshData={true}
         toggleCustomButton={true}
-        customButton={this.addFarmMember}
+        customButton={() => {
+          setShow(true)
+          setMemberId(0)
+        }}
         customButtonLabel={labelsManager.importLabel(
-          "add_agri_holding_member",
-          this.context,
+          "add_member",
+          context,
           "farm_registry"
         )}
-        minHeight={800}
+        minHeight={600}
       />
     );
-    this.setState({ farmMgrid: grid });
-    ComponentManager.setStateForComponent(
-      this.state.gridToDisplay + "_GRID" + this.props.farmObjId,
-      null,
-      {
-        customButton: this.addFarmMember,
-      }
-    );
-  }
-
-  makeField = () => {
-    let field = document.getElementById("root_PERSON_OBJECT_ID");
-    if (field) field.onclick = this.getPersonId;
+    setGrid(grid);
   };
-
-  getPersonId = () => {
-    this.setState({
-      conncterComp: (
-        <Connector
-          tableName="PHYSICAL_ENTITY"
-          persRegConnRowClickFn={this.onRowClickWithModalSearch}
-          closeConnector={this.closeModal2Fn}
-        />
-      ),
-    });
-  };
-
-  onRowClickWithModalSearch = (rowid, index, row) => {
-    this.setState({ selectedPersonRow: row });
-    this.setState(
-      { formSearch: row["PHYSICAL_ENTITY.FIRST_NAME"], submitModalForm: true },
-      () => {
-        this.setState({
-          personId: row["PHYSICAL_ENTITY.OBJECT_ID"],
-          fullName:
-            row["PHYSICAL_ENTITY.FIRST_NAME"] +
-            " " +
-            row["PHYSICAL_ENTITY.LAST_NAME"],
-        });
-        document.getElementById("root_FULL_NAME").placeholder =
-          row["PHYSICAL_ENTITY.FIRST_NAME"] +
-          " " +
-          row["PHYSICAL_ENTITY.LAST_NAME"];
-        document.getElementById("root_PERSON_OBJECT_ID").placeholder =
-          row["PHYSICAL_ENTITY.OBJECT_ID"];
-        this.closeModal2Fn(row["PHYSICAL_ENTITY.OBJECT_ID"]);
-      }
-    );
-  };
-
-  refreshFarmMemberList = () => {
-    GridManager.reloadGridData(
-      this.state.gridToDisplay + "_GRID" + this.props.farmObjId
-    );
-  };
-
-  addFarmMember = () => {
-    let dataForm = (
-      <GenericForm
-      className={'farm-registry-forms form-test'}
-        params={"READ_URL"}
-        key={this.state.gridToDisplay}
-        id={this.state.gridToDisplay}
-        method={"/ReactElements/getTableJSONSchema/%session/FARM_MEMBERS"}
-        uiSchemaConfigMethod={
-          "/ReactElements/getTableUISchema/%session/FARM_MEMBERS"
-        }
-        tableFormDataMethod={
-          "/ReactElements/getTableFormData/%session/0/FARM_MEMBERS"
-        }
-        addSaveFunction={(e) => this.saveFarmMember(e)}
-        hideBtns={"closeAndDelete"}
-        addCustomFunction={""}
-      />
-    );
-
-    this.setState({
-      stateDataForm: (
-        <Modal
-          onMouseEnterFunction={this.makeField}
-          key={this.props.farmObjId}
-          id={this.props.farmObjId}
-          modalTitle={labelsManager.importLabel(
-            "agri_members",
-            this.context,
-            "farm_registry"
-          )}
-          nameSubmitBtn="close"
-          closeModal={() => this.closeModalFn()}
-          modalContent={dataForm}
-        />
-      ),
-    });
-  };
-
-  closeModalFn = () => {
-    this.setState({ stateDataForm: false });
-  };
-
-  closeModal2Fn = (memberObjId) => {
-    if (memberObjId) {
-      this.setState({ memberObjId: memberObjId });
-    }
-    this.setState({ conncterComp: false });
-  };
-
-  saveFarmMember = (e) => {
-    let th1s = this;
-    let form_params = e.formData;
-    let type;
-    let restUrl =
+  //create new team
+  const saveMember = (e) => {
+    const { svSession } = props;
+    let url =
       window.server +
-      "/WsRegistration/saveFarmMembers/" +
-      th1s.props.svSession +
-      "/" +
-      th1s.props.farmObjId;
-    if (form_params) {
-      form_params.FULL_NAME = th1s.state.fullName;
-      form_params.PERSON_OBJECT_ID = th1s.state.personId;
-    }
+      `/ReactElements/createTableRecordFormData/${svSession}/${tableName}/${props.farmObjId}`;
     axios({
       method: "post",
-      data: form_params,
-      url: restUrl,
+      data: e.formData,
+      url,
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     })
-      .then(function (response) {
-        if (response.data) {
-          if (
-            response.data.type === "ERROR" &&
-            response.data.title === "Невалидна сесија"
-          ) {
-            alertUser(
-              true,
-              response.data.type.toLowerCase(),
-              response.data.title,
-              response.data.message
-            );
-            logOut(th1s.props.svSession);
-          } else {
-            type = response.data.type;
-            type = type.toLowerCase();
-            th1s.refreshFarmMemberList();
-          }
+      .then((res) => {
+        if (res.data) {
+          GridManager.reloadGridData(gridId);
+          setShow(false);
         }
+
       })
-      .catch(function (response) {
-        alert(response);
+      .catch(err => {
+        console.error(err)
+        const title = err.response?.data?.title || err
+        const msg = err.response?.data?.message || ''
+        alertUser(true, "error", title, msg);
+
       });
-    th1s.closeModalFn();
+  };
+  //create new team form
+  const generateFarmMembersForm = (memberId) => {
+    const { svSession } = props;
+    return <GenericForm
+      params={"READ_URL"}
+      key={`${tableName}_FORM`}
+      id={`${tableName}_FORM`}
+      method={`/ReactElements/getTableJSONSchema/${svSession}/${tableName}`}
+      uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${svSession}/${tableName}`}
+      tableFormDataMethod={`/ReactElements/getTableFormData/${svSession}/${memberId}/${tableName}`}
+      addSaveFunction={(e) => saveMember(e)}
+      hideBtns={memberId === 0 ? 'closeAndDelete' : 'close'}
+      inputWrapper={FarmMembersWrapper}
+      addDeleteFunction={deleteFunc}
+      className={'farm-registry-forms'}
+    />
   };
 
-  render() {
-    const { farmMgrid, stateDataForm, conncterComp } = this.state;
-    return (
-      <div>
-        <div id="farmMembersGrid">
-          {stateDataForm}
-          {conncterComp}
-          {farmMgrid}
-        </div>
+  const deleteFunc = (_id, _action, _session, formData) => {
+    const { svSession } = props;
+    let url = window.server + `/ReactElements/deleteObject/${svSession}`;
+    axios({
+      method: "post",
+      data: formData[4]["PARAM_VALUE"],
+      url: url,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    })
+      .then((res) => {
+        if (res.data.type === "SUCCESS") {
+          alertUser(true, "success", res.data.title, res.data.message);
+          setShow(false);
+          ComponentManager.setStateForComponent(`${tableName}_FORM`, null, {
+            saveExecuted: false,
+          });
+          GridManager.reloadGridData(gridId);
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        const title = err.response?.data?.title || err
+        const msg = err.response?.data?.message || ''
+        alertUser(true, "error", title, msg);
+
+      });
+  };
+
+
+  return (
+    <>
+      <div id="farmMembersGrid">
+        {grid}
       </div>
-    );
-  }
-}
+      {show && <Modal className={style["farm-registry-modal"]} show={show} onHide={() => setShow(false)}>
+        <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
+          <Modal.Title>{labelsManager.importLabel(
+            "add_member",
+            context,
+            "farm_registry"
+          )}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className={style["farm-registry-modal-body"]}>
+          {generateFarmMembersForm(memberId)}
+        </Modal.Body>
+        <Modal.Footer className={style["farm-registry-modal-footer"]}></Modal.Footer>
+      </Modal>}
+    </>
+  );
+};
 
 const mapStateToProps = (state) => ({
   svSession: state.security.svSession,
+  farmObjId: state['farm_registry.mapData']?.farmData?.objectId
 });
 
-FarmMember.contextTypes = {
+FarmMembers.contextTypes = {
   intl: PropTypes.object.isRequired,
 };
-
-export default connect(mapStateToProps)(FarmMember);
+export default connect(mapStateToProps)(FarmMembers);
