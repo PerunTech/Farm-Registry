@@ -40,7 +40,7 @@ const FarmMembersWrapper = (props, context) => {
             firstInput.style.cursor = "pointer";
             firstInput.onclick = handleShow;
             firstInput.placeholder = labelsManager.importLabel(
-                "add_address",
+                "click_to_choose",
                 context,
                 "farm_registry"
             )
@@ -77,7 +77,7 @@ const FarmMembersWrapper = (props, context) => {
                 <Modal className={style["farm-registry-modal"]} show={show} onHide={() => setShow(false)}>
                     <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
                         <Modal.Title>{labelsManager.importLabel(
-                            "search_member",
+                            "search_person",
                             context,
                             "farm_registry"
                         )}</Modal.Title>
