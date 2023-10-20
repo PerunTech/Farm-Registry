@@ -6,7 +6,9 @@ import {
     Loading,
     Form,
     elements,
-    GenericGrid
+    GenericGrid,
+    GridManager,
+    ComponentManager
 } from 'perun-core'
 import style from "../../style/registration.module.css"
 const { ReactBootstrap, alertUser } = elements;
@@ -14,6 +16,9 @@ const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
 const Address = (props) => {
     useEffect(() => {
+        return () => {
+            ComponentManager.cleanComponentReducerState("ADDRESS_GRID" + props.farmObjId);
+        }
     }, [])
     const [schema, setSchema] = useState({})
     const [uiSchema, setUiSchema] = useState({})
@@ -25,7 +30,6 @@ const Address = (props) => {
     const [flagForm, setFlagForm] = useState(false)
 
     const generateMainForm = (row) => {
-        console.log(row);
         const urlS = window.server + `/ReactElements/getTableJSONSchema/${props.svSession}/ADDRESS_MLD`
         const urlU = window.server + `/ReactElements/getTableUISchema/${props.svSession}/ADDRESS_MLD`
         setLoading(true)
@@ -47,7 +51,7 @@ const Address = (props) => {
             console.error(err)
             setLoading(false)
         })
-        let id = row['ADDRESS_MLD.OBJECT_ID'] || 0
+        let id = row?.['ADDRESS_MLD.OBJECT_ID'] || 0
 
         const ulrD = window.server + `/ReactElements/getTableFormData/${props.svSession}/${id}/ADDRESS_MLD`
         axios.get(ulrD).then(res => {
@@ -129,7 +133,7 @@ const Address = (props) => {
                     true,
                     res.data.type?.toLowerCase(),
                     res.data.title,
-                    res.data.message
+                    res.data.message, () => { GridManager.reloadGridData("ADDRESS_GRID" + props.farmObjId) }
                 );
             })
             .catch(err => {
