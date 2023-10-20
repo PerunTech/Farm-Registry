@@ -56,3 +56,26 @@
 .dd-form-con {
   display: flex;
 }
+
+.modal-dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: none;
+}
+
+.modal-content {
+  border: none;
+  margin: 0;
+  width: 90%;
+  max-width: none;
+}
+
+.modal-header .close {
+  color: white;
+}
+
+.modal-header .close :focus {
+  outline: none;
+  border: none;
+}

@@ -1,41 +1,50 @@
 import {
     React,
     connect,
-    GenericGrid,
-    GridManager,
-    FormManager,
-    Modal,
     axios,
-    ComponentManager,
     PropTypes,
     Loading,
     Form,
+    elements,
+    GenericGrid,
+    GridManager,
+    ComponentManager
 } from 'perun-core'
+import style from "../../style/registration.module.css"
+const { ReactBootstrap, alertUser } = elements;
+const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
-const Address = (props) => {
+import { labelsManager } from '../../utils_tools/LabelsExport';
+
+const Address = (props, context) => {
     useEffect(() => {
-        generateMainForm()
+        return () => {
+            ComponentManager.cleanComponentReducerState("ADDRESS_GRID" + props.farmObjId);
+        }
     }, [])
     const [schema, setSchema] = useState({})
     const [uiSchema, setUiSchema] = useState({})
-    const [flag, setFlag] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [formData, setFormData] = useState({ 'COUNTRY': 'MDA' })
+    const [formData, setFormData] = useState()
     const [permaSchema, setPermaSchema] = useState({})
     const [permaUi, setPermaUi] = useState({})
-    const generateMainForm = () => {
+    const [show, setShow] = useState(false)
+    const [flagForm, setFlagForm] = useState(false)
+
+    const generateMainForm = (row) => {
         const urlS = window.server + `/ReactElements/getTableJSONSchema/${props.svSession}/ADDRESS_MLD`
         const urlU = window.server + `/ReactElements/getTableUISchema/${props.svSession}/ADDRESS_MLD`
         setLoading(true)
-        setFlag(false)
+        setFlagForm(false)
         axios.get(urlS).then(res => {
             setSchema(res.data)
             setPermaSchema(res.data)
             axios.get(urlU).then(res => {
                 setUiSchema(res.data)
                 setPermaUi(res.data)
-                setFlag(true)
+                setFlagForm(true)
                 setLoading(false)
+                setShow(true)
             }).catch(err => {
                 console.error(err)
                 setLoading(false)
@@ -44,6 +53,20 @@ const Address = (props) => {
             console.error(err)
             setLoading(false)
         })
+        let id = row?.['ADDRESS_MLD.OBJECT_ID'] || 0
+
+        const ulrD = window.server + `/ReactElements/getTableFormData/${props.svSession}/${id}/ADDRESS_MLD`
+        axios.get(ulrD).then(res => {
+            if (Object.keys(res.data).length > 0) {
+                setFormData(res.data)
+            } else {
+                setFormData({ 'COUNTRY': 'MDA' })
+            }
+        }).catch(err => {
+            console.error(err)
+            setLoading(false)
+        })
+
     };
 
     const generateNewTest = (id, country) => {
@@ -51,10 +74,12 @@ const Address = (props) => {
         if (country === 'MDA') {
             tempUi.LOCALITY3 = { 'ui:widget': 'hidden' }
             tempUi.LOCALITY4 = { 'ui:widget': 'hidden' }
-            setUiSchema(tempUi)
+            tempUi.COUNTRY = { 'ui:readonly': 'true' }
             if (id) {
+                tempUi.LOCALITY2 = {}
+
                 if (formData['LOCALITY1'] !== id) {
-                    setFlag(false)
+                    setFlagForm(false)
                     let tempSchema = JSON.parse(JSON.stringify(permaSchema))
                     let tempEnum = []
                     let tempEnumNames = []
@@ -71,42 +96,125 @@ const Address = (props) => {
                     tempSchema.properties['LOCALITY2'].enum = tempEnum
                     tempSchema.properties['LOCALITY2'].enumNames = tempEnumNames
                     setSchema(tempSchema)
-                    setFlag(true)
+
+                    setFlagForm(true)
                 }
+            } else {
+                tempUi.LOCALITY2 = { 'ui:widget': 'hidden' }
             }
         } else {
             tempUi.LOCALITY1 = { 'ui:widget': 'hidden' }
             tempUi.LOCALITY2 = { 'ui:widget': 'hidden' }
-            setUiSchema(tempUi)
         }
+        setUiSchema(tempUi)
+    }
 
+    const saveAddress = (e) => {
+        let restUrl =
+            window.server +
+            "/ReactElements/createTableRecordFormData/" +
+            props.svSession +
+            "/ADDRESS_MLD/" +
+            props.farmObjId
+        let form_params = e.formData;
+        if (form_params['COUNTRY'] === 'MDA') {
+            form_params['LOCALITY3'] = undefined
+            form_params['LOCALITY4'] = undefined
+        } else {
+            form_params['LOCALITY1'] = undefined
+            form_params['LOCALITY2'] = undefined
+        }
+        axios({
+            method: "post",
+            data: form_params,
+            url: restUrl,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        })
+            .then(res => {
+                alertUser(
+                    true,
+                    res.data.type?.toLowerCase(),
+                    res.data.title,
+                    res.data.message, () => { GridManager.reloadGridData("ADDRESS_GRID" + props.farmObjId) }
+                );
+            })
+            .catch(err => {
+                console.error(err)
+                alertUser(true, 'error', err)
+            });
+    };
+
+    const generateAddressGrid = () => {
+        let grid = <GenericGrid
+            gridType={"READ_URL"}
+            key={"ADDRESS_GRID" + props.farmObjId}
+            id={"ADDRESS_GRID" + props.farmObjId}
+            configTableName={
+                `/ReactElements/getTableFieldList/${props.svSession}/ADDRESS_MLD`
+            }
+            dataTableName={
+                `/ReactElements/getObjectsByParentId/${props.svSession}/${props.farmObjId}/ADDRESS_MLD/100000`
+            }
+            minHeight={800}
+            onRowClickFunct={handleRowClick}
+            refreshData={true}
+            toggleCustomButton={true}
+            customButton={() => generateMainForm()}
+            customButtonLabel={labelsManager.importLabel(
+                "add_address",
+                context,
+                "farm_registry"
+            )}
+        />
+        return grid
+    }
+    const handleRowClick = (_id, _rowIdx, row) => {
+        generateMainForm(row)
     }
 
     return (
         <>{loading && <Loading />}
-            {flag && <Form
-                schema={schema}
-                uiSchema={uiSchema}
-                onSubmit={(e) => console.log(e)}
-                className={`farm-registry-forms`}
-                formData={formData}
-                onChange={(e) => {
-                    setFormData(e.formData)
-                    generateNewTest(e.formData['LOCALITY1'], e.formData['COUNTRY'])
-                }}
-            >
-                <></>
-                <div>
+            <div>
+                {generateAddressGrid()}
+                {show && <Modal className={style["farm-registry-modal"]} show={show} onHide={() => setShow(false)}>
+                    <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
+                        <Modal.Title>{labelsManager.importLabel(
+                            "add_address",
+                            context,
+                            "farm_registry"
+                        )}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className={style["farm-registry-modal-body"]}>
+                        {flagForm && <Form
+                            schema={schema}
+                            uiSchema={uiSchema}
+                            onSubmit={(e) => saveAddress(e)}
+                            className={`farm-registry-forms`}
+                            formData={formData}
+                            onChange={(e) => {
+                                setFormData(e.formData)
+                                generateNewTest(e.formData['LOCALITY1'], e.formData['COUNTRY'])
+                            }}
+                        >
+                            <></>
+                            <button className='btn-success btn_save_form' type='submit'>{labelsManager.importLabel(
+                                "add_address",
+                                context,
+                                "farm_registry"
+                            )}</button>
+                        </Form>}
+                    </Modal.Body>
+                    <Modal.Footer className={style["farm-registry-modal-footer"]}></Modal.Footer>
+                </Modal>}
+            </div>
 
-                </div>
-                <button className='btn-success btn_save_form' type='submit'>Submit</button>
-            </Form>}
         </>
     )
 }
 
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
+    farmObjId: state['farm_registry.mapData']?.farmData?.objectId
 });
 
 Address.contextTypes = {
