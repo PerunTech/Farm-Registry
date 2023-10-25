@@ -30,8 +30,14 @@ const Address = (props, context) => {
     const [permaUi, setPermaUi] = useState({})
     const [show, setShow] = useState(false)
     const [flagForm, setFlagForm] = useState(false)
+    const [deleteBtn, setDelete] = useState(false)
 
     const generateMainForm = (row) => {
+        if (row) {
+            setDelete(true)
+        } else {
+            setDelete(false)
+        }
         const urlS = window.server + `/ReactElements/getTableJSONSchema/${props.svSession}/ADDRESS_MLD`
         const urlU = window.server + `/ReactElements/getTableUISchema/${props.svSession}/ADDRESS_MLD`
         setLoading(true)
@@ -242,13 +248,13 @@ const Address = (props, context) => {
                             }}
                         >
                             <></>
-                            <div >
-                                <button onClick={() => alertUser(true, 'warning', labelsManager.importLabel('delete_record_prompt_title', context, 'main'), labelsManager.importLabel('delete_record_prompt_message', context, 'main'), () => { deleteFunc(formData) }, () => { }, true, labelsManager.importLabel('yes', context, 'admin_console'), labelsManager.importLabel('no', context, 'admin_console'))
+                            <div className={style['farm-registry-btn-holder']} >
+                                {deleteBtn && <button onClick={() => alertUser(true, 'warning', labelsManager.importLabel('delete_record_prompt_title', context, 'main'), labelsManager.importLabel('delete_record_prompt_message', context, 'main'), () => { deleteFunc(formData) }, () => { }, true, labelsManager.importLabel('yes', context, 'admin_console'), labelsManager.importLabel('no', context, 'admin_console'))
                                 } className='btn-danger btn_delete_form' type='button'>{labelsManager.importLabel(
                                     "delete",
                                     context,
                                     "farm_registry"
-                                )}</button>
+                                )}</button>}
                                 <button className='btn-success btn_save_form' type='submit'>{labelsManager.importLabel(
                                     "add_address",
                                     context,
