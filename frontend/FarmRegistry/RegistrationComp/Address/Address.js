@@ -156,9 +156,6 @@ const Address = (props, context) => {
                     res.data.message, () => {
                         GridManager.reloadGridData("ADDRESS_GRID" + props.farmObjId)
                         setShow(false)
-                        ComponentManager.setStateForComponent("ADDRESS_GRID" + props.farmObjId, null, {
-                            rowClicked: undefined,
-                        })
                     }
                 );
             })
