@@ -682,3 +682,8 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.farm-registry-btn-holder {
+  display: flex;
+  float: right;
+}
