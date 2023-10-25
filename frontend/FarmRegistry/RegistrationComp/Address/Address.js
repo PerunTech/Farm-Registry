@@ -190,6 +190,33 @@ const Address = (props, context) => {
         generateMainForm(row)
     }
 
+    const deleteFunc = (formData) => {
+        const { svSession } = props;
+        let url = window.server + `/ReactElements/deleteObject/${svSession}`;
+        axios({
+            method: "post",
+            data: formData,
+            url: url,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        })
+            .then((res) => {
+                if (res.data.type === "SUCCESS") {
+                    alertUser(true, "success", res.data.title, res.data.message, () => {
+                        GridManager.reloadGridData('ADDRESS_GRID' + props.farmObjId)
+                        setShow(false);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.error(err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg);
+
+            });
+    };
+
     return (
         <>{loading && <Loading />}
             <div>
@@ -215,11 +242,19 @@ const Address = (props, context) => {
                             }}
                         >
                             <></>
-                            <button className='btn-success btn_save_form' type='submit'>{labelsManager.importLabel(
-                                "add_address",
-                                context,
-                                "farm_registry"
-                            )}</button>
+                            <div >
+                                <button onClick={() => alertUser(true, 'warning', labelsManager.importLabel('delete_record_prompt_title', context, 'main'), labelsManager.importLabel('delete_record_prompt_message', context, 'main'), () => { deleteFunc(formData) }, () => { }, true, labelsManager.importLabel('yes', context, 'admin_console'), labelsManager.importLabel('no', context, 'admin_console'))
+                                } className='btn-danger btn_delete_form' type='button'>{labelsManager.importLabel(
+                                    "delete",
+                                    context,
+                                    "farm_registry"
+                                )}</button>
+                                <button className='btn-success btn_save_form' type='submit'>{labelsManager.importLabel(
+                                    "add_address",
+                                    context,
+                                    "farm_registry"
+                                )}</button>
+                            </div>
                         </Form>}
                     </Modal.Body>
                     <Modal.Footer className={style["farm-registry-modal-footer"]}></Modal.Footer>
