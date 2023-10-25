@@ -200,8 +200,8 @@ const Address = (props, context) => {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         })
             .then((res) => {
-                if (res.data.type === "SUCCESS") {
-                    alertUser(true, "success", res.data.title, res.data.message, () => {
+                if (res.data) {
+                    alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => {
                         GridManager.reloadGridData('ADDRESS_GRID' + props.farmObjId)
                         setShow(false);
                     });
