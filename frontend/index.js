@@ -7,8 +7,9 @@ import * as assets from "./assets"; // eslint-disable-line
 import FarmRegistry from "./FarmRegistry/FarmRegistry";
 import mapDataReducer from './FarmRegistry/reducerMap'
 
-import { redux } from 'perun-core'
+import { redux, persistBundleReducers } from 'perun-core'
 const { store, injectAsyncReducer } = redux;
+persistBundleReducers(['farm_registry.mapData'])
 injectAsyncReducer(store, 'farm_registry.mapData', mapDataReducer)
 
 const routes = [
