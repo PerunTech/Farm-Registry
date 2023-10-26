@@ -65,6 +65,7 @@ const CustomButtons = (props, context) => {
     }
 
     const handleRowClick = (_id, _rowIdx, row) => {
+        console.log(props.type);
         setDynamicId(row[`${props.tableName}.OBJECT_ID`] || 0)
         setShow(true)
     }
@@ -122,7 +123,7 @@ const CustomButtons = (props, context) => {
     return (
         <>{loading && <Loading />}
             <div>
-                {generateGrid()}
+                {props.type === 'grid' ? generateGrid() : generateForm()}
                 {show && <Modal className={style["farm-registry-modal"]} show={show} onHide={() => setShow(false)}>
                     <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
                         <Modal.Title>{labelsManager.importLabel(

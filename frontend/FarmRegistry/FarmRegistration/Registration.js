@@ -263,7 +263,7 @@ class Registration extends React.Component {
     })
   }
 
-  displayComponent = (component, tableName) => {
+  displayComponent = (component, tableName, type) => {
     let componentAddReg;
     let href = '/main/farm-registry/registration/'
     switch (component) {
@@ -343,7 +343,7 @@ class Registration extends React.Component {
       case "DYNAMIC":
         href = `/main/farm-registry/registration/${tableName}`
         this.hashHistory.push(href)
-        componentAddReg = <CustomMenu key={tableName} tableName={tableName} />
+        componentAddReg = <CustomMenu key={tableName} tableName={tableName} type={type} />
         break;
       default:
         console.log("default");
@@ -435,7 +435,8 @@ class Registration extends React.Component {
   onButtonClick = (element) => {
     const id = element.ID
     const splitID = id.replace(/\d/g, '').replace(/_$/, '')
-    this.displayComponent('DYNAMIC', splitID)
+    const type = element.objectConfiguration.type
+    this.displayComponent('DYNAMIC', splitID, type)
   }
 
   generateChild = (id, children) => {
