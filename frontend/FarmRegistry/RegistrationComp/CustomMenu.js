@@ -58,8 +58,6 @@ const CustomButtons = (props, context) => {
             uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${svSession}/${props.tableName}`}
             tableFormDataMethod={`/ReactElements/getTableFormData/${svSession}/${dynamicId}/${props.tableName}`}
             addSaveFunction={(e) => saveForm(e)}
-            customSave={true}
-            customSaveButtonName={'Save'}
             addDeleteFunction={deleteFunc}
             hideBtns={dynamicId === 0 ? 'closeAndDelete' : 'close'}
         >
@@ -109,9 +107,6 @@ const CustomButtons = (props, context) => {
                 if (res.data.type === "SUCCESS") {
                     alertUser(true, "success", res.data.title, res.data.message);
                     setShow(false);
-                    ComponentManager.setStateForComponent('${props.tableName}', null, {
-                        saveExecuted: false,
-                    });
                     GridManager.reloadGridData(props.tableName + props.farmObjId);
                 }
             })
