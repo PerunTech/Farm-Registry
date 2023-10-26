@@ -65,7 +65,6 @@ const CustomButtons = (props, context) => {
     }
 
     const handleRowClick = (_id, _rowIdx, row) => {
-        console.log(props.type);
         setDynamicId(row[`${props.tableName}.OBJECT_ID`] || 0)
         setShow(true)
     }
