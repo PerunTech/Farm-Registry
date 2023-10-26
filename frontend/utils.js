@@ -1,6 +1,10 @@
 import { redux } from 'perun-core'
 const { store, updateSelectedRows } = redux
 
+export const getDynamicKey = () => {
+  return (+ new Date() + Math.floor(Math.random() * 999999)).toString(36)
+}
+
 export function strcmp (string1, string2) {
   return (
     typeof string1 === 'string' &&

@@ -74,7 +74,7 @@ class Registration extends React.Component {
     });
   };
 
-  getReports = (objid) => {
+  getConfiguration = (objid) => {
     this.setState({ loading: true })
     let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/FARM-EXTENDED/object-id/${objid}`
     axios.get(url).then(res => {
@@ -263,7 +263,7 @@ class Registration extends React.Component {
     })
   }
 
-  displayComponent = (component, tableName, type) => {
+  displayComponent = (component, tableName, configuration) => {
     let componentAddReg;
     let href = '/main/farm-registry/registration/'
     switch (component) {
@@ -343,10 +343,16 @@ class Registration extends React.Component {
       case "DYNAMIC":
         href = `/main/farm-registry/registration/${tableName}`
         this.hashHistory.push(href)
-        componentAddReg = <CustomMenu key={tableName} tableName={tableName} type={type} />
+        const customMenuProps = {
+          key: tableName,
+          tableName,
+          configuration,
+          getConfiguration: (objId) => this.getConfiguration(objId)
+        }
+        componentAddReg = <CustomMenu {...customMenuProps} />
         break;
       default:
-        console.log("default");
+        break;
     }
     this.setState({
       componentAddReg: componentAddReg,
@@ -373,7 +379,7 @@ class Registration extends React.Component {
       farmFullName: rowsData["FARM.FULL_NAME"]
     }, () => {
       this.generateInfo(true)
-      this.getReports(rowsData["FARM.OBJECT_ID"])
+      this.getConfiguration(rowsData["FARM.OBJECT_ID"])
     });
   };
 
@@ -416,7 +422,7 @@ class Registration extends React.Component {
     this.setState({ [e.target.id]: e.target.value });
   };
 
-  // this function generates a lsit of buttons from a given configuration (check url in getReports)
+  // this function generates a lsit of buttons from a given configuration (check url in getConfiguration)
   generateCustomMenu = () => {
     if (this.state.reports) {
       return this.state.reports.data.map(el => (
@@ -435,8 +441,7 @@ class Registration extends React.Component {
   onButtonClick = (element) => {
     const id = element.ID
     const splitID = id.replace(/\d/g, '').replace(/_$/, '')
-    const type = element.objectConfiguration.type
-    this.displayComponent('DYNAMIC', splitID, type)
+    this.displayComponent('DYNAMIC', splitID, element)
   }
 
   generateChild = (id, children) => {
@@ -461,17 +466,10 @@ class Registration extends React.Component {
       componentAddReg,
       dataForm,
       showSearchForm,
-      fullName,
-      fic,
-      farmType,
-      id_no,
-      tax_no,
       showCapacities,
-      hideSearchForm,
       generateInfoState,
-      componentToRender,
       showSubMenu,
-      showPrintBtn, loading
+      loading
     } = this.state;
 
     return (
