@@ -18,6 +18,7 @@ import FarmEquipment from "../RegistrationComp/FarmEquipment";
 import Equipment from "../RegistrationComp/Equipment";
 import Machinery from "../RegistrationComp/Machinery";
 import Address from '../RegistrationComp/Address/Address';
+import CustomMenu from "../RegistrationComp/CustomMenu";
 const { store } = redux
 
 class Registration extends React.Component {
@@ -75,7 +76,7 @@ class Registration extends React.Component {
 
   getReports = (objid) => {
     this.setState({ loading: true })
-    let url = window.server + `/mdfr/get-configuration/sid/${this.props.svSession}/component-name/FARM-EXTENDED/object-id/${objid}`
+    let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/FARM-EXTENDED/object-id/${objid}`
     axios.get(url).then(res => {
       this.setState({ reports: res.data, loading: false })
     }).catch(err => {
@@ -83,6 +84,8 @@ class Registration extends React.Component {
       this.setState({ loading: false })
     })
   }
+
+
 
   displayCompanyRegForm = () => {
     GridManager.reloadGridData("FARM_GRID");
@@ -260,7 +263,7 @@ class Registration extends React.Component {
     })
   }
 
-  displayComponent = (component) => {
+  displayComponent = (component, tableName) => {
     let componentAddReg;
     let href = '/main/farm-registry/registration/'
     switch (component) {
@@ -337,6 +340,11 @@ class Registration extends React.Component {
         this.hashHistory.push(href)
         componentAddReg = <Address />
         break;
+      case "DYNAMIC":
+        href = `/main/farm-registry/registration/${tableName}`
+        this.hashHistory.push(href)
+        componentAddReg = <CustomMenu key={tableName} tableName={tableName} />
+        break;
       default:
         console.log("default");
     }
@@ -410,18 +418,25 @@ class Registration extends React.Component {
 
   generatePrints = () => {
     if (this.state.reports) {
-      return this.state.reports.data.map(el => {
-        return <div>
-          <button className={`${style["btn_sub"]} ${style["submenu"]}`} onClick={() => this.generateChild(el.ID, el.data)}>{el.label}</button>
+      return this.state.reports.data.map(el => (
+        <div key={el.ID}>
+          <button className={`${style["btn_sub"]}`} onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}>{el.label}</button>
           <div>
             {this.state[el.ID]}
           </div>
         </div>
-      })
+      ));
     } else {
-      return <></>
+      return <></>;
     }
   }
+
+  onButtonClick = (element) => {
+    const id = element.ID
+    const splitID = id.replace(/\d/g, '').replace(/_$/, '')
+    this.displayComponent('DYNAMIC', splitID)
+  }
+
   generateChild = (id, children) => {
     if (this.state[id]) {
       this.setState({ [id]: null })
@@ -434,8 +449,8 @@ class Registration extends React.Component {
       })
       this.setState({ [id]: html })
     }
-
   }
+
   render() {
     const {
       dataHolder,
@@ -644,16 +659,9 @@ class Registration extends React.Component {
                   {iconManager.getIcon("parcel")}
                   {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
                 </button>
-
-                <button className={`${style["btn_sub"]}`}
-                  onClick={() => { this.setState({ showPrintBtn: !this.state.showPrintBtn, active: '' }) }}
-                >{iconManager.getIcon("printIcon")}
-                  {labelsManager.importLabel('print', this.context, 'farm_registry')}</button>
-                {showPrintBtn && (
-                  <>
-                    {this.generatePrints()}
-                  </>
-                )}
+                <>
+                  {this.generatePrints()}
+                </>
               </div>)}
           </div>
           <div className={`${style["search-container"]}`} id="search-container">

@@ -20,23 +20,24 @@ const CustomButtons = (props, context) => {
 
     useEffect(() => {
         return () => {
-            ComponentManager.cleanComponentReducerState("WORK_ON_FARM" + props.farmObjId);
+            ComponentManager.cleanComponentReducerState(props.tableName + props.farmObjId);
         }
     }, [])
-    const [loading, setLoading] = useState(false)
+
+    const [loading, _setLoading] = useState(false)
     const [show, setShow] = useState(false)
-    const [dynamicId, setDynamicId] = useState(undefined)
+    const [dynamicId, setDynamicId] = useState(0)
 
     const generateGrid = () => {
         let grid = <ExportableGrid
             gridType={"READ_URL"}
-            key={"WORK_ON_FARM" + props.farmObjId}
-            id={"WORK_ON_FARM" + props.farmObjId}
+            key={props.tableName + props.farmObjId}
+            id={props.tableName + props.farmObjId}
             configTableName={
-                `/ReactElements/getTableFieldList/${props.svSession}/WORK_ON_FARM`
+                `/ReactElements/getTableFieldList/${props.svSession}/${props.tableName}`
             }
             dataTableName={
-                `/ReactElements/getObjectsByParentId/${props.svSession}/${props.farmObjId}/WORK_ON_FARM/0`
+                `/ReactElements/getObjectsByParentId/${props.svSession}/${props.farmObjId}/${props.tableName}/0`
             }
             minHeight={700}
             onRowClickFunct={handleRowClick}
@@ -51,11 +52,11 @@ const CustomButtons = (props, context) => {
         const { svSession } = props
         return <GenericForm
             params={'READ_URL'}
-            key={'WORKING_ON_FARM_17669' + '_FORM'}
-            id={'WORKING_ON_FARM_17669' + '_FORM'}
-            method={`/ReactElements/getTableJSONSchema/${svSession}/WORK_ON_FARM`}
-            uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${svSession}/WORK_ON_FARM`}
-            tableFormDataMethod={`/ReactElements/getTableFormData/${svSession}/${dynamicId}/WORK_ON_FARM`}
+            key={props.tableName + '_FORM'}
+            id={props.tableName + '_FORM'}
+            method={`/ReactElements/getTableJSONSchema/${svSession}/${props.tableName}`}
+            uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${svSession}/${props.tableName}`}
+            tableFormDataMethod={`/ReactElements/getTableFormData/${svSession}/${dynamicId}/${props.tableName}`}
             addSaveFunction={(e) => saveForm(e)}
             customSave={true}
             customSaveButtonName={'Save'}
@@ -66,17 +67,13 @@ const CustomButtons = (props, context) => {
     }
 
     const handleRowClick = (_id, _rowIdx, row) => {
-        console.log('ROW: ', row);
-        console.log('ID: ', _id);
-        console.log('ROW ID: ', _rowIdx);
-        console.log('DYNAMIC ID: ', dynamicId);
-        setDynamicId(row['WORK_ON_FARM.OBJECT_ID'] || 0)
+        setDynamicId(row[`${props.tableName}.OBJECT_ID`] || 0)
         setShow(true)
     }
 
     const saveForm = (e) => {
         let restUrl =
-            window.server + `/ReactElements/createTableRecordFormData/${props.svSession}/WORK_ON_FARM/17669`
+            window.server + `/ReactElements/createTableRecordFormData/${props.svSession}/${props.tableName}/17669`
         axios({
             method: "post",
             data: e.formData,
@@ -89,13 +86,14 @@ const CustomButtons = (props, context) => {
                     true,
                     res.data.type?.toLowerCase(),
                     res.data.title,
-                    res.data.message, () => { GridManager.reloadGridData("WORK_ON_FARM" + props.farmObjId) }
+                    res.data.message, () => { GridManager.reloadGridData(props.tableName + props.farmObjId) }
                 );
             })
             .catch(err => {
                 console.error(err)
                 alertUser(true, 'error', err)
             });
+        setShow(false)
     };
 
     const deleteFunc = (_id, _action, _session, formData) => {
@@ -111,10 +109,10 @@ const CustomButtons = (props, context) => {
                 if (res.data.type === "SUCCESS") {
                     alertUser(true, "success", res.data.title, res.data.message);
                     setShow(false);
-                    ComponentManager.setStateForComponent('WORK_ON_FARM', null, {
+                    ComponentManager.setStateForComponent('${props.tableName}', null, {
                         saveExecuted: false,
                     });
-                    GridManager.reloadGridData("WORK_ON_FARM" + props.farmObjId);
+                    GridManager.reloadGridData(props.tableName + props.farmObjId);
                 }
             })
             .catch(err => {
