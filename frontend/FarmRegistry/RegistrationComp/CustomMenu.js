@@ -79,7 +79,6 @@ const CustomButtons = (props, context) => {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         })
             .then(res => {
-                console.log(res.data);
                 alertUser(
                     true,
                     res.data.type?.toLowerCase(),
