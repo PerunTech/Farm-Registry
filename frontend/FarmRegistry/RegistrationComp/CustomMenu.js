@@ -105,7 +105,7 @@ const CustomButtons = (props, context) => {
             const label = labelsManager.importLabel('enter_some_values', context, 'farm_registry')
             alertUser(true, 'info', label, '', () => resetFormSaveState())
         } else {
-            if (!isModal && !formData.PKID) {
+            if (!isModal) {
                 formData = { ...formData, ...systemFields }
             }
             axios({
