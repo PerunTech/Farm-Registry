@@ -99,15 +99,20 @@ const CustomButtons = (props, context) => {
 
     const saveForm = (e, wsPath, isModal) => {
         let formData = e.formData
-        const url = `${window.server}${wsPath}`
+        // Check if every value in the form data object is nullish
         const isEmpty = Object.values(formData).every(v => v === null || v === undefined)
-        if (isEmpty) {
+        // Filter out every nullish value from the form data object
+        const nonNullishFormData = Object.fromEntries(Object.entries(formData).filter(([_, v]) => v !== null && v !== undefined))
+        // Check if the filtered form data object has only four keys and they are only system fields
+        const onlyHasSystemFields = Object.keys(nonNullishFormData).length === 4 && Object.keys(nonNullishFormData).every(k => k === 'OBJECT_ID' || k === 'OBJECT_TYPE' || k === 'PKID' || k === 'PARENT_ID')
+        if (isEmpty || onlyHasSystemFields) {
             const label = labelsManager.importLabel('enter_some_values', context, 'farm_registry')
             alertUser(true, 'info', label, '', () => resetFormSaveState())
         } else {
             if (!isModal) {
                 formData = { ...formData, ...systemFields }
             }
+            const url = `${window.server}${wsPath}`
             axios({
                 method: "post",
                 data: formData,
