@@ -416,7 +416,8 @@ class Registration extends React.Component {
     this.setState({ [e.target.id]: e.target.value });
   };
 
-  generatePrints = () => {
+  // this function generates a lsit of buttons from a given configuration (check url in getReports)
+  generateCustomMenu = () => {
     if (this.state.reports) {
       return this.state.reports.data.map(el => (
         <div key={el.ID}>
@@ -660,7 +661,7 @@ class Registration extends React.Component {
                   {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
                 </button>
                 <>
-                  {this.generatePrints()}
+                  {this.generateCustomMenu()}
                 </>
               </div>)}
           </div>
