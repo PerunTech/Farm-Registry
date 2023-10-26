@@ -163,7 +163,7 @@ const CustomButtons = (props, context) => {
             const msg = res.data.message || ''
             if (resType?.toLowerCase() === "success") {
                 alertUser(true, "success", title, msg);
-                setShowModal(false);
+                closeFormModal()
                 GridManager.reloadGridData(props.tableName + props.farmObjId);
             } else {
                 alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => resetFormDeleteState())
