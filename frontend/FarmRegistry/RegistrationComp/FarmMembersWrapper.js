@@ -17,12 +17,14 @@ let inputholder = "";
 const FarmMembersWrapper = (props, context) => {
     const [show, setShow] = useState(false);
     const initialState = {
-        firstInputId: "root_PERSON_OBJECT_ID",
+        firstInputId: "root_ID_NO",
+        secondInputId: "root_FULL_NAME"
     };
     const reducer = (current, next) => ({ ...current, ...next });
     const [state, setState] = useReducer(reducer, initialState);
     const {
         firstInputId,
+        secondInputId
     } = state;
 
     useEffect(() => {
@@ -36,6 +38,7 @@ const FarmMembersWrapper = (props, context) => {
 
     const handleInputs = () => {
         const firstInput = document.getElementById(firstInputId);
+        const secondInput = document.getElementById(secondInputId)
         if (firstInput) {
             firstInput.style.cursor = "pointer";
             firstInput.onclick = handleShow;
@@ -44,6 +47,17 @@ const FarmMembersWrapper = (props, context) => {
                 context,
                 "farm_registry"
             )
+            firstInput.style.background = '#b9cfba';
+        }
+        if (secondInput) {
+            secondInput.style.cursor = "pointer";
+            secondInput.onclick = handleShow;
+            secondInput.placeholder = labelsManager.importLabel(
+                "click_to_choose",
+                context,
+                "farm_registry"
+            )
+            secondInput.style.background = '#b9cfba';
         }
     };
     const handleShow = (e) => {
@@ -54,7 +68,7 @@ const FarmMembersWrapper = (props, context) => {
     const handleRowClick = (_id, _rowIdx, row) => {
         const { formid } = props;
         let objid = []
-        objid.push(row[`PERSON.OBJECT_ID`], row[`PERSON.NAME`])
+        objid.push(row[`PERSON.OBJECT_ID`], row[`PERSON.NAME`], row['PERSON.ID_NO'])
         const formData = ComponentManager.getStateForComponent(
             formid,
             "formTableData"
@@ -63,7 +77,7 @@ const FarmMembersWrapper = (props, context) => {
 
             formData["PERSON_OBJECT_ID"] = objid[0];
             formData["FULL_NAME"] = objid[1];
-
+            formData["ID_NO"] = objid[2];
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             setShow(false);
@@ -74,7 +88,9 @@ const FarmMembersWrapper = (props, context) => {
         <>
             {props.children}
             {show && (
-                <Modal className={style["farm-registry-modal"]} show={show} onHide={() => setShow(false)}>
+                <Modal className={style["farm-registry-modal"]} show={show} onHide={() => { setShow(false) }}>
+
+
                     <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
                         <Modal.Title>{labelsManager.importLabel(
                             "search_person",

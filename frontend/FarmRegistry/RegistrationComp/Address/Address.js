@@ -18,6 +18,12 @@ import { labelsManager } from '../../utils_tools/LabelsExport';
 
 const Address = (props, context) => {
     useEffect(() => {
+        let url = window.server + `/WsConf/params/get/sys/DEFAULT_COUNTRY`
+        axios.get(url).then(res => {
+            if (res.VALUE) {
+                setDefaultCountry(res.VALUE)
+            }
+        })
         return () => {
             ComponentManager.cleanComponentReducerState("ADDRESS_GRID" + props.farmObjId);
         }
@@ -74,7 +80,7 @@ const Address = (props, context) => {
             if (Object.keys(res.data).length > 0) {
                 setFormData(res.data)
             } else {
-                setFormData({ 'COUNTRY': 'MDA' })
+                setFormData({ 'COUNTRY': defaultCountry })
             }
         }).catch(err => {
             console.error(err)
