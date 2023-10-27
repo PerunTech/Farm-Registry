@@ -41,15 +41,15 @@
     height: 90%;
 }
 
-.registration-module-registrationbtnCapacitiesHolder::-webkit-scrollbar-thumb {
+.reg-btn-holder::-webkit-scrollbar-thumb {
     background: #909090 !important
 }
 
-.registration-module-registrationbtnCapacitiesHolder::-webkit-scrollbar-thumb:hover {
+.reg-btn-holder::-webkit-scrollbar-thumb:hover {
     background: #848484 !important;
 }
 
-.registration-module-registrationbtnCapacitiesHolder::-webkit-scrollbar-track {
+.reg-btn-holder::-webkit-scrollbar-track {
     background: #535353 !important
 }
 

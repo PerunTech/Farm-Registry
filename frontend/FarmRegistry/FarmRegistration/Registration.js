@@ -512,7 +512,7 @@ class Registration extends React.Component {
             </div>
             {showCapacities && (
               <div
-                className={`${style["registrationbtnCapacitiesHolder"]}`}
+                className={`${'reg-btn-holder'} ${style["registrationbtnCapacitiesHolder"]}`}
                 id="btnCapacities"
               >
                 <button
