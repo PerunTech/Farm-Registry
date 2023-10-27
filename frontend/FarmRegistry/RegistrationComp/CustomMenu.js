@@ -30,7 +30,7 @@ const CustomButtons = (props, context) => {
                 id={props.tableName + props.farmObjId}
                 configTableName={configWs}
                 dataTableName={dataWs}
-                minHeight={700}
+                heightRatio={0.7}
                 onRowClickFunct={handleRowClick}
                 refreshData={true}
                 toggleCustomButton={true}

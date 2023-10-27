@@ -63,7 +63,7 @@ const FarmMembers = (props, context) => {
           context,
           "farm_registry"
         )}
-        minHeight={600}
+        heightRatio={0.7}
       />
     );
     setGrid(grid);

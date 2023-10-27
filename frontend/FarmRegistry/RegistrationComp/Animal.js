@@ -49,7 +49,7 @@ class Animal extends React.Component {
           this.context,
           "farm_registry"
         )}
-        minHeight={750}
+        heightRatio={0.7}
       />
     );
 

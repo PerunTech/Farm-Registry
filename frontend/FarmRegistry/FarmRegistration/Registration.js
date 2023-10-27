@@ -1,4 +1,4 @@
-import { React, connect, GridManager, Link, PropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
+import { React, connect, GridManager, PropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
 const { alertUser } = elements
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
@@ -476,15 +476,9 @@ class Registration extends React.Component {
 
       <>
         {loading && <Loading />}
-        <div style={{ height: '100vh' }} className={`${style["registrationHolder"]}`} id="registrationHolder">
-          <div style={{ height: '100vh' }} className={`${style["listButton"]}`} id="listButton">
+        <div className={`${style["registrationHolder"]}`} id="registrationHolder">
+          <div className={`${style["listButton"]}`} id="listButton">
             <div className={`${style["btnHolder"]}`}>
-              {/* <Link
-                className={`${style["iconHolderBack"]}`}
-                to="/main/farm-registry"
-              >
-                {iconManager.getIcon("back")} Назад
-              </Link> */}
               <button
                 className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
                 onClick={this.displayPrivateRegForm}

@@ -1,7 +1,7 @@
 .registrationHolder {
   display: grid;
   grid-template-columns: 23% 77%;
-  height: 88vh;
+  height: 85vh;
 }
 
 .registrationbtnCapacitiesHolder {
@@ -11,6 +11,8 @@
   column-gap: 0.3vh;
   margin-top: 0.5vh;
   margin-left: 8%;
+  height: 58vh;
+  overflow: hidden auto;
 }
 
 .livestockButtonHolder {
@@ -21,7 +23,7 @@
 }
 
 .listButton {
-  height: 92vh;
+  height: auto;
   margin-top: -5%;
   background: #304040;
   -moz-animation-name: slide-in-left;
