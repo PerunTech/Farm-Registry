@@ -63,7 +63,7 @@ const CustomButtons = (props, context) => {
                 formDataWs = formDataWs.replace(`{${props.tableName}.OBJECT_ID}`, clickedRowObjectId)
             }
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
-            className = 'custom-farm-registry-for'
+            className = 'custom-farm-registry-form'
         }
         return (
             <GenericForm
