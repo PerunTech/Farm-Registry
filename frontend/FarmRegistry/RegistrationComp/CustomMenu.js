@@ -41,6 +41,7 @@ const CustomButtons = (props, context) => {
     }
 
     const generateForm = (isModal, resetTheId) => {
+        let className = ''
         // Set a new ID for the form, so we get a re-render
         if (resetTheId) {
             setDynamicFormId(getDynamicKey())
@@ -62,10 +63,11 @@ const CustomButtons = (props, context) => {
                 formDataWs = formDataWs.replace(`{${props.tableName}.OBJECT_ID}`, clickedRowObjectId)
             }
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
+            className = 'custom-farm-registry-for'
         }
         return (
             <GenericForm
-                className='custom-farm-registry-form'
+                className={className}
                 params={'READ_URL'}
                 key={dynamicFormId}
                 id={dynamicFormId}
