@@ -640,7 +640,7 @@ class Registration extends React.Component {
                     "farm_registry"
                   )}
                 </button>
-                <button
+                {/* <button
                   className={`${style["btn_sub"]}`}
                   onClick={() => this.displayComponent("SUBMISSION")}
                 >
@@ -657,7 +657,7 @@ class Registration extends React.Component {
                 >
                   {iconManager.getIcon("parcel")}
                   {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
-                </button>
+                </button> */}
                 <>
                   {this.generateCustomMenu()}
                 </>
