@@ -82,10 +82,13 @@ const FarmMembers = (props, context) => {
     })
       .then((res) => {
         if (res.data) {
+          const resType = res.data.type.toLowerCase()
+          const title = res.data.title || ''
+          const msg = res.data.message || ''
+          alertUser(true, resType, title, msg)
           GridManager.reloadGridData(gridId);
           setShow(false);
         }
-
       })
       .catch(err => {
         console.error(err)
