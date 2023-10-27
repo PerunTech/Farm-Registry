@@ -1,4 +1,4 @@
-import { React, connect, GridManager, Link, PropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
+import { React, connect, GridManager, sPropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
 const { alertUser } = elements
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
