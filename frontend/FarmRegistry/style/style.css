@@ -21,6 +21,10 @@
   color: white !important;
 }
 
+.custom-farm-registry-form legend {
+  display: none !important;
+}
+
 .farm-registry-forms .field-string,
 .farm-registry-forms .field-integer,
 .farm-registry-forms .field-number,

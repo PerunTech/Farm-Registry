@@ -65,6 +65,7 @@ const CustomButtons = (props, context) => {
         }
         return (
             <GenericForm
+                className='custom-farm-registry-form'
                 params={'READ_URL'}
                 key={dynamicFormId}
                 id={dynamicFormId}
