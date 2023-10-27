@@ -10,7 +10,6 @@ import Lpis from "../RegistrationComp/Lpis";
 import Bank from "../RegistrationComp/Bank";
 import AddDocuments from "../RegistrationComp/AddDocuments";
 import FarmMembers from "../RegistrationComp/FarmMembers";
-import TransitionToSubmission from "./TransitionToSubmission";
 import Parcel from "../RegistrationComp/Parcel";
 import SearchComponent from '../SearchComp/SearchComponent';
 import Intersection from '../RegistrationComp/Intersection'
@@ -175,15 +174,6 @@ class Registration extends React.Component {
     this.setState({ fullName: '', fic: '', farmType: '' })
   }
 
-  showAlert = () => {
-    const yes = labelsManager.importLabel('yes', this.context, 'farm_registry');
-    const no = labelsManager.importLabel('no', this.context, 'farm_registry');
-    const confirmationMessage = labelsManager.importLabel('confirm_refresh', this.context, 'farm_registry');
-    alertUser(true, 'info', confirmationMessage, '',
-      () => this.refreshAgriParcels(), null, true, yes, no
-    );
-  }
-
   refreshAgriParcels() {
     const { svSession, farmObjId } = this.props
     const resturl = window.server + '/farmer/refreshFarmData/' + svSession
@@ -307,11 +297,6 @@ class Registration extends React.Component {
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
         componentAddReg = <AddDocuments key="addDoc" paramsComponent={component} />;
-        break;
-      case "SUBMISSION":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = <TransitionToSubmission key="submission" paramsComponent={component} />;
         break;
       case "SIZP":
         href = `/main/farm-registry/registration/${component}`
@@ -639,24 +624,6 @@ class Registration extends React.Component {
                     this.context,
                     "farm_registry"
                   )}
-                </button>
-                <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("SUBMISSION")}
-                >
-                  {iconManager.getIcon("docs")}
-                  {labelsManager.importLabel(
-                    "submission",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
-                <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.showAlert()}
-                >
-                  {iconManager.getIcon("parcel")}
-                  {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
                 </button>
                 <>
                   {this.generateCustomMenu()}

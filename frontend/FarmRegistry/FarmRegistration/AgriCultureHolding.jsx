@@ -19,7 +19,6 @@ import Lpis from "../RegistrationComp/Lpis";
 import Bank from "../RegistrationComp/Bank";
 import AddDocuments from "../RegistrationComp/AddDocuments";
 import FarmMembers from "../RegistrationComp/FarmMembers";
-import TransitionToSubmission from "./TransitionToSubmission";
 // Label Manager
 import { labelsManager } from "../utils_tools/LabelsExport";
 
@@ -267,9 +266,6 @@ class AgriCultureHolding extends React.Component {
       case "DOCS":
         componentAddReg = <AddDocuments key="addDoc" />;
         break;
-      case "SUBMISSION":
-        componentAddReg = <TransitionToSubmission key="submission" />;
-        break;
       case "FRMAP":
         componentAddReg = history.push("/main/farm-registry/map");
         break;
@@ -376,17 +372,6 @@ class AgriCultureHolding extends React.Component {
                   {iconManager.getIcon("docs")}
                   {labelsManager.importLabel(
                     "docs",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
-                <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("SUBMISSION")}
-                >
-                  {iconManager.getIcon("docs")}
-                  {labelsManager.importLabel(
-                    "submission",
                     this.context,
                     "farm_registry"
                   )}
