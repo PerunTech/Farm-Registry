@@ -82,6 +82,7 @@ const FarmMembers = (props, context) => {
     })
       .then((res) => {
         if (res.data) {
+          alertUser(true, 'success', 'Successfully Saved', 'You have successfully saved your data.')
           GridManager.reloadGridData(gridId);
           setShow(false);
         }
