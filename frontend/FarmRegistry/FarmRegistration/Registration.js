@@ -422,17 +422,21 @@ class Registration extends React.Component {
     this.setState({ [e.target.id]: e.target.value });
   };
 
-  // this function generates a lsit of buttons from a given configuration (check url in getConfiguration)
   generateCustomMenu = () => {
     if (this.state.reports) {
-      return this.state.reports.data.map(el => (
-        <div key={el.ID}>
-          <button className={`${style["btn_sub"]}`} onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}>{el.label}</button>
-          <div>
-            {this.state[el.ID]}
+      return this.state.reports.data.map(el => {
+        const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
+        return (
+          <div key={el.ID}>
+            <button className={`${style["btn_sub"]}`} onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}>
+              {iconManager.getIcon(modifiedID)}{el.label}
+            </button>
+            <div>
+              {this.state[el.ID]}
+            </div>
           </div>
-        </div>
-      ));
+        );
+      });
     } else {
       return <></>;
     }
@@ -449,10 +453,11 @@ class Registration extends React.Component {
       this.setState({ [id]: null })
     } else {
       let html = children.map(el => {
+        const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
         return <button onClick={() => {
           let url = window.server + el.onSubmit
           window.open(url, '_blank')
-        }} className={`${style["btn_sub"]} ${style["submenu-print"]} `} id={el.ID}>{el.label}</button>
+        }} className={`${style["btn_sub"]} ${style["submenu-print"]} `} id={el.ID}>{iconManager.getIcon(modifiedID)}{el.label}</button>
       })
       this.setState({ [id]: html })
     }
@@ -507,7 +512,7 @@ class Registration extends React.Component {
             </div>
             {showCapacities && (
               <div
-                className={`${style["registrationbtnCapacitiesHolder"]}`}
+                className={`${'reg-btn-holder'} ${style["registrationbtnCapacitiesHolder"]}`}
                 id="btnCapacities"
               >
                 <button
