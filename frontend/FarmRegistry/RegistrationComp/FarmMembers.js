@@ -129,6 +129,9 @@ const FarmMembers = (props, context) => {
           ComponentManager.setStateForComponent(`${tableName}_FORM`, null, {
             saveExecuted: false,
           });
+          ComponentManager.setStateForComponent(gridId, null, {
+            rowClicked: undefined,
+          });
           GridManager.reloadGridData(gridId);
         }
       })
