@@ -81,8 +81,10 @@ const FarmMembers = (props, context) => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     })
       .then((res) => {
+        const title = res.data.title || ''
+        const msg = res.data.message || ''
         if (res.data) {
-          alertUser(true, 'success', 'Successfully Saved', 'You have successfully saved your data.')
+          alertUser(true, 'success', title, msg)
           GridManager.reloadGridData(gridId);
           setShow(false);
         }
