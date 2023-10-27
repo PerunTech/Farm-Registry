@@ -81,12 +81,15 @@ const FarmMembers = (props, context) => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     })
       .then((res) => {
-        const title = res.data.title || ''
-        const msg = res.data.message || ''
         if (res.data) {
-          alertUser(true, 'success', title, msg)
+          const resType = res.data.type.toLowerCase()
+          const title = res.data.title || ''
+          const msg = res.data.message || ''
+          alertUser(true, resType, title, msg)
           GridManager.reloadGridData(gridId);
           setShow(false);
+        } else {
+          alertUser(true, resType || 'info', title, msg, () => resetFormDeleteState())
         }
 
       })
