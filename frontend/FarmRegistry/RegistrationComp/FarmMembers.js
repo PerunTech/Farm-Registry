@@ -88,10 +88,7 @@ const FarmMembers = (props, context) => {
           alertUser(true, resType, title, msg)
           GridManager.reloadGridData(gridId);
           setShow(false);
-        } else {
-          alertUser(true, resType || 'info', title, msg, () => resetFormDeleteState())
         }
-
       })
       .catch(err => {
         console.error(err)
