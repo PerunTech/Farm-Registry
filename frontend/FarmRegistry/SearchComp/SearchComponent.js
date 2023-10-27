@@ -113,8 +113,8 @@ class AdminComopnent extends React.Component {
       configTableName={"/ReactElements/getTableFieldList/%session/" + gridId}
       dataTableName={data}
       onRowClickFunct={this.props.onRowClick}
-      heightRatio={0.6}
-      className={"iacs-claim-grid"}
+      heightRatio={0.5}
+      className={"farm-registry-search-grid"}
       refreshData={() => this.assignSearchResultGrid(this.state.formState)}
     />
 
