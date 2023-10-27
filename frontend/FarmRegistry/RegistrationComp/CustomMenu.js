@@ -176,14 +176,6 @@ const CustomButtons = (props, context) => {
         });
     };
 
-    const getModalTitle = () => {
-        let modalTitle = labelsManager.importLabel(`add_${props.tableName?.toLowerCase()}`, context, "farm_registry")
-        if (clickedRowObjectId !== 0) {
-            modalTitle = labelsManager.importLabel(`edit_${props.tableName?.toLowerCase()}`, context, "farm_registry")
-        }
-        return modalTitle
-    }
-
     return (
         <>
             {loading && <Loading />}
@@ -192,7 +184,7 @@ const CustomButtons = (props, context) => {
                 {showModal && (
                     <Modal className={style["farm-registry-modal"]} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
-                            <Modal.Title>{getModalTitle()}</Modal.Title>
+                            <Modal.Title>{props.configuration.label}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body className={style["farm-registry-modal-body"]}>
                             {generateForm(true)}
