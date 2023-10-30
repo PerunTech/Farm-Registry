@@ -91,8 +91,6 @@ class Registration extends React.Component {
     })
   }
 
-
-
   displayCompanyRegForm = () => {
     GridManager.reloadGridData("FARM_GRID");
     this.setState({
@@ -415,7 +413,7 @@ class Registration extends React.Component {
   };
 
   generateCustomMenu = () => {
-    if (this.state.reports) {
+    if (this.state.reports && Array.isArray(this.state.reports.data)) {
       return this.state.reports.data.map(el => {
         const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
         return (
