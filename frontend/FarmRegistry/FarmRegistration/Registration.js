@@ -435,7 +435,6 @@ class Registration extends React.Component {
   onButtonClick = (element) => {
     const id = element.ID
     const splitID = id.replace(/\d/g, '').replace(/_$/, '')
-    console.log('REPLACED: ', splitID);
     this.displayComponent('DYNAMIC', splitID, element)
   }
 
