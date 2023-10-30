@@ -61,25 +61,25 @@
   display: flex;
 }
 
-.modal-dialog {
+.address-module-farm-registry-modal .modal-dialog {
   display: flex;
   justify-content: center;
   align-items: center;
   max-width: none;
 }
 
-.modal-content {
+.address-module-farm-registry-modal .modal-content {
   border: none;
   margin: 0;
   width: 90%;
   max-width: none;
 }
 
-.modal-header .close {
+.address-module-farm-registry-modal .modal-header .close {
   color: white;
 }
 
-.modal-header .close :focus {
+.address-module-farm-registry-modal .modal-header .close :focus {
   outline: none;
   border: none;
 }
