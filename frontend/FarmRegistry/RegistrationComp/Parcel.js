@@ -1,7 +1,5 @@
 import { React, connect, axios, Loading, createHashHistory, elements, PropTypes } from "perun-core";
 const { useEffect, useState } = React;
-import { lpis } from 'lpis'
-const LpisMap = lpis.ui.farmRegLpis
 import { AgGridReact } from "ag-grid-react";
 import "../style/style.css";
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -20,7 +18,6 @@ const Parcel = (props, context) => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false)
   const [showGrid, setShowGrid] = useState(false)
-  const [showMap, setShowMap] = useState(false)
 
   useEffect(() => {
     generateInterGrid();
@@ -131,14 +128,11 @@ const Parcel = (props, context) => {
     });
   };
   const openMap = () => {
-    setShowMap(true)
-    setShowGrid(false)
     const { farmData } = props
     const objectId = farmData?.objectId
     const objectTypeId = farmData?.objectTypeId
     const params = `id=${objectId}&type=${objectTypeId}&action=sizp`
-    // history.push(`/main/farm-registry/map?${params}`)
-    history.push(`/main/farm-registry/registration/SIZP?${params}`)
+    history.push(`/main/farm-registry/map?${params}`)
   }
 
   return (
@@ -147,7 +141,6 @@ const Parcel = (props, context) => {
       <button className={`${style.mapBtn}`} onClick={() => openMap()}>{iconManager.getIcon("parcelMap")}
         {context.intl.formatMessage({ id: 'perun.farm_registry.lpis_map', defaultMessage: 'perun.farm_registry.lpis_map' })}
       </button>
-      {showMap && <LpisMap />}
       {showGrid && <div
         style={{
           display: "flex",
