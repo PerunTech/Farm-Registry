@@ -1,6 +1,6 @@
 let path = require('path');
 
-module.exports = (mode, {env}) => {
+module.exports = (mode, { env }) => {
   return {
     devtool: 'source-map',
     mode: mode,
@@ -18,12 +18,12 @@ module.exports = (mode, {env}) => {
     module: {
       rules: [
         {
-          test: /\.(js|jsx)?$/, 
+          test: /\.(js|jsx)?$/,
           exclude: /(node_modules)/,
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env', '@babel/preset-react',{'plugins': ['@babel/plugin-proposal-class-properties']}],
+              presets: ['@babel/preset-env', '@babel/preset-react', { 'plugins': ['@babel/plugin-proposal-class-properties'] }],
               cacheDirectory: true
             }
           }
@@ -38,16 +38,16 @@ module.exports = (mode, {env}) => {
             }
           },
           enforce: 'pre',
-          include: [/perun-core/,/persons-registry/]
+          include: [/lpis/, /perun-core/, /persons-registry/]
         },
         {
-        // For pure CSS (without CSS modules)
+          // For pure CSS (without CSS modules)
           test: /\.css$/i,
           exclude: /\.module\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
         {
-        // For CSS modules
+          // For CSS modules
           test: /\.module\.css$/i,
           use: [
             'style-loader',
@@ -56,7 +56,7 @@ module.exports = (mode, {env}) => {
               options: {
                 sourceMap: true,
                 modules: true,
-                modules: { 
+                modules: {
                   localIdentName: '[name]-[local]'
                 }
               },
@@ -75,6 +75,6 @@ module.exports = (mode, {env}) => {
     resolve: {
       extensions: ['.js', '.jsx']
     },
-    externals: env === 'production' ? { 'perun-core': 'perun-core', 'persons-registry': 'persons-registry' } : {}
+    externals: env === 'production' ? { 'lpis': 'lpis', 'perun-core': 'perun-core', 'persons-registry': 'persons-registry' } : {}
   }
 };
