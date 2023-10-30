@@ -11,12 +11,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://gitlab.prtech.mk/perunv3/farm-registry.git"
+        "url": "https://gitlab.prtech.mk/svarog4/farm-registry.git"
     },
     "dependencies": {
         "ag-grid-community": "^22.1.1",
         "ag-grid-react": "^22.1.1",
         "date-fns": "^2.28.0",
+        "lpis": "git+https://git@gitlab.prtech.mk/svarog4/lpis#dev",
         "persons-registry": "git+https://git@gitlab.prtech.mk/perunv3/persons-registry#dev",
         "perun-core": "git+https://git@gitlab.prtech.mk/perunv3/perun-core#dev",
         "query-string": "^6.12.1",
