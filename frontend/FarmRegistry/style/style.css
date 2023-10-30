@@ -71,25 +71,25 @@
   display: flex;
 }
 
-.address-module-farm-registry-modal .modal-dialog {
+.registration-module-farm-registry-modal .modal-dialog {
   display: flex;
   justify-content: center;
   align-items: center;
   max-width: none;
 }
 
-.address-module-farm-registry-modal .modal-content {
+.registration-module-farm-registry-modal .modal-content {
   border: none;
   margin: 0;
   width: 90%;
   max-width: none;
 }
 
-.address-module-farm-registry-modal .modal-header .close {
+.registration-module-farm-registry-modal .modal-header .close {
   color: white;
 }
 
-.address-module-farm-registry-modal .modal-header .close :focus {
+.registration-module-farm-registry-modal .modal-header .close :focus {
   outline: none;
   border: none;
 }
