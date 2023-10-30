@@ -138,7 +138,7 @@ const Parcel = (props, context) => {
     const objectTypeId = farmData?.objectTypeId
     const params = `id=${objectId}&type=${objectTypeId}&action=sizp`
     // history.push(`/main/farm-registry/map?${params}`)
-    history.push(`/main/farm-registry/registration/SIZP?${params}`)
+    history.push(`/main/farm-registry/registration/SIZP-MAP?${params}`)
   }
 
   return (
