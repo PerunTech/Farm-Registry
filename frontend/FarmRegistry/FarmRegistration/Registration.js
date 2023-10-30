@@ -432,27 +432,6 @@ class Registration extends React.Component {
     }
   }
 
-
-  // generateCustomMenu = () => {
-  //   if (this.state.reports) {
-  //     return this.state.reports.data.map(el => {
-  //       const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
-  //       return (
-  //         <div key={el.ID}>
-  //           <button className={`${style["btn_sub"]}`} onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}>
-  //             {iconManager.getIcon(modifiedID)}{el.label}
-  //           </button>
-  //           <div>
-  //             {this.state[el.ID]}
-  //           </div>
-  //         </div>
-  //       );
-  //     });
-  //   } else {
-  //     return <></>;
-  //   }
-  // }
-
   onButtonClick = (element) => {
     const id = element.ID
     const splitID = id.replace(/\d/g, '').replace(/_$/, '')
