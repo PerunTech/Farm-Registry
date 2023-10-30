@@ -41,6 +41,10 @@
     height: 90%;
 }
 
+.reg-btn-holder {
+    height: 60vh !important;
+}
+
 .reg-btn-holder::-webkit-scrollbar-thumb {
     background: #909090 !important
 }
@@ -51,6 +55,15 @@
 
 .reg-btn-holder::-webkit-scrollbar-track {
     background: #535353 !important
+}
+
+.registration-module-dataHolder #farm-registry-map {
+    height: 83vh !important;
+    margin-top: 0.5rem;
+}
+
+.registration-module-dataHolder .leaflet-container {
+    height: 83vh !important;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 374px) {
