@@ -38,7 +38,8 @@ class Registration extends React.Component {
       showCapacities: false,
       hideSearchForm: true,
       showSubMenu: false,
-      showPrintBtn: false
+      showPrintBtn: false,
+      defaultCountry: undefined
     };
     this.hashHistory = createHashHistory();
   }
@@ -53,6 +54,12 @@ class Registration extends React.Component {
     if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search') {
       this.displayComponent(this.props.paramsComponent.params);
       this.generateInfo()
+      let url = window.server + `/WsConf/params/get/sys/DEFAULT_COUNTRY`
+      axios.get(url).then(res => {
+        if (res.VALUE) {
+          this.setState({ defaultCountry: res.VALUE })
+        }
+      })
     }
   }
 
@@ -323,7 +330,7 @@ class Registration extends React.Component {
       case "ADDRESS":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
-        componentAddReg = <Address />
+        componentAddReg = <Address defaultCountry={this.state.defaultCountry} />
         break;
       case "DYNAMIC":
         href = `/main/farm-registry/registration/${tableName}`
