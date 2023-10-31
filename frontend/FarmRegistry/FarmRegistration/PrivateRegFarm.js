@@ -121,7 +121,7 @@ class PrivateRegFarm extends React.Component {
   };
 
   makeField = () => {
-    let field = document.getElementById("root_PERSON_OBJECT_ID");
+    let field = document.getElementById("root_FULL_NAME");
     if (field) {
       if (field.placeholder === "") {
         field.placeholder = labelsManager.importLabel(
