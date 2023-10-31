@@ -17,7 +17,7 @@ class Bank extends React.Component {
     super(props);
     this.state = {
       gridToDisplay: this.props.grid,
-      parentId: this.props.farmObjId
+      parentId: this.props.personObjId
     };
   }
 

@@ -328,7 +328,7 @@ class Registration extends React.Component {
       case "ADDRESS":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
-        componentAddReg = <Address defaultCountry={this.state.defaultCountry} />
+        componentAddReg = <Address personObjId={this.state.personObj} defaultCountry={this.state.defaultCountry} />
         break;
       case "DYNAMIC":
         href = `/main/farm-registry/registration/${tableName}`
