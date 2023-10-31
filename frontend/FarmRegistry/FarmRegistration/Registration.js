@@ -373,6 +373,13 @@ class Registration extends React.Component {
     });
   };
 
+  privateRegForm = () => {
+    this.setState({
+      showCapacities: false,
+      generateInfoState: false,
+    })
+  }
+
   generateInfo = (isFromRowClick) => {
     let { status, farmFic, archiveNumber, farmFullName } = this.state
     const { farmData } = this.props
@@ -476,7 +483,10 @@ class Registration extends React.Component {
             <div className={`${style["btnHolder"]}`}>
               <button
                 className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
-                onClick={this.displayPrivateRegForm}
+                onClick={() => {
+                  this.privateRegForm();
+                  this.displayPrivateRegForm()
+                }}
               >
                 {iconManager.getIcon("add")}
                 {labelsManager.importLabel(
