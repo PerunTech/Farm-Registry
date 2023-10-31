@@ -15,7 +15,8 @@ const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
 import { labelsManager } from '../../utils_tools/LabelsExport';
-
+import { CustomOnchangeFunction } from './CustomOnchangeFunction';
+let changeField
 const Address = (props, context) => {
     const [schema, setSchema] = useState({})
     const [uiSchema, setUiSchema] = useState({})
@@ -26,9 +27,11 @@ const Address = (props, context) => {
     const [show, setShow] = useState(false)
     const [flagForm, setFlagForm] = useState(false)
     const [deleteBtn, setDelete] = useState(false)
+
     useEffect(() => {
         return () => {
-            ComponentManager.cleanComponentReducerState("ADDRESS_GRID" + props.farmObjId);
+            ComponentManager.cleanComponentReducerState("ADDRESS_GRID" + props.personObjId);
+            changeField = undefined
         }
     }, [])
 
@@ -87,13 +90,12 @@ const Address = (props, context) => {
 
     };
 
-    const generateNewTest = (data) => {
+    const generateNewDependentForm = (data) => {
         let tempUi = JSON.parse(JSON.stringify(permaUi))
         if (data['COUNTRY'] === props.defaultCountry) {
             if (data['LOCALITY1']) {
                 tempUi.LOCALITY2 = {}
-
-                if (formData['LOCALITY1'] !== data['LOCALITY1']) {
+                if (formData['LOCALITY1'] !== data['LOCALITY1'] || formData['LOCALITY1'] === data['LOCALITY1']) {
                     setFlagForm(false)
                     let tempSchema = JSON.parse(JSON.stringify(permaSchema))
                     let tempEnum = []
@@ -111,7 +113,6 @@ const Address = (props, context) => {
                     tempSchema.properties['LOCALITY2'].enum = tempEnum
                     tempSchema.properties['LOCALITY2'].enumNames = tempEnumNames
                     setSchema(tempSchema)
-
                     setFlagForm(true)
                 }
             } else {
@@ -127,7 +128,7 @@ const Address = (props, context) => {
             "/ReactElements/createTableRecordFormData/" +
             props.svSession +
             "/ADDRESS/" +
-            props.farmObjId
+            props.personObjId
         let form_params = e.formData;
         setLoading(true)
         axios({
@@ -142,7 +143,7 @@ const Address = (props, context) => {
                     const title = res.data.title || ''
                     const msg = res.data.message || ''
                     alertUser(true, resType, title, msg, () => {
-                        GridManager.reloadGridData("ADDRESS_GRID" + props.farmObjId)
+                        GridManager.reloadGridData("ADDRESS_GRID" + props.personObjId)
                         setShow(false)
                         setLoading(false)
                     }
@@ -175,7 +176,7 @@ const Address = (props, context) => {
             .then((res) => {
                 if (res.data) {
                     alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => {
-                        GridManager.reloadGridData('ADDRESS_GRID' + props.farmObjId)
+                        GridManager.reloadGridData('ADDRESS_GRID' + props.personObjId)
                         setShow(false);
                     });
                 }
@@ -188,19 +189,32 @@ const Address = (props, context) => {
 
             });
     };
+    const onFieldChange = (name, _formData) => {
+        changeField = name
 
+    }
+    const formContext = {
+        onFieldChange: onFieldChange
+    };
+
+    const onChange = (e) => {
+        setFormData(e.formData)
+        if (changeField === 'LOCALITY1' || changeField === 'LOCALITY2') {
+            generateNewDependentForm(e.formData)
+        }
+    }
     return (
         <>{loading && <Loading />}
             <div>
                 <GenericGrid
                     gridType={"READ_URL"}
-                    key={"ADDRESS_GRID" + props.farmObjId}
-                    id={"ADDRESS_GRID" + props.farmObjId}
+                    key={"ADDRESS_GRID" + props.personObjId}
+                    id={"ADDRESS_GRID" + props.personObjId}
                     configTableName={
                         `/ReactElements/getTableFieldList/${props.svSession}/ADDRESS`
                     }
                     dataTableName={
-                        `/ReactElements/getObjectsByParentId/${props.svSession}/${props.farmObjId}/ADDRESS/100000`
+                        `/ReactElements/getObjectsByParentId/${props.svSession}/${props.personObjId}/ADDRESS/100000`
                     }
                     minHeight={800}
                     onRowClickFunct={handleRowClick}
@@ -226,12 +240,11 @@ const Address = (props, context) => {
                             schema={schema}
                             uiSchema={uiSchema}
                             onSubmit={(e) => saveAddress(e)}
+                            fields={{ SchemaField: CustomOnchangeFunction }}
                             className={`farm-registry-forms`}
                             formData={formData}
-                            onChange={(e) => {
-                                setFormData(e.formData)
-                                generateNewTest(e.formData)
-                            }}
+                            formContext={formContext}
+                            onChange={(e) => onChange(e)}
                         >
                             <></>
                             <div className={style['farm-registry-btn-holder']} >
