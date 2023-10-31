@@ -18,6 +18,7 @@ import Equipment from "../RegistrationComp/Equipment";
 import Machinery from "../RegistrationComp/Machinery";
 import Address from '../RegistrationComp/Address/Address';
 import CustomMenu from "../RegistrationComp/CustomMenu";
+import CreateFarm from './CreateFarm/CreateFarm';
 const { store } = redux
 
 class Registration extends React.Component {
@@ -76,7 +77,7 @@ class Registration extends React.Component {
       formKey: "private_farm",
       hideSearchForm: false,
       showSearchForm: false,
-      dataForm: <PrivateRegFarm parentCallBackFunc={this.getPersonId} showSearch={this.showSearch} />,
+      dataForm: <CreateFarm personObjId={this.state.personObj} />
     });
   };
 
