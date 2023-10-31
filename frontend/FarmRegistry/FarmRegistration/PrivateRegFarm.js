@@ -46,9 +46,9 @@ class PrivateRegFarm extends React.Component {
           showEditModal: '',
           modalContent: []
         });
-        document.getElementById("root_FULL_NAME").placeholder =
+        document.getElementById("root_FULL_NAME").value =
           row["PERSON.NAME"];
-        document.getElementById("root_PERSON_OBJECT_ID").placeholder =
+        document.getElementById("root_PERSON_OBJECT_ID").value =
           row["PERSON.OBJECT_ID"];
       }
     );
