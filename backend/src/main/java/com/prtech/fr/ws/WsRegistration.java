@@ -1,5 +1,6 @@
 package com.prtech.fr.ws;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -82,6 +83,10 @@ public class WsRegistration {
 							dbG.setVal("PERSON_OBJECT_ID", jobj.get("PERSON_OBJECT_ID").getAsLong());
 						if (jobj.get("ARCHIVE_NUMBER") != null)
 							dbG.setVal("ARCHIVE_NUMBER", jobj.get("ARCHIVE_NUMBER").getAsLong());
+						// TODO fix save date
+						if (jobj.get("DT_ARRIVAL") != null)
+							dbG.setVal("DT_ARRIVAL", new DateTime() );
+						
 						
 						
 						if (jobj.get("PERSON_OBJECT_ID") != null) {
