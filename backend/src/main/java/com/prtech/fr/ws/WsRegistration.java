@@ -88,6 +88,7 @@ public class WsRegistration {
 							dbG.setVal("DT_ARRIVAL", new DateTime() );
 						
 						
+						
 						if (jobj.get("PERSON_OBJECT_ID") != null) {
 							Long personId = jobj.get("PERSON_OBJECT_ID").getAsLong();
 							DbSearchCriterion crit = new DbSearchCriterion("PERSON_OBJECT_ID", DbCompareOperand.EQUAL,
