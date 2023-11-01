@@ -12,17 +12,6 @@
 				"contextMenuLabelCode": null,
 				"route": "/main/farm-registry/registration/search",
 				"icon": "registrationFarm"
-			},
-			{
-				"labelCode": "perun.farm_registry.calendar",
-				"id": "CALENDAR",
-				"menuItemLevel": 1,
-				"order": 131,
-				"permissionCode": "yes",
-				"readOnly": true,
-				"contextMenuLabelCode": null,
-				"icon": "revisionControls",
-				"route": "/main/farm-registry/calendar"
 			}
 		]
 	}

@@ -2,11 +2,10 @@ import {
     React,
     connect,
     elements,
-    GenericGrid,
     ComponentManager,
     PropTypes,
     axios,
-    GridManager,
+    Loading,
     GenericForm,
 } from "perun-core";
 const { useState, useEffect } = React;
@@ -15,12 +14,14 @@ const { alertUser } = elements;
 import CreateFarmWrapper from "./CreateFarmWrapper";
 const tableName = "FARM";
 const CreateFarm = (props) => {
-
+    const [showForm, setShow] = useState(true)
+    const [loading, setLoading] = useState(false)
     //handle infinite loading
 
     //create new team
     const saveFarm = (e) => {
-
+        setShow(false)
+        setLoading(true)
         const { svSession } = props;
         let url = window.server + "/WsRegistration/saveFarm/" + svSession;
         axios({
@@ -38,6 +39,8 @@ const CreateFarm = (props) => {
                     ComponentManager.setStateForComponent(`${tableName}_FORM`, null, {
                         saveExecuted: false,
                     });
+                    setShow(true)
+                    setLoading(false)
                 }
             })
             .catch(err => {
@@ -48,6 +51,8 @@ const CreateFarm = (props) => {
                 ComponentManager.setStateForComponent(`${tableName}_FORM`, null, {
                     saveExecuted: false,
                 });
+                setLoading(false)
+                setShow(true)
             });
     };
     //create new team form
@@ -68,8 +73,9 @@ const CreateFarm = (props) => {
     };
     return (
         <>
+            {loading && <Loading />}
             <div id="CreateFarmGrid">
-                {generateCreateFarmForm()}
+                {showForm && generateCreateFarmForm()}
             </div>
         </>
     );
