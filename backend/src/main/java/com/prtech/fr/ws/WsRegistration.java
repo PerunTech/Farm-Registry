@@ -23,6 +23,7 @@ import org.joda.time.DateTime;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.prtech.perun_core.ws.Rc;
 import com.prtech.svarog.I18n;
 import com.prtech.svarog.SvCore;
 import com.prtech.svarog.SvException;
@@ -83,11 +84,17 @@ public class WsRegistration {
 							dbG.setVal("PERSON_OBJECT_ID", jobj.get("PERSON_OBJECT_ID").getAsLong());
 						if (jobj.get("ARCHIVE_NUMBER") != null)
 							dbG.setVal("ARCHIVE_NUMBER", jobj.get("ARCHIVE_NUMBER").getAsLong());
-						// TODO fix save date
-						if (jobj.get("DT_ARRIVAL") != null)
-							dbG.setVal("DT_ARRIVAL", new DateTime() );
-						
-						
+						if (jobj.get("DT_ARRIVAL") != null) {
+							String tempDateTime = jobj.get("DT_ARRIVAL").getAsString();
+							DateTime pickDate;
+							if (!isValidDateTimeFormat(tempDateTime) && tempDateTime.length() > 10) {
+								pickDate = new DateTime(tempDateTime.substring(0, tempDateTime.length() - 5).trim());
+							} else {
+								pickDate = new DateTime(tempDateTime);
+							}
+							dbG.setVal("DT_ARRIVAL", pickDate);
+						}
+
 						
 						if (jobj.get("PERSON_OBJECT_ID") != null) {
 							Long personId = jobj.get("PERSON_OBJECT_ID").getAsLong();
@@ -142,6 +149,22 @@ public class WsRegistration {
 			return Response.status(200).entity(jrh.getAll().toString()).build();
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
+	}
+	
+	/**
+	 * Method that checks if date format is valid
+	 * 
+	 * @param dateTime
+	 * @return true/false
+	 */
+	private Boolean isValidDateTimeFormat(String dateTime) {
+		Boolean result = true;
+		try {
+			new DateTime(dateTime);
+		} catch (Exception e) {
+			result = false;
+		}
+		return result;
 	}
 
 	/**
