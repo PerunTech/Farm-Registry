@@ -1,14 +1,10 @@
 package com.prtech.fr.ws;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.LongStream;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -28,14 +24,10 @@ import com.prtech.svarog.SvCore;
 import com.prtech.svarog.SvException;
 import com.prtech.svarog.SvLock;
 import com.prtech.svarog.SvReader;
-import com.prtech.svarog.SvSecurity;
 import com.prtech.svarog.SvSequence;
-import com.prtech.svarog.SvUtil;
 import com.prtech.svarog.SvWriter;
-import com.prtech.svarog.svCONST;
 import com.prtech.svarog_common.DbDataArray;
 import com.prtech.svarog_common.DbDataObject;
-import com.prtech.svarog_common.DbSearch;
 import com.prtech.svarog_common.DbSearchCriterion;
 import com.prtech.svarog_common.ResponseHandler;
 import com.prtech.svarog_common.DbSearchCriterion.DbCompareOperand;
@@ -83,11 +75,17 @@ public class WsRegistration {
 							dbG.setVal("PERSON_OBJECT_ID", jobj.get("PERSON_OBJECT_ID").getAsLong());
 						if (jobj.get("ARCHIVE_NUMBER") != null)
 							dbG.setVal("ARCHIVE_NUMBER", jobj.get("ARCHIVE_NUMBER").getAsLong());
-						// TODO fix save date
-						if (jobj.get("DT_ARRIVAL") != null)
-							dbG.setVal("DT_ARRIVAL", new DateTime() );
-						
-						
+						if (jobj.get("DT_ARRIVAL") != null) {
+							String tempDateTime = jobj.get("DT_ARRIVAL").getAsString();
+							DateTime pickDate;
+							if (!isValidDateTimeFormat(tempDateTime) && tempDateTime.length() > 10) {
+								pickDate = new DateTime(tempDateTime.substring(0, tempDateTime.length() - 5).trim());
+							} else {
+								pickDate = new DateTime(tempDateTime);
+							}
+							dbG.setVal("DT_ARRIVAL", pickDate);
+						}
+
 						
 						if (jobj.get("PERSON_OBJECT_ID") != null) {
 							Long personId = jobj.get("PERSON_OBJECT_ID").getAsLong();
@@ -142,6 +140,22 @@ public class WsRegistration {
 			return Response.status(200).entity(jrh.getAll().toString()).build();
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
+	}
+	
+	/**
+	 * Method that checks if date format is valid
+	 * 
+	 * @param dateTime
+	 * @return true/false
+	 */
+	private Boolean isValidDateTimeFormat(String dateTime) {
+		Boolean result = true;
+		try {
+			new DateTime(dateTime);
+		} catch (Exception e) {
+			result = false;
+		}
+		return result;
 	}
 
 	/**
