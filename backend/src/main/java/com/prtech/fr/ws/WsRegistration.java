@@ -1,14 +1,10 @@
 package com.prtech.fr.ws;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.LongStream;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -23,20 +19,15 @@ import org.joda.time.DateTime;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.prtech.perun_core.ws.Rc;
 import com.prtech.svarog.I18n;
 import com.prtech.svarog.SvCore;
 import com.prtech.svarog.SvException;
 import com.prtech.svarog.SvLock;
 import com.prtech.svarog.SvReader;
-import com.prtech.svarog.SvSecurity;
 import com.prtech.svarog.SvSequence;
-import com.prtech.svarog.SvUtil;
 import com.prtech.svarog.SvWriter;
-import com.prtech.svarog.svCONST;
 import com.prtech.svarog_common.DbDataArray;
 import com.prtech.svarog_common.DbDataObject;
-import com.prtech.svarog_common.DbSearch;
 import com.prtech.svarog_common.DbSearchCriterion;
 import com.prtech.svarog_common.ResponseHandler;
 import com.prtech.svarog_common.DbSearchCriterion.DbCompareOperand;
