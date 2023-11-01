@@ -2,7 +2,6 @@ import { React, connect, GridManager, PropTypes, Loading, ComponentManager, Gene
 const { alertUser } = elements
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
-import PrivateRegFarm from "./PrivateRegFarm";
 import CompanyRegFarm from "./CompanyRegFarm";
 import { labelsManager } from "../utils_tools/LabelsExport";
 import Animal from "../RegistrationComp/Animal";
