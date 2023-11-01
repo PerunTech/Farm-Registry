@@ -42,7 +42,7 @@ const CustomButtons = (props, context) => {
 
     const generateForm = (isModal, resetTheId) => {
         let customClass = props.tableName?.toLowerCase()
-        let className = 'form-test custom-farm-registry-form custom-id ' + customClass
+        let className = 'form-test custom-farm-registry-form ' + customClass
         // Set a new ID for the form, so we get a re-render
         if (resetTheId) {
             setDynamicFormId(getDynamicKey())
