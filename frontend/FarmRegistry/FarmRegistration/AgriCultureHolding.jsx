@@ -16,7 +16,6 @@ import { iconManager } from "../../assets/svgHolder";
 // Components
 import Animal from "../RegistrationComp/Animal";
 import Lpis from "../RegistrationComp/Lpis";
-import Bank from "../RegistrationComp/Bank";
 import AddDocuments from "../RegistrationComp/AddDocuments";
 import FarmMembers from "../RegistrationComp/FarmMembers";
 // Label Manager

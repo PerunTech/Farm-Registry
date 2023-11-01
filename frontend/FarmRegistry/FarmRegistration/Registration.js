@@ -6,7 +6,6 @@ import CompanyRegFarm from "./CompanyRegFarm";
 import { labelsManager } from "../utils_tools/LabelsExport";
 import Animal from "../RegistrationComp/Animal";
 import Lpis from "../RegistrationComp/Lpis";
-import Bank from "../RegistrationComp/Bank";
 import AddDocuments from "../RegistrationComp/AddDocuments";
 import FarmMembers from "../RegistrationComp/FarmMembers";
 import Parcel from "../RegistrationComp/Parcel";
@@ -27,7 +26,6 @@ class Registration extends React.Component {
       showGrid: false,
       formContainer: "",
       tableName: 'FARM',
-      bankAcc: false,
       dataForm: false,
       showSearchForm: true,
       fullName: '',
@@ -279,13 +277,6 @@ class Registration extends React.Component {
         this.hashHistory.push(href)
         componentAddReg = <Intersection farmObjId={this.props.farmObjId} paramsComponent={component} />;
         break;
-      case "BANKACC":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = (
-          <Bank personObjId={this.state.personObj} farmObjId={this.props.farmObjId} grid={component} paramsComponent={component} />
-        );
-        break;
       case "FARM_MEMBERS":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
@@ -515,17 +506,6 @@ class Registration extends React.Component {
                 className={`${'reg-btn-holder'} ${style["registrationbtnCapacitiesHolder"]}`}
                 id="btnCapacities"
               >
-                <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("BANKACC")}
-                >
-                  {iconManager.getIcon("bankAccount")}
-                  {labelsManager.importLabel(
-                    "bank_acc",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
                 <button
                   className={`${style["btn_sub"]}`}
                   onClick={() => this.displayComponent("FARM_MEMBERS")}
