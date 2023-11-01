@@ -49,6 +49,7 @@
   box-shadow: 2px 2px 10px 2px #26303885;
 }
 
+/* 
 .custom-farm-registry-form legend {
   padding-top: 10px;
   margin-bottom: 30px;
@@ -57,7 +58,7 @@
   border-radius: 0px;
   padding-bottom: 0px;
   box-shadow: none;
-}
+} */
 
 .farm-reg-dd legend {
   display: none;
