@@ -46,7 +46,7 @@ class FarmEquipment extends React.Component {
           this.context,
           "farm_registry"
         )}
-        minHeight={800}
+        heightRatio={0.7}
       />
     );
     this.setState({ equipmentGrid: grid });
