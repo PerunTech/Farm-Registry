@@ -63,7 +63,7 @@ const FarmMembers = (props, context) => {
           context,
           "farm_registry"
         )}
-        minHeight={600}
+        heightRatio={0.7}
       />
     );
     setGrid(grid);
@@ -82,10 +82,13 @@ const FarmMembers = (props, context) => {
     })
       .then((res) => {
         if (res.data) {
+          const resType = res.data.type.toLowerCase()
+          const title = res.data.title || ''
+          const msg = res.data.message || ''
+          alertUser(true, resType, title, msg)
           GridManager.reloadGridData(gridId);
           setShow(false);
         }
-
       })
       .catch(err => {
         console.error(err)
@@ -128,6 +131,9 @@ const FarmMembers = (props, context) => {
           setShow(false);
           ComponentManager.setStateForComponent(`${tableName}_FORM`, null, {
             saveExecuted: false,
+          });
+          ComponentManager.setStateForComponent(gridId, null, {
+            rowClicked: undefined,
           });
           GridManager.reloadGridData(gridId);
         }

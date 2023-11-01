@@ -1,4 +1,4 @@
-import { React, connect, GridManager, Link, PropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
+import { React, connect, GridManager, PropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
 const { alertUser } = elements
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
@@ -10,7 +10,6 @@ import Lpis from "../RegistrationComp/Lpis";
 import Bank from "../RegistrationComp/Bank";
 import AddDocuments from "../RegistrationComp/AddDocuments";
 import FarmMembers from "../RegistrationComp/FarmMembers";
-import TransitionToSubmission from "./TransitionToSubmission";
 import Parcel from "../RegistrationComp/Parcel";
 import SearchComponent from '../SearchComp/SearchComponent';
 import Intersection from '../RegistrationComp/Intersection'
@@ -39,7 +38,8 @@ class Registration extends React.Component {
       showCapacities: false,
       hideSearchForm: true,
       showSubMenu: false,
-      showPrintBtn: false
+      showPrintBtn: false,
+      defaultCountry: undefined
     };
     this.hashHistory = createHashHistory();
   }
@@ -54,6 +54,12 @@ class Registration extends React.Component {
     if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search') {
       this.displayComponent(this.props.paramsComponent.params);
       this.generateInfo()
+      let url = window.server + `/WsConf/params/get/sys/DEFAULT_COUNTRY`
+      axios.get(url).then(res => {
+        if (res.VALUE) {
+          this.setState({ defaultCountry: res.VALUE })
+        }
+      })
     }
   }
 
@@ -74,7 +80,7 @@ class Registration extends React.Component {
     });
   };
 
-  getReports = (objid) => {
+  getConfiguration = (objid) => {
     this.setState({ loading: true })
     let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/FARM-EXTENDED/object-id/${objid}`
     axios.get(url).then(res => {
@@ -84,8 +90,6 @@ class Registration extends React.Component {
       this.setState({ loading: false })
     })
   }
-
-
 
   displayCompanyRegForm = () => {
     GridManager.reloadGridData("FARM_GRID");
@@ -175,15 +179,6 @@ class Registration extends React.Component {
     this.setState({ fullName: '', fic: '', farmType: '' })
   }
 
-  showAlert = () => {
-    const yes = labelsManager.importLabel('yes', this.context, 'farm_registry');
-    const no = labelsManager.importLabel('no', this.context, 'farm_registry');
-    const confirmationMessage = labelsManager.importLabel('confirm_refresh', this.context, 'farm_registry');
-    alertUser(true, 'info', confirmationMessage, '',
-      () => this.refreshAgriParcels(), null, true, yes, no
-    );
-  }
-
   refreshAgriParcels() {
     const { svSession, farmObjId } = this.props
     const resturl = window.server + '/farmer/refreshFarmData/' + svSession
@@ -263,7 +258,7 @@ class Registration extends React.Component {
     })
   }
 
-  displayComponent = (component, tableName, type) => {
+  displayComponent = (component, tableName, configuration) => {
     let componentAddReg;
     let href = '/main/farm-registry/registration/'
     switch (component) {
@@ -308,11 +303,6 @@ class Registration extends React.Component {
         this.hashHistory.push(href)
         componentAddReg = <AddDocuments key="addDoc" paramsComponent={component} />;
         break;
-      case "SUBMISSION":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = <TransitionToSubmission key="submission" paramsComponent={component} />;
-        break;
       case "SIZP":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
@@ -338,15 +328,21 @@ class Registration extends React.Component {
       case "ADDRESS":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
-        componentAddReg = <Address />
+        componentAddReg = <Address personObjId={this.state.personObj} defaultCountry={this.state.defaultCountry} />
         break;
       case "DYNAMIC":
         href = `/main/farm-registry/registration/${tableName}`
         this.hashHistory.push(href)
-        componentAddReg = <CustomMenu key={tableName} tableName={tableName} type={type} />
+        const customMenuProps = {
+          key: tableName,
+          tableName,
+          configuration,
+          getConfiguration: (objId) => this.getConfiguration(objId)
+        }
+        componentAddReg = <CustomMenu {...customMenuProps} />
         break;
       default:
-        console.log("default");
+        break;
     }
     this.setState({
       componentAddReg: componentAddReg,
@@ -373,9 +369,16 @@ class Registration extends React.Component {
       farmFullName: rowsData["FARM.FULL_NAME"]
     }, () => {
       this.generateInfo(true)
-      this.getReports(rowsData["FARM.OBJECT_ID"])
+      this.getConfiguration(rowsData["FARM.OBJECT_ID"])
     });
   };
+
+  privateRegForm = () => {
+    this.setState({
+      showCapacities: false,
+      generateInfoState: false,
+    })
+  }
 
   generateInfo = (isFromRowClick) => {
     let { status, farmFic, archiveNumber, farmFullName } = this.state
@@ -416,17 +419,21 @@ class Registration extends React.Component {
     this.setState({ [e.target.id]: e.target.value });
   };
 
-  // this function generates a lsit of buttons from a given configuration (check url in getReports)
   generateCustomMenu = () => {
-    if (this.state.reports) {
-      return this.state.reports.data.map(el => (
-        <div key={el.ID}>
-          <button className={`${style["btn_sub"]}`} onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}>{el.label}</button>
-          <div>
-            {this.state[el.ID]}
+    if (this.state.reports && Array.isArray(this.state.reports.data)) {
+      return this.state.reports.data.map(el => {
+        const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
+        return (
+          <div key={el.ID}>
+            <button className={`${style["btn_sub"]}`} onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}>
+              {iconManager.getIcon(modifiedID)}{el.label}
+            </button>
+            <div>
+              {this.state[el.ID]}
+            </div>
           </div>
-        </div>
-      ));
+        );
+      });
     } else {
       return <></>;
     }
@@ -435,8 +442,7 @@ class Registration extends React.Component {
   onButtonClick = (element) => {
     const id = element.ID
     const splitID = id.replace(/\d/g, '').replace(/_$/, '')
-    const type = element.objectConfiguration.type
-    this.displayComponent('DYNAMIC', splitID, type)
+    this.displayComponent('DYNAMIC', splitID, element)
   }
 
   generateChild = (id, children) => {
@@ -444,10 +450,11 @@ class Registration extends React.Component {
       this.setState({ [id]: null })
     } else {
       let html = children.map(el => {
+        const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
         return <button onClick={() => {
           let url = window.server + el.onSubmit
           window.open(url, '_blank')
-        }} className={`${style["btn_sub"]} ${style["submenu-print"]} `} id={el.ID}>{el.label}</button>
+        }} className={`${style["btn_sub"]} ${style["submenu-print"]} `} id={el.ID}>{iconManager.getIcon(modifiedID)}{el.label}</button>
       })
       this.setState({ [id]: html })
     }
@@ -461,35 +468,25 @@ class Registration extends React.Component {
       componentAddReg,
       dataForm,
       showSearchForm,
-      fullName,
-      fic,
-      farmType,
-      id_no,
-      tax_no,
       showCapacities,
-      hideSearchForm,
       generateInfoState,
-      componentToRender,
       showSubMenu,
-      showPrintBtn, loading
+      loading
     } = this.state;
 
     return (
 
       <>
         {loading && <Loading />}
-        <div style={{ height: '100vh' }} className={`${style["registrationHolder"]}`} id="registrationHolder">
-          <div style={{ height: '100vh' }} className={`${style["listButton"]}`} id="listButton">
+        <div className={`${style["registrationHolder"]}`} id="registrationHolder">
+          <div className={`${style["listButton"]}`} id="listButton">
             <div className={`${style["btnHolder"]}`}>
-              {/* <Link
-                className={`${style["iconHolderBack"]}`}
-                to="/main/farm-registry"
-              >
-                {iconManager.getIcon("back")} Назад
-              </Link> */}
               <button
                 className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
-                onClick={this.displayPrivateRegForm}
+                onClick={() => {
+                  this.privateRegForm();
+                  this.displayPrivateRegForm()
+                }}
               >
                 {iconManager.getIcon("add")}
                 {labelsManager.importLabel(
@@ -515,7 +512,7 @@ class Registration extends React.Component {
             </div>
             {showCapacities && (
               <div
-                className={`${style["registrationbtnCapacitiesHolder"]}`}
+                className={`${'reg-btn-holder'} ${style["registrationbtnCapacitiesHolder"]}`}
                 id="btnCapacities"
               >
                 <button
@@ -642,24 +639,6 @@ class Registration extends React.Component {
                     this.context,
                     "farm_registry"
                   )}
-                </button>
-                <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("SUBMISSION")}
-                >
-                  {iconManager.getIcon("docs")}
-                  {labelsManager.importLabel(
-                    "submission",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
-                <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.showAlert()}
-                >
-                  {iconManager.getIcon("parcel")}
-                  {labelsManager.importLabel('refresh_data', this.context, 'farm_registry')}
                 </button>
                 <>
                   {this.generateCustomMenu()}

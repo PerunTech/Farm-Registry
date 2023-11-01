@@ -30,6 +30,7 @@ class Lpis extends React.Component {
 
         }
         onRowClickFunct={this.onRowClick}
+        heightRatio={0.7}
       />
     );
     ComponentManager.setStateForComponent(

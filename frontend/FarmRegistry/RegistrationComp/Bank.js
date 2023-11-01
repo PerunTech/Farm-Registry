@@ -17,7 +17,7 @@ class Bank extends React.Component {
     super(props);
     this.state = {
       gridToDisplay: this.props.grid,
-      parentId: this.props.farmObjId
+      parentId: this.props.personObjId
     };
   }
 
@@ -45,7 +45,7 @@ class Bank extends React.Component {
           this.context,
           "farm_registry"
         )}
-        minHeight={800}
+        heightRatio={0.7}
       />
     );
     this.setState({ bankGrid: grid });
