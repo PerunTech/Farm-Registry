@@ -89,6 +89,12 @@ public class WsRegistration {
 						
 						if (jobj.get("PERSON_OBJECT_ID") != null) {
 							Long personId = jobj.get("PERSON_OBJECT_ID").getAsLong();
+							DbDataObject findPerson = svr.getObjectById(personId, SvReader.getTypeIdByName("PERSON"), null);
+							if (findPerson == null) {
+								jrh.create(MessageType.ERROR, I18n.getText(localeId, "person.not.found"),
+										I18n.getText(localeId, "person.not.found"), new JsonObject());
+								return Response.status(200).entity(jrh.getAll().toString()).build();
+							}
 							DbSearchCriterion crit = new DbSearchCriterion("PERSON_OBJECT_ID", DbCompareOperand.EQUAL,
 									personId);
 							DbDataArray alls = svr.getObjects(crit, SvReader.getTypeIdByName("FARM"), null, 0, 0);
@@ -97,6 +103,7 @@ public class WsRegistration {
 										I18n.getText(localeId, "already has farm"), new JsonObject());
 								return Response.status(200).entity(jrh.getAll().toString()).build();
 							}
+							
 						}
 
 						dbG.setObjectType(SvReader.getTypeIdByName("FARM"));
