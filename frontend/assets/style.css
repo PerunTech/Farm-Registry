@@ -66,10 +66,10 @@
     height: 83vh !important;
 }
 
-.custom-farm-registry-form .field-string,
-.custom-farm-registry-form .field-integer,
-.custom-farm-registry-form .field-number,
-.custom-farm-registry-form .field-boolean {
+.farm_activities_yn .field-string,
+.farm_activities_yn .field-integer,
+.farm_activities_yn .field-number,
+.farm_activities_yn .field-boolean {
     width: 50%;
 }
 
