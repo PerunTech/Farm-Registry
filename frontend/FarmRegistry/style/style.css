@@ -32,7 +32,8 @@
   width: 33%;
 }
 
-.farm-registry-forms legend {
+.farm-registry-forms legend,
+.custom-farm-registry-form legend {
   display: block;
   width: 100%;
   max-width: 100%;
