@@ -39,7 +39,6 @@ class Registration extends React.Component {
       showPrintBtn: false,
       defaultCountry: undefined,
       activeElement: null,
-      activeElement: null,
     };
     this.hashHistory = createHashHistory();
   }
