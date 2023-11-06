@@ -84,3 +84,11 @@
   outline: none;
   border: none;
 }
+
+.farm-farm-registry-form {
+  pointer-events: none;
+}
+
+.farm-farm-registry-form .btn_save_form {
+  display: none;
+}
