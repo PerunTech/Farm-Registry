@@ -171,7 +171,7 @@
   border-left: 3px solid #ffffff;
 }
 
-.btn_sub:focus {
+.btn_sub.active {
   color: #e8b763;
   border-left: 3px solid #e8b763;
   outline: none;
