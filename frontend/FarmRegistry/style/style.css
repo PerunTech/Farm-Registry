@@ -92,3 +92,8 @@
 .farm-farm-registry-form .btn_save_form {
   display: none;
 }
+
+.farm-farm-registry-form .field-string input,
+.farm-farm-registry-form .field-integer input {
+  background-color: #d0d2d3;
+}
