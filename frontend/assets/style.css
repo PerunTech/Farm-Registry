@@ -66,13 +66,6 @@
     height: 83vh !important;
 }
 
-.farm_activities_yn-farm-registry-form .field-string,
-.farm_activities_yn-farm-registry-form .field-integer,
-.farm_activities_yn-farm-registry-form .field-number,
-.farm_activities_yn-farm-registry-form .field-boolean {
-    width: 50%;
-}
-
 @media only screen and (min-width: 320px) and (max-width: 374px) {
 
     .field-string,
