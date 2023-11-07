@@ -37,7 +37,8 @@ class Registration extends React.Component {
       hideSearchForm: true,
       showSubMenu: false,
       showPrintBtn: false,
-      defaultCountry: undefined
+      defaultCountry: undefined,
+      activeElement: null,
     };
     this.hashHistory = createHashHistory();
   }
@@ -410,13 +411,19 @@ class Registration extends React.Component {
     this.setState({ [e.target.id]: e.target.value });
   };
 
+
   generateCustomMenu = () => {
     if (this.state.reports && Array.isArray(this.state.reports.data)) {
       return this.state.reports.data.map(el => {
         const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
+        const isActive = this.state.activeElement === el.ID; // Check if the element is active
+
         return (
           <div key={el.ID}>
-            <button className={`${style["btn_sub"]}`} onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}>
+            <button
+              className={isActive ? `${style["btn_sub"]} ${style["active"]}` : `${style["btn_sub"]}`}
+              onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}
+            >
               {iconManager.getIcon(modifiedID)}{el.label}
             </button>
             <div>
@@ -431,24 +438,46 @@ class Registration extends React.Component {
   }
 
   onButtonClick = (element) => {
-    const id = element.ID
-    const splitID = id.replace(/\d/g, '').replace(/_$/, '')
-    this.displayComponent('DYNAMIC', splitID, element)
+    const id = element.ID;
+    const splitID = id.replace(/\d/g, '').replace(/_$/, '');
+    this.displayComponent('DYNAMIC', splitID, element);
+    this.setState({ activeElement: id });
   }
 
   generateChild = (id, children) => {
     if (this.state[id]) {
-      this.setState({ [id]: null })
+      this.setState({ [id]: null });
     } else {
       let html = children.map(el => {
         const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
-        return <button onClick={() => {
-          let url = window.server + el.onSubmit
-          window.open(url, '_blank')
-        }} className={`${style["btn_sub"]} ${style["submenu-print"]} `} id={el.ID}>{iconManager.getIcon(modifiedID)}{el.label}</button>
-      })
-      this.setState({ [id]: html })
+        return (
+          <button
+            onClick={() => {
+              let url = window.server + el.onSubmit;
+              window.open(url, '_blank');
+            }}
+            className={`${style["btn_sub"]} ${style["submenu-print"]} `}
+            id={el.ID}
+          >
+            {iconManager.getIcon(modifiedID)}{el.label}
+          </button>
+        );
+      });
+      this.setState({ [id]: html });
     }
+    this.setState({ activeElement: id });
+  }
+
+  handleButtonClick = (componentName) => {
+    if (componentName === "FARM_EQUIPMENT") {
+      this.toggleSubMeu();
+    }
+
+    this.setState({ activeElement: componentName });
+  }
+
+  toggleSubMeu = () => {
+    this.setState((prevState) => ({ showSubMenu: !prevState.showSubMenu }));
   }
 
   render() {
@@ -462,7 +491,8 @@ class Registration extends React.Component {
       showCapacities,
       generateInfoState,
       showSubMenu,
-      loading
+      loading,
+      activeElement,
     } = this.state;
 
     return (
@@ -507,8 +537,13 @@ class Registration extends React.Component {
                 id="btnCapacities"
               >
                 <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("FARM_MEMBERS")}
+                  className={activeElement === 'FARM_MEMBERS'
+                    ? `${style["btn_sub"]} ${style["active"]}`
+                    : style["btn_sub"]}
+                  onClick={() => {
+                    this.displayComponent("FARM_MEMBERS")
+                    this.handleButtonClick("FARM_MEMBERS")
+                  }}
                 >
                   {iconManager.getIcon("group")}
                   {labelsManager.importLabel(
@@ -518,8 +553,13 @@ class Registration extends React.Component {
                   )}
                 </button>
                 <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("AHV_HOLDING")}
+                  className={activeElement === "AHV_HOLDING"
+                    ? `${style["btn_sub"]} ${style["active"]}`
+                    : style["btn_sub"]}
+                  onClick={() => {
+                    this.displayComponent("AHV_HOLDING")
+                    this.handleButtonClick("AHV_HOLDING")
+                  }}
                 >
                   {iconManager.getIcon("animal")}
                   {labelsManager.importLabel(
@@ -529,8 +569,13 @@ class Registration extends React.Component {
                   )}
                 </button>
                 <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("LPIS")}
+                  className={activeElement === "LPIS"
+                    ? `${style["btn_sub"]} ${style["active"]}`
+                    : style["btn_sub"]}
+                  onClick={() => {
+                    this.displayComponent("LPIS")
+                    this.handleButtonClick("LPIS")
+                  }}
                 >
                   {iconManager.getIcon("parcel")}
                   {labelsManager.importLabel(
@@ -540,8 +585,13 @@ class Registration extends React.Component {
                   )}
                 </button>
                 <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("INTERSECTIONS")}
+                  className={activeElement === "INTERSECTIONS"
+                    ? `${style["btn_sub"]} ${style["active"]}`
+                    : style["btn_sub"]}
+                  onClick={() => {
+                    this.displayComponent("INTERSECTIONS")
+                    this.handleButtonClick("INTERSECTIONS")
+                  }}
                 >
                   {iconManager.getIcon("parcel")}
                   {labelsManager.importLabel(
@@ -551,8 +601,13 @@ class Registration extends React.Component {
                   )}
                 </button>
                 <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("SIZP")}
+                  className={activeElement === "SIZP"
+                    ? `${style["btn_sub"]} ${style["active"]}`
+                    : style["btn_sub"]}
+                  onClick={() => {
+                    this.displayComponent("SIZP")
+                    this.handleButtonClick("SIZP")
+                  }}
                 >
                   {iconManager.getIcon("parcelIcon")}
                   {labelsManager.importLabel(
@@ -575,8 +630,12 @@ class Registration extends React.Component {
                 {showSubMenu && (
                   <>
                     <button
-                      className={`${style["btn_sub"]} ${style["submenu"]}`}
-                      onClick={() => this.displayComponent("MACHINERY")}
+                      className={`${style["btn_sub"]} ${style["submenu"]} ${activeElement === "MACHINERY" ? style["active"] : ""
+                        }`}
+                      onClick={() => {
+                        this.displayComponent("MACHINERY")
+                        this.handleButtonClick("MACHINERY")
+                      }}
                     >
                       {iconManager.getIcon("machinery")}
                       {labelsManager.importLabel(
@@ -586,8 +645,12 @@ class Registration extends React.Component {
                       )}
                     </button>
                     <button
-                      className={`${style["btn_sub"]} ${style["submenu"]}`}
-                      onClick={() => this.displayComponent("EQUIPMENT")}
+                      className={`${style["btn_sub"]} ${style["submenu"]} ${activeElement === "EQUIPMENT" ? style["active"] : ""
+                        }`}
+                      onClick={() => {
+                        this.displayComponent("EQUIPMENT")
+                        this.handleButtonClick("EQUIPMENT")
+                      }}
                     >
                       {iconManager.getIcon("equipment")}
                       {labelsManager.importLabel(
@@ -599,8 +662,13 @@ class Registration extends React.Component {
                   </>
                 )}
                 <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("ADDRESS")}
+                  className={activeElement === "ADDRESS"
+                    ? `${style["btn_sub"]} ${style["active"]}`
+                    : style["btn_sub"]}
+                  onClick={() => {
+                    this.displayComponent("ADDRESS")
+                    this.handleButtonClick("ADDRESS")
+                  }}
                 >
                   {iconManager.getIcon("address")}
                   {labelsManager.importLabel(
@@ -610,8 +678,13 @@ class Registration extends React.Component {
                   )}
                 </button>
                 <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.displayComponent("DOCS")}
+                  className={activeElement === "DOCS"
+                    ? `${style["btn_sub"]} ${style["active"]}`
+                    : style["btn_sub"]}
+                  onClick={() => {
+                    this.displayComponent("DOCS")
+                    this.handleButtonClick("DOCS")
+                  }}
                 >
                   {iconManager.getIcon("docs")}
                   {labelsManager.importLabel(
