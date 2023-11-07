@@ -416,12 +416,14 @@ class Registration extends React.Component {
     if (this.state.reports && Array.isArray(this.state.reports.data)) {
       return this.state.reports.data.map(el => {
         const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
-        const isActive = this.state.activeElement === el.ID; // Check if the element is active
+        const isActive = this.state.activeElement === el.ID;
+        const hasChildren = this.state[el.ID] !== undefined;
+        console.log("HAS CHILDREN: ", hasChildren);
 
         return (
           <div key={el.ID}>
             <button
-              className={isActive ? `${style["btn_sub"]} ${style["active"]}` : `${style["btn_sub"]}`}
+              className={isActive && !hasChildren ? `${style["btn_sub"]} ${style["active"]}` : `${style["btn_sub"]}`}
               onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}
             >
               {iconManager.getIcon(modifiedID)}{el.label}
