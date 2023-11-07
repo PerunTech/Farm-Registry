@@ -418,8 +418,6 @@ class Registration extends React.Component {
         const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
         const isActive = this.state.activeElement === el.ID;
         const hasChildren = this.state[el.ID] !== undefined;
-        console.log("HAS CHILDREN: ", hasChildren);
-
         return (
           <div key={el.ID}>
             <button
