@@ -165,6 +165,7 @@
   margin: 1vh;
   text-align: start;
   border-left: 3px solid #5b7065;
+  outline: 0 !important;
 }
 
 .btn_sub:hover {
