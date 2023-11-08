@@ -39,6 +39,7 @@ class Registration extends React.Component {
       showPrintBtn: false,
       defaultCountry: undefined,
       activeElement: null,
+      activeChild: null,
     };
     this.hashHistory = createHashHistory();
   }
@@ -450,14 +451,16 @@ class Registration extends React.Component {
     } else {
       let html = children.map(el => {
         const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
+        const isActive = this.state.activeChild === el.ID; // Check if the child is active
         return (
           <button
+            className={isActive ? `${style["btn_sub"]} ${style["submenu-print"]} ${style["active"]}` : `${style["btn_sub"]} ${style["submenu-print"]}`}
+            id={el.ID}
             onClick={() => {
               let url = window.server + el.onSubmit;
               window.open(url, '_blank');
+              //this.setState({ activeChild: el.ID }) 
             }}
-            className={`${style["btn_sub"]} ${style["submenu-print"]} `}
-            id={el.ID}
           >
             {iconManager.getIcon(modifiedID)}{el.label}
           </button>
@@ -465,7 +468,6 @@ class Registration extends React.Component {
       });
       this.setState({ [id]: html });
     }
-    this.setState({ activeElement: id });
   }
 
   handleButtonClick = (componentName) => {
