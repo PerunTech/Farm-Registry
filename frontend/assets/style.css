@@ -41,10 +41,6 @@
     height: 90%;
 }
 
-.reg-btn-holder {
-    height: 60vh !important;
-}
-
 .reg-btn-holder::-webkit-scrollbar-thumb {
     background: #909090 !important
 }
