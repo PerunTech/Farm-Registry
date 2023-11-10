@@ -85,6 +85,10 @@
   outline: none;
 }
 
+.btn_text_start:focus::after {
+  width: 0;
+}
+
 .iconHolderBack {
   width: 6rem;
   margin: 2vh 1vh;
