@@ -87,10 +87,10 @@ public class WsRegistration {
 							dbG.setVal("DT_ARRIVAL", pickDate);
 						}
 
-						
 						if (jobj.get("PERSON_OBJECT_ID") != null) {
 							Long personId = jobj.get("PERSON_OBJECT_ID").getAsLong();
-							DbDataObject findPerson = svr.getObjectById(personId, SvReader.getTypeIdByName("PERSON"), null);
+							DbDataObject findPerson = svr.getObjectById(personId, SvReader.getTypeIdByName("PERSON"),
+									null);
 							if (findPerson == null) {
 								jrh.create(MessageType.ERROR, I18n.getText(localeId, "person.not.found"),
 										I18n.getText(localeId, "person.not.found"), new JsonObject());
@@ -104,7 +104,7 @@ public class WsRegistration {
 										I18n.getText(localeId, "already has farm"), new JsonObject());
 								return Response.status(200).entity(jrh.getAll().toString()).build();
 							}
-							
+
 						}
 
 						dbG.setObjectType(SvReader.getTypeIdByName("FARM"));
@@ -141,7 +141,7 @@ public class WsRegistration {
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
-	
+
 	/**
 	 * Method that checks if date format is valid
 	 * 
@@ -208,7 +208,7 @@ public class WsRegistration {
 			}
 		} catch (SvException e) {
 			return PerunUtil.handleException(e, "Error saving farm members");
-		} 
+		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
 

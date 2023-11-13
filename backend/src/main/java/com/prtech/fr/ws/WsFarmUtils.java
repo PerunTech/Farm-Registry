@@ -38,7 +38,7 @@ import com.prtech.svarog_common.ResponseHandler.MessageType;
 public class WsFarmUtils {
 
 	static final Logger log4j = SvConf.getLogger(WsFarmUtils.class);
-	
+
 	/**
 	 * Method for finding locale id per user, If not set returns default
 	 * 
