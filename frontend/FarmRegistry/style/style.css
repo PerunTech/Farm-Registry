@@ -97,3 +97,7 @@
 .farm-farm-registry-form .field-integer input {
   background-color: #d0d2d3;
 }
+
+.registration-module-farm-registry-modal {
+  padding-top: 0;
+}

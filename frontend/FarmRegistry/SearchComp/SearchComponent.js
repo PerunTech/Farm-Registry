@@ -1,7 +1,7 @@
 import {
   React,
   connect,
-  GenericGrid,
+  ExportableGrid,
   elements,
   ComponentManager,
   createHashHistory,
@@ -38,7 +38,7 @@ class AdminComopnent extends React.Component {
     let uischema = jsonData(this.context).uischema;
     let JSONSchema = jsonData(this.context).JSONSchema;
     searchForm = (
-      <Form
+      <div>      <Form
         schema={JSONSchema}
         uiSchema={uischema}
         onSubmit={this.assignSearchResultGrid}
@@ -58,7 +58,7 @@ class AdminComopnent extends React.Component {
             )}{" "}
           </button>
         </div>
-      </Form>
+      </Form></div>
     );
     this.setState({ showSearchForm: searchForm });
   };
@@ -106,17 +106,19 @@ class AdminComopnent extends React.Component {
     let dynamic_key = Math.floor(Math.random() * 999999).toString(36)
     let gridId = tableName
     searchGridId = gridId + dynamic_key
-    let grid = <GenericGrid
-      gridType={'SEARCH_GRID_DATA'}
-      key={gridId + dynamic_key}
-      id={gridId + dynamic_key}
-      configTableName={"/ReactElements/getTableFieldList/%session/" + gridId}
-      dataTableName={data}
-      onRowClickFunct={this.props.onRowClick}
-      heightRatio={0.48}
-      className={"farm-registry-search-grid"}
-      refreshData={() => this.assignSearchResultGrid(this.state.formState)}
-    />
+    let grid = (<div>
+      <ExportableGrid
+        gridType={'SEARCH_GRID_DATA'}
+        key={gridId + dynamic_key}
+        id={gridId + dynamic_key}
+        configTableName={"/ReactElements/getTableFieldList/%session/" + gridId}
+        dataTableName={data}
+        onRowClickFunct={this.props.onRowClick}
+        heightRatio={0.50}
+        className={"farm-registry-search-grid"}
+        refreshData={() => this.assignSearchResultGrid(this.state.formState)}
+      />
+    </div>)
 
     ComponentManager.setStateForComponent(gridId + dynamic_key, null, {
       onRowClickFunct: this.props.onRowClick

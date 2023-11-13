@@ -91,11 +91,10 @@ class FarmRegistry extends React.Component {
   render() {
     const { componentToRender } = this.state
     return (
-      <div id="gridHolder">
-        <MenuHolder moduleNameProp={"farm-registry"} wsConfGetMenuProp={"WsConf/getMenu"} />
+      <>
         {componentToRender}
         {/* <AgriCultureHolding /> */}
-      </div>
+      </>
     );
   }
 }
