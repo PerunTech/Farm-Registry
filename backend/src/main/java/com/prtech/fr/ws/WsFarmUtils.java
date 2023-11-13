@@ -58,30 +58,6 @@ public class WsFarmUtils {
 		return locale;
 	}
 
-	private Response setExceptionResponseHandler(Exception e, ResponseHandler jrh, String message) {
-		if (e instanceof SvException) {
-			SvException sve = (SvException) e;
-			log4j.error(sve.getFormattedMessage(), sve);
-			if (sve.getLabelCode().equals(CC.ERROR_INVALID_SESSION)) {
-				jrh.create(MessageType.ERROR, I18n.getText(CC.ERROR_INVALID_SESSION),
-						I18n.getText(CC.ERROR_INVALID_SESSION), new JsonObject());
-				return Response.status(401).entity(jrh.getAll().toString()).build();
-			} else if (sve.getLabelCode().equals(CC.ERROR_USER_NOT_AUTHORIZED)) {
-				jrh.create(MessageType.ERROR, I18n.getText(CC.ERROR_USER_NOT_AUTHORIZED),
-						I18n.getText(CC.ERROR_USER_NOT_AUTHORIZED), new JsonObject());
-				return Response.status(403).entity(jrh.getAll().toString()).build();
-			} else {
-				jrh.create(MessageType.ERROR, I18n.getText(message), I18n.getText(sve.getLabelCode()),
-						new JsonObject());
-				return Response.status(200).entity(jrh.getAll().toString()).build();
-			}
-		} else {
-			log4j.error(e.getMessage(), e);
-			jrh.create(MessageType.ERROR, I18n.getText(message), I18n.getText(message), new JsonObject());
-		}
-		return Response.status(200).entity(jrh.getAll().toString()).build();
-	}
-
 	/**
 	 * Web service to return all animals relating to a farm record.
 	 * 
