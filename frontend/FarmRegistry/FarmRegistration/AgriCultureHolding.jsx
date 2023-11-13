@@ -290,8 +290,8 @@ class AgriCultureHolding extends React.Component {
       showCapacities,
     } = this.state;
     return (
-      <div className={`${style["registrationHolder"]}`} id="registrationHolder">
-        <div className={`${style["listButton"]}`} id="listButton">
+      <div className={`${style["farm-registry-container"]}`} id="farm-registry-container">
+        <div className={`${style["farm-registry-sidemenu"]}`} id="farm-registry-sidemenu">
           <div className={`${style["btnHolder"]}`}>
             <button
               className={`${style["btn_reg"]} ${style["btn_text_start"]}`}

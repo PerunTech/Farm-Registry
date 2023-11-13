@@ -1,14 +1,16 @@
-.registrationHolder {
+/* container for fr without module menu */
+.farm-registry-main-container {
+  height: calc(100% - 25px - 55px);
   display: flex;
-  height: 85vh;
+  width: 100%;
 }
 
 .registrationbtnCapacitiesHolder {
   display: flex;
-  height: 58vh;
+  height: 60vh;
   flex-direction: column;
   margin-top: 0.5vh;
-  margin-left: 8%;
+  margin-left: 1%;
   overflow: hidden auto;
 }
 
@@ -19,10 +21,9 @@
   margin-bottom: 0.5%;
 }
 
-.listButton {
-  height: auto;
+.farm-registry-sidemenu {
   width: 20%;
-  margin-top: -1%;
+  overflow: hidden;
   background: #304040;
   -moz-animation-name: slide-in-left;
   -moz-animation-iteration-count: 1;
@@ -36,10 +37,16 @@
   animation-iteration-count: 1;
   animation-timing-function: ease-in;
   animation-duration: 0.5s;
+  padding-bottom: 20px;
 }
 
-.search-container {
+.farm-registry-content {
   width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .btn_reg,
@@ -218,21 +225,9 @@
   margin-left: 2%;
 }
 
-.gridHolder {
-  /*height: 77vh;*/
-  /* grid-template-rows: 8vh 78vh;  */
-  display: grid;
-  /* margin: 1vh; */
-  margin: 0vh;
-  margin-left: 1vh;
-  margin-right: 1vh;
-  overflow: auto;
-}
-
-.createFormHolder {
-  height: 76vh;
-  margin: 1vh;
-  /*overflow: auto;*/
+.farm-registry-content-search {
+  width: 95%;
+  height: 95%;
 }
 
 .listGroupRegHolder {
@@ -440,10 +435,6 @@
   padding: 1%;
 }
 
-.dataHolder {
-  margin: 0.5%;
-}
-
 .mapBtn {
   text-align: center;
   transition: 0.5s;
@@ -545,86 +536,6 @@
   }
 }
 
-@media only screen and (min-width: 320px) and (max-width: 374px) {
-  .registrationHolder {
-    grid-template-columns: 100%;
-  }
-
-  .searchForm {
-    grid-template-columns: 100%;
-    row-gap: 0.5vh;
-  }
-
-  .btn_reg {
-    font-size: 13px;
-  }
-
-  .distanceBetweenElements {
-    padding: 10px;
-  }
-
-  .livestockButtonHolder {
-    grid-template-columns: 49% 49%;
-  }
-}
-
-@media only screen and (min-width: 375px) and (max-width: 767px) {
-  .registrationHolder {
-    grid-template-columns: 100%;
-  }
-
-  .searchForm {
-    grid-template-columns: 100%;
-    row-gap: 0.5vh;
-  }
-
-  .distanceBetweenElements {
-    padding: 1vh;
-  }
-
-  .livestockButtonHolder {
-    grid-template-columns: 49% 49%;
-  }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 1023px) {
-  .registrationHolder {
-    grid-template-columns: 30% 70%;
-  }
-
-  .registrationbtnCapacitiesHolder {
-    grid-template-columns: 100%;
-  }
-
-  .btnHolder {
-    font-size: 14px;
-  }
-
-  .searchForm {
-    grid-template-columns: 24% 24% 24% 24%;
-    font-size: 14px;
-  }
-
-  .livestockButtonHolder {
-    grid-template-columns: 40% 40%;
-  }
-}
-
-@media only screen and (min-width: 1024px) and (max-width: 1389px) {
-  .searchForm {
-    grid-template-columns: 24% 24% 24% 24%;
-    font-size: 14px;
-  }
-
-  .registrationHolder {
-    grid-template-columns: 35% 65%;
-  }
-
-  .livestockButtonHolder {
-    grid-template-columns: 40% 40%;
-  }
-}
-
 .form-SC {
   padding: 0 20px 20px 20px;
   align-items: right;
@@ -694,4 +605,18 @@
 .farm-registry-btn-holder {
   display: flex;
   float: right;
+}
+
+.dataHolder {
+  width: 95%;
+  height: 95%;
+}
+
+.farm-registry-submenu-comp {
+  width: 95%;
+  height: 95%;
+}
+
+.initial-farm-registry-btns {
+  border-left: 0;
 }

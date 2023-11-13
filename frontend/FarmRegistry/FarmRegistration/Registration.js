@@ -68,16 +68,9 @@ class Registration extends React.Component {
     this.setState({ dataForm: '' })
   }
 
-  displayPrivateRegForm = () => {
+  showAddFarm = () => {
     GridManager.reloadGridData("FARM_GRID");
-    this.setState({
-      componentAddReg: false,
-      showGrid: false,
-      formKey: "private_farm",
-      hideSearchForm: false,
-      showSearchForm: false,
-      dataForm: <CreateFarm personObjId={this.state.personObj} />
-    });
+    this.displayComponent('ADD_FARM');
   };
 
   getConfiguration = (objid) => {
@@ -262,6 +255,13 @@ class Registration extends React.Component {
     let componentAddReg;
     let href = '/main/farm-registry/registration/'
     switch (component) {
+      case "ADD_FARM":
+        href = `/main/farm-registry/registration/register`
+        this.hashHistory.push(href)
+        componentAddReg = (
+          <CreateFarm personObjId={this.state.personObj} />
+        );
+        break;
       case "AHV_HOLDING":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
@@ -501,14 +501,26 @@ class Registration extends React.Component {
 
       <>
         {loading && <Loading />}
-        <div className={`${style["registrationHolder"]}`} id="registrationHolder">
-          <div className={`${style["listButton"]}`} id="listButton">
+        <div className={`${style["farm-registry-main-container"]}`} id="farm-registry-main-container">
+          <div className={`${style["farm-registry-sidemenu"]}`} id="farm-registry-sidemenu">
             <div className={`${style["btnHolder"]}`}>
+              <button className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']}`} onClick={() => {
+                this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
+                let href = `/main/farm-registry/registration/search`
+                this.hashHistory.push(href)
+              }}>
+                {iconManager.getIcon("search")}
+                {labelsManager.importLabel(
+                  "searching",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
               <button
-                className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
+                className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']}`}
                 onClick={() => {
                   this.privateRegForm();
-                  this.displayPrivateRegForm()
+                  this.showAddFarm()
                 }}
               >
                 {iconManager.getIcon("add")}
@@ -518,17 +530,6 @@ class Registration extends React.Component {
                   "farm_registry"
                 )}
               </button>
-              {/* <button
-              className={`${style["btn_reg"]} ${style["btn_text_start"]}`}
-              onClick={this.displayCompanyRegForm}
-            >
-              {iconManager.getIcon("add")}
-              {labelsManager.importLabel(
-                "add_agri_holding",
-                this.context,
-                "farm_registry"
-              )}
-            </button> */}
             </div>
             <div className={`${style["btnHolder"]}`}>
               {generateInfoState}
@@ -700,27 +701,15 @@ class Registration extends React.Component {
                 </>
               </div>)}
           </div>
-          <div className={`${style["search-container"]}`} id="search-container">
-            <div className={`${style["gridHolder"]}`} id="gridHolder">
-              {showSearchForm && (
-                <div>
-                  <SearchComponent onRowClick={this.onRowClick} />
-                </div>
-              )}
-            </div>
+          <div className={`${style["farm-registry-content"]}`} id="farm-registry-content">
+            {showSearchForm && <div className={`${style["farm-registry-content-search"]}`} id="farm-registry-content-search">
 
-            <div id="dataHolder" className={`${style["dataHolder"]}`}>
+              <SearchComponent onRowClick={this.onRowClick} />
+            </div>}
+
+            <div id="dataHolder" className={`${dataForm ? style["dataHolder"] : ''} ${componentAddReg ? style['farm-registry-submenu-comp'] : ""}`}>
               {showGrid && dataHolder}
               {componentAddReg}
-              {dataForm && (
-                <div
-                  key={formKey}
-                  id="createRegForm"
-                  className={`${style["createFormHolder"]}`}
-                >
-                  {dataForm}
-                </div>
-              )}
             </div>
           </div>
         </div >
