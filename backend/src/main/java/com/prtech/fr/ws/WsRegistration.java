@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.prtech.perun.PerunUtil;
 import com.prtech.svarog.I18n;
 import com.prtech.svarog.SvCore;
 import com.prtech.svarog.SvException;
@@ -86,10 +87,10 @@ public class WsRegistration {
 							dbG.setVal("DT_ARRIVAL", pickDate);
 						}
 
-						
 						if (jobj.get("PERSON_OBJECT_ID") != null) {
 							Long personId = jobj.get("PERSON_OBJECT_ID").getAsLong();
-							DbDataObject findPerson = svr.getObjectById(personId, SvReader.getTypeIdByName("PERSON"), null);
+							DbDataObject findPerson = svr.getObjectById(personId, SvReader.getTypeIdByName("PERSON"),
+									null);
 							if (findPerson == null) {
 								jrh.create(MessageType.ERROR, I18n.getText(localeId, "person.not.found"),
 										I18n.getText(localeId, "person.not.found"), new JsonObject());
@@ -103,7 +104,7 @@ public class WsRegistration {
 										I18n.getText(localeId, "already has farm"), new JsonObject());
 								return Response.status(200).entity(jrh.getAll().toString()).build();
 							}
-							
+
 						}
 
 						dbG.setObjectType(SvReader.getTypeIdByName("FARM"));
@@ -120,7 +121,6 @@ public class WsRegistration {
 								canSave = true;
 								svw.dbCommit();
 							} catch (SvException e) {
-								System.out.println(e.getLabelCode());
 								if (e.getLabelCode().equals("system.error.unq_constraint_violated")) {
 									canSave = false;
 								} else {
@@ -137,18 +137,11 @@ public class WsRegistration {
 						I18n.getText("saveUser.success.saveUser"), dbG.toSimpleJson());
 			}
 		} catch (SvException e) {
-			if (e.getLabelCode().equals("error.invalid_session")) {
-				jrh.create(MessageType.ERROR, I18n.getText("error.invalid_session"),
-						I18n.getText("error.invalid_session"), new JsonObject());
-				return Response.status(401).entity(jrh.getAll().toString()).build();
-			}
-			jrh.create(MessageType.ERROR, I18n.getText(e.getLabelCode()), I18n.getText(e.getLabelCode()),
-					new JsonObject());
-			return Response.status(200).entity(jrh.getAll().toString()).build();
+			return PerunUtil.handleException(e, "Error saving farm");
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
-	
+
 	/**
 	 * Method that checks if date format is valid
 	 * 
@@ -175,15 +168,8 @@ public class WsRegistration {
 	public Response saveFarmMembers(@PathParam("session_id") String session, @PathParam("farmObjId") Long farmObjId,
 			MultivaluedMap<String, String> formVals, @Context HttpServletRequest httpRequest) throws SvException {
 		ResponseHandler jrh = new ResponseHandler();
-
-		SvWriter svw = null;
-		SvReader svr = null;
-		DbDataObject dbG = null;
-
-		try {
-			svr = new SvReader(session);
-			svw = new SvWriter(session);
-			dbG = new DbDataObject();
+		try (SvReader svr = new SvReader(session); SvWriter svw = new SvWriter(svr);) {
+			DbDataObject dbG = new DbDataObject();
 			if (formVals != null) {
 				for (Entry<String, List<String>> entry : formVals.entrySet()) {
 					if (entry.getKey() != null && !entry.getKey().isEmpty()) {
@@ -221,20 +207,7 @@ public class WsRegistration {
 						I18n.getText("saveFarmMember.success.saveFarmMember"), new JsonObject());
 			}
 		} catch (SvException e) {
-			if (e.getLabelCode().equals("error.invalid_session")) {
-				jrh.create(MessageType.ERROR, I18n.getText("error.invalid_session"),
-						I18n.getText("error.invalid_session"), new JsonObject());
-				return Response.status(401).entity(jrh.getAll().toString()).build();
-			}
-			jrh.create(MessageType.ERROR, I18n.getText(e.getLabelCode()), I18n.getText(e.getLabelCode()),
-					new JsonObject());
-			return Response.status(200).entity(jrh.getAll().toString()).build();
-		} finally {
-			if (svr != null)
-				svr.release();
-			if (svw != null)
-				svw.release();
-
+			return PerunUtil.handleException(e, "Error saving farm members");
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
@@ -245,15 +218,8 @@ public class WsRegistration {
 	 */
 	public Response activateFarm(String session, Long farmObjId) throws SvException {
 		ResponseHandler jrh = new ResponseHandler();
-
-		SvWriter svw = null;
-		SvReader svr = null;
-		DbDataObject dbf = null;
-
-		try {
-			svr = new SvReader(session);
-			svw = new SvWriter(session);
-			dbf = new DbDataObject();
+		try (SvReader svr = new SvReader(session); SvWriter svw = new SvWriter(svr);) {
+			DbDataObject dbf = new DbDataObject();
 			if (farmObjId != null) {
 				dbf = svr.getObjectById(farmObjId, SvCore.getTypeIdByName("FARM"), null);
 			}
@@ -275,19 +241,7 @@ public class WsRegistration {
 						I18n.getText("farm.error.farmNotFound"), new JsonObject());
 			}
 		} catch (SvException e) {
-			if (e.getLabelCode().equals("error.invalid_session")) {
-				jrh.create(MessageType.ERROR, I18n.getText("error.invalid_session"),
-						I18n.getText("error.invalid_session"), new JsonObject());
-				return Response.status(401).entity(jrh.getAll().toString()).build();
-			}
-			jrh.create(MessageType.ERROR, I18n.getText(e.getLabelCode()), I18n.getText(e.getLabelCode()),
-					new JsonObject());
-			return Response.status(200).entity(jrh.getAll().toString()).build();
-		} finally {
-			if (svr != null)
-				svr.release();
-			if (svw != null)
-				svw.release();
+			return PerunUtil.handleException(e, "Error activating farm");
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
@@ -296,11 +250,9 @@ public class WsRegistration {
 	 * build new sequence for FIC current year + seq(next val) f.r
 	 */
 	public String generateFic(SvCore parentSvr) throws SvException {
-		SvSequence svs = null;
 		String generateFic = null;
 		if (parentSvr != null) {
-			try {
-				svs = new SvSequence(parentSvr.getSessionId());
+			try (SvSequence svs = new SvSequence(parentSvr.getSessionId());) {
 				DateTime currDate = new DateTime();
 				int currentYear = currDate.getYear();
 				String sequenceKey = "GENERATE_FIC" + currentYear;
@@ -326,9 +278,6 @@ public class WsRegistration {
 					return null;
 				}
 				log4j.error(e);
-			} finally {
-				if (svs != null)
-					svs.release();
 			}
 		}
 		return generateFic;
