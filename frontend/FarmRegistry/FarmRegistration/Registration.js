@@ -38,7 +38,7 @@ class Registration extends React.Component {
       showSubMenu: false,
       showPrintBtn: false,
       defaultCountry: undefined,
-      activeElement: null,
+      activeElement: 'SEARCH',
       activeChild: null,
     };
     this.hashHistory = createHashHistory();
@@ -71,6 +71,7 @@ class Registration extends React.Component {
   showAddFarm = () => {
     GridManager.reloadGridData("FARM_GRID");
     this.displayComponent('ADD_FARM');
+    this.setState({ activeElement: 'ADD_FARM' })
   };
 
   getConfiguration = (objid) => {
@@ -504,10 +505,12 @@ class Registration extends React.Component {
         <div className={`${style["farm-registry-main-container"]}`} id="farm-registry-main-container">
           <div className={`${style["farm-registry-sidemenu"]}`} id="farm-registry-sidemenu">
             <div className={`${style["btnHolder"]}`}>
-              <button className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']}`} onClick={() => {
+              <button className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']} ${activeElement === 'SEARCH' && style['active']}`} onClick={() => {
                 this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
                 let href = `/main/farm-registry/registration/search`
                 this.hashHistory.push(href)
+                this.setState({ activeElement: 'SEARCH' })
+                this.privateRegForm();
               }}>
                 {iconManager.getIcon("search")}
                 {labelsManager.importLabel(
@@ -517,7 +520,7 @@ class Registration extends React.Component {
                 )}
               </button>
               <button
-                className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']}`}
+                className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']} ${activeElement === 'ADD_FARM' && style['active']}`}
                 onClick={() => {
                   this.privateRegForm();
                   this.showAddFarm()
