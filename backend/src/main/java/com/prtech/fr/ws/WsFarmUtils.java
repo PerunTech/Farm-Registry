@@ -1,6 +1,5 @@
 package com.prtech.fr.ws;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.prtech.perun.PerunUtil;
 import com.prtech.perun_core.ws.WsReactElements;
 import com.prtech.svarog.I18n;
 import com.prtech.svarog.SvConf;
@@ -135,7 +135,7 @@ public class WsFarmUtils {
 			}
 		} catch (SvException e) {
 			log4j.error(e.getFormattedMessage(), e);
-			return Response.status(401).entity(e.getFormattedMessage()).build();
+			return PerunUtil.handleException(e, "Error getting animals relating to a farm record");
 		}
 		return Response.status(200).entity(retString).build();
 	}
@@ -165,7 +165,7 @@ public class WsFarmUtils {
 			jrh.create(MessageType.SUCCESS, I18n.getText("success"), I18n.getText("success"), jsonArrayResponse);
 		} catch (SvException e) {
 			log4j.error(e.getFormattedMessage(), e);
-			return Response.status(401).entity(e.getFormattedMessage()).build();
+			return PerunUtil.handleException(e, "Error getting lpis data");
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
@@ -204,7 +204,7 @@ public class WsFarmUtils {
 			jrh.create(MessageType.SUCCESS, I18n.getText("success"), I18n.getText("success"), finalList);
 		} catch (SvException e) {
 			log4j.error(e.getFormattedMessage(), e);
-			return Response.status(401).entity(e.getFormattedMessage()).build();
+			return PerunUtil.handleException(e, "Error getting intersections data");
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
@@ -243,7 +243,7 @@ public class WsFarmUtils {
 			jrh.create(MessageType.SUCCESS, I18n.getText("success"), I18n.getText("success"), finalList);
 		} catch (SvException e) {
 			log4j.error(e.getFormattedMessage(), e);
-			return Response.status(401).entity(e.getFormattedMessage()).build();
+			return PerunUtil.handleException(e, "Error getting agri parcel data");
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
@@ -254,14 +254,13 @@ public class WsFarmUtils {
 	public Response getLandUseCodes(@PathParam("sessionId") String sessionId, @PathParam("landCover") Integer landCover,
 			@PathParam("includeOnlyBasic") Boolean includeOnlyBasic, @PathParam("year") Integer year,
 			@PathParam("includeOtscCrops") Boolean includeOtscCrops, @Context HttpServletRequest httpRequest) {
-		ResponseHandler jrh = new ResponseHandler();
 		JsonObject jObjectResult = new JsonObject();
 		try (SvReader svr = new SvReader(sessionId);) {
 			DbReader rdr = new DbReader();
 			jObjectResult = rdr.getSpecificLandUseCodesMainMethod(svr, year, landCover, includeOnlyBasic,
 					includeOtscCrops);
 		} catch (Exception e) {
-			return setExceptionResponseHandler(e, jrh, "farm_registry.error.get_land_use_codes");
+			return PerunUtil.handleException(e, "Error getting land use codes");
 		}
 		return Response.status(200).entity(jObjectResult.toString()).build();
 	}
