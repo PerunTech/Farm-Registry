@@ -1889,42 +1889,42 @@ public class DbInit implements IDbInit {
 		dbe13.setGui_metadata(addReactGuiMeta(getUiWidth(getDefaultUiMeta(true, false, false, false), 63), "CAD_PARCEL",
 				dbe13.getDbFieldName()).toString());
 		// Column 14
-		DbDataField dbe14 = new DbDataField();
-		dbe14.setDbFieldName("IS_RURAL");
-		dbe14.setDbFieldType(DbFieldType.BOOLEAN);
-		dbe14.setLabel_code("cad_parcel.is_rural");
-		dbe14.setGui_metadata(
-				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe14.getDbFieldName())
-						.toString());
-
-		// Column 15
-		DbDataField dbe15 = new DbDataField();
-		dbe15.setDbFieldName("IS_RURAL_2017");
-		dbe15.setDbFieldType(DbFieldType.BOOLEAN);
-		dbe15.setLabel_code("cad_parcel.is_rural");
-		dbe15.setGui_metadata(
-				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe15.getDbFieldName())
-						.toString());
-
-		// Column 16
-		DbDataField dbe16 = new DbDataField();
-		dbe16.setDbFieldName("IS_RURAL_2018");
-		dbe16.setDbFieldType(DbFieldType.BOOLEAN);
-		dbe16.setLabel_code("cad_parcel.is_rural");
-		dbe16.setGui_metadata(
-				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe16.getDbFieldName())
-						.toString());
-
-		// Column 17
-		DbDataField dbe17 = new DbDataField();
-		dbe17.setDbFieldName("ID");
-		dbe17.setDbFieldType(DbFieldType.NUMERIC);
-		dbe17.setLabel_code("cad_parcel.id");
-		dbe17.setDbFieldSize(19);
-		dbe17.setDbFieldScale(0);
-		dbe17.setGui_metadata(
-				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe17.getDbFieldName())
-						.toString());
+//		DbDataField dbe14 = new DbDataField();
+//		dbe14.setDbFieldName("IS_RURAL");
+//		dbe14.setDbFieldType(DbFieldType.BOOLEAN);
+//		dbe14.setLabel_code("cad_parcel.is_rural");
+//		dbe14.setGui_metadata(
+//				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe14.getDbFieldName())
+//						.toString());
+//
+//		// Column 15
+//		DbDataField dbe15 = new DbDataField();
+//		dbe15.setDbFieldName("IS_RURAL_2017");
+//		dbe15.setDbFieldType(DbFieldType.BOOLEAN);
+//		dbe15.setLabel_code("cad_parcel.is_rural");
+//		dbe15.setGui_metadata(
+//				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe15.getDbFieldName())
+//						.toString());
+//
+//		// Column 16
+//		DbDataField dbe16 = new DbDataField();
+//		dbe16.setDbFieldName("IS_RURAL_2018");
+//		dbe16.setDbFieldType(DbFieldType.BOOLEAN);
+//		dbe16.setLabel_code("cad_parcel.is_rural");
+//		dbe16.setGui_metadata(
+//				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe16.getDbFieldName())
+//						.toString());
+//
+//		// Column 17
+//		DbDataField dbe17 = new DbDataField();
+//		dbe17.setDbFieldName("ID");
+//		dbe17.setDbFieldType(DbFieldType.NUMERIC);
+//		dbe17.setLabel_code("cad_parcel.id");
+//		dbe17.setDbFieldSize(19);
+//		dbe17.setDbFieldScale(0);
+//		dbe17.setGui_metadata(
+//				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe17.getDbFieldName())
+//						.toString());
 
 		// Column 18
 		DbDataField dbe18 = new DbDataField();
@@ -1956,7 +1956,7 @@ public class DbInit implements IDbInit {
 				addReactGuiMeta(getDefaultUiMeta(true, true, false, false), "CAD_PARCEL", dbe20.getDbFieldName())
 						.toString());
 
-		DbDataField[] dbTableFields = new DbDataField[20];
+		DbDataField[] dbTableFields = new DbDataField[16];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
 		dbTableFields[2] = dbe3;
@@ -1970,13 +1970,13 @@ public class DbInit implements IDbInit {
 		dbTableFields[10] = dbe10;
 		dbTableFields[11] = dbe11;
 		dbTableFields[12] = dbe12;
-		dbTableFields[13] = dbe14;
-		dbTableFields[14] = dbe15;
-		dbTableFields[15] = dbe16;
-		dbTableFields[16] = dbe17;
-		dbTableFields[17] = dbe18;
-		dbTableFields[18] = dbe19;
-		dbTableFields[19] = dbe20;
+//		dbTableFields[13] = dbe14;
+//		dbTableFields[14] = dbe15;
+//		dbTableFields[15] = dbe16;
+//		dbTableFields[13] = dbe17;
+		dbTableFields[13] = dbe18;
+		dbTableFields[14] = dbe19;
+		dbTableFields[15] = dbe20;
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
