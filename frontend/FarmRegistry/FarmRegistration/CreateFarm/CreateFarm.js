@@ -8,12 +8,13 @@ import {
     Loading,
     GenericForm,
 } from "perun-core";
+import { labelsManager } from "../../utils_tools/LabelsExport";
 const { useState, useEffect } = React;
 const { alertUser } = elements;
 
 import CreateFarmWrapper from "./CreateFarmWrapper";
 const tableName = "FARM";
-const CreateFarm = (props) => {
+const CreateFarm = (props, context) => {
     const [showForm, setShow] = useState(true)
     const [loading, setLoading] = useState(false)
     //handle infinite loading
@@ -34,7 +35,8 @@ const CreateFarm = (props) => {
                 if (res.data) {
                     const resType = res.data.type.toLowerCase()
                     const title = res.data.title || ''
-                    const msg = res.data.message || ''
+                    const ficLine = res.data.data.FIC ? `\n${labelsManager.importLabel("holding_code", context, "farm_registry")} ${res.data.data.FIC}` : '';
+                    const msg = `${res.data.message}${ficLine}`;
                     alertUser(true, resType, title, msg)
                     ComponentManager.setStateForComponent(`${tableName}_FORM`, null, {
                         saveExecuted: false,
