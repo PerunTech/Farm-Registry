@@ -35,11 +35,8 @@ const CreateFarm = (props, context) => {
                 if (res.data) {
                     const resType = res.data.type.toLowerCase()
                     const title = res.data.title || ''
-                    const msg = `${res.data.message} \n${labelsManager.importLabel(
-                        "holding_code",
-                        context,
-                        "farm_registry"
-                    )} ${res.data.data.FIC}`
+                    const ficLine = res.data.data.FIC ? `\n${labelsManager.importLabel("holding_code", context, "farm_registry")} ${res.data.data.FIC}` : '';
+                    const msg = `${res.data.message}${ficLine}`;
                     alertUser(true, resType, title, msg)
                     ComponentManager.setStateForComponent(`${tableName}_FORM`, null, {
                         saveExecuted: false,
