@@ -34,7 +34,7 @@ const CreateFarm = (props) => {
                 if (res.data) {
                     const resType = res.data.type.toLowerCase()
                     const title = res.data.title || ''
-                    const msg = res.data.message || ''
+                    const msg = `${res.data.message}\nHolding Code: ${res.data.data.FIC}`
                     alertUser(true, resType, title, msg)
                     ComponentManager.setStateForComponent(`${tableName}_FORM`, null, {
                         saveExecuted: false,
