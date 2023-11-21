@@ -590,7 +590,7 @@ class Registration extends React.Component {
                     "farm_registry"
                   )}
                 </button>
-                <button
+                {/* <button
                   className={activeElement === "INTERSECTIONS"
                     ? `${style["btn_sub"]} ${style["active"]}`
                     : style["btn_sub"]}
@@ -605,7 +605,7 @@ class Registration extends React.Component {
                     this.context,
                     "farm_registry"
                   )}
-                </button>
+                </button> */}
                 <button
                   className={activeElement === "SIZP"
                     ? `${style["btn_sub"]} ${style["active"]}`
