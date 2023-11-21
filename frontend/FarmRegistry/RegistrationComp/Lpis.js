@@ -44,18 +44,13 @@ class Lpis extends React.Component {
   }
 
   /* on row click function */
-  onRowClick(id, idx, row) {
-    console.log(row);
-    this.setState(
-      { cadParcelObjId: row[`${cadParcelTable}.OBJECT_ID`] },
-      () => {
-        this.generatePreview();
-      }
-    );
+  onRowClick = (_id, _idx, row) => {
+    const objectId = row[`${cadParcelTable}.OBJECT_ID`]
+    this.generatePreview(objectId)
   }
 
   /* generate preview for the selected cad parcel */
-  generatePreview() {
+  generatePreview = (objectId) => {
     let form = (
       <GenericForm
         params={"READ_URL"}
@@ -68,7 +63,7 @@ class Lpis extends React.Component {
         }
         tableFormDataMethod={
           "/ReactElements/getTableFormData/%session/" +
-          cadParcelObjId +
+          objectId +
           "/" +
           cadParcelTable
         }
@@ -91,6 +86,7 @@ class Lpis extends React.Component {
       ),
     });
   };
+
   closeModal = () => {
     this.setState({ showModal: false });
   };
@@ -101,7 +97,6 @@ class Lpis extends React.Component {
       <div>
         <div id="lpis">
           {showModal}
-
           {grid}
         </div>
       </div>
