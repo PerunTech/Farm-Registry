@@ -1,4 +1,4 @@
-export function jsonData(context) {
+export function jsonData(context, isPerson) {
   return {
     uischema: {
     },
@@ -8,7 +8,7 @@ export function jsonData(context) {
 
       properties: {
         FIC: {
-          type: 'string', title: `${context.intl.formatMessage({ id: 'perun.farm_registry.fic', defaultMessage: 'perun.farm_registry.fic' })}`
+          type: 'string', title: `${isPerson ? context.intl.formatMessage({ id: 'perun.farm_registry.fic', defaultMessage: 'perun.farm_registry.fic' }) : context.intl.formatMessage({ id: 'perun.farm_registry.holding', defaultMessage: 'perun.farm_registry.holding' })}`
         },
         FULL_NAME: {
           type: 'string', title: `${context.intl.formatMessage({ id: 'perun.farm_registry.full_name', defaultMessage: 'perun.farm_registry.full_name' })}`,
