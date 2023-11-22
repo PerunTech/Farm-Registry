@@ -31,11 +31,9 @@ const CustomButtons = (props, context) => {
                 </button>
             ))}
         </div>
-
         return div
     }
     const customBtnAction = (type, url, multiSelect) => {
-        console.log(url);
         const saveUrl = `${window.server}${url}`
         if (multiSelect && type === 'POST') {
             if (props.selectedGridRows.length > 0) {
@@ -46,7 +44,6 @@ const CustomButtons = (props, context) => {
                     url: saveUrl,
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 }).then(res => {
-                    console.log(res);
                     if (res.data) {
                         alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message);
                     }
