@@ -1,10 +1,11 @@
-import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm } from 'perun-core'
+import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux } from 'perun-core'
 import style from "../style/registration.module.css"
 import { getDynamicKey } from '../../utils'
 import { labelsManager } from '../utils_tools/LabelsExport';
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
+const { store, updateSelectedRows } = redux;
 
 let systemFields = {}
 const CustomButtons = (props, context) => {
@@ -17,13 +18,57 @@ const CustomButtons = (props, context) => {
         return () => {
             ComponentManager.cleanComponentReducerState(props.tableName + props.farmObjId);
             systemFields = {}
+            store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], props.tableName + props.farmObjId] })
+            ComponentManager.setStateForComponent(props.tableName + props.farmObjId, 'selectedIndexes', [])
         }
     }, [])
+
+    const buildCustomBtnArr = (btnArray, multiSelect) => {
+        const div = <div className={style['custom-btn-holder']}>
+            {btnArray.map(el => (
+                <button id={el['ID']} className={`${style[`${el.ID.replace(/\d/g, '').replace(/_$/, '').toLowerCase()}`]}`} onClick={() => customBtnAction(el['type'], el['onSave'], multiSelect)}>
+                    {el['label']}
+                </button>
+            ))}
+        </div>
+        return div
+    }
+    const customBtnAction = (type, url, multiSelect) => {
+        const saveUrl = `${window.server}${url}`
+        if (multiSelect && type === 'POST') {
+            if (props.selectedGridRows.length > 0) {
+                const data = JSON.stringify(props.selectedGridRows)
+                axios({
+                    method: "post",
+                    data,
+                    url: saveUrl,
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                }).then(res => {
+                    if (res.data) {
+                        alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message);
+                    }
+                }).catch(err => {
+                    console.error(err)
+                    const title = err.response?.data?.title || err
+                    const msg = err.response?.data?.message || ''
+                    alertUser(true, "error", title, msg);
+                });
+            } else {
+                alertUser(true, 'info', labelsManager.importLabel('select_parcel', context, 'farm_registry'));
+            }
+
+        }
+    }
 
     const generateGrid = () => {
         const configWs = props.configuration.objectConfiguration.configuration.onSubmit
         const dataWs = props.configuration.objectConfiguration.data.onSubmit
-        return (
+        const multiSelect = props.configuration.objectConfiguration.multiSelect || false
+        const btnArray = props.configuration.objectConfiguration.additionalBtns
+
+        const grid = <div className={style['custom-grid-container']}>
+            {btnArray && buildCustomBtnArr(btnArray, multiSelect)}
+
             <ExportableGrid
                 gridType={"READ_URL"}
                 key={props.tableName + props.farmObjId}
@@ -32,13 +77,30 @@ const CustomButtons = (props, context) => {
                 dataTableName={dataWs}
                 heightRatio={0.7}
                 onRowClickFunct={handleRowClick}
-                refreshData={true}
+                refreshData={() => reloadGrid(props.tableName + props.farmObjId, multiSelect)}
                 toggleCustomButton={true}
                 customButton={() => setShowModal(true)}
                 customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
+                enableMultiSelect={multiSelect}
+                onSelectChangeFunct={customRowSelection}
             />
-        )
+
+        </div>
+        return grid
     }
+    //multiselect functions 
+    const customRowSelection = (selectedRows, gridId) => {
+        store.dispatch(updateSelectedRows(selectedRows, gridId));
+    };
+
+    const reloadGrid = (gridId, multiSelect) => {
+        GridManager.reloadGridData(gridId)
+        if (multiSelect) {
+            store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], gridId] })
+            ComponentManager.setStateForComponent(gridId, 'selectedIndexes', [])
+        }
+    }
+
 
     const generateForm = (isModal, resetTheId) => {
         let customClass = `${props.tableName.toLowerCase()}-farm-registry-form` || 'customClass'
@@ -204,6 +266,7 @@ const CustomButtons = (props, context) => {
 const mapStateToProps = (state) => ({
     farmObjId: state['farm_registry.mapData']?.farmData?.objectId,
     svSession: state.security.svSession,
+    selectedGridRows: state.selectedGridRows.selectedGridRows,
 });
 
 CustomButtons.contextTypes = {

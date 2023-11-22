@@ -620,3 +620,38 @@
 .initial-farm-registry-btns {
   border-left: 0;
 }
+
+.custom-btn-holder {
+  display: flex;
+  width: 88.5%;
+  justify-content: flex-end;
+  position: absolute;
+  top: 1.4%;
+}
+
+.custom-grid-container {
+  position: relative;
+}
+
+.cad_parcel_validate,
+.cad_parcel_check {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  color: inherit;
+  background: #f1f1f1 !important;
+  font-size: 1rem !important;
+  margin-left: 0.5rem !important;
+  color: #1d1d1d !important;
+  background: #f1f1f1 !important;
+  border: 1px solid #e7eaec;
+  border-radius: 3px;
+}
