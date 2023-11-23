@@ -101,3 +101,8 @@
 .registration-module-farm-registry-modal {
   padding-top: 0;
 }
+
+.registration-module-custom-grid-container #refreshData {
+  position: relative;
+  z-index: 999999;
+}

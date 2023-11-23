@@ -622,11 +622,12 @@
 }
 
 .custom-btn-holder {
-  display: flex;
-  width: 88.5%;
-  justify-content: flex-end;
+  width: 100%;
   position: absolute;
   top: 1.4%;
+  float: right;
+  margin-left: -163px;
+  text-align: right;
 }
 
 .custom-grid-container {

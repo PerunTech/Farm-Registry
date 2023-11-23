@@ -66,7 +66,7 @@ const CustomButtons = (props, context) => {
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
 
-        const grid = <div className={style['custom-grid-container']}>
+        const grid = <div className={`${multiSelect ? style['custom-grid-container'] : style['dynamic-grid']}`}>
             {btnArray && buildCustomBtnArr(btnArray, multiSelect)}
 
             <ExportableGrid
