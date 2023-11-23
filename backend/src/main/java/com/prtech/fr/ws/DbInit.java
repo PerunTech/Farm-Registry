@@ -649,6 +649,16 @@ public class DbInit implements IDbInit {
 		dbe11.setDbFieldScale(0);
 		dbe11.setLabel_code("farm.official_contact_obj_id");
 		dbe11.setGui_metadata(CONST_GUI_FIL_HIDE);
+		
+		// Column 25
+		DbDataField dbe25 = new DbDataField();
+		dbe25.setDbFieldName("NOTE");
+		dbe25.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe25.setDbFieldSize(2000);
+		dbe25.setLabel_code("farm.note");
+		dbe25.setIsNull(true);
+		dbe25.setSort_order(2500);
+		dbe25.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":false,\"resizable\":true,\"editable\":true,\"uischema\":{\"ui:widget\":\"textarea\",\"ui:options\":{\"rows\":8}}}}");
 
 		// DbDataField dbe4 = new DbDataField();
 		// dbe4.setDbFieldName("LIVESTOCK_STATUS");
@@ -696,7 +706,7 @@ public class DbInit implements IDbInit {
 		// dbe14.setIsNull(true);
 		// dbe14.setGui_metadata(CONST_GUI_FIL_VIS_RES_RO);
 
-		DbDataField[] dbTableFields = new DbDataField[11];
+		DbDataField[] dbTableFields = new DbDataField[12];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
 		dbTableFields[2] = dbe3;
@@ -708,6 +718,7 @@ public class DbInit implements IDbInit {
 		dbTableFields[8] = dbe9;
 		dbTableFields[9] = dbe10;
 		dbTableFields[10] = dbe11;
+		dbTableFields[11] = dbe25;
 
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
