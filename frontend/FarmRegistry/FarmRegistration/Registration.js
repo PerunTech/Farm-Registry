@@ -12,8 +12,6 @@ import Parcel from "../RegistrationComp/Parcel";
 import SearchComponent from '../SearchComp/SearchComponent';
 import Intersection from '../RegistrationComp/Intersection'
 import FarmEquipment from "../RegistrationComp/FarmEquipment";
-import Equipment from "../RegistrationComp/Equipment";
-import Machinery from "../RegistrationComp/Machinery";
 import Address from '../RegistrationComp/Address/Address';
 import CustomMenu from "../RegistrationComp/CustomMenu";
 import CreateFarm from './CreateFarm/CreateFarm';
@@ -35,19 +33,12 @@ class Registration extends React.Component {
       tax_no: '',
       showCapacities: false,
       hideSearchForm: true,
-      showSubMenu: false,
       showPrintBtn: false,
       defaultCountry: undefined,
       activeElement: 'SEARCH',
       activeChild: null,
     };
     this.hashHistory = createHashHistory();
-  }
-
-  toggleSubMeu = () => {
-    this.setState((prevState) => ({
-      showSubMenu: !prevState.showSubMenu
-    }))
   }
 
   componentDidMount = () => {
@@ -309,16 +300,6 @@ class Registration extends React.Component {
         this.setState({ showCapacities: true })
         componentAddReg = <FarmEquipment farmObjId={this.props.farmObjId} paramsComponent={component} />
         break;
-      case "MACHINERY":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = <Machinery />
-        break;
-      case "EQUIPMENT":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = <Equipment />
-        break;
       case "ADDRESS":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
@@ -460,7 +441,6 @@ class Registration extends React.Component {
             onClick={() => {
               let url = window.server + el.onSubmit;
               window.open(url, '_blank');
-              //this.setState({ activeChild: el.ID }) 
             }}
           >
             {iconManager.getIcon(modifiedID)}{el.label}
@@ -472,34 +452,23 @@ class Registration extends React.Component {
   }
 
   handleButtonClick = (componentName) => {
-    if (componentName === "FARM_EQUIPMENT") {
-      this.toggleSubMeu();
-    }
-
     this.setState({ activeElement: componentName });
-  }
-
-  toggleSubMeu = () => {
-    this.setState((prevState) => ({ showSubMenu: !prevState.showSubMenu }));
   }
 
   render() {
     const {
       dataHolder,
       showGrid,
-      formKey,
       componentAddReg,
       dataForm,
       showSearchForm,
       showCapacities,
       generateInfoState,
-      showSubMenu,
       loading,
       activeElement,
     } = this.state;
 
     return (
-
       <>
         {loading && <Loading />}
         <div className={`${style["farm-registry-main-container"]}`} id="farm-registry-main-container">
@@ -623,51 +592,6 @@ class Registration extends React.Component {
                   )}
                 </button>
                 <button
-                  className={`${style["btn_sub"]}`}
-                  onClick={() => this.toggleSubMeu()}
-                >
-                  {iconManager.getIcon("docs")}
-                  {labelsManager.importLabel(
-                    "farm_equipment",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
-                {showSubMenu && (
-                  <>
-                    <button
-                      className={`${style["btn_sub"]} ${style["submenu"]} ${activeElement === "MACHINERY" ? style["active"] : ""
-                        }`}
-                      onClick={() => {
-                        this.displayComponent("MACHINERY")
-                        this.handleButtonClick("MACHINERY")
-                      }}
-                    >
-                      {iconManager.getIcon("machinery")}
-                      {labelsManager.importLabel(
-                        "machinery",
-                        this.context,
-                        "farm_registry"
-                      )}
-                    </button>
-                    <button
-                      className={`${style["btn_sub"]} ${style["submenu"]} ${activeElement === "EQUIPMENT" ? style["active"] : ""
-                        }`}
-                      onClick={() => {
-                        this.displayComponent("EQUIPMENT")
-                        this.handleButtonClick("EQUIPMENT")
-                      }}
-                    >
-                      {iconManager.getIcon("equipment")}
-                      {labelsManager.importLabel(
-                        "equipment",
-                        this.context,
-                        "farm_registry"
-                      )}
-                    </button>
-                  </>
-                )}
-                <button
                   className={activeElement === "ADDRESS"
                     ? `${style["btn_sub"]} ${style["active"]}`
                     : style["btn_sub"]}
@@ -705,11 +629,11 @@ class Registration extends React.Component {
               </div>)}
           </div>
           <div className={`${style["farm-registry-content"]}`} id="farm-registry-content">
-            {showSearchForm && <div className={`${style["farm-registry-content-search"]}`} id="farm-registry-content-search">
-
-              <SearchComponent onRowClick={this.onRowClick} />
-            </div>}
-
+            {showSearchForm && (
+              <div className={`${style["farm-registry-content-search"]}`} id="farm-registry-content-search">
+                <SearchComponent onRowClick={this.onRowClick} />
+              </div>
+            )}
             <div id="dataHolder" className={`${dataForm ? style["dataHolder"] : ''} ${componentAddReg ? style['farm-registry-submenu-comp'] : ""}`}>
               {showGrid && dataHolder}
               {componentAddReg}
