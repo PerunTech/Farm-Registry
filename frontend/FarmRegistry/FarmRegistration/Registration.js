@@ -543,22 +543,6 @@ class Registration extends React.Component {
                     "farm_registry"
                   )}
                 </button>
-                <button
-                  className={activeElement === "LPIS"
-                    ? `${style["btn_sub"]} ${style["active"]}`
-                    : style["btn_sub"]}
-                  onClick={() => {
-                    this.displayComponent("LPIS")
-                    this.handleButtonClick("LPIS")
-                  }}
-                >
-                  {iconManager.getIcon("parcel")}
-                  {labelsManager.importLabel(
-                    "parcels",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
                 {/* <button
                   className={activeElement === "INTERSECTIONS"
                     ? `${style["btn_sub"]} ${style["active"]}`
