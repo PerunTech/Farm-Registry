@@ -2,7 +2,6 @@ import { React, connect, GridManager, PropTypes, Loading, ComponentManager, Gene
 const { alertUser } = elements
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
-import CompanyRegFarm from "./CompanyRegFarm";
 import { labelsManager } from "../utils_tools/LabelsExport";
 import Animal from "../RegistrationComp/Animal";
 import FarmMembers from "../RegistrationComp/FarmMembers";
@@ -66,24 +65,12 @@ class Registration extends React.Component {
     this.setState({ loading: true })
     let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/FARM-EXTENDED/object-id/${objid}`
     axios.get(url).then(res => {
-      this.setState({ reports: res.data, loading: false })
+      this.setState({ configuration: res.data, loading: false })
     }).catch(err => {
       console.error(err)
       this.setState({ loading: false })
     })
   }
-
-  displayCompanyRegForm = () => {
-    GridManager.reloadGridData("FARM_GRID");
-    this.setState({
-      componentAddReg: false,
-      showGrid: false,
-      formKey: "reg_company",
-      hideSearchForm: false,
-      showSearchForm: false,
-      dataForm: <CompanyRegFarm parentCallBackFunc={this.getPersonId} showSearch={this.showSearch} />,
-    });
-  };
 
   getPersonId = (personObj) => {
     this.setState({ personObj: personObj });
@@ -377,8 +364,8 @@ class Registration extends React.Component {
 
 
   generateCustomMenu = () => {
-    if (this.state.reports && Array.isArray(this.state.reports.data)) {
-      return this.state.reports.data.map(el => {
+    if (this.state.configuration && Array.isArray(this.state.configuration.data)) {
+      return this.state.configuration.data.map(el => {
         const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
         const isActive = this.state.activeElement === el.ID; // Check if the element is active
         const hasChildren = this.state[el.ID] !== undefined;  // Check if the element has children
@@ -388,7 +375,7 @@ class Registration extends React.Component {
               className={isActive && !hasChildren ? `${style["btn_sub"]} ${style["active"]}` : `${style["btn_sub"]}`}
               onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}
             >
-              {iconManager.getIcon(modifiedID)}{el.label}
+              <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
             </button>
             <div>
               {this.state[el.ID]}
@@ -400,14 +387,6 @@ class Registration extends React.Component {
       return <></>;
     }
   }
-
-  onButtonClick = (element) => {
-    const id = element.ID;
-    const splitID = id.replace(/\d/g, '').replace(/_$/, '');
-    this.displayComponent('DYNAMIC', splitID, element);
-    this.setState({ activeElement: id });
-  }
-
   generateChild = (id, children) => {
     if (this.state[id]) {
       this.setState({ [id]: null });
@@ -420,17 +399,29 @@ class Registration extends React.Component {
             className={isActive ? `${style["btn_sub"]} ${style["submenu-print"]} ${style["active"]}` : `${style["btn_sub"]} ${style["submenu-print"]}`}
             id={el.ID}
             onClick={() => {
-              let url = window.server + el.onSubmit;
-              window.open(url, '_blank');
+              if (el.ID.includes('PRINT')) {
+                let url = window.server + el.onSubmit;
+                window.open(url, '_blank');
+              } else {
+                this.onButtonClick(el)
+              }
             }}
           >
-            {iconManager.getIcon(modifiedID)}{el.label}
+            <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
           </button>
         );
       });
       this.setState({ [id]: html });
     }
   }
+  onButtonClick = (element) => {
+    const id = element.ID;
+    const splitID = id.replace(/\d/g, '').replace(/_$/, '');
+    this.displayComponent('DYNAMIC', splitID, element);
+    this.setState({ activeElement: id });
+  }
+
+
 
   handleButtonClick = (componentName) => {
     this.setState({ activeElement: componentName });
