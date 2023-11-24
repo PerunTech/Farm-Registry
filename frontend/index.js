@@ -25,30 +25,6 @@ const routes = [
     render: FarmRegistry,
     isExact: false,
   },
-  {
-    name: "farm-registry-calendar",
-    path: "/main/farm-registry/calendar",
-    render: FarmRegistry,
-    isExact: false,
-  },
-  {
-    name: "farm-registry-holding",
-    path: "/main/farm-registry/show_holding",
-    render: FarmRegistry,
-    isExact: false,
-  },
-  {
-    name: "farm-registry-animal",
-    path: "/main/farm-registry/animal",
-    render: FarmRegistry,
-    isExact: false,
-  },
-  {
-    name: "farm-registry-cad-parcel",
-    path: "/main/farm-registry/cad-parcel",
-    render: FarmRegistry,
-    isExact: false,
-  },
 ];
 
 export { FarmRegistry, routes };
