@@ -1,11 +1,5 @@
-import { React, connect, MenuHolder, PropTypes, redux, createHashHistory, } from "perun-core";
-import AgriCultureHolding from "./FarmRegistration/AgriCultureHolding";
-import ERZS from "./FarmRegistration/ERZS";
+import { React, connect, MenuHolder, PropTypes, redux, createHashHistory, } from "perun-core";;
 import Registration from './FarmRegistration/Registration'
-import CalendarComponent from './FarmRegistration/CalendarComponent'
-import CompanyRegFarm from "./FarmRegistration/CompanyRegFarm";
-import AnimalsComp from "./FarmRegistration/AnimalsComp";
-
 const { store } = redux
 class FarmRegistry extends React.Component {
   constructor(props) {
@@ -56,26 +50,6 @@ class FarmRegistry extends React.Component {
             component = <Registration paramsComponent={this.props.match.params} />
             break;
           }
-          case path === '#/main/farm-registry': {
-            component = <ERZS />
-            break;
-          }
-          case path === '#/main/farm-registry/animal': {
-            component = <AnimalsComp />
-            break;
-          }
-          case path === '#/main/farm-registry/cad-parcel': {
-            component = <CompanyRegFarm />
-            break;
-          }
-          case path === '#/main/farm-registry/calendar': {
-            component = <CalendarComponent />
-            break;
-          }
-          case path === '#/main/farm-registry/show_holding': {
-            component = <AgriCultureHolding />
-            break;
-          }
         }
         this.setState({ componentToRender: component })
       }
@@ -93,7 +67,6 @@ class FarmRegistry extends React.Component {
     return (
       <>
         {componentToRender}
-        {/* <AgriCultureHolding /> */}
       </>
     );
   }
