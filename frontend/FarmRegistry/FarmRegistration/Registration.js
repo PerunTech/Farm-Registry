@@ -5,13 +5,10 @@ import { iconManager } from "../../assets/svgHolder";
 import CompanyRegFarm from "./CompanyRegFarm";
 import { labelsManager } from "../utils_tools/LabelsExport";
 import Animal from "../RegistrationComp/Animal";
-import Lpis from "../RegistrationComp/Lpis";
-import AddDocuments from "../RegistrationComp/AddDocuments";
 import FarmMembers from "../RegistrationComp/FarmMembers";
 import Parcel from "../RegistrationComp/Parcel";
 import SearchComponent from '../SearchComp/SearchComponent';
 import Intersection from '../RegistrationComp/Intersection'
-import FarmEquipment from "../RegistrationComp/FarmEquipment";
 import Address from '../RegistrationComp/Address/Address';
 import CustomMenu from "../RegistrationComp/CustomMenu";
 import CreateFarm from './CreateFarm/CreateFarm';
@@ -261,11 +258,6 @@ class Registration extends React.Component {
           <Animal farmObjId={this.props.farmObjId} grid={component} paramsComponent={component} />
         );
         break;
-      case "LPIS":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = <Lpis farmObjId={this.props.farmObjId} paramsComponent={component} />;
-        break;
       case "INTERSECTIONS":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
@@ -283,22 +275,11 @@ class Registration extends React.Component {
           />
         );
         break;
-      case "DOCS":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = <AddDocuments key="addDoc" paramsComponent={component} />;
-        break;
       case "SIZP":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
         this.setState({ showCapacities: true })
         componentAddReg = <Parcel farmObjId={this.props.farmObjId} paramsComponent={component} />
-        break;
-      case "FARM_EQUIPMENT":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        this.setState({ showCapacities: true })
-        componentAddReg = <FarmEquipment farmObjId={this.props.farmObjId} paramsComponent={component} />
         break;
       case "ADDRESS":
         href = `/main/farm-registry/registration/${component}`
@@ -587,22 +568,6 @@ class Registration extends React.Component {
                   {iconManager.getIcon("address")}
                   {labelsManager.importLabel(
                     "address",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
-                <button
-                  className={activeElement === "DOCS"
-                    ? `${style["btn_sub"]} ${style["active"]}`
-                    : style["btn_sub"]}
-                  onClick={() => {
-                    this.displayComponent("DOCS")
-                    this.handleButtonClick("DOCS")
-                  }}
-                >
-                  {iconManager.getIcon("docs")}
-                  {labelsManager.importLabel(
-                    "docs",
                     this.context,
                     "farm_registry"
                   )}

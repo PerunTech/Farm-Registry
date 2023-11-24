@@ -45,7 +45,8 @@ const CustomButtons = (props, context) => {
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 }).then(res => {
                     if (res.data) {
-                        alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message);
+                        alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => reloadGrid(props.tableName + props.farmObjId, multiSelect));
+
                     }
                 }).catch(err => {
                     console.error(err)
