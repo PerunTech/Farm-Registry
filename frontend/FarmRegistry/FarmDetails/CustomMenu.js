@@ -2,6 +2,7 @@ import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, Gr
 import style from "../style/registration.module.css"
 import { getDynamicKey } from '../../utils'
 import { labelsManager } from '../utils_tools/LabelsExport';
+import Documents from './Documents';
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -246,8 +247,12 @@ const CustomButtons = (props, context) => {
     return (
         <>
             {loading && <Loading />}
-            <div>
-                {props.configuration?.objectConfiguration?.type && props.configuration?.objectConfiguration?.type === 'form' ? generateForm() : generateGrid()}
+            <div className={style['custom-menu-holder']}>
+                {props.configuration?.objectConfiguration?.type === 'form' && generateForm()}
+                {props.configuration?.objectConfiguration?.type === 'grid' && generateGrid()}
+                {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}
+                    uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
+                />}
                 {showModal && (
                     <Modal className={style["farm-registry-modal"]} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={style["farm-registry-modal-header"]} closeButton>

@@ -3,13 +3,13 @@ const { alertUser } = elements
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
 import { labelsManager } from "../utils_tools/LabelsExport";
-import Animal from "../RegistrationComp/Animal";
-import FarmMembers from "../RegistrationComp/FarmMembers";
-import Parcel from "../RegistrationComp/Parcel";
+import Animal from "../FarmDetails/Animal";
+import FarmMembers from "../FarmDetails/FarmMembers";
+import Parcel from "../FarmDetails/Parcel";
 import SearchComponent from '../SearchComp/SearchComponent';
-import Intersection from '../RegistrationComp/Intersection'
-import Address from '../RegistrationComp/Address/Address';
-import CustomMenu from "../RegistrationComp/CustomMenu";
+import Intersection from '../FarmDetails/Intersection'
+import Address from '../FarmDetails/Address/Address';
+import CustomMenu from "../FarmDetails/CustomMenu";
 import CreateFarm from './CreateFarm/CreateFarm';
 const { store } = redux
 

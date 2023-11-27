@@ -670,3 +670,132 @@
   height: 25px;
   width: 25px;
 }
+
+::-webkit-scrollbar {
+  width: 0 !important
+}
+
+.file-name-upload {
+  border: none;
+  font-size: 16px;
+  padding: 0.5vh;
+  background: transparent;
+  text-align: start;
+}
+
+.file-name-upload:hover {
+  background-color: #e6e6e6;
+}
+
+.file-name-upload:focus {
+  outline: none;
+}
+
+.delete-file-btn,
+.download-file-btn {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: #c92727;
+  margin-right: 0px;
+  float: right;
+  padding: 0.5vh;
+  outline: none;
+}
+
+.download-file-btn {
+  color: #181818;
+}
+
+.delete-file-btn:hover {
+  color: #e30a0a;
+  border-radius: 5px;
+}
+
+.download-file-btn:hover {
+  color: #313131;
+  border-radius: 5px;
+}
+
+.delete-file-btn:focus,
+.download-file-btn:focus {
+  outline: none;
+}
+
+.downloadable-item-div {
+  display: flex;
+  padding: 10px;
+  width: 71%;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 2px 5px rgb(37 37 37 / 38%);
+  margin: 10px;
+}
+
+.upload-file-btn {
+  text-indent: 0;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  height: 40px;
+  cursor: pointer;
+}
+
+.upload-file-btn:active {
+  transform: scale(.96);
+}
+
+.farm-registry-documents-container {
+  box-shadow: 2px 2px 5px rgb(37 37 37 / 38%);
+  height: 100%;
+  width: 100%;
+  background: white;
+}
+
+.custom-menu-holder {
+  height: 100%;
+  width: 100%;
+}
+
+.farm-registry-upload {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  align-items: center;
+}
+
+.farm-registry-upload p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.farm-registry-files {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.download-icon-text {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.download-icon-text span {
+  height: 40px;
+}
+
+.upload-to-download-btn {
+  color: black;
+  margin-right: 10px;
+}
+
+.upload-to-download-btn svg {
+  transform: rotate(180deg);
+}
