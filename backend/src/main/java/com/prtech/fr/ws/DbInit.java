@@ -658,7 +658,7 @@ public class DbInit implements IDbInit {
 		dbe25.setLabel_code("farm.note");
 		dbe25.setIsNull(true);
 		dbe25.setSort_order(2500);
-		dbe25.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":false,\"resizable\":true,\"editable\":true,\"uischema\":{\"ui:widget\":\"textarea\",\"ui:options\":{\"rows\":8}}}}");
+		dbe25.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
 
 		// DbDataField dbe4 = new DbDataField();
 		// dbe4.setDbFieldName("LIVESTOCK_STATUS");
