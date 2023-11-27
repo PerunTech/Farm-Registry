@@ -18,12 +18,15 @@ const Documents = (props, context) => {
         generateFileItem()
     }, [])
     const handleUploadedFiles = (e) => {
+        setFiles([])
         let arr = arrayOfFiles
         Object.values(e.target.files).map(file => {
             arr.push(file)
             setFiles(arr)
         })
-        handleMultiAttach(arr)
+        if (arr.length > 0) {
+            handleMultiAttach(arr)
+        }
     }
     const downloadFile = (el, e) => {
         e.preventDefault()
