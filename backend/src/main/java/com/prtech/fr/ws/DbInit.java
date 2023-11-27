@@ -658,7 +658,7 @@ public class DbInit implements IDbInit {
 		dbe25.setLabel_code("farm.note");
 		dbe25.setIsNull(true);
 		dbe25.setSort_order(2500);
-		dbe25.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":false,\"resizable\":true,\"editable\":true,\"uischema\":{\"ui:widget\":\"textarea\",\"ui:options\":{\"rows\":8}}}}");
+		dbe25.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
 
 		// DbDataField dbe4 = new DbDataField();
 		// dbe4.setDbFieldName("LIVESTOCK_STATUS");
@@ -2018,6 +2018,17 @@ public class DbInit implements IDbInit {
 			return dbLink;
 	}
 
+	
+	// LINK_FILE
+	private static DbDataObject createFarmFilesLink() {
+			DbDataObject dbLink = new DbDataObject();
+			dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
+			dbLink.setVal("LINK_TYPE", "LINK_FILE");
+			dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between FARM and FILE");
+			dbLink.setVal("LINK_OBJ_TYPE_1", "FARM");
+			dbLink.setVal("LINK_OBJ_TYPE_2", svCONST.OBJECT_TYPE_FILE);
+			return dbLink;
+	}
 
 	@Override
 	public ArrayList<DbDataTable> getCustomObjectTypes() {
@@ -2066,6 +2077,7 @@ public class DbInit implements IDbInit {
 		ArrayList<DbDataObject> dbtList = new ArrayList<DbDataObject>();
 		dbtList.add(createLinkOrgUnitPerson());
 		dbtList.add(createLinkOrgUnitGroup());
+		dbtList.add(createFarmFilesLink());
 		//dbtList.add(createLinkSupportClaimWithReceiptMilk());
 		return dbtList;
 	}
