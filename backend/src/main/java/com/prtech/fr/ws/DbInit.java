@@ -2018,6 +2018,17 @@ public class DbInit implements IDbInit {
 			return dbLink;
 	}
 
+	
+	// LINK_FILE
+	private static DbDataObject createFarmFilesLink() {
+			DbDataObject dbLink = new DbDataObject();
+			dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
+			dbLink.setVal("LINK_TYPE", "LINK_FILE");
+			dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between FARM and FILE");
+			dbLink.setVal("LINK_OBJ_TYPE_1", "FARM");
+			dbLink.setVal("LINK_OBJ_TYPE_2", svCONST.OBJECT_TYPE_FILE);
+			return dbLink;
+	}
 
 	@Override
 	public ArrayList<DbDataTable> getCustomObjectTypes() {
@@ -2066,6 +2077,7 @@ public class DbInit implements IDbInit {
 		ArrayList<DbDataObject> dbtList = new ArrayList<DbDataObject>();
 		dbtList.add(createLinkOrgUnitPerson());
 		dbtList.add(createLinkOrgUnitGroup());
+		dbtList.add(createFarmFilesLink());
 		//dbtList.add(createLinkSupportClaimWithReceiptMilk());
 		return dbtList;
 	}
