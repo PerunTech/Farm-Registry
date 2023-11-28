@@ -12,21 +12,16 @@ const { alertUser } = elements;
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { iconManager } from "../../assets/svgHolder";
 const Documents = (props, context) => {
-    const [arrayOfFiles, setFiles] = useState([])
     const [fileItems, setFileItems] = useState(undefined)
     useEffect(() => {
         generateFileItem()
     }, [])
     const handleUploadedFiles = (e) => {
-        setFiles([])
-        let arr = arrayOfFiles
+        let arr = []
         Object.values(e.target.files).map(file => {
             arr.push(file)
-            setFiles(arr)
         })
-        if (arr.length > 0) {
-            handleMultiAttach(arr)
-        }
+        handleMultiAttach(arr)
     }
     const downloadFile = (el, e) => {
         e.preventDefault()
@@ -55,20 +50,24 @@ const Documents = (props, context) => {
 
     const generateFileItem = () => {
         axios.get(`${window.server}${props.getUploadedFiles}`).then(res => {
-            let test = res.data.data.items.map((el) => (<div className={`${style['downloadable-item-div']}`}>
-                <div className={style['download-icon-text']}>
-                    <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={`${style['file-name-upload']}`} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{el.FILE_NAME}</button>
-                </div>
-                <div>
-                    <button type='button' id='deleteBtn' className={`${style['delete-file-btn']}`}
-                        onClick={(e) => { alertUser(true, 'warning', labelsManager.importLabel('delete_uploaded_file', context, 'farm_registry'), "", () => { deleteDownload(el, e,) }, () => { }, true, labelsManager.importLabel('yes', context, 'farm_registry'), labelsManager.importLabel('no', context, 'farm_registry')) }}>{iconManager.getIcon('delete')}
-                    </button>
-                    <button type='button' id='downloadBtn' className={`${style['download-file-btn']} ${style['upload-to-download-btn']}`}
-                        onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('upload')}
-                    </button>
-                </div>
-            </div>))
-            setFileItems(test)
+            if (res.data) {
+                if (res.data.data.items.length > 0) {
+                    let files = res.data.data.items.map((el) => (<div className={`${style['downloadable-item-div']}`}>
+                        <div className={style['download-icon-text']}>
+                            <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={`${style['file-name-upload']}`} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{el.FILE_NAME}</button>
+                        </div>
+                        <div>
+                            <button type='button' id='deleteBtn' className={`${style['delete-file-btn']}`}
+                                onClick={(e) => { alertUser(true, 'warning', labelsManager.importLabel('delete_uploaded_file', context, 'farm_registry'), "", () => { deleteDownload(el, e,) }, () => { }, true, labelsManager.importLabel('yes', context, 'farm_registry'), labelsManager.importLabel('no', context, 'farm_registry')) }}>{iconManager.getIcon('delete')}
+                            </button>
+                            <button type='button' id='downloadBtn' className={`${style['download-file-btn']} ${style['upload-to-download-btn']}`}
+                                onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('upload')}
+                            </button>
+                        </div>
+                    </div>))
+                    setFileItems(files)
+                }
+            }
         })
 
     }
@@ -107,7 +106,7 @@ const Documents = (props, context) => {
         } else {
             alertUser(true, 'info', labelsManager.importLabel('no_file_selected', context, 'farm_registry'))
         }
-        // setFiles([])
+        generateFileItem()
     }
 
     const responseFunc = (errorArr) => {
@@ -118,7 +117,7 @@ const Documents = (props, context) => {
                 erroArrNames.push(error.name)
             })
             nameString = erroArrNames.join(',')
-            alertUser(true, 'warning', `${labelsManager.importLabel('desc_error_upload', context, 'farm_registry')} : ${nameString}`, "")
+            alertUser(true, 'warning', `${labelsManager.importLabel('desc_error_upload', context, 'farm_registry')} :`, ` ${nameString}`)
         } else {
             alertUser(true, 'success', labelsManager.importLabel('desc_success_upload_title', context, 'farm_registry'))
         }
