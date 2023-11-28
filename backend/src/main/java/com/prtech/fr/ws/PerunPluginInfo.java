@@ -25,7 +25,7 @@ public class PerunPluginInfo implements IPerunPlugin {
 	@Override
 	public int getVersion() {
 		// TODO Auto-generated method stub
-		return 52;
+		return 53;
 	}
 
 	@Override
@@ -134,7 +134,6 @@ public class PerunPluginInfo implements IPerunPlugin {
 	public List<String> dependencies() {
 		List<String> deps = new ArrayList<String>();
 			deps.add("lpis");
-			deps.add("persons-registry");
 		return deps;
 	}
 
