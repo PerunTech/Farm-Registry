@@ -1,11 +1,9 @@
 import { React, connect, GridManager, PropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
-const { alertUser } = elements
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
 import { labelsManager } from "../utils_tools/LabelsExport";
 import Animal from "../FarmDetails/Animal";
 import FarmMembers from "../FarmDetails/FarmMembers";
-import Parcel from "../FarmDetails/Parcel";
 import SearchComponent from '../SearchComp/SearchComponent';
 import Intersection from '../FarmDetails/Intersection'
 import Address from '../FarmDetails/Address/Address';
@@ -107,12 +105,6 @@ class Registration extends React.Component {
           />
         );
         break;
-      case "SIZP":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        this.setState({ showCapacities: true })
-        componentAddReg = <Parcel farmObjId={this.props.farmObjId} paramsComponent={component} />
-        break;
       case "ADDRESS":
         href = `/main/farm-registry/registration/${component}`
         this.hashHistory.push(href)
@@ -194,7 +186,7 @@ class Registration extends React.Component {
       <div className={`${style['farmer-info-right']}`}>
         <p>{labelsManager.importLabel("status", this.context, "farm_registry")}: <b>{labelStatus}</b></p>
         <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{farmFullName}</b></p>
-        <p>{labelsManager.importLabel("fic", this.context, "farm_registry")}: <b>{farmFic}</b></p>
+        <p>{labelsManager.importLabel("holding_code", this.context, "farm_registry")}: <b>{farmFic}</b></p>
         <p>{labelsManager.importLabel("archive_number", this.context, "farm_registry")}: <b>{archiveNumber}</b></p>
       </div>
     </div>
@@ -374,22 +366,6 @@ class Registration extends React.Component {
                     "farm_registry"
                   )}
                 </button> */}
-                <button
-                  className={activeElement === "SIZP"
-                    ? `${style["btn_sub"]} ${style["active"]}`
-                    : style["btn_sub"]}
-                  onClick={() => {
-                    this.displayComponent("SIZP")
-                    this.handleButtonClick("SIZP")
-                  }}
-                >
-                  {iconManager.getIcon("parcelIcon")}
-                  {labelsManager.importLabel(
-                    "lpis",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
                 <button
                   className={activeElement === "ADDRESS"
                     ? `${style["btn_sub"]} ${style["active"]}`

@@ -629,7 +629,7 @@
   border-left: 0;
 }
 
-.custom-btn-holder {
+.custom-btn-holder-cad_parcel {
   width: 100%;
   position: absolute;
   top: 1.4%;
@@ -798,4 +798,12 @@
 
 .upload-to-download-btn svg {
   transform: rotate(180deg);
+}
+
+.toggle-on-child {
+  display: block;
+}
+
+.toggle-off-child {
+  display: none;
 }

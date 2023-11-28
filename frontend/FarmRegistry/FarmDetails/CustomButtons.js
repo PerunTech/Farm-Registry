@@ -1,4 +1,4 @@
-import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux } from 'perun-core'
+import { React, connect, axios, PropTypes, Loading, createHashHistory, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux } from 'perun-core'
 import style from "../style/registration.module.css"
 import { getDynamicKey } from '../../utils'
 import { labelsManager } from '../utils_tools/LabelsExport';
@@ -7,7 +7,7 @@ const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
 const { store, updateSelectedRows } = redux;
-
+let hashHistory = createHashHistory();
 let systemFields = {}
 const CustomButtons = (props, context) => {
     const [loading, _setLoading] = useState(false)
@@ -16,6 +16,7 @@ const CustomButtons = (props, context) => {
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
 
     useEffect(() => {
+        console.log(props.tableName.toLowerCase());
         return () => {
             ComponentManager.cleanComponentReducerState(props.tableName + props.farmObjId);
             systemFields = {}
@@ -25,18 +26,18 @@ const CustomButtons = (props, context) => {
     }, [])
 
     const buildCustomBtnArr = (btnArray, multiSelect) => {
-        const div = <div className={style['custom-btn-holder']}>
+        const div = <div className={style[`custom-btn-holder-${props.tableName.toLowerCase()}`]}>
             {btnArray.map(el => (
-                <button id={el['ID']} className={`${style[`${el.ID.replace(/\d/g, '').replace(/_$/, '').toLowerCase()}`]}`} onClick={() => customBtnAction(el['type'], el['onSave'], multiSelect)}>
+                <button id={el['ID']} className={`${style[`${el.ID.replace(/\d/g, '').replace(/_$/, '').toLowerCase()}`]}`} onClick={() => customBtnAction(el, multiSelect)}>
                     {el['label']}
                 </button>
             ))}
         </div>
         return div
     }
-    const customBtnAction = (type, url, multiSelect) => {
-        const saveUrl = `${window.server}${url}`
-        if (multiSelect && type === 'POST') {
+    const customBtnAction = (el, multiSelect) => {
+        const saveUrl = `${window.server}${el?.['onSave']}`
+        if (multiSelect && el['type'] === 'POST') {
             if (props.selectedGridRows.length > 0) {
                 const data = JSON.stringify(props.selectedGridRows)
                 axios({
@@ -59,6 +60,10 @@ const CustomButtons = (props, context) => {
                 alertUser(true, 'info', labelsManager.importLabel('select_parcel', context, 'farm_registry'));
             }
 
+        }
+        if (el['type'] === 'link') {
+            let href = el['route']
+            hashHistory.push(href)
         }
     }
 
