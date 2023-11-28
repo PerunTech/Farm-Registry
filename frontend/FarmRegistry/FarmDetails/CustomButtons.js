@@ -247,7 +247,7 @@ const CustomButtons = (props, context) => {
     return (
         <>
             {loading && <Loading />}
-            <div className={style['custom-menu-holder']}>
+            <div className={`${style['custom-menu-holder']} ${style[`custom-menu-${props.tableName.toLowerCase()}-container`]}`}>
                 {props.configuration?.objectConfiguration?.type === 'form' && generateForm()}
                 {props.configuration?.objectConfiguration?.type === 'grid' && generateGrid()}
                 {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}

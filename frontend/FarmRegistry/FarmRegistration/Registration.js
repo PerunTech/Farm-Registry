@@ -9,7 +9,7 @@ import Parcel from "../FarmDetails/Parcel";
 import SearchComponent from '../SearchComp/SearchComponent';
 import Intersection from '../FarmDetails/Intersection'
 import Address from '../FarmDetails/Address/Address';
-import CustomMenu from "../FarmDetails/CustomMenu";
+import CustomButtons from "../FarmDetails/CustomButtons";
 import CreateFarm from './CreateFarm/CreateFarm';
 const { store } = redux
 
@@ -72,161 +72,6 @@ class Registration extends React.Component {
     })
   }
 
-  getPersonId = (personObj) => {
-    this.setState({ personObj: personObj });
-  };
-
-  displayGridFarm = () => {
-    store.dispatch({ type: 'RESET_FR_MAP_DATA' })
-    const { fullName, fic, farmType, id_no, tax_no, tableName } = this.state
-    const { svSession } = this.props
-    if (!fullName && !fic && !farmType && !id_no && !tax_no) {
-      alertUser(true, 'error', this.context.intl.formatMessage({ id: 'perun.farm_registry.no_search_val', defaultMessage: 'perun.farm_registry.no_search_val' }), this.context.intl.formatMessage({ id: 'perun.farm_registry.please_enter_search_val', defaultMessage: 'perun.farm_registry.please_enter_search_val' }))
-    } else {
-      let multipleFilterData = []
-      if (fullName) {
-        multipleFilterData.push({ fieldName: 'FULL_NAME', fieldValue: fullName, operand: 'AND' })
-      }
-      if (fic) {
-        multipleFilterData.push({ fieldName: 'FIC', fieldValue: fic, operand: 'AND' })
-      }
-      if (farmType) {
-        multipleFilterData.push({ fieldName: 'FARM_TYPE', fieldValue: farmType, operand: 'AND' })
-      }
-      if (id_no) {
-        multipleFilterData.push({ fieldName: 'ID_NO', fieldValue: id_no, operand: 'AND' })
-      }
-      if (tax_no) {
-        multipleFilterData.push({ fieldName: 'TAX_NO', fieldValue: tax_no, operand: 'AND' })
-      }
-      const names = multipleFilterData.map((element) => element.fieldName).join(',');
-      const values = multipleFilterData.map((element) => element.fieldValue).join(',');
-
-      let operandFinal = []
-      multipleFilterData.map((element) => {
-        operandFinal.push(element.operand)
-      });
-
-      if (operandFinal.length > 1) {
-        operandFinal.pop();
-        operandFinal = JSON.stringify(operandFinal)
-      }
-
-      const gridId = `INITIAL_${tableName}_GRID`
-      const gridConfig = `/ReactElements/getTableFieldList/${svSession}/${tableName}`
-      const gridData = `/ReactElements/getTableWithMultipleFilters/${svSession}/${tableName}/${names}/${operandFinal}/${values}/1000`
-      let grid = (
-        <GenericGrid
-          gridType={"READ_URL"}
-          key={gridId}
-          id={gridId}
-          configTableName={gridConfig}
-          dataTableName={gridData}
-          onRowClickFunct={this.onRowClick}
-          minHeight={610}
-        />
-      )
-
-      ComponentManager.setStateForComponent(gridId, null, {
-        onRowClickFunct: this.onRowClick,
-        rowClicked: undefined,
-      });
-
-      ComponentManager.cleanComponentReducerState(gridId)
-      this.setState({ dataHolder: undefined, showGrid: true, dataForm: false, }, () => this.setState({ dataHolder: grid }));
-    };
-  }
-
-  handleSearchByTheEnterKey = e => {
-    if (e.keyCode === 13) {
-      e.preventDefault()
-      this.displayGridFarm()
-    }
-  }
-
-  resetFields = () => {
-    this.setState({ fullName: '', fic: '', farmType: '' })
-  }
-
-  refreshAgriParcels() {
-    const { svSession, farmObjId } = this.props
-    const resturl = window.server + '/farmer/refreshFarmData/' + svSession
-    let params = ''
-    params = { 'farmId': farmObjId }
-    alertUser(true, 'info',
-      labelsManager.importLabel('data_refreshing', this.context, 'farm_registry'),
-      labelsManager.importLabel('please_wait', this.context, 'farm_registry'),
-      null, null, null, null, null, null, null, null, null, true
-    )
-    axios({
-      method: 'post',
-      data: params,
-      url: resturl,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    }).then((response) => {
-      if (response.data) {
-        const wrapper = document.createElement('div')
-        if (response.data.data) {
-          let isNotError = true
-          for (const [key, value] of Object.entries(response.data.data)) {
-            const parentGrid = document.createElement('div')
-            parentGrid.setAttribute('id', 'parentgrid')
-            parentGrid.classList.add(style.parentgrid);
-            let keySplit = key.split('_')[1]
-            let icon
-            switch (keySplit) {
-              case 'ERROR':
-                isNotError === false
-                parentGrid.setAttribute('style', 'border-left: 3px solid red')
-                icon = document.createElement('div')
-                icon.style.cssText = 'width: 25px; height:25px; border: 2px solid red; border-radius: 25px;'
-                icon.innerHTML = '<i class="fa fa-times" style="color:red; margin-left: 24%;"></i>'
-                break;
-              case 'WARNING':
-                parentGrid.setAttribute('style', 'border-left: 3px solid #c7c226')
-                icon = document.createElement('div')
-                icon.style.cssText = 'width: 27px; height:27px; border: 2px solid #c7c226; border-radius: 25px;'
-                icon.innerHTML = '<i class="fa fa-exclamation-triangle" style="color:#c7c226; margin-left: 3px;"></i>'
-                break;
-              case 'SUCCESS':
-                parentGrid.setAttribute('style', 'border-left: 4px solid green')
-                icon = document.createElement('div')
-                icon.style.cssText = 'width: 25px; height:25px; border: 2px solid green; border-radius: 25px;'
-                icon.innerHTML = '<i class="fa fa-check" style="color:green; margin-left: 13%;"></i>'
-              default:
-                break;
-            }
-            parentGrid.appendChild(icon)
-            /* js way to solve sweetalert custom html  */
-            let childEl = document.createElement('div')
-            let arrayIds = ''
-            childEl.setAttribute('id', 'childEl')
-            if (typeof value === 'object') {
-              for (const [id, label] of Object.entries(value)) {
-                arrayIds += (` ${id},`)
-              }
-              if (arrayIds) {
-                arrayIds = arrayIds.substr(0, arrayIds.length - 1)
-                const parcelLabel = this.context.intl.formatMessage({ id: 'perun.farm_registry.parcel', defaultMessage: 'perun.farm_registry.parcel' })
-                const errorLabel = this.context.intl.formatMessage({ id: 'perun.farm_registry.have_errors', defaultMessage: 'perun.farm_registry.have_errors' })
-                childEl.innerHTML = `(${parcelLabel}) (${arrayIds}) (${errorLabel})`
-              }
-            } else {
-              childEl.innerHTML = value
-            }
-            parentGrid.appendChild(childEl)
-            wrapper.appendChild(parentGrid)
-          }
-          alertUser(true, response.data.type.toLowerCase(), response.data.title, null, isNotError ? this.reload : null, null, null, null, null, null, null, null, wrapper)
-        }
-      }
-    }).catch((error) => {
-      if (error) {
-        alertUser(true, 'error', 'Error', error.message, null)
-      }
-    })
-  }
-
   displayComponent = (component, tableName, configuration) => {
     let componentAddReg;
     let href = '/main/farm-registry/registration/'
@@ -276,13 +121,13 @@ class Registration extends React.Component {
       case "DYNAMIC":
         href = `/main/farm-registry/registration/${tableName}`
         this.hashHistory.push(href)
-        const customMenuProps = {
+        const customButtonsProps = {
           key: tableName,
           tableName,
           configuration,
           getConfiguration: (objId) => this.getConfiguration(objId)
         }
-        componentAddReg = <CustomMenu {...customMenuProps} />
+        componentAddReg = <CustomButtons {...customButtonsProps} />
         break;
       default:
         break;
@@ -296,7 +141,7 @@ class Registration extends React.Component {
     });
   };
 
-  onRowClick = (rowId, rowPosition, rowsData) => {
+  onRowClick = (_rowId, _rowPosition, rowsData) => {
     const objectId = rowsData["FARM.OBJECT_ID"]
     const objectTypeId = rowsData["FARM.OBJECT_TYPE"]
     store.dispatch({ type: 'WRITE_FARM_INFO', payload: rowsData })
@@ -362,8 +207,7 @@ class Registration extends React.Component {
     this.setState({ [e.target.id]: e.target.value });
   };
 
-
-  generateCustomMenu = () => {
+  generateCustomButtons = () => {
     if (this.state.configuration && Array.isArray(this.state.configuration.data)) {
       return this.state.configuration.data.map(el => {
         const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
@@ -414,14 +258,13 @@ class Registration extends React.Component {
       this.setState({ [id]: html });
     }
   }
+
   onButtonClick = (element) => {
     const id = element.ID;
     const splitID = id.replace(/\d/g, '').replace(/_$/, '');
     this.displayComponent('DYNAMIC', splitID, element);
     this.setState({ activeElement: id });
   }
-
-
 
   handleButtonClick = (componentName) => {
     this.setState({ activeElement: componentName });
@@ -564,7 +407,7 @@ class Registration extends React.Component {
                   )}
                 </button>
                 <>
-                  {this.generateCustomMenu()}
+                  {this.generateCustomButtons()}
                 </>
               </div>)}
           </div>
