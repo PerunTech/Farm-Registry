@@ -807,3 +807,19 @@
 .toggle-off-child {
   display: none;
 }
+
+.agri_parcel-btn {
+  text-align: center;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  height: auto;
+  width: auto;
+  border-radius: 4px;
+  border: none;
+  background-image: linear-gradient(to right, #304040 0%, #52695d 51%, #304040 100%);
+  font-weight: bold;
+  height: 50px;
+  margin-bottom: 5px;
+}

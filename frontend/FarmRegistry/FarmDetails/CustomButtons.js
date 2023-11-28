@@ -28,7 +28,7 @@ const CustomButtons = (props, context) => {
     const buildCustomBtnArr = (btnArray, multiSelect) => {
         const div = <div className={style[`custom-btn-holder-${props.tableName.toLowerCase()}`]}>
             {btnArray.map(el => (
-                <button id={el['ID']} className={`${style[`${el.ID.replace(/\d/g, '').replace(/_$/, '').toLowerCase()}`]}`} onClick={() => customBtnAction(el, multiSelect)}>
+                <button id={el['ID']} className={`${style[`${props.tableName.toLowerCase()}-btn`]}`} onClick={() => customBtnAction(el, multiSelect)}>
                     {el['label']}
                 </button>
             ))}
