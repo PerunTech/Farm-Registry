@@ -38,7 +38,7 @@ module.exports = (mode, { env }) => {
             }
           },
           enforce: 'pre',
-          include: [/lpis/, /perun-core/, /persons-registry/]
+          include: [/lpis/, /perun-core/]
         },
         {
           // For pure CSS (without CSS modules)
@@ -75,6 +75,6 @@ module.exports = (mode, { env }) => {
     resolve: {
       extensions: ['.js', '.jsx']
     },
-    externals: env === 'production' ? { 'lpis': 'lpis', 'perun-core': 'perun-core', 'persons-registry': 'persons-registry' } : {}
+    externals: env === 'production' ? { 'lpis': 'lpis', 'perun-core': 'perun-core' } : {}
   }
 };

@@ -3,7 +3,6 @@
  * export all content representing the surface of your plugin API. Noone is expected to call, but wth.
  * Wait to be called for render, Core will call you.
  */
-import * as assets from "./assets"; // eslint-disable-line
 import FarmRegistry from "./FarmRegistry/FarmRegistry";
 import mapDataReducer from './FarmRegistry/reducerMap'
 
