@@ -7,9 +7,6 @@
  */
 import { name } from '../package.json'
 import { pluginManager } from 'perun-core';
-import * as pr from 'persons-registry'
 import * as plugin from './index';
 
-pluginManager.registerPlugin('persons-registry', pr);
 pluginManager.registerPlugin(name, plugin);
-console.log(pluginManager.getRegistry())
