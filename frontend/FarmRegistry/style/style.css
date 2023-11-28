@@ -106,3 +106,13 @@
   position: relative;
   z-index: 999999;
 }
+
+.farm_activities_yn-farm-registry-form fieldset {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: end;
+}
+
+.farm_activities_yn-farm-registry-form .field-string {
+  width: 100%
+}
