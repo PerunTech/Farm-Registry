@@ -671,10 +671,6 @@
   width: 25px;
 }
 
-::-webkit-scrollbar {
-  width: 0 !important
-}
-
 .file-name-upload {
   border: none;
   font-size: 16px;
