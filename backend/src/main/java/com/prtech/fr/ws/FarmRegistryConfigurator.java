@@ -13,8 +13,6 @@ import com.google.gson.JsonObject;
 import com.prtech.svarog.SvConf;
 import com.prtech.svarog.SvCore;
 import com.prtech.svarog.SvException;
-import com.prtech.svarog.SvExecManager;
-import com.prtech.svarog.SvNote;
 import com.prtech.svarog.SvReader;
 import com.prtech.svarog.SvWriter;
 import com.prtech.svarog.svCONST;
@@ -26,8 +24,6 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 	
 	SvReader svr = null;
 	SvWriter svw = null;
-	SvExecManager svsec = null;
-	SvNote svn = null;
 
 	@Override
 	public int executionOrder(UpdateType updateType) {
@@ -72,14 +68,9 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 
 	@Override
 	public String afterUpdate(Connection conn, ISvCore core, String schema) throws Exception {
-		try (SvExecManager svsec1 = new SvExecManager((SvCore) core);
-				SvReader svr1 = new SvReader(svsec1);
-				SvWriter svw1 = new SvWriter(svsec1);
-				SvNote svn1 = new SvNote(svsec1);) {
+		try (SvReader svr1 = new SvReader((SvCore) core); SvWriter svw1 = new SvWriter(svr1);) {
 			svw = svw1;
 			svr = svr1;
-			svsec = svsec1;
-			svn = svn1;
 			svw.setAutoCommit(false);
 			createExtendedMenuPlugin(svw);
 			svw.dbCommit();
