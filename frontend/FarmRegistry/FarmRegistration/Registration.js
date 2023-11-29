@@ -182,14 +182,14 @@ class Registration extends React.Component {
     if (status === 'CLOSED') {
       labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.inactive', defaultMessage: 'perun.farm_registry.inactive' })
     }
-    htmlElement = <div style={{ color: 'white' }} className={`${style['farmerInfo']}`}>
+    htmlElement = <>
       <div className={`${style['farmer-info-right']}`}>
         <p>{labelsManager.importLabel("status", this.context, "farm_registry")}: <b>{labelStatus}</b></p>
         <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{farmFullName}</b></p>
         <p>{labelsManager.importLabel("holding_code", this.context, "farm_registry")}: <b>{farmFic}</b></p>
         <p>{labelsManager.importLabel("archive_number", this.context, "farm_registry")}: <b>{archiveNumber}</b></p>
       </div>
-    </div>
+    </>
 
     elementArr.push(htmlElement)
     this.setState({ generateInfoState: elementArr })
@@ -206,17 +206,17 @@ class Registration extends React.Component {
         const isActive = this.state.activeElement === el.ID; // Check if the element is active
         const hasChildren = this.state[el.ID] !== undefined;  // Check if the element has children
         return (
-          <div key={el.ID}>
+          <>
             <button
               className={isActive && !hasChildren ? `${style["btn_sub"]} ${style["active"]}` : `${style["btn_sub"]}`}
               onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}
             >
               <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
             </button>
-            <div>
+            {el.data && <div>
               {this.state[el.ID]}
-            </div>
-          </div>
+            </div>}
+          </>
         );
       });
     } else {
@@ -310,82 +310,58 @@ class Registration extends React.Component {
                 )}
               </button>
             </div>
-            <div className={`${style["btnHolder"]}`}>
-              {generateInfoState}
-            </div>
-            {showCapacities && (
-              <div
-                className={`${'reg-btn-holder'} ${style["registrationbtnCapacitiesHolder"]}`}
-                id="btnCapacities"
+            {generateInfoState}
+            {showCapacities && (<div className={[style['dynamic-comp-main-div']]}>
+              <button
+                className={activeElement === 'FARM_MEMBERS'
+                  ? `${style["btn_sub"]} ${style["active"]}`
+                  : style["btn_sub"]}
+                onClick={() => {
+                  this.displayComponent("FARM_MEMBERS")
+                  this.handleButtonClick("FARM_MEMBERS")
+                }}
               >
-                <button
-                  className={activeElement === 'FARM_MEMBERS'
-                    ? `${style["btn_sub"]} ${style["active"]}`
-                    : style["btn_sub"]}
-                  onClick={() => {
-                    this.displayComponent("FARM_MEMBERS")
-                    this.handleButtonClick("FARM_MEMBERS")
-                  }}
-                >
-                  {iconManager.getIcon("group")}
-                  {labelsManager.importLabel(
-                    "agri_members",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
-                <button
-                  className={activeElement === "AHV_HOLDING"
-                    ? `${style["btn_sub"]} ${style["active"]}`
-                    : style["btn_sub"]}
-                  onClick={() => {
-                    this.displayComponent("AHV_HOLDING")
-                    this.handleButtonClick("AHV_HOLDING")
-                  }}
-                >
-                  {iconManager.getIcon("animal")}
-                  {labelsManager.importLabel(
-                    "livestock",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
-                {/* <button
-                  className={activeElement === "INTERSECTIONS"
-                    ? `${style["btn_sub"]} ${style["active"]}`
-                    : style["btn_sub"]}
-                  onClick={() => {
-                    this.displayComponent("INTERSECTIONS")
-                    this.handleButtonClick("INTERSECTIONS")
-                  }}
-                >
-                  {iconManager.getIcon("parcel")}
-                  {labelsManager.importLabel(
-                    "cadastral_intersection",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button> */}
-                <button
-                  className={activeElement === "ADDRESS"
-                    ? `${style["btn_sub"]} ${style["active"]}`
-                    : style["btn_sub"]}
-                  onClick={() => {
-                    this.displayComponent("ADDRESS")
-                    this.handleButtonClick("ADDRESS")
-                  }}
-                >
-                  {iconManager.getIcon("address")}
-                  {labelsManager.importLabel(
-                    "address",
-                    this.context,
-                    "farm_registry"
-                  )}
-                </button>
-                <>
-                  {this.generateCustomButtons()}
-                </>
-              </div>)}
+                {iconManager.getIcon("group")}
+                {labelsManager.importLabel(
+                  "agri_members",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={activeElement === "AHV_HOLDING"
+                  ? `${style["btn_sub"]} ${style["active"]}`
+                  : style["btn_sub"]}
+                onClick={() => {
+                  this.displayComponent("AHV_HOLDING")
+                  this.handleButtonClick("AHV_HOLDING")
+                }}
+              >
+                {iconManager.getIcon("animal")}
+                {labelsManager.importLabel(
+                  "livestock",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              <button
+                className={activeElement === "ADDRESS"
+                  ? `${style["btn_sub"]} ${style["active"]}`
+                  : style["btn_sub"]}
+                onClick={() => {
+                  this.displayComponent("ADDRESS")
+                  this.handleButtonClick("ADDRESS")
+                }}
+              >
+                {iconManager.getIcon("address")}
+                {labelsManager.importLabel(
+                  "address",
+                  this.context,
+                  "farm_registry"
+                )}
+              </button>
+              {this.generateCustomButtons()}
+            </div>)}
           </div>
           <div className={`${style["farm-registry-content"]}`} id="farm-registry-content">
             {showSearchForm && (
