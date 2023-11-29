@@ -837,6 +837,127 @@ public class DbInit implements IDbInit {
 
 
 	// TO DO ANIMAL FR
+	
+
+	// ANIMAL_TYPE taken from  iacs.edbar_executors /  com.prtech.svarog_custom_afsard_dp;
+	private static DbDataTable createAnimalType() {
+		DbDataTable dbe = new DbDataTable();
+		dbe.setDbTableName("ANIMAL_TYPE");
+		dbe.setDbRepoName(CONST_MASTER_REPO);
+		dbe.setDbSchema(CONST_DEFAULT_SCHEMA);
+		dbe.setIsSystemTable(false);
+		dbe.setIsRepoTable(false);
+		dbe.setConfigColumnName("LABEL_CODE");
+		dbe.setIsConfigTable(true);
+		dbe.setLabel_code("animal_type.general");
+		dbe.setUse_cache(false);
+		// Column 1N
+		DbDataField dbe1 = new DbDataField();
+		dbe1.setDbFieldName("PKID");
+		dbe1.setIsPrimaryKey(true);
+		dbe1.setDbFieldType(DbFieldType.NUMERIC);
+		dbe1.setDbFieldSize(18);
+		dbe1.setDbFieldScale(0);
+		dbe1.setIsNull(false);
+		dbe1.setSort_order(100);
+		dbe1.setLabel_code("animal_type.pkid");
+		// Column 2
+		DbDataField dbe2 = new DbDataField();
+		dbe2.setDbFieldName("CODE");
+		dbe2.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe2.setDbFieldScale(0);
+		dbe2.setDbFieldSize(20);
+		dbe2.setIsNull(false);
+		dbe2.setIndexName("ANIMTYPE_CODE_IDX");
+		dbe2.setSort_order(200);
+		dbe2.setLabel_code("animal_type.code");
+		dbe2.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
+		// Column 3
+		DbDataField dbe3 = new DbDataField();
+		dbe3.setDbFieldName("SUBCODE");
+		dbe3.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe3.setDbFieldScale(0);
+		dbe3.setDbFieldSize(20);
+		dbe3.setIsNull(false);
+		dbe3.setSort_order(300);
+		dbe3.setLabel_code("animal_type.subcode");
+		dbe3.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
+		// Column 4
+		DbDataField dbe4 = new DbDataField();
+		dbe4.setDbFieldName("EXTERNAL_CODE");
+		dbe4.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe4.setDbFieldScale(0);
+		dbe4.setDbFieldSize(20);
+		dbe4.setIsNull(true);
+		dbe4.setSort_order(400);
+		dbe4.setLabel_code("animal_type.external_code");
+		dbe4.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
+		// Column 5
+		DbDataField dbe5 = new DbDataField();
+		dbe5.setDbFieldName("DESCRIPTION");
+		dbe5.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe5.setDbFieldScale(0);
+		dbe5.setDbFieldSize(200);
+		dbe5.setIsNull(false);
+		dbe5.setSort_order(500);
+		dbe5.setLabel_code("animal_type.description");
+		dbe5.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
+		// Column 6
+		DbDataField dbe6 = new DbDataField();
+		dbe6.setDbFieldName("DESCRIPTION_S");
+		dbe6.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe6.setDbFieldScale(0);
+		dbe6.setDbFieldSize(100);
+		dbe6.setIsNull(true);
+		dbe6.setSort_order(600);
+		dbe6.setLabel_code("animal_type.description_s");
+		dbe6.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
+		// Column 7
+		DbDataField dbe7 = new DbDataField();
+		dbe7.setDbFieldName("CATEGORY_OLD_CODE");
+		dbe7.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe7.setDbFieldScale(0);
+		dbe7.setDbFieldSize(20);
+		dbe7.setIsNull(true);
+		dbe7.setSort_order(700);
+		dbe7.setLabel_code("animal_type.cat_old_code");
+		dbe7.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
+		// Column 8
+		DbDataField dbe8 = new DbDataField();
+		dbe8.setDbFieldName("CATEGORY_DESCR");
+		dbe8.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe8.setDbFieldScale(0);
+		dbe8.setDbFieldSize(100);
+		dbe8.setIsNull(false);
+		dbe8.setSort_order(800);
+		dbe8.setLabel_code("animal_type.cat_old_descr");
+		dbe8.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
+		// Column 9
+		DbDataField dbe9 = new DbDataField();
+		dbe9.setDbFieldName("LABEL_CODE");
+		dbe9.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe9.setDbFieldScale(0);
+		dbe9.setDbFieldSize(50);
+		dbe9.setIsUnique(true);
+		dbe9.setIsNull(false);
+		dbe9.setSort_order(900);
+		dbe9.setLabel_code("mnemonic.label_code");
+		dbe9.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
+		
+		DbDataField[] dbTableFields = new DbDataField[9];
+		dbTableFields[0] = dbe1;
+		dbTableFields[1] = dbe2;
+		dbTableFields[2] = dbe3;
+		dbTableFields[3] = dbe4;
+		dbTableFields[4] = dbe5;
+		dbTableFields[5] = dbe6;
+		dbTableFields[6] = dbe7;
+		dbTableFields[7] = dbe8;
+		dbTableFields[8] = dbe9;
+		dbe.setDbTableFields(dbTableFields);
+		return dbe;
+	}
+
 
 	// ANIMAL
 	private static DbDataTable createAhvSingleAnimal() {
@@ -2041,6 +2162,8 @@ public class DbInit implements IDbInit {
 		dbtt = DbInit.createFarmer();
 		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createFarmMembers();
+		dbtList.add(addSortOrder(dbtt));
+		dbtt = DbInit.createAnimalType();
 		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createAhvSingleAnimal();
 		dbtList.add(addSortOrder(dbtt));
