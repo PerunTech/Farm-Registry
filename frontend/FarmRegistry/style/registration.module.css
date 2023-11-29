@@ -38,6 +38,8 @@
   animation-timing-function: ease-in;
   animation-duration: 0.5s;
   padding-bottom: 20px;
+  height: 100%;
+  font-size: 1vw;
 }
 
 .farm-registry-content {
@@ -152,8 +154,7 @@
   border-radius: 4px;
   display: block;
   border: none;
-  background-image: linear-gradient(to right,
-      #304040 0%,
+  background-image: linear-gradient(to right, 70% #304040 0%,
       #52695d 51%,
       #304040 100%);
 }
@@ -182,6 +183,8 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  height: 50px;
+  width: 100%;
 }
 
 .btn_sub p {
@@ -227,10 +230,10 @@
 }
 
 .btnHolder {
-  display: grid;
-  row-gap: 0.4vh;
-  width: 96%;
-  margin-left: 2%;
+  height: 15%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .farm-registry-content-search {
@@ -474,7 +477,20 @@
 }
 
 .farmer-info-right {
-  margin: 0 4% 0 3%;
+  padding: 10px;
+  border: 1px solid rgb(91 112 101);
+  box-shadow: 2px 2px 5px rgb(37 37 37);
+  background: #5b7065;
+  border-radius: 3px;
+  color: white;
+  height: 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.farmer-info-right p {
+  margin: 0;
 }
 
 .parentgrid {
@@ -642,8 +658,8 @@
   position: relative;
 }
 
-.cad_parcel_validate,
-.cad_parcel_check {
+.cad_parcel-btn,
+.cad_parcel-btn {
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
@@ -822,4 +838,9 @@
   font-weight: bold;
   height: 50px;
   margin-bottom: 5px;
+}
+
+.dynamic-comp-main-div {
+  height: 65%;
+  overflow: hidden auto;
 }
