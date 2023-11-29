@@ -4,7 +4,8 @@ import {
     connect,
     elements,
     PropTypes,
-    axios
+    axios,
+    Loading
 } from "perun-core";
 import style from "../style/registration.module.css";
 const { useState, useEffect } = React;
@@ -13,6 +14,7 @@ import { labelsManager } from '../utils_tools/LabelsExport';
 import { iconManager } from "../../assets/svgHolder";
 const Documents = (props, context) => {
     const [fileItems, setFileItems] = useState(undefined)
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         generateFileItem()
     }, [])
@@ -41,17 +43,24 @@ const Documents = (props, context) => {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         })
             .then((res) => {
+                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
                 if (res.data.type === 'SUCCESS') {
                     generateFileItem()
                 }
-            })
+            }).catch(err => {
+                console.error(err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg);
+            });
     }
 
 
     const generateFileItem = () => {
+        setLoading(true)
         axios.get(`${window.server}${props.getUploadedFiles}`).then(res => {
             if (res.data) {
-                if (res.data.data.items.length > 0) {
+                if (res.data.data.items?.length > 0) {
                     let files = res.data.data.items.map((el) => (<div className={`${style['downloadable-item-div']}`}>
                         <div className={style['download-icon-text']}>
                             <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={`${style['file-name-upload']}`} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{el.FILE_NAME}</button>
@@ -66,15 +75,26 @@ const Documents = (props, context) => {
                         </div>
                     </div>))
                     setFileItems(files)
+                    setLoading(false)
+                } else {
+                    setFileItems(undefined)
+                    setLoading(false)
                 }
             }
-        })
+        }).catch(err => {
+            console.error(err)
+            const title = err.response?.data?.title || err
+            const msg = err.response?.data?.message || ''
+            alertUser(true, "error", title, msg);
+            setLoading(false)
+        });
 
     }
 
     const handleMultiAttach = (arr) => {
         if (arr.length > 0) {
             let errorArr = []
+            setLoading(true)
             const promises = arr.map(async (file, i) => {
                 let data = new FormData()
                 data.append('file', file)
@@ -101,12 +121,16 @@ const Documents = (props, context) => {
                             }
                         }
                     })
+                    setLoading(false)
                     responseFunc(errorArr)
                 })
         } else {
             alertUser(true, 'info', labelsManager.importLabel('no_file_selected', context, 'farm_registry'))
+            setLoading(false)
         }
+
         generateFileItem()
+
     }
 
     const responseFunc = (errorArr) => {
@@ -126,6 +150,7 @@ const Documents = (props, context) => {
 
     return (
         <>
+            {loading && <Loading />}
             <div className={style['farm-registry-documents-container']}>
                 <div className={style['farm-registry-upload']}>
                     <p>{labelsManager.importLabel('attachment_title', context, 'farm_registry')}</p>

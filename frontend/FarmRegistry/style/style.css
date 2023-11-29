@@ -104,7 +104,7 @@
 
 .registration-module-custom-grid-container #refreshData {
   position: relative;
-  z-index: 999999;
+  z-index: 999;
 }
 
 .farm_activities_yn-farm-registry-form fieldset {
