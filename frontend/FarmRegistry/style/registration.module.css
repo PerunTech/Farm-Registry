@@ -642,8 +642,8 @@
   position: relative;
 }
 
-.cad_parcel_validate,
-.cad_parcel_check {
+.cad_parcel-btn,
+.cad_parcel-btn {
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
