@@ -3,8 +3,8 @@ import style from "../style/registration.module.css"
 import { getDynamicKey } from '../../utils'
 import { labelsManager } from '../utils_tools/LabelsExport';
 import Documents from './Documents';
-import FarmmembersWrapper, { } from './FarmmembersWrapper';
-import { CreateFarmWrapper } from '../FarmRegistration/CreateFarm/CreateFarmWrapper';
+import FarmmembersWrapper from './FarmmembersWrapper';
+import Address from './Address/Address'
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -273,6 +273,7 @@ const CustomButtons = (props, context) => {
                 {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
+                {props.configuration?.objectConfiguration?.type === 'address' && <Address personObjId={props.personObjId} defaultCountry={props.defaultCountry} />}
                 {showModal && (
                     <Modal className={style["farm-registry-modal"]} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
