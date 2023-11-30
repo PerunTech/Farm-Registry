@@ -3,6 +3,8 @@ import style from "../style/registration.module.css"
 import { getDynamicKey } from '../../utils'
 import { labelsManager } from '../utils_tools/LabelsExport';
 import Documents from './Documents';
+import FarmmembersWrapper, { } from './FarmmembersWrapper';
+import { CreateFarmWrapper } from '../FarmRegistration/CreateFarm/CreateFarmWrapper';
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -14,9 +16,12 @@ const CustomButtons = (props, context) => {
     const [showModal, setShowModal] = useState(false)
     const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
+    const [wrapperName, setWrapper] = useState(undefined)
+    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }])
 
     useEffect(() => {
-        console.log(props.tableName.toLowerCase());
+        setWrapper(props.tableName.replace(/(\w)(\w*)/g,
+            function (g0, g1, g2) { return g1.toUpperCase() + g2.toLowerCase(); }).replace(/_/g, ''))
         return () => {
             ComponentManager.cleanComponentReducerState(props.tableName + props.farmObjId);
             systemFields = {}
@@ -112,6 +117,15 @@ const CustomButtons = (props, context) => {
     const generateForm = (isModal, resetTheId) => {
         let customClass = `${props.tableName.toLowerCase()}-farm-registry-form` || 'customClass'
         let className = 'form-test custom-farm-registry-form ' + customClass
+        let inputWrapper
+        if (props.configuration.objectConfiguration.wrapper) {
+            wrappers.forEach(wrap => {
+                const keys = Object.keys(wrap);
+                if (wrapperName === keys[0]) {
+                    inputWrapper = wrap[wrapperName];
+                }
+            });
+        }
         // Set a new ID for the form, so we get a re-render
         if (resetTheId) {
             setDynamicFormId(getDynamicKey())
@@ -147,6 +161,7 @@ const CustomButtons = (props, context) => {
                 addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal)}
                 addDeleteFunction={deleteFunc}
                 hideBtns={clickedRowObjectId === 0 ? 'closeAndDelete' : 'close'}
+                inputWrapper={inputWrapper}
             />
         )
     }

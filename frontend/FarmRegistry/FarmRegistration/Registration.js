@@ -2,10 +2,7 @@ import { React, connect, GridManager, PropTypes, Loading, ComponentManager, Gene
 import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
 import { labelsManager } from "../utils_tools/LabelsExport";
-import Animal from "../FarmDetails/Animal";
-import FarmMembers from "../FarmDetails/FarmMembers";
 import SearchComponent from '../SearchComp/SearchComponent';
-import Intersection from '../FarmDetails/Intersection'
 import Address from '../FarmDetails/Address/Address';
 import CustomButtons from "../FarmDetails/CustomButtons";
 import CreateFarm from './CreateFarm/CreateFarm';
@@ -79,30 +76,6 @@ class Registration extends React.Component {
         this.hashHistory.push(href)
         componentAddReg = (
           <CreateFarm personObjId={this.state.personObj} />
-        );
-        break;
-      case "AHV_HOLDING":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = (
-          <Animal farmObjId={this.props.farmObjId} grid={component} paramsComponent={component} />
-        );
-        break;
-      case "INTERSECTIONS":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = <Intersection farmObjId={this.props.farmObjId} paramsComponent={component} />;
-        break;
-      case "FARM_MEMBERS":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = (
-          <FarmMembers
-            farmObjId={this.props.farmObjId}
-            personObjId={this.state.personObj}
-            grid={component}
-            paramsComponent={component}
-          />
         );
         break;
       case "ADDRESS":
@@ -312,38 +285,6 @@ class Registration extends React.Component {
             </div>
             {generateInfoState}
             {showCapacities && (<div className={[style['dynamic-comp-main-div']]}>
-              <button
-                className={activeElement === 'FARM_MEMBERS'
-                  ? `${style["btn_sub"]} ${style["active"]}`
-                  : style["btn_sub"]}
-                onClick={() => {
-                  this.displayComponent("FARM_MEMBERS")
-                  this.handleButtonClick("FARM_MEMBERS")
-                }}
-              >
-                {iconManager.getIcon("group")}
-                {labelsManager.importLabel(
-                  "agri_members",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={activeElement === "AHV_HOLDING"
-                  ? `${style["btn_sub"]} ${style["active"]}`
-                  : style["btn_sub"]}
-                onClick={() => {
-                  this.displayComponent("AHV_HOLDING")
-                  this.handleButtonClick("AHV_HOLDING")
-                }}
-              >
-                {iconManager.getIcon("animal")}
-                {labelsManager.importLabel(
-                  "livestock",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
               <button
                 className={activeElement === "ADDRESS"
                   ? `${style["btn_sub"]} ${style["active"]}`

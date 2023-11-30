@@ -14,7 +14,7 @@ const { Modal } = ReactBootstrap;
 
 let gridId;
 let inputholder = "";
-const FarmMembersWrapper = (props, context) => {
+const FarmmembersWrapper = (props, context) => {
     const [show, setShow] = useState(false);
     const initialState = {
         firstInputId: "root_ID_NO",
@@ -111,8 +111,8 @@ const FarmMembersWrapper = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 });
-FarmMembersWrapper.contextTypes = {
+FarmmembersWrapper.contextTypes = {
     intl: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps)(FarmMembersWrapper);
+export default connect(mapStateToProps)(FarmmembersWrapper);
