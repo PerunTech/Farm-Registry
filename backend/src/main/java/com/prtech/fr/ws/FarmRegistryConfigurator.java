@@ -16,7 +16,10 @@ import com.prtech.svarog.SvException;
 import com.prtech.svarog.SvReader;
 import com.prtech.svarog.SvWriter;
 import com.prtech.svarog.svCONST;
+import com.prtech.svarog_common.DbDataArray;
 import com.prtech.svarog_common.DbDataObject;
+import com.prtech.svarog_common.DbSearchCriterion;
+import com.prtech.svarog_common.DbSearchCriterion.DbCompareOperand;
 
 public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 
@@ -80,7 +83,14 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 
 	
 	private void createExtendedMenuPlugin(SvWriter svw) throws SvException {
-		DbDataObject dboGridTablePlugin = new DbDataObject(svCONST.OBJECT_TYPE_PERUN_PLUGIN);
+		DbDataObject dboGridTablePlugin;
+		DbSearchCriterion dsc = new DbSearchCriterion("LABEL_CODE", DbCompareOperand.EQUAL, "perun.plugin.grid_table");
+		DbDataArray dbaGridTablePlugin = svr.getObjects(dsc, svCONST.OBJECT_TYPE_PERUN_PLUGIN, null, 1000, 0);
+		if (null != dbaGridTablePlugin && !dbaGridTablePlugin.isEmpty()) {
+			dboGridTablePlugin = dbaGridTablePlugin.get(0);
+		} else {
+			dboGridTablePlugin = new DbDataObject(svCONST.OBJECT_TYPE_PERUN_PLUGIN);
+		}
 		dboGridTablePlugin.setVal("CONTEXT_NAME", "grid-table");
 		dboGridTablePlugin.setVal("LABEL_CODE", "perun.plugin.grid_table");
 		dboGridTablePlugin.setVal("MENU_CONF", tableAsGrid());
@@ -93,7 +103,15 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 		dboGridTablePlugin.setStatus(svCONST.STATUS_VALID);
 		svw.saveObject(dboGridTablePlugin, false);
 		
-		DbDataObject dboSingleFormPlugin = new DbDataObject(svCONST.OBJECT_TYPE_PERUN_PLUGIN);
+		
+		DbDataObject dboSingleFormPlugin;
+		dsc = new DbSearchCriterion("LABEL_CODE", DbCompareOperand.EQUAL, "perun.plugin.single_form_table");
+		DbDataArray dbaSingleFormPlugin = svr.getObjects(dsc, svCONST.OBJECT_TYPE_PERUN_PLUGIN, null, 1000, 0);
+		if (null != dbaSingleFormPlugin && !dbaSingleFormPlugin.isEmpty()) {
+			dboSingleFormPlugin = dbaSingleFormPlugin.get(0);
+		} else {
+			dboSingleFormPlugin = new DbDataObject(svCONST.OBJECT_TYPE_PERUN_PLUGIN);
+		}
 		dboSingleFormPlugin.setVal("CONTEXT_NAME", "single-form-table");
 		dboSingleFormPlugin.setVal("LABEL_CODE", "perun.plugin.single_form_table");
 		dboSingleFormPlugin.setVal("MENU_CONF", tableAsSingleForm());
@@ -202,7 +220,7 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 
 	@Override
 	public int getVersion(int currentVersion) {
-		return 2;
+		return 3;
 	}
 
 	@Override
