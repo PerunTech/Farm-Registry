@@ -3,28 +3,18 @@ import style from "../style/registration.module.css";
 import { iconManager } from "../../assets/svgHolder";
 import { labelsManager } from "../utils_tools/LabelsExport";
 import SearchComponent from '../SearchComp/SearchComponent';
-import Address from '../FarmDetails/Address/Address';
 import CustomButtons from "../FarmDetails/CustomButtons";
 import CreateFarm from './CreateFarm/CreateFarm';
 const { store } = redux
-
 class Registration extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showGrid: false,
-      formContainer: "",
-      tableName: 'FARM',
       dataForm: false,
       showSearchForm: true,
-      fullName: '',
-      fic: '',
-      farmType: '',
-      id_no: '',
-      tax_no: '',
-      showCapacities: false,
+      showDynamicMenu: false,
       hideSearchForm: true,
-      showPrintBtn: false,
       defaultCountry: undefined,
       activeElement: 'SEARCH',
       activeChild: null,
@@ -33,15 +23,14 @@ class Registration extends React.Component {
   }
 
   componentDidMount = () => {
+    let url = window.server + `/WsConf/params/get/sys/DEFAULT_COUNTRY`
+    axios.get(url).then(res => {
+      if (res.data.VALUE) {
+        this.setState({ defaultCountry: res.data.VALUE })
+      }
+    })
     if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search') {
       this.displayComponent(this.props.paramsComponent.params);
-      this.generateInfo()
-      let url = window.server + `/WsConf/params/get/sys/DEFAULT_COUNTRY`
-      axios.get(url).then(res => {
-        if (res.VALUE) {
-          this.setState({ defaultCountry: res.VALUE })
-        }
-      })
     }
   }
 
@@ -78,11 +67,6 @@ class Registration extends React.Component {
           <CreateFarm personObjId={this.state.personObj} />
         );
         break;
-      case "ADDRESS":
-        href = `/main/farm-registry/registration/${component}`
-        this.hashHistory.push(href)
-        componentAddReg = <Address personObjId={this.state.personObj} defaultCountry={this.state.defaultCountry} />
-        break;
       case "DYNAMIC":
         href = `/main/farm-registry/registration/${tableName}`
         this.hashHistory.push(href)
@@ -90,8 +74,11 @@ class Registration extends React.Component {
           key: tableName,
           tableName,
           configuration,
+          personObjId: this.state.personObj,
+          defaultCountry: this.state.defaultCountry,
           getConfiguration: (objId) => this.getConfiguration(objId)
         }
+
         componentAddReg = <CustomButtons {...customButtonsProps} />
         break;
       default:
@@ -112,39 +99,17 @@ class Registration extends React.Component {
     store.dispatch({ type: 'WRITE_FARM_INFO', payload: rowsData })
     store.dispatch({ type: 'GET_FR_MAP_DATA', payload: { objectId, objectTypeId, rowsData, tableName: "FARM" } })
     this.setState({
-      showCapacities: true,
+      showDynamicMenu: true,
       farmObjId: rowsData["FARM.OBJECT_ID"],
       personObj: rowsData["FARM.PERSON_OBJECT_ID"],
-      farmFic: rowsData["FARM.FIC"],
-      archiveNumber: rowsData["FARM.ARCHIVE_NUMBER"],
-      status: rowsData["FARM.STATUS"],
-      allFarmData: rowsData,
-      farmFullName: rowsData["FARM.FULL_NAME"]
     }, () => {
-      this.generateInfo(true)
       this.getConfiguration(rowsData["FARM.OBJECT_ID"])
     });
+    this.generateInfo(rowsData)
   };
 
-  privateRegForm = () => {
-    this.setState({
-      showCapacities: false,
-      generateInfoState: false,
-    })
-  }
-
-  generateInfo = (isFromRowClick) => {
-    let { status, farmFic, archiveNumber, farmFullName } = this.state
-    const { farmData } = this.props
-    if (farmData?.rowsData && !isFromRowClick) {
-      const rowData = farmData.rowsData
-      status = rowData['FARM.STATUS']
-      farmFic = rowData['FARM.FIC']
-      archiveNumber = rowData['FARM.ARCHIVE_NUMBER'] || ''
-      farmFullName = rowData['FARM.FULL_NAME']
-    }
-    let htmlElement
-    let elementArr = []
+  generateInfo = (rowData) => {
+    let status = rowData['FARM.STATUS']
     let labelStatus
     if (status === 'VALID') {
       labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.active', defaultMessage: 'perun.farm_registry.active' })
@@ -155,22 +120,16 @@ class Registration extends React.Component {
     if (status === 'CLOSED') {
       labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.inactive', defaultMessage: 'perun.farm_registry.inactive' })
     }
-    htmlElement = <>
+    let info = <>
       <div className={`${style['farmer-info-right']}`}>
         <p>{labelsManager.importLabel("status", this.context, "farm_registry")}: <b>{labelStatus}</b></p>
-        <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{farmFullName}</b></p>
-        <p>{labelsManager.importLabel("holding_code", this.context, "farm_registry")}: <b>{farmFic}</b></p>
-        <p>{labelsManager.importLabel("archive_number", this.context, "farm_registry")}: <b>{archiveNumber}</b></p>
+        <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{rowData['FARM.FULL_NAME']}</b></p>
+        <p>{labelsManager.importLabel("holding_code", this.context, "farm_registry")}: <b>{rowData['FARM.FIC']}</b></p>
+        <p>{labelsManager.importLabel("archive_number", this.context, "farm_registry")}: <b>{rowData['FARM.ARCHIVE_NUMBER'] || ''}</b></p>
       </div>
     </>
-
-    elementArr.push(htmlElement)
-    this.setState({ generateInfoState: elementArr })
+    this.setState({ showFarmInfo: info })
   }
-
-  onChange = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
-  };
 
   generateCustomButtons = () => {
     if (this.state.configuration && Array.isArray(this.state.configuration.data)) {
@@ -230,11 +189,6 @@ class Registration extends React.Component {
     this.displayComponent('DYNAMIC', splitID, element);
     this.setState({ activeElement: id });
   }
-
-  handleButtonClick = (componentName) => {
-    this.setState({ activeElement: componentName });
-  }
-
   render() {
     const {
       dataHolder,
@@ -242,8 +196,8 @@ class Registration extends React.Component {
       componentAddReg,
       dataForm,
       showSearchForm,
-      showCapacities,
-      generateInfoState,
+      showDynamicMenu,
+      showFarmInfo,
       loading,
       activeElement,
     } = this.state;
@@ -259,7 +213,10 @@ class Registration extends React.Component {
                 let href = `/main/farm-registry/registration/search`
                 this.hashHistory.push(href)
                 this.setState({ activeElement: 'SEARCH' })
-                this.privateRegForm();
+                this.setState({
+                  showDynamicMenu: false,
+                  showFarmInfo: false,
+                })
               }}>
                 {iconManager.getIcon("search")}
                 {labelsManager.importLabel(
@@ -271,7 +228,10 @@ class Registration extends React.Component {
               <button
                 className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']} ${activeElement === 'ADD_FARM' && style['active']}`}
                 onClick={() => {
-                  this.privateRegForm();
+                  this.setState({
+                    showDynamicMenu: false,
+                    showFarmInfo: false,
+                  })
                   this.showAddFarm()
                 }}
               >
@@ -283,24 +243,8 @@ class Registration extends React.Component {
                 )}
               </button>
             </div>
-            {generateInfoState}
-            {showCapacities && (<div className={[style['dynamic-comp-main-div']]}>
-              <button
-                className={activeElement === "ADDRESS"
-                  ? `${style["btn_sub"]} ${style["active"]}`
-                  : style["btn_sub"]}
-                onClick={() => {
-                  this.displayComponent("ADDRESS")
-                  this.handleButtonClick("ADDRESS")
-                }}
-              >
-                {iconManager.getIcon("address")}
-                {labelsManager.importLabel(
-                  "address",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
+            {showFarmInfo}
+            {showDynamicMenu && (<div className={[style['dynamic-comp-main-div']]}>
               {this.generateCustomButtons()}
             </div>)}
           </div>
