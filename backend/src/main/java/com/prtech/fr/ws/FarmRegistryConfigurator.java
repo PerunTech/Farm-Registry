@@ -80,18 +80,31 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 
 	
 	private void createExtendedMenuPlugin(SvWriter svw) throws SvException {
-		DbDataObject dboPlugin = new DbDataObject(svCONST.OBJECT_TYPE_PERUN_PLUGIN);
-		dboPlugin.setVal("CONTEXT_NAME", "grid-table");
-		dboPlugin.setVal("LABEL_CODE", "perun.plugin.grid_table");
-		dboPlugin.setVal("MENU_CONF", tableAsGrid());
-		dboPlugin.setVal("CONTEXT_MENU_CONF", null);
-		dboPlugin.setVal("PERMISSION_CODE", "/");
-		dboPlugin.setVal("IMG_PATH", "/");
-		dboPlugin.setVal("JAVASCRIPT_PATH", "/");
-		dboPlugin.setVal("SORT_ORDER", 1);
-		dboPlugin.setVal("VERSION", 1);
-		dboPlugin.setStatus(svCONST.STATUS_VALID);
-		svw.saveObject(dboPlugin, false);
+		DbDataObject dboGridTablePlugin = new DbDataObject(svCONST.OBJECT_TYPE_PERUN_PLUGIN);
+		dboGridTablePlugin.setVal("CONTEXT_NAME", "grid-table");
+		dboGridTablePlugin.setVal("LABEL_CODE", "perun.plugin.grid_table");
+		dboGridTablePlugin.setVal("MENU_CONF", tableAsGrid());
+		dboGridTablePlugin.setVal("CONTEXT_MENU_CONF", null);
+		dboGridTablePlugin.setVal("PERMISSION_CODE", "/");
+		dboGridTablePlugin.setVal("IMG_PATH", "/");
+		dboGridTablePlugin.setVal("JAVASCRIPT_PATH", "/");
+		dboGridTablePlugin.setVal("SORT_ORDER", 1);
+		dboGridTablePlugin.setVal("VERSION", 1);
+		dboGridTablePlugin.setStatus(svCONST.STATUS_VALID);
+		svw.saveObject(dboGridTablePlugin, false);
+		
+		DbDataObject dboSingleFormPlugin = new DbDataObject(svCONST.OBJECT_TYPE_PERUN_PLUGIN);
+		dboSingleFormPlugin.setVal("CONTEXT_NAME", "single-form-table");
+		dboSingleFormPlugin.setVal("LABEL_CODE", "perun.plugin.single_form_table");
+		dboSingleFormPlugin.setVal("MENU_CONF", tableAsSingleForm());
+		dboSingleFormPlugin.setVal("CONTEXT_MENU_CONF", null);
+		dboSingleFormPlugin.setVal("PERMISSION_CODE", "/");
+		dboSingleFormPlugin.setVal("IMG_PATH", "/");
+		dboSingleFormPlugin.setVal("JAVASCRIPT_PATH", "/");
+		dboSingleFormPlugin.setVal("SORT_ORDER", 1);
+		dboSingleFormPlugin.setVal("VERSION", 1);
+		dboSingleFormPlugin.setStatus(svCONST.STATUS_VALID);
+		svw.saveObject(dboSingleFormPlugin, false);
 	}
 	
 	private JsonObject tableAsGrid() {
@@ -150,6 +163,41 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 		return recordObject;
 	}
 	
+	
+	private JsonObject tableAsSingleForm() throws SvException {
+		JsonObject recordObject = new JsonObject();
+		recordObject.addProperty("ID", "%TABLE_NAME%_%OBJECT_ID%");
+		recordObject.addProperty("label", "%LABEL_PARAMETER%");
+
+		JsonObject recordConf = new JsonObject();
+		recordConf.addProperty("enabled", true);
+		recordConf.addProperty("readOnly", false);
+		recordConf.addProperty("type", "form");
+
+		JsonObject recordJsonSchema = new JsonObject();
+		recordJsonSchema.addProperty("type", "GET");
+		recordJsonSchema.addProperty("readOnly", false);
+		recordJsonSchema.addProperty("onSubmit", "/ReactElements/getTableJSONSchema/%TOKEN%/%TABLE_NAME%");
+		recordConf.add("configuration", recordJsonSchema);
+
+		JsonObject recordFormData = new JsonObject();
+		recordFormData.addProperty("type", "GET");
+		recordFormData.addProperty("onSubmit", "/ReactElements/getTableFormData/%TOKEN%/%RECORD_ID%/%TABLE_NAME%");
+		recordConf.add("data", recordFormData);
+
+		JsonObject recordSave = new JsonObject();
+		recordSave.addProperty("type", "POST");
+		recordSave.addProperty("onSave", "/ReactElements/createTableRecordFormData/%TOKEN%/%TABLE_NAME%/%OBJECT_ID%");
+		recordConf.add("save", recordSave);
+
+		JsonObject animalUiSchema = new JsonObject();
+		animalUiSchema.addProperty("type", "GET");
+		animalUiSchema.addProperty("onSubmit", "/ReactElements/getTableUISchema/%TOKEN%/%TABLE_NAME%");
+		recordConf.add("uischema", animalUiSchema);
+
+		recordObject.add("objectConfiguration", recordConf);
+		return recordObject;
+	}
 	
 
 	@Override
