@@ -202,7 +202,7 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 
 	@Override
 	public int getVersion(int currentVersion) {
-		return 1;
+		return 2;
 	}
 
 	@Override
