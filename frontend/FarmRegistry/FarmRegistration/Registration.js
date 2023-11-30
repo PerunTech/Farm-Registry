@@ -78,8 +78,7 @@ class Registration extends React.Component {
           defaultCountry: this.state.defaultCountry,
           getConfiguration: (objId) => this.getConfiguration(objId)
         }
-        console.log(this.state.defaultCountry);
-        console.log(this.state.personObj);
+
         componentAddReg = <CustomButtons {...customButtonsProps} />
         break;
       default:
