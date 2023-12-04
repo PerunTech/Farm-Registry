@@ -18,6 +18,7 @@ const CustomButtons = (props, context) => {
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
     const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }])
+    const [stateGrid, setStateGrid] = useState(undefined)
 
     useEffect(() => {
         setWrapper(props.tableName.replace(/(\w)(\w*)/g,
@@ -72,12 +73,15 @@ const CustomButtons = (props, context) => {
         }
     }
 
-    const generateGrid = () => {
-        const configWs = props.configuration.objectConfiguration.configuration.onSubmit
-        const dataWs = props.configuration.objectConfiguration.data.onSubmit
+    const generateGrid = (objectId) => {
+        let configWs = props.configuration.objectConfiguration.configuration.onSubmit
+        let dataWs = props.configuration.objectConfiguration.data.onSubmit
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
 
+        if (objectId) {
+            console.log(objectId)
+        }
         const grid = <div className={`${multiSelect ? style['custom-grid-container'] : style['dynamic-grid']}`}>
             {btnArray && buildCustomBtnArr(btnArray, multiSelect)}
 
@@ -98,7 +102,11 @@ const CustomButtons = (props, context) => {
             />
 
         </div>
-        return grid
+        if (objectId) {
+            setStateGrid(grid)
+        } else {
+            return grid
+        }
     }
     //multiselect functions 
     const customRowSelection = (selectedRows, gridId) => {
@@ -263,6 +271,42 @@ const CustomButtons = (props, context) => {
             alertUser(true, "error", title, msg, () => resetFormDeleteState());
         });
     };
+    //used for multiGrid
+    const generateParentGrid = () => {
+        const { grids } = props.configuration.objectConfiguration
+        const configWs = grids[0].objectConfiguration.configuration.onSubmit
+        const dataWs = grids[0].objectConfiguration.data.onSubmit
+
+        const gridDiv = <div className={`style['dynamic-grid']}`}>
+            <div>
+                <ExportableGrid
+                    gridType={"READ_URL"}
+                    key={grids[0].ID + props.farmObjId}
+                    id={grids[0].ID + props.farmObjId}
+                    configTableName={configWs}
+                    dataTableName={dataWs}
+                    heightRatio={0.7}
+                    onRowClickFunct={handleCustomRowClick}
+                    refreshData={() => reloadGrid(grids[0].ID + props.farmObjId, multiSelect)}
+                    toggleCustomButton={true}
+                    customButton={() => setShowModal(true)}
+                    customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
+                    onSelectChangeFunct={customRowSelection}
+                />
+            </div>
+            <div>
+                {stateGrid}
+            </div>
+
+
+        </div>
+        return gridDiv
+    }
+
+    const handleCustomRowClick = (_id, _rowIdx, row) => {
+        setClickedRowObjectId(row[`${grid.ID}.OBJECT_ID`] || 0)
+        generateGrid(row[`${grid.ID}.OBJECT_ID`])
+    }
 
     return (
         <>
@@ -274,6 +318,7 @@ const CustomButtons = (props, context) => {
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
                 {props.configuration?.objectConfiguration?.type === 'address' && <Address personObjId={props.personObjId} defaultCountry={props.defaultCountry} />}
+                {props.configuration?.objectConfiguration?.type === "multigrid" && generateParentGrid()}
                 {showModal && (
                     <Modal className={style["farm-registry-modal"]} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
