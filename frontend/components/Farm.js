@@ -1,12 +1,12 @@
 import { React, connect, GridManager, PropTypes, Loading, ComponentManager, GenericGrid, axios, redux, createHashHistory, elements } from "perun-core";
-import style from "../style/registration.module.css";
-import { iconManager } from "../../assets/svgHolder";
-import { labelsManager } from "../utils_tools/LabelsExport";
-import SearchComponent from '../SearchComp/SearchComponent';
-import CustomButtons from "../FarmDetails/CustomButtons";
+import style from "./style/registration.module.css";
+import { iconManager } from "../assets/svgHolder";
+import { labelsManager } from "./utils_tools/LabelsExport";
+import SearchComponent from './SearchComp/SearchComponent';
+import CustomButtons from "./FarmDetails/CustomButtons";
 import CreateFarm from './CreateFarm/CreateFarm';
 const { store } = redux
-class Registration extends React.Component {
+class Farm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -263,8 +263,8 @@ const mapStateToProps = (state) => ({
   farmObjId: state['farm_registry.mapData']?.farmData?.objectId
 });
 
-Registration.contextTypes = {
+Farm.contextTypes = {
   intl: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps)(Registration);
+export default connect(mapStateToProps)(Farm);

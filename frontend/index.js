@@ -3,9 +3,9 @@
  * export all content representing the surface of your plugin API. Noone is expected to call, but wth.
  * Wait to be called for render, Core will call you.
  */
-import FarmRegistry from "./FarmRegistry/FarmRegistry";
-import mapDataReducer from './FarmRegistry/reducerMap'
-import "./FarmRegistry/style/style.css";
+import FarmRegistryMainHolder from "./components/FarmRegistryMainHolder";
+import mapDataReducer from './components/reducerMap'
+import "./components/style/style.css";
 
 import { redux, persistBundleReducers } from 'perun-core'
 const { store, injectAsyncReducer } = redux;
@@ -16,15 +16,15 @@ const routes = [
   {
     name: "farm-registry-main",
     path: "/main/farm-registry",
-    render: FarmRegistry,
+    render: FarmRegistryMainHolder,
     isExact: true,
   },
   {
     name: "farm-registry-registration",
     path: "/main/farm-registry/registration/:params",
-    render: FarmRegistry,
+    render: FarmRegistryMainHolder,
     isExact: false,
   },
 ];
 
-export { FarmRegistry, routes };
+export { FarmRegistryMainHolder, routes };

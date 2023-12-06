@@ -50,13 +50,12 @@ class AdminComopnent extends React.Component {
             type="submit"
             className={"btn-success btn_save_form"}
           >
-            {" "}
             {labelsManager.importLabel(
               "search",
               this.context,
               "farm_registry"
-            )}{" "}
-          </button>
+            )}
+          </button>\
         </div>
       </Form></div>
     );
