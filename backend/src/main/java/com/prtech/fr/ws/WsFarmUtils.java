@@ -24,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.prtech.perun.PerunUtil;
+import com.prtech.perun_core.ws.Rc;
 import com.prtech.perun_core.ws.WsReactElements;
 import com.prtech.svarog.I18n;
 import com.prtech.svarog.SvConf;
@@ -31,6 +32,7 @@ import com.prtech.svarog.SvCore;
 import com.prtech.svarog.SvException;
 import com.prtech.svarog.SvExecManager;
 import com.prtech.svarog.SvReader;
+import com.prtech.svarog.svCONST;
 import com.prtech.svarog_common.DbDataArray;
 import com.prtech.svarog_common.DbDataObject;
 import com.prtech.svarog_common.DbSearchCriterion;
@@ -228,6 +230,49 @@ public class WsFarmUtils {
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
+	
+	@Path("/getTableFieldListCustom/{session_id}/{table_name}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTableFieldList(@PathParam("session_id") String sessionId,
+			@PathParam("table_name") String tableName, @Context HttpServletRequest httpRequest) {
+		JsonArray jArray = new JsonArray();
+		try (SvReader svr = new SvReader(sessionId);) {
+
+			WsReactElements re = new WsReactElements();
+			Response responseHtml = re.getTableFieldList(sessionId, tableName, null);
+			Gson gson = new Gson();
+			jArray = gson.fromJson(responseHtml.getEntity().toString(), JsonArray.class);
+
+			DbDataObject tableObject = SvCore.getDbtByName(tableName);
+
+			if (tableObject.getVal("GUI_METADATA") != null) {
+				JsonObject guiMetadata = null;
+				JsonArray jsonFields = null;
+
+				if (tableObject.getVal("GUI_METADATA") != null)
+					guiMetadata = (new Gson()).fromJson(tableObject.getVal("GUI_METADATA").toString(),
+							JsonObject.class);
+				if (guiMetadata != null && guiMetadata.has("extra_field_list"))
+					jsonFields = (JsonArray) guiMetadata.get("extra_field_list");
+
+				if (jsonFields != null) {
+					String localeId = getLocaleId(svr);
+					for (int i = 0; i < jsonFields.size(); i++) {
+						JsonObject jsonField = jsonFields.get(i).getAsJsonObject();
+						if (jsonField.has("name")) {
+							jsonField.addProperty("name", I18n.getText(localeId, jsonField.get("name").getAsString()));
+						}
+						jArray.add(jsonField);
+					}
+				}
+			}
+		} catch (SvException e) {
+			return PerunUtil.handleException(e, "Error getting table field list");
+		}
+		return Response.status(200).entity(jArray.toString()).build();
+	}
+	
 
 	@Path("/LandUseCodes/get/{sessionId}/landCover/{landCover}/baseOnly/{includeOnlyBasic}/year/{year}/includeOtscCrops/{includeOtscCrops}")
 	@GET
