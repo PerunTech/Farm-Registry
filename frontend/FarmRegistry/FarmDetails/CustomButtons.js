@@ -5,6 +5,7 @@ import { labelsManager } from '../utils_tools/LabelsExport';
 import Documents from './Documents';
 import FarmmembersWrapper from './FarmmembersWrapper';
 import Address from './Address/Address'
+import ParentChildGrids from './ParentChildGrids';
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -18,6 +19,9 @@ const CustomButtons = (props, context) => {
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
     const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }])
+    const [flagFormChild, setFlagFormChild] = useState(undefined)
+    const [clickedRowChild, setRowChild] = useState(0)
+    const [clickedRowParent, setRowParent] = useState(undefined)
 
     useEffect(() => {
         setWrapper(props.tableName.replace(/(\w)(\w*)/g,
@@ -113,8 +117,16 @@ const CustomButtons = (props, context) => {
         }
     }
 
+    const repalceFunc = (wsPath, id, obj) => {
+        if (wsPath.indexOf(`{${id}.OBJECT_ID}`) >= 0) {
+            wsPath = wsPath.replace(`{${id}.OBJECT_ID}`, obj)
+            return wsPath
+        } else {
+            return wsPath
+        }
+    }
 
-    const generateForm = (isModal, resetTheId) => {
+    const generateForm = (isModal, resetTheId, formFromChild) => {
         let customClass = `${props.tableName.toLowerCase()}-farm-registry-form` || 'customClass'
         let className = 'form-test custom-farm-registry-form ' + customClass
         let inputWrapper
@@ -136,18 +148,29 @@ const CustomButtons = (props, context) => {
         let formDataWs = props.configuration.objectConfiguration?.data?.onSubmit
         let onSubmitWs = props.configuration.objectConfiguration?.save?.onSave
         // If we're rendering a modal, the configuration services are a bit nested
-        if (isModal) {
+        if (isModal && !flagFormChild) {
             // #revise_me
             // We need to find a smarter way to get the WS paths, instead of duplicating the nested properties all over again
             jsonSchemaConfig = props.configuration.objectConfiguration?.form?.configuration?.onSubmit
             uiSchemaConfig = props.configuration.objectConfiguration?.form?.uischema?.onSubmit
             formDataWs = props.configuration.objectConfiguration?.form?.data?.onSubmit
             // If the form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
-            if (formDataWs.indexOf(`{${props.tableName}.OBJECT_ID}`) >= 0) {
-                formDataWs = formDataWs.replace(`{${props.tableName}.OBJECT_ID}`, clickedRowObjectId)
-            }
+            formDataWs = repalceFunc(formDataWs, props.tableName, clickedRowObjectId)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
             className = 'custom-farm-registry-modal-form ' + customClass
+        }
+        if (formFromChild) {
+            const { grids } = props.configuration.objectConfiguration
+            jsonSchemaConfig = grids[1].objectConfiguration.form?.configuration?.onSubmit
+            uiSchemaConfig = grids[1].objectConfiguration.form?.uischema?.onSubmit
+            formDataWs = grids[1].objectConfiguration.form?.data?.onSubmit
+            onSubmitWs = grids[1].objectConfiguration.form?.save?.onSave
+
+            formDataWs = repalceFunc(formDataWs, grids[0].ID, clickedRowParent)
+            formDataWs = repalceFunc(formDataWs, grids[1].ID, clickedRowChild)
+            onSubmitWs = repalceFunc(onSubmitWs, grids[0].ID, clickedRowParent)
+            onSubmitWs = repalceFunc(onSubmitWs, grids[1].ID, clickedRowChild)
+
         }
         return (
             <GenericForm
@@ -274,13 +297,17 @@ const CustomButtons = (props, context) => {
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
                 {props.configuration?.objectConfiguration?.type === 'address' && <Address personObjId={props.personObjId} defaultCountry={props.defaultCountry} />}
+                {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids} addFormFunc={() => {
+                    setShowModal(true)
+                    setFlagFormChild(true)
+                }} />}
                 {showModal && (
                     <Modal className={style["farm-registry-modal"]} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
                             <Modal.Title>{props.configuration.label}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body className={style["farm-registry-modal-body"]}>
-                            {generateForm(true)}
+                            {generateForm(true, false, flagFormChild)}
                         </Modal.Body>
                         <Modal.Footer className={style["farm-registry-modal-footer"]} />
                     </Modal>

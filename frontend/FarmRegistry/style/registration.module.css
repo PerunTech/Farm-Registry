@@ -845,3 +845,16 @@
   height: 65%;
   overflow: hidden auto;
 }
+
+.parent-dynamic-grid {
+  width: 50%;
+}
+
+.child-dynamic-grid {
+  width: 50%;
+}
+
+.custom-menu-pplan-container {
+  display: flex;
+  gap: 10px;
+}

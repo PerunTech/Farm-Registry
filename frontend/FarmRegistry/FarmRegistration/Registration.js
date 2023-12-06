@@ -34,17 +34,7 @@ class Registration extends React.Component {
     }
   }
 
-  showSearch = () => {
-    this.setState({ showSearchForm: true })
-    this.setState({ dataForm: '' })
-  }
-
-  showAddFarm = () => {
-    GridManager.reloadGridData("FARM_GRID");
-    this.displayComponent('ADD_FARM');
-    this.setState({ activeElement: 'ADD_FARM' })
-  };
-
+  //function used to get the side menu confirguration from backend
   getConfiguration = (objid) => {
     this.setState({ loading: true })
     let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/FARM-EXTENDED/object-id/${objid}`
@@ -107,7 +97,7 @@ class Registration extends React.Component {
     });
     this.generateInfo(rowsData)
   };
-
+  //this function generates  the farm info box in the side menu 
   generateInfo = (rowData) => {
     let status = rowData['FARM.STATUS']
     let labelStatus
@@ -232,7 +222,9 @@ class Registration extends React.Component {
                     showDynamicMenu: false,
                     showFarmInfo: false,
                   })
-                  this.showAddFarm()
+                  GridManager.reloadGridData("FARM_GRID");
+                  this.displayComponent('ADD_FARM');
+                  this.setState({ activeElement: 'ADD_FARM' })
                 }}
               >
                 {iconManager.getIcon("add")}
