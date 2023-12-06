@@ -2,11 +2,12 @@ import { React, connect, PropTypes, ExportableGrid, ComponentManager } from 'per
 const { useState, useEffect } = React
 import style from "../style/registration.module.css"
 import { labelsManager } from '../utils_tools/LabelsExport';
+let prev
 const ParentChildGrids = (props, context) => {
     useEffect(() => {
         return () => {
-            ComponentManager.cleanComponentReducerState(grids[0].ID + props.farmObjId)
-            ComponentManager.cleanComponentReducerState(grids[1].ID + props.farmObjId)
+            ComponentManager.cleanComponentReducerState(props.grids[0].ID + props.farmObjId)
+            ComponentManager.cleanComponentReducerState(props.grids[1].ID + prev)
         }
     }, [])
 
@@ -35,6 +36,7 @@ const ParentChildGrids = (props, context) => {
         return gridDiv
     }
     const generateGrid = (objectId, grid) => {
+        prev = objectId
         if (objectId) {
             const configWs = grid.objectConfiguration.configuration.onSubmit
             let dataWs = grid.objectConfiguration.data.onSubmit
@@ -42,8 +44,8 @@ const ParentChildGrids = (props, context) => {
             const gridDiv = <div className={` ${style['child-dynamic-grid']}`}>
                 <ExportableGrid
                     gridType={"READ_URL"}
-                    key={grid.ID + props.farmObjId}
-                    id={grid.ID + props.farmObjId}
+                    key={grid.ID + objectId}
+                    id={grid.ID + objectId}
                     configTableName={configWs}
                     dataTableName={dataWs}
                     heightRatio={0.7}
@@ -62,6 +64,7 @@ const ParentChildGrids = (props, context) => {
 
     const handleCustomRowClick = (_id, _rowIdx, row, gridId, grid) => {
         props.setRowParent(row[`${gridId}.OBJECT_ID`] || 0)
+        ComponentManager.cleanComponentReducerState(gridId + prev)
         generateGrid(row[`${gridId}.OBJECT_ID`], grid)
     }
     const handleRowClick = (_id, _rowIdx, row, gridId) => {
