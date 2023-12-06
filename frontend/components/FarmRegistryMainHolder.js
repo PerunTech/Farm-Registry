@@ -1,7 +1,7 @@
 import { React, connect, MenuHolder, PropTypes, redux, createHashHistory, } from "perun-core";;
-import Registration from './FarmRegistration/Registration'
+import Farm from './Farm'
 const { store } = redux
-class FarmRegistry extends React.Component {
+class FarmRegistryMainHolder extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,11 +43,11 @@ class FarmRegistry extends React.Component {
       if (path) {
         switch (true) {
           case path.includes('#/main/farm-registry/registration/search'): {
-            component = <Registration paramsComponent={'search'} />
+            component = <Farm paramsComponent={'search'} />
             break;
           }
           case path.includes('#/main/farm-registry/registration'): {
-            component = <Registration paramsComponent={this.props.match.params} />
+            component = <Farm paramsComponent={this.props.match.params} />
             break;
           }
         }
@@ -76,8 +76,8 @@ const mapStateToProps = (state) => ({
   menuIsClicked: state.clickedMenuReducer.isClicked
 });
 
-FarmRegistry.contextTypes = {
+FarmRegistryMainHolder.contextTypes = {
   intl: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps)(FarmRegistry);
+export default connect(mapStateToProps)(FarmRegistryMainHolder);

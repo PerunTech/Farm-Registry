@@ -8,7 +8,7 @@ import {
     Loading,
     GenericForm,
 } from "perun-core";
-import { labelsManager } from "../../utils_tools/LabelsExport";
+import { labelsManager } from "../utils_tools/LabelsExport";
 const { useState, useEffect } = React;
 const { alertUser } = elements;
 
