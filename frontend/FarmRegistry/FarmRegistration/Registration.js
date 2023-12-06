@@ -177,7 +177,7 @@ class Registration extends React.Component {
     const id = element.ID;
     const splitID = id.replace(/\d/g, '').replace(/_$/, '');
     this.displayComponent('DYNAMIC', splitID, element);
-    this.setState({ activeElement: id });
+    this.setState({ activeElement: id, loading: false });
   }
   render() {
     const {
