@@ -6,7 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.prtech.svarog.CodeList;
 import com.prtech.svarog.I18n;
@@ -37,6 +40,8 @@ import com.prtech.svarog_common.DbSearchCriterion.DbCompareOperand;
 public class DbReader {
 
 	static final Logger log4j = SvConf.getLogger(DbReader.class);
+	
+	Map<String, JsonObject> landUseCache = new HashMap<>();
 
 	private static String getLocaleId(SvReader svr) {
 		String locale = SvConf.getDefaultLocale();
@@ -63,8 +68,6 @@ public class DbReader {
 		return searchDbObjectBySingleFilter(DbCompareOperand.EQUAL, objectType, columnName, columnValue, svr);
 	}
 
-	Map<String, JsonObject> landUseCache = new HashMap<>();
-
 	/**
 	 * Simple method for searching object by single filter
 	 * 
@@ -89,6 +92,56 @@ public class DbReader {
 		return dbo;
 	}
 
+	public DbDataArray searchFarmAndPersonData(JsonObject jsonData, SvReader svr) throws SvException {
+		DbDataArray dba = new DbDataArray();
+
+		DbSearchExpression dseFram = new DbSearchExpression();
+		DbSearchExpression dsePerson = new DbSearchExpression();
+
+		if (jsonData.has("FARM.FULL_NAME")) {
+			DbSearchCriterion crit = new DbSearchCriterion(CC.FULL_NAME, DbCompareOperand.LIKE,
+					jsonData.get("FARM.FULL_NAME").getAsString() + "%");
+			dseFram.addDbSearchItem(crit);
+		}
+
+		if (jsonData.has("FARM.FIC")) {
+			DbSearchCriterion crit = new DbSearchCriterion(CC.FIC, DbCompareOperand.LIKE,
+					jsonData.get("FARM.FIC").getAsString() + "%");
+			dseFram.addDbSearchItem(crit);
+		}
+
+		if (jsonData.has("PERSON.ID_NO")) {
+			DbSearchCriterion crit = new DbSearchCriterion(CC.ID_NO, DbCompareOperand.LIKE,
+					jsonData.get("PERSON.ID_NO").getAsString() + "%");
+			dsePerson.addDbSearchItem(crit);
+		}
+
+		if (jsonData.has("PERSON.TAX_NO")) {
+			DbSearchCriterion crit = new DbSearchCriterion(CC.TAX_NO, DbCompareOperand.LIKE,
+					jsonData.get("PERSON.TAX_NO").getAsString() + "%");
+			dsePerson.addDbSearchItem(crit);
+		}
+
+		if (dseFram.getExprList().size() == 0) {
+			dseFram = null;
+		}
+		if (dsePerson.getExprList().size() == 0) {
+			dsePerson = null;
+		}
+
+		DbQueryObject dqoFarm = new DbQueryObject(SvCore.getDbtByName(CC.FARM), dseFram, DbJoinType.INNER, null,
+				LinkType.CUSTOM, null, null);
+		dqoFarm.addCustomJoinLeft("PERSON_OBJECT_ID");
+		dqoFarm.addCustomJoinRight("OBJECT_ID");
+		DbQueryObject dqoPerson = new DbQueryObject(SvCore.getDbtByName(CC.PERSON), dsePerson, null, null);
+
+		DbQueryExpression dqe = new DbQueryExpression();
+		dqe.addItem(dqoFarm);
+		dqe.addItem(dqoPerson);
+		dba = svr.getObjects(dqe, 0, 0);
+		return dba;
+	}
+	
 	public JsonObject getSpecificLandUseCodesMainMethod(SvReader svr, Integer year, Integer landCover,
 			Boolean includeOnlyBasic, Boolean includeOtscCrops) throws SvException {
 		JsonObject jObjectResult = new JsonObject();
@@ -303,4 +356,83 @@ public class DbReader {
 		}
 		return jBasicLandUseCodes;
 	}
+
+	public JsonArray convertDataArrayToJsonArray(DbDataArray foundData, String[] tables) {
+		JsonArray jarr = new JsonArray();
+		JsonObject jobj = new JsonObject();
+
+		for (DbDataObject dbo : foundData.getItems()) {
+			for (int i = 0; i < tables.length; i++) {
+				String table = tables[i];
+				DbDataObject dboTable = SvCore.getDbtByName(table);
+				DbDataArray dbaFields = SvCore.getFields(dboTable.getObjectId());
+				
+				jobj.addProperty(table + ".OBJECT_ID", Long
+						.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_OBJECT_ID").toString()));
+				jobj.addProperty(table + ".PARENT_ID", Long
+						.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_PARENT_ID").toString()));
+				
+				for (DbDataObject field : dbaFields.getItems()) {
+					String fieldName = field.getVal("FIELD_NAME").toString();
+					String fieldType = field.getVal("FIELD_TYPE").toString();
+
+					if (null != dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName)) {
+						switch (fieldType) {
+						case "NUMERIC":
+							Long scale = (Long) field.getVal("FIELD_SCALE");
+							if (scale == null || scale <= 0) {
+								Long tmpL = Long
+										.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName).toString());
+								if (tmpL != null)
+									jobj.addProperty(table + "." + fieldName, tmpL);
+							} else {
+								Double tmpD = Double
+										.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName).toString());
+								if (tmpD != null)
+									jobj.addProperty(table + "." + fieldName, tmpD);
+							}
+							break;
+						case "BOOLEAN":
+							if (null != dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName)) {
+								Boolean tmpB = (Boolean) dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName);
+								if (tmpB != null)
+									jobj.addProperty(table + "." + fieldName, tmpB);
+							}
+							break;
+						case "DATE":
+							DateTime tmpDsh = null;
+							if (null != dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName)) {
+								tmpDsh = new DateTime(dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName));
+							}
+
+							if (tmpDsh != null) {
+								int monthInt = tmpDsh.monthOfYear().get();
+								int dayInt = tmpDsh.dayOfMonth().get();
+								String monthStr = ((monthInt < 10) ? "0" : "") + String.valueOf(monthInt);
+								String dayStr = ((dayInt < 10) ? "0" : "") + String.valueOf(dayInt);
+								jobj.addProperty(table + "." + fieldName,
+										tmpDsh.year().get() + "-" + monthStr + "-" + dayStr);
+							}
+							break;
+						case "TIMESTAMP":
+						case "DATETIME":
+							DateTime tmpDl = (DateTime) dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName);
+							if (tmpDl != null)
+								jobj.addProperty(table + "." + fieldName, tmpDl.toString());
+							break;
+						default:
+							if (dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName) != null)
+								jobj.addProperty(table + "." + fieldName,
+										dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName).toString());
+							break;
+						}
+					}
+				}
+			}
+			jarr.add(jobj);
+			jobj = new JsonObject();
+		}
+		return jarr;
+	}
+
 }

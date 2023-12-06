@@ -2,19 +2,24 @@ package com.prtech.fr.ws;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -237,6 +242,36 @@ public class WsFarmUtils {
 					includeOtscCrops);
 		} catch (Exception e) {
 			return PerunUtil.handleException(e, "Error getting land use codes");
+		}
+		return Response.status(200).entity(jObjectResult.toString()).build();
+	}
+	
+	@Path("/search-farm-person/sid/{sessionId}")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchFarmPersonData(@PathParam("sessionId") String sessionId,
+			MultivaluedMap<String, String> formVals, @Context HttpServletRequest httpRequest) {
+		JsonArray jObjectResult = new JsonArray();
+		try (SvReader svr = new SvReader(sessionId);) {
+			JsonObject jsonData = null;
+			if (formVals != null)
+				for (Entry<String, List<String>> entry : formVals.entrySet()) {
+					if (entry.getKey() != null && !entry.getKey().isEmpty()) {
+						String key = entry.getKey();
+						jsonData = new Gson().fromJson(key, JsonObject.class);
+					}
+				}
+
+			if (jsonData != null) {
+				DbReader rdr = new DbReader();
+				DbDataArray foundData = rdr.searchFarmAndPersonData(jsonData, svr);
+				if (foundData != null && !foundData.isEmpty()) {
+					String[] tables = { CC.FARM, CC.PERSON };
+					jObjectResult = rdr.convertDataArrayToJsonArray(foundData, tables);
+				}
+			}
+		} catch (Exception e) {
+			return PerunUtil.handleException(e, "Error getting farm and person data");
 		}
 		return Response.status(200).entity(jObjectResult.toString()).build();
 	}
