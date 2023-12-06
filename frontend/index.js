@@ -20,8 +20,8 @@ const routes = [
     isExact: true,
   },
   {
-    name: "farm-registry-registration",
-    path: "/main/farm-registry/registration/:params",
+    name: "farm-registry-farm",
+    path: "/main/farm-registry/farm/:params",
     render: FarmRegistryMainHolder,
     isExact: false,
   },
