@@ -24,7 +24,6 @@ const CustomButtons = (props, context) => {
     const [clickedRowParent, setRowParent] = useState(undefined)
 
     useEffect(() => {
-        console.log(`custom-menu-${props.tableName.toLowerCase()}-container`);
         setWrapper(props.tableName.replace(/(\w)(\w*)/g,
             function (g0, g1, g2) { return g1.toUpperCase() + g2.toLowerCase(); }).replace(/_/g, ''))
         return () => {
