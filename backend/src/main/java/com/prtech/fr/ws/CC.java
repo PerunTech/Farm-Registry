@@ -1,7 +1,5 @@
 package com.prtech.fr.ws;
 
-import com.prtech.svarog_common.SvCharId;
-
 public class CC {
 
 	public static final String PERSON_OBJECT_ID = "PERSON_OBJECT_ID";
@@ -25,4 +23,6 @@ public class CC {
 	public static final String ERROR_INVALID_SESSION = "ERROR_INVALID_SESSION";
 	public static final String ERROR_USER_NOT_AUTHORIZED = "ERROR_USER_NOT_AUTHORIZED";
 	public static final String MAX_DATETIME = "9999-12-31T00:00:00+00";
+	public static final String FARM = "FARM";
+	public static final String FULL_NAME = "FULL_NAME";
 }
