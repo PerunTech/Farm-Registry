@@ -9,6 +9,7 @@ const { store } = redux
 class Farm extends React.Component {
   constructor(props) {
     super(props);
+    this.myRef = React.createRef();
     this.state = {
       showGrid: false,
       dataForm: false,
@@ -135,7 +136,7 @@ class Farm extends React.Component {
             >
               <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
             </button>
-            {el.data && <div>
+            {el.data && <div ref={this.myRef}>
               {this.state[el.ID]}
             </div>}
           </>
@@ -146,6 +147,11 @@ class Farm extends React.Component {
     }
   }
   generateChild = (id, children) => {
+    if (id.includes('PRINT')) {
+      const lastChildElement = this.myRef.current?.lastElementChild;
+      lastChildElement?.scrollIntoView({ behavior: 'smooth' });
+      console.log(lastChildElement)
+    }
     if (this.state[id]) {
       this.setState({ [id]: null });
     } else {

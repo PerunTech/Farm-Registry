@@ -179,3 +179,7 @@
         margin-left: 0;
     }
 }
+
+.registration-module-farm-registry-modal {
+    z-index: 1000;
+}
