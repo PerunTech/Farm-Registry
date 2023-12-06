@@ -266,7 +266,7 @@ public class WsFarmUtils {
 				DbReader rdr = new DbReader();
 				DbDataArray foundData = rdr.searchFarmAndPersonData(jsonData, svr);
 				if (foundData != null && !foundData.isEmpty()) {
-					String[] tables = { "FARM", "PERSON" };
+					String[] tables = { CC.FARM, CC.PERSON };
 					jObjectResult = rdr.convertDataArrayToJsonArray(foundData, tables);
 				}
 			}

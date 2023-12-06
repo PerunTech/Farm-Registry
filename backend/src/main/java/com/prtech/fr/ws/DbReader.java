@@ -100,25 +100,25 @@ public class DbReader {
 		DbSearchExpression dsePerson = new DbSearchExpression();
 
 		if (jsonData.has("FARM.FULL_NAME")) {
-			DbSearchCriterion crit = new DbSearchCriterion("FULL_NAME", DbCompareOperand.LIKE,
+			DbSearchCriterion crit = new DbSearchCriterion(CC.FULL_NAME, DbCompareOperand.LIKE,
 					jsonData.get("FARM.FULL_NAME").getAsString() + "%");
 			dseFram.addDbSearchItem(crit);
 		}
 
 		if (jsonData.has("FARM.FIC")) {
-			DbSearchCriterion crit = new DbSearchCriterion("FIC", DbCompareOperand.LIKE,
+			DbSearchCriterion crit = new DbSearchCriterion(CC.FIC, DbCompareOperand.LIKE,
 					jsonData.get("FARM.FIC").getAsString() + "%");
 			dseFram.addDbSearchItem(crit);
 		}
 
 		if (jsonData.has("PERSON.ID_NO")) {
-			DbSearchCriterion crit = new DbSearchCriterion("ID_NO", DbCompareOperand.LIKE,
+			DbSearchCriterion crit = new DbSearchCriterion(CC.ID_NO, DbCompareOperand.LIKE,
 					jsonData.get("PERSON.ID_NO").getAsString() + "%");
 			dsePerson.addDbSearchItem(crit);
 		}
 
 		if (jsonData.has("PERSON.TAX_NO")) {
-			DbSearchCriterion crit = new DbSearchCriterion("TAX_NO", DbCompareOperand.LIKE,
+			DbSearchCriterion crit = new DbSearchCriterion(CC.TAX_NO, DbCompareOperand.LIKE,
 					jsonData.get("PERSON.TAX_NO").getAsString() + "%");
 			dsePerson.addDbSearchItem(crit);
 		}
@@ -130,11 +130,11 @@ public class DbReader {
 			dsePerson = null;
 		}
 
-		DbQueryObject dqoFarm = new DbQueryObject(SvCore.getDbtByName("FARM"), dseFram, DbJoinType.INNER, null,
+		DbQueryObject dqoFarm = new DbQueryObject(SvCore.getDbtByName(CC.FARM), dseFram, DbJoinType.INNER, null,
 				LinkType.CUSTOM, null, null);
 		dqoFarm.addCustomJoinLeft("PERSON_OBJECT_ID");
 		dqoFarm.addCustomJoinRight("OBJECT_ID");
-		DbQueryObject dqoPerson = new DbQueryObject(SvCore.getDbtByName("PERSON"), dsePerson, null, null);
+		DbQueryObject dqoPerson = new DbQueryObject(SvCore.getDbtByName(CC.PERSON), dsePerson, null, null);
 
 		DbQueryExpression dqe = new DbQueryExpression();
 		dqe.addItem(dqoFarm);
