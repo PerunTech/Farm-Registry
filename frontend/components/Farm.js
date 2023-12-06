@@ -48,17 +48,17 @@ class Farm extends React.Component {
 
   displayComponent = (component, tableName, configuration) => {
     let componentAddReg;
-    let href = '/main/farm-registry/registration/'
+    let href = '/main/farm-registry/farm/'
     switch (component) {
       case "ADD_FARM":
-        href = `/main/farm-registry/registration/register`
+        href = `/main/farm-registry/farm/register`
         this.hashHistory.push(href)
         componentAddReg = (
           <CreateFarm personObjId={this.state.personObj} />
         );
         break;
       case "DYNAMIC":
-        href = `/main/farm-registry/registration/${tableName}`
+        href = `/main/farm-registry/farm/${tableName}`
         this.hashHistory.push(href)
         const customButtonsProps = {
           key: tableName,
@@ -200,7 +200,7 @@ class Farm extends React.Component {
             <div className={`${style["btnHolder"]}`}>
               <button className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']} ${activeElement === 'SEARCH' && style['active']}`} onClick={() => {
                 this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
-                let href = `/main/farm-registry/registration/search`
+                let href = `/main/farm-registry/farm/search`
                 this.hashHistory.push(href)
                 this.setState({ activeElement: 'SEARCH' })
                 this.setState({

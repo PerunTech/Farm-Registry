@@ -10,7 +10,7 @@
 				"order": 130,
 				"permissionCode": "yes",
 				"contextMenuLabelCode": null,
-				"route": "/main/farm-registry/registration/search",
+				"route": "/main/farm-registry/farm/search",
 				"icon": "registrationFarm"
 			}
 		]

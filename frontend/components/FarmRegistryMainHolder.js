@@ -21,10 +21,10 @@ class FarmRegistryMainHolder extends React.Component {
     }
 
     if (window.location.hash === '#/main/farm-registry') {
-      const href = '/main/farm-registry/registration/search'
+      const href = '/main/farm-registry/farm/search'
       this.hashHistory.push(href)
       store.dispatch({ type: 'SET_ACTIVE_MODULE_MENU_ITEM', payload: 'FARMER' })
-      store.dispatch({ type: 'IS_CLICKED', payload: '#/main/farm-registry/registration/search' })
+      store.dispatch({ type: 'IS_CLICKED', payload: '#/main/farm-registry/farm/search' })
     } else {
       this.checkComponent();
     }
@@ -42,11 +42,11 @@ class FarmRegistryMainHolder extends React.Component {
     this.setState({ componentToRender: null }, () => {
       if (path) {
         switch (true) {
-          case path.includes('#/main/farm-registry/registration/search'): {
+          case path.includes('#/main/farm-registry/farm/search'): {
             component = <Farm paramsComponent={'search'} />
             break;
           }
-          case path.includes('#/main/farm-registry/registration'): {
+          case path.includes('#/main/farm-registry/farm'): {
             component = <Farm paramsComponent={this.props.match.params} />
             break;
           }
