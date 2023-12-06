@@ -11,7 +11,6 @@ import org.joda.time.DateTime;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.prtech.perun_core.ws.Rc;
 import com.prtech.svarog.CodeList;
 import com.prtech.svarog.I18n;
 import com.prtech.svarog.SvConf;
@@ -380,7 +379,7 @@ public class DbReader {
 					if (null != dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName)) {
 						switch (fieldType) {
 						case "NUMERIC":
-							Long scale = (Long) field.getVal(Rc.FIELD_SCALE);
+							Long scale = (Long) field.getVal("FIELD_SCALE");
 							if (scale == null || scale <= 0) {
 								Long tmpL = Long
 										.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_" + fieldName).toString());
