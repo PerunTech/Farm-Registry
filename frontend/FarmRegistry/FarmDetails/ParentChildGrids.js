@@ -1,9 +1,15 @@
-import { React, connect, axios, PropTypes, Loading, createHashHistory, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux } from 'perun-core'
+import { React, connect, PropTypes, ExportableGrid, ComponentManager } from 'perun-core'
 const { useState, useEffect } = React
 import style from "../style/registration.module.css"
-const { ReactBootstrap, alertUser } = elements;
 import { labelsManager } from '../utils_tools/LabelsExport';
 const ParentChildGrids = (props, context) => {
+    useEffect(() => {
+        return () => {
+            ComponentManager.cleanComponentReducerState(grids[0].ID + props.farmObjId)
+            ComponentManager.cleanComponentReducerState(grids[1].ID + props.farmObjId)
+        }
+    }, [])
+
     const [stateGrid, setStateGrid] = useState(undefined)
     const generateParentGrid = () => {
         const { grids } = props
