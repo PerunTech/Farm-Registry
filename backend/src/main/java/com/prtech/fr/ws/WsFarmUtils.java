@@ -323,8 +323,8 @@ public class WsFarmUtils {
 				}
 			}
 
-			properties.add("searchFormCriteria", searchFormCriteria);
-			properties.add("searchFormValue", searchFormValue);
+			properties.add("SEARCH_OPTION", searchFormCriteria);
+			properties.add("SEARCH_VALUES", searchFormValue);
 			jData.add("properties", properties);
 		} catch (SvException e) {
 			return PerunUtil.handleException(e, "Error getting table field list");
