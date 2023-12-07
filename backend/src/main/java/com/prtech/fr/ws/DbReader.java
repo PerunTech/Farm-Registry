@@ -92,48 +92,24 @@ public class DbReader {
 		return dbo;
 	}
 
-	public DbDataArray searchFarmAndPersonData(JsonObject jsonData, SvReader svr) throws SvException {
+	public DbDataArray searchFarmAndPersonData(String option, String value, SvReader svr) throws SvException {
 		DbDataArray dba = new DbDataArray();
+		String [] opt = option.split(".");
+	
+		DbSearchCriterion critFarm = null;
+		DbSearchCriterion critPerson = null;
 
-		DbSearchExpression dseFram = new DbSearchExpression();
-		DbSearchExpression dsePerson = new DbSearchExpression();
-
-		if (jsonData.has("FARM.FULL_NAME")) {
-			DbSearchCriterion crit = new DbSearchCriterion(CC.FULL_NAME, DbCompareOperand.LIKE,
-					jsonData.get("FARM.FULL_NAME").getAsString() + "%");
-			dseFram.addDbSearchItem(crit);
+		if (option.equals("FARM.FULL_NAME") || option.equals("FARM.FIC")) {
+			critFarm = new DbSearchCriterion(opt[1], DbCompareOperand.LIKE, value + "%");
+		} else if (option.equals("PERSON.ID_NO") || option.equals("PERSON.TAX_NO")) {
+			critPerson = new DbSearchCriterion(opt[1], DbCompareOperand.LIKE, value + "%");
 		}
-
-		if (jsonData.has("FARM.FIC")) {
-			DbSearchCriterion crit = new DbSearchCriterion(CC.FIC, DbCompareOperand.LIKE,
-					jsonData.get("FARM.FIC").getAsString() + "%");
-			dseFram.addDbSearchItem(crit);
-		}
-
-		if (jsonData.has("PERSON.ID_NO")) {
-			DbSearchCriterion crit = new DbSearchCriterion(CC.ID_NO, DbCompareOperand.LIKE,
-					jsonData.get("PERSON.ID_NO").getAsString() + "%");
-			dsePerson.addDbSearchItem(crit);
-		}
-
-		if (jsonData.has("PERSON.TAX_NO")) {
-			DbSearchCriterion crit = new DbSearchCriterion(CC.TAX_NO, DbCompareOperand.LIKE,
-					jsonData.get("PERSON.TAX_NO").getAsString() + "%");
-			dsePerson.addDbSearchItem(crit);
-		}
-
-		if (dseFram.getExprList().size() == 0) {
-			dseFram = null;
-		}
-		if (dsePerson.getExprList().size() == 0) {
-			dsePerson = null;
-		}
-
-		DbQueryObject dqoFarm = new DbQueryObject(SvCore.getDbtByName(CC.FARM), dseFram, DbJoinType.INNER, null,
+	
+		DbQueryObject dqoFarm = new DbQueryObject(SvCore.getDbtByName(CC.FARM), critFarm, DbJoinType.INNER, null,
 				LinkType.CUSTOM, null, null);
 		dqoFarm.addCustomJoinLeft("PERSON_OBJECT_ID");
 		dqoFarm.addCustomJoinRight("OBJECT_ID");
-		DbQueryObject dqoPerson = new DbQueryObject(SvCore.getDbtByName(CC.PERSON), dsePerson, null, null);
+		DbQueryObject dqoPerson = new DbQueryObject(SvCore.getDbtByName(CC.PERSON), critPerson, null, null);
 
 		DbQueryExpression dqe = new DbQueryExpression();
 		dqe.addItem(dqoFarm);
