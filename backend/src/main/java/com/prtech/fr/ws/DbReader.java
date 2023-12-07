@@ -94,7 +94,7 @@ public class DbReader {
 
 	public DbDataArray searchFarmAndPersonData(String option, String value, SvReader svr) throws SvException {
 		DbDataArray dba = new DbDataArray();
-		String [] opt = option.split(".");
+		String [] opt = option.split("[.]");
 	
 		DbSearchCriterion critFarm = null;
 		DbSearchCriterion critPerson = null;
