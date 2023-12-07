@@ -181,5 +181,5 @@
 }
 
 .registration-module-farm-registry-modal {
-    z-index: 1000;
+    z-index: 999999;
 }
