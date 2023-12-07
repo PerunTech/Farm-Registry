@@ -2,12 +2,13 @@ import { React, connect, PropTypes, ExportableGrid, ComponentManager } from 'per
 const { useState, useEffect } = React
 import style from "../style/registration.module.css"
 import { labelsManager } from '../utils_tools/LabelsExport';
+import { getDynamicKey } from '../../utils';
 let prev
 const ParentChildGrids = (props, context) => {
     useEffect(() => {
         return () => {
-            ComponentManager.cleanComponentReducerState(props.grids[0].ID + props.farmObjId)
-            ComponentManager.cleanComponentReducerState(props.grids[1].ID + prev)
+            ComponentManager.cleanComponentReducerState(props.grids[0].ID + '_' + props.farmObjId)
+            ComponentManager.cleanComponentReducerState(prev)
         }
     }, [])
 
@@ -22,8 +23,8 @@ const ParentChildGrids = (props, context) => {
                 {btnArray && props.buildCustomBtnArr(btnArray, false)}
                 <ExportableGrid
                     gridType={"READ_URL"}
-                    key={grids[0].ID + props.farmObjId}
-                    id={grids[0].ID + props.farmObjId}
+                    key={grids[0].ID + '_' + props.farmObjId}
+                    id={grids[0].ID + '_' + props.farmObjId}
                     configTableName={configWs}
                     dataTableName={dataWs}
                     heightRatio={0.7}
@@ -38,8 +39,10 @@ const ParentChildGrids = (props, context) => {
         return gridDiv
     }
     const generateGrid = (objectId, grid) => {
+        let gridId = grid.ID + objectId + getDynamicKey()
         const btnArray = props.grids[0].objectConfiguration.additionalBtns
-        prev = objectId
+        prev = gridId
+
         if (objectId) {
             const configWs = grid.objectConfiguration.configuration.onSubmit
             let dataWs = grid.objectConfiguration.data.onSubmit
@@ -48,15 +51,18 @@ const ParentChildGrids = (props, context) => {
                 {btnArray && <div className={style['child-grid-balancer']} />}
                 <ExportableGrid
                     gridType={"READ_URL"}
-                    key={grid.ID + objectId}
-                    id={grid.ID + objectId}
+                    key={gridId}
+                    id={gridId}
                     configTableName={configWs}
                     dataTableName={dataWs}
                     heightRatio={0.7}
                     onRowClickFunct={(id, idx, row) => handleRowClick(id, idx, row, grid.ID)}
                     refreshData={true}
                     toggleCustomButton={true}
-                    customButton={() => props.addFormFunc()}
+                    customButton={() => {
+                        props.addFormFunc()
+                        props.setRowChild(0)
+                    }}
                     customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
                 />
 
