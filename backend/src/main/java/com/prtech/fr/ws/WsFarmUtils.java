@@ -280,6 +280,7 @@ public class WsFarmUtils {
 			@PathParam("table_name") String tableName, @Context HttpServletRequest httpRequest) {
 		JsonObject jData = new JsonObject();
 		try (SvReader svr = new SvReader(sessionId);) {
+			String defaultField = "";
 			String localeId = getLocaleId(svr);
 			DbDataObject table = SvCore.getDbtByName(tableName);
 			jData.addProperty("title", I18n.getText(getLocaleId(svr), table.getVal("LABEL_CODE").toString()));
@@ -314,12 +315,18 @@ public class WsFarmUtils {
 							enumNames.add(I18n.getText(localeId, jsonField.get("name").getAsString()));
 							enums.add(jsonField.get("enum").getAsString());
 						}
+						if(jsonField.has("default")) {
+							defaultField = jsonField.get("default").getAsString();
+						}
 					}
 					Gson gson = new Gson();
 					JsonElement enumsElem = gson.toJsonTree(enums);
 					JsonElement enumNamesElem = gson.toJsonTree(enumNames);
 					searchFormCriteria.add("enum", enumsElem);
 					searchFormCriteria.add("enumNames", enumNamesElem);
+					if (!defaultField.equals("")) {
+						searchFormCriteria.addProperty("default", defaultField);
+					}
 				}
 			}
 
