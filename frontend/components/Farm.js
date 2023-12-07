@@ -194,7 +194,6 @@ class Farm extends React.Component {
 
     return (
       <>
-        {loading && <Loading />}
         <div className={`${style["farm-registry-main-container"]}`} id="farm-registry-main-container">
           <div className={`${style["farm-registry-sidemenu"]}`} id="farm-registry-sidemenu">
             <div className={`${style["btnHolder"]}`}>
@@ -238,6 +237,7 @@ class Farm extends React.Component {
             {showFarmInfo}
             {showDynamicMenu && (<div className={[style['dynamic-comp-main-div']]}>
               {this.generateCustomButtons()}
+              <div className={style['side-menu-bottom-div']} />
             </div>)}
           </div>
           <div className={`${style["farm-registry-content"]}`} id="farm-registry-content">

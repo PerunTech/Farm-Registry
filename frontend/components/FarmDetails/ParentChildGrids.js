@@ -16,8 +16,10 @@ const ParentChildGrids = (props, context) => {
         const { grids } = props
         const configWs = props.grids[0].objectConfiguration.configuration.onSubmit
         const dataWs = props.grids[0].objectConfiguration.data.onSubmit
+        const btnArray = props.grids[0].objectConfiguration.additionalBtns
         const gridDiv = <>
             <div className={`${style['parent-dynamic-grid']}`}>
+                {btnArray && props.buildCustomBtnArr(btnArray, false)}
                 <ExportableGrid
                     gridType={"READ_URL"}
                     key={grids[0].ID + props.farmObjId}
@@ -36,12 +38,14 @@ const ParentChildGrids = (props, context) => {
         return gridDiv
     }
     const generateGrid = (objectId, grid) => {
+        const btnArray = props.grids[0].objectConfiguration.additionalBtns
         prev = objectId
         if (objectId) {
             const configWs = grid.objectConfiguration.configuration.onSubmit
             let dataWs = grid.objectConfiguration.data.onSubmit
             dataWs = dataWs.replace(/{([^}]+)}/g, objectId)
             const gridDiv = <div className={` ${style['child-dynamic-grid']}`}>
+                {btnArray && <div className={style['child-grid-balancer']} />}
                 <ExportableGrid
                     gridType={"READ_URL"}
                     key={grid.ID + objectId}
@@ -49,7 +53,7 @@ const ParentChildGrids = (props, context) => {
                     configTableName={configWs}
                     dataTableName={dataWs}
                     heightRatio={0.7}
-                    onRowClickFunct={(id, idx, row) => handleRowClick(id, idx, row, props.grid.ID)}
+                    onRowClickFunct={(id, idx, row) => handleRowClick(id, idx, row, grid.ID)}
                     refreshData={true}
                     toggleCustomButton={true}
                     customButton={() => props.addFormFunc()}
@@ -69,6 +73,7 @@ const ParentChildGrids = (props, context) => {
     }
     const handleRowClick = (_id, _rowIdx, row, gridId) => {
         props.setRowChild(row[`${gridId}.OBJECT_ID`] || 0)
+        props.addFormFunc()
     }
     return (
         <>{generateParentGrid()}
