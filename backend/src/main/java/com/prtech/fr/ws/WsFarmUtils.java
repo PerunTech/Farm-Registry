@@ -1,5 +1,6 @@
 package com.prtech.fr.ws;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -271,6 +272,65 @@ public class WsFarmUtils {
 		return Response.status(200).entity(jArray.toString()).build();
 	}
 	
+	
+	@Path("/getTableSearchJSONSchemaCustom/{session_id}/{table_name}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTableSearchJSONSchema(@PathParam("session_id") String sessionId,
+			@PathParam("table_name") String tableName, @Context HttpServletRequest httpRequest) {
+		JsonObject jData = new JsonObject();
+		try (SvReader svr = new SvReader(sessionId);) {
+			String localeId = getLocaleId(svr);
+			DbDataObject table = SvCore.getDbtByName(tableName);
+			jData.addProperty("TITLE", I18n.getText(getLocaleId(svr), table.getVal("LABEL_CODE").toString()));
+			jData.addProperty("TYPE", "object");
+
+			JsonObject properties = new JsonObject();
+			JsonObject searchFormCriteria = new JsonObject();
+			searchFormCriteria.addProperty("type", "string");
+			searchFormCriteria.addProperty("title", I18n.getText(localeId, "search_form_by_criteria.criteria"));
+
+			JsonObject searchFormValue = new JsonObject();
+			searchFormValue.addProperty("type", "string");
+			searchFormValue.addProperty("title", I18n.getText(localeId, "search_form_by_criteria.value"));
+
+			if (table.getVal("GUI_METADATA") != null) {
+				JsonObject guiMetadata = null;
+				JsonArray criterias = null;
+
+				if (table.getVal("GUI_METADATA") != null)
+					guiMetadata = (new Gson()).fromJson(table.getVal("GUI_METADATA").toString(), JsonObject.class);
+				if (guiMetadata != null && guiMetadata.has("search_form_by_criteria"))
+					criterias = (JsonArray) guiMetadata.get("search_form_by_criteria");
+
+				if (criterias != null) {
+					ArrayList<String> enumNames = new ArrayList<>();
+					ArrayList<String> enums = new ArrayList<>();
+
+					for (int i = 0; i < criterias.size(); i++) {
+						JsonObject jsonField = criterias.get(i).getAsJsonObject();
+						if (jsonField.has("enum") && jsonField.has("name")) {
+							jsonField.addProperty("name", I18n.getText(localeId, jsonField.get("name").getAsString()));
+							enumNames.add(I18n.getText(localeId, jsonField.get("name").getAsString()));
+							enums.add(jsonField.get("enum").getAsString());
+						}
+					}
+					Gson gson = new Gson();
+					JsonElement enumsElem = gson.toJsonTree(enums);
+					JsonElement enumNamesElem = gson.toJsonTree(enumNames);
+					searchFormCriteria.add("enum", enumsElem);
+					searchFormCriteria.add("enumNames", enumNamesElem);
+				}
+			}
+
+			properties.add("searchFormCriteria", searchFormCriteria);
+			properties.add("searchFormValue", searchFormValue);
+			jData.add("properties", properties);
+		} catch (SvException e) {
+			return PerunUtil.handleException(e, "Error getting table field list");
+		}
+		return Response.status(200).entity(jData.toString()).build();
+	}
 
 	@Path("/LandUseCodes/get/{sessionId}/landCover/{landCover}/baseOnly/{includeOnlyBasic}/year/{year}/includeOtscCrops/{includeOtscCrops}")
 	@GET
