@@ -1,5 +1,6 @@
 package com.prtech.fr.ws;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -228,6 +229,108 @@ public class WsFarmUtils {
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
+	
+	@Path("/getTableFieldListCustom/{session_id}/{table_name}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTableFieldList(@PathParam("session_id") String sessionId,
+			@PathParam("table_name") String tableName, @Context HttpServletRequest httpRequest) {
+		JsonArray jArray = new JsonArray();
+		try (SvReader svr = new SvReader(sessionId);) {
+
+			WsReactElements re = new WsReactElements();
+			Response responseHtml = re.getTableFieldList(sessionId, tableName, null);
+			Gson gson = new Gson();
+			jArray = gson.fromJson(responseHtml.getEntity().toString(), JsonArray.class);
+
+			DbDataObject tableObject = SvCore.getDbtByName(tableName);
+
+			if (tableObject.getVal("GUI_METADATA") != null) {
+				JsonObject guiMetadata = null;
+				JsonArray jsonFields = null;
+
+				if (tableObject.getVal("GUI_METADATA") != null)
+					guiMetadata = (new Gson()).fromJson(tableObject.getVal("GUI_METADATA").toString(),
+							JsonObject.class);
+				if (guiMetadata != null && guiMetadata.has("extra_field_list"))
+					jsonFields = (JsonArray) guiMetadata.get("extra_field_list");
+
+				if (jsonFields != null) {
+					String localeId = getLocaleId(svr);
+					for (int i = 0; i < jsonFields.size(); i++) {
+						JsonObject jsonField = jsonFields.get(i).getAsJsonObject();
+						if (jsonField.has("name")) {
+							jsonField.addProperty("name", I18n.getText(localeId, jsonField.get("name").getAsString()));
+						}
+						jArray.add(jsonField);
+					}
+				}
+			}
+		} catch (SvException e) {
+			return PerunUtil.handleException(e, "Error getting table field list");
+		}
+		return Response.status(200).entity(jArray.toString()).build();
+	}
+	
+	
+	@Path("/getTableSearchJSONSchemaCustom/{session_id}/{table_name}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTableSearchJSONSchema(@PathParam("session_id") String sessionId,
+			@PathParam("table_name") String tableName, @Context HttpServletRequest httpRequest) {
+		JsonObject jData = new JsonObject();
+		try (SvReader svr = new SvReader(sessionId);) {
+			String localeId = getLocaleId(svr);
+			DbDataObject table = SvCore.getDbtByName(tableName);
+			jData.addProperty("title", I18n.getText(getLocaleId(svr), table.getVal("LABEL_CODE").toString()));
+			jData.addProperty("type", "object");
+
+			JsonObject properties = new JsonObject();
+			JsonObject searchFormCriteria = new JsonObject();
+			searchFormCriteria.addProperty("type", "string");
+			searchFormCriteria.addProperty("title", I18n.getText(localeId, "search_form_by_criteria.criteria"));
+
+			JsonObject searchFormValue = new JsonObject();
+			searchFormValue.addProperty("type", "string");
+			searchFormValue.addProperty("title", I18n.getText(localeId, "search_form_by_criteria.value"));
+
+			if (table.getVal("GUI_METADATA") != null) {
+				JsonObject guiMetadata = null;
+				JsonArray criterias = null;
+
+				if (table.getVal("GUI_METADATA") != null)
+					guiMetadata = (new Gson()).fromJson(table.getVal("GUI_METADATA").toString(), JsonObject.class);
+				if (guiMetadata != null && guiMetadata.has("search_form_by_criteria"))
+					criterias = (JsonArray) guiMetadata.get("search_form_by_criteria");
+
+				if (criterias != null) {
+					ArrayList<String> enumNames = new ArrayList<>();
+					ArrayList<String> enums = new ArrayList<>();
+
+					for (int i = 0; i < criterias.size(); i++) {
+						JsonObject jsonField = criterias.get(i).getAsJsonObject();
+						if (jsonField.has("enum") && jsonField.has("name")) {
+							jsonField.addProperty("name", I18n.getText(localeId, jsonField.get("name").getAsString()));
+							enumNames.add(I18n.getText(localeId, jsonField.get("name").getAsString()));
+							enums.add(jsonField.get("enum").getAsString());
+						}
+					}
+					Gson gson = new Gson();
+					JsonElement enumsElem = gson.toJsonTree(enums);
+					JsonElement enumNamesElem = gson.toJsonTree(enumNames);
+					searchFormCriteria.add("enum", enumsElem);
+					searchFormCriteria.add("enumNames", enumNamesElem);
+				}
+			}
+
+			properties.add("SEARCH_OPTION", searchFormCriteria);
+			properties.add("SEARCH_VALUES", searchFormValue);
+			jData.add("properties", properties);
+		} catch (SvException e) {
+			return PerunUtil.handleException(e, "Error getting table field list");
+		}
+		return Response.status(200).entity(jData.toString()).build();
+	}
 
 	@Path("/LandUseCodes/get/{sessionId}/landCover/{landCover}/baseOnly/{includeOnlyBasic}/year/{year}/includeOtscCrops/{includeOtscCrops}")
 	@GET
@@ -262,9 +365,10 @@ public class WsFarmUtils {
 					}
 				}
 
-			if (jsonData != null) {
+			if (jsonData != null && jsonData.has("SEARCH_OPTION") && jsonData.has("SEARCH_VALUES")) {
 				DbReader rdr = new DbReader();
-				DbDataArray foundData = rdr.searchFarmAndPersonData(jsonData, svr);
+				DbDataArray foundData = rdr.searchFarmAndPersonData(jsonData.get("SEARCH_OPTION").getAsString(),
+						jsonData.get("SEARCH_VALUES").getAsString(), svr);
 				if (foundData != null && !foundData.isEmpty()) {
 					String[] tables = { CC.FARM, CC.PERSON };
 					jObjectResult = rdr.convertDataArrayToJsonArray(foundData, tables);
