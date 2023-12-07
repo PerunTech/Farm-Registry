@@ -282,8 +282,8 @@ public class WsFarmUtils {
 		try (SvReader svr = new SvReader(sessionId);) {
 			String localeId = getLocaleId(svr);
 			DbDataObject table = SvCore.getDbtByName(tableName);
-			jData.addProperty("TITLE", I18n.getText(getLocaleId(svr), table.getVal("LABEL_CODE").toString()));
-			jData.addProperty("TYPE", "object");
+			jData.addProperty("title", I18n.getText(getLocaleId(svr), table.getVal("LABEL_CODE").toString()));
+			jData.addProperty("type", "object");
 
 			JsonObject properties = new JsonObject();
 			JsonObject searchFormCriteria = new JsonObject();
@@ -323,8 +323,8 @@ public class WsFarmUtils {
 				}
 			}
 
-			properties.add("searchFormCriteria", searchFormCriteria);
-			properties.add("searchFormValue", searchFormValue);
+			properties.add("SEARCH_OPTION", searchFormCriteria);
+			properties.add("SEARCH_VALUES", searchFormValue);
 			jData.add("properties", properties);
 		} catch (SvException e) {
 			return PerunUtil.handleException(e, "Error getting table field list");
