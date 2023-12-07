@@ -19,6 +19,13 @@ const SearchComp = (props, context) => {
 
 
   const showSearchForm = () => {
+
+    let configWs = `/WsFarmUtils/getTableSearchJSONSchemaCustom/${props.svSession}/FARM`
+    let tableName = "FARM"
+    if (props.person) {
+      tableName = "PERSON"
+      configWs = `/ReactElements/getTableSearchJSONSchema/${props.svSession}/PERSON`
+    }
     let searchForm = (
       <div>
         <GenericForm
@@ -26,7 +33,7 @@ const SearchComp = (props, context) => {
           params={'READ_URL'}
           key={`${tableName}_SEARCH_FORM`}
           id={`${tableName}_SEARCH_FORM`}
-          method={`/ReactElements/getTableSearchJSONSchema/${props.svSession}/${tableName}`}
+          method={configWs}
           uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/${tableName}`}
           tableFormDataMethod={`/ReactElements/getTableFormData/${props.svSession}/0/${tableName}`}
           addSaveFunction={(e) => assignSearchResultGrid(e)}
@@ -38,42 +45,61 @@ const SearchComp = (props, context) => {
   };
 
   const assignSearchResultGrid = (e) => {
-    console.log();
+    let tableName = "FARM"
+    let url = `${window.server}/WsFarmUtils/search-farm-person/sid/${props.svSession}`
+    if (props.person) {
+      tableName = "PERSON"
+      url = `${window.server}/ReactElements/searchTable/${props.svSession}/${tableName}/1000`
+    }
+    ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
+      saveExecuted: false,
+    });
     let formData = e.formData
-    if (formData['FULL_NAME']) {
-      formData['FULL_NAME'] = formData['FULL_NAME']?.toUpperCase()
-    }
-    if (formData['NAME']) {
-      formData['NAME'] = formData['NAME']?.toUpperCase()
-    }
-    console.log(formData);
+    if ((!props.person && formData['SEARCH_VALUES'] && formData['SEARCH_OPTION']) || (props.person && formData)) {
+      formData['SEARCH_VALUES'] = formData['SEARCH_VALUES']?.toUpperCase()
+      if (props.person) {
+        if (formData['FULL_NAME']) {
+          formData['FULL_NAME'] = formData['FULL_NAME']?.toUpperCase()
+        }
+        if (formData['NAME']) {
+          formData['NAME'] = formData['NAME']?.toUpperCase()
+        }
+      }
+      axios({
+        method: 'post',
+        data: formData,
+        url,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      }).then(res => {
+        searchResult(res.data)
+        setFormState(e.formData)
+        ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
+          saveExecuted: false,
+        });
 
-    let url = `${window.server}/ReactElements/searchTable/${props.svSession}/${tableName}/1000`
-    axios({
-      method: 'post',
-      data: formData,
-      url,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    }).then(res => {
-      searchResult(res.data)
-      setFormState(e.formData)
-      ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
-        saveExecuted: false,
-      });
+      }).catch(err => {
+        console.error(err)
+        const title = err.response?.data?.title || err
+        const msg = err.response?.data?.message || ''
+        alertUser(true, "error", title, msg);
+        ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
+          saveExecuted: false,
+        });
+      })
+    } else {
+      alertUser(true, 'info', labelsManager.importLabel('enter_valid_criteria', context, 'farm_registry'), '', () => {
+        ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
+          saveExecuted: false,
+        })
+      })
 
-    }).catch(err => {
-      console.error(err)
-      alertUser(true, 'error', err)
-      ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
-        saveExecuted: false,
-      });
-    })
+    }
 
   };
 
   const searchResult = (data) => {
     //SEARCH CUSTOM BELOW
-    let configWs = `/ReactElements/getTableFieldList/${props.svSession}/FARM`
+    let configWs = `/WsFarmUtils/getTableFieldListCustom/${props.svSession}/FARM`
     let tableName = "FARM"
     if (props.person) {
       tableName = "PERSON"
