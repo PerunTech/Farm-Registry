@@ -194,6 +194,7 @@ class Farm extends React.Component {
 
     return (
       <>
+        {loading && <Loading />}
         <div className={`${style["farm-registry-main-container"]}`} id="farm-registry-main-container">
           <div className={`${style["farm-registry-sidemenu"]}`} id="farm-registry-sidemenu">
             <div className={`${style["btnHolder"]}`}>
