@@ -33,19 +33,26 @@ class Farm extends React.Component {
       this.displayComponent(this.props.paramsComponent.params);
     }
     if (this.props.lpisback.backFromLpis) {
-      this.getConfiguration(this.props.farmObjId)
+      this.getConfiguration(this.props.farmObjId, this.props.lpisback.tableName)
       this.generateInfo(this.props.farmData.rowsData)
       this.setState({ showDynamicMenu: true })
-      store.dispatch({ type: 'BACK_FROM_LPIS', payload: { backFromLpis: false, tableName: '' } })
     }
   }
 
   //function used to get the side menu confirguration from backend
-  getConfiguration = (objid) => {
+  getConfiguration = (objid, fromLpisTable) => {
     this.setState({ loading: true })
     let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/FARM-EXTENDED/object-id/${objid}`
     axios.get(url).then(res => {
       this.setState({ configuration: res.data, loading: false })
+      if (fromLpisTable) {
+        res.data.data.map(el => {
+          if (el.ID.includes(fromLpisTable)) {
+            this.onButtonClick(el);
+            store.dispatch({ type: 'BACK_FROM_LPIS', payload: { backFromLpis: false, tableName: undefined } })
+          }
+        })
+      }
     }).catch(err => {
       console.error(err)
       this.setState({ loading: false })
