@@ -27,7 +27,7 @@ const SearchComp = (props, context) => {
       configWs = `/ReactElements/getTableSearchJSONSchema/${props.svSession}/PERSON`
     }
     let searchForm = (
-      <div>
+        <div>
         <GenericForm
           className={`farm-registry-forms ${style["form-SC"]}`}
           params={'READ_URL'}
@@ -37,7 +37,9 @@ const SearchComp = (props, context) => {
           uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/${tableName}`}
           tableFormDataMethod={`/ReactElements/getTableFormData/${props.svSession}/0/${tableName}`}
           addSaveFunction={(e) => assignSearchResultGrid(e)}
+          customSaveButtonName={labelsManager.importLabel('search', context, 'farm_registry')}
           hideBtns={'closeAndDelete'}
+          customSave={true}
         />
       </div>
     );
