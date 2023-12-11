@@ -266,7 +266,6 @@ class Farm extends React.Component {
             </div>
           </div>
         </div >
-        <button onClick={() => { store.dispatch({ type: 'BACK_FROM_LPIS', payload: { backFromLpis: true, tableName: 'PPLAN' } }) }}>test</button>
       </>
     );
   }
