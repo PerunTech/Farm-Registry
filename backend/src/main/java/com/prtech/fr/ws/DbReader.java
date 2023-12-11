@@ -347,7 +347,7 @@ public class DbReader {
 						.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_OBJECT_ID").toString()));
 				jobj.addProperty(table + ".PARENT_ID", Long
 						.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_PARENT_ID").toString()));
-				jobj.addProperty(table + ".STATUS", Long
+				jobj.addProperty(table + ".STATUS", String
 						.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_STATUS").toString()));
 				
 				for (DbDataObject field : dbaFields.getItems()) {
