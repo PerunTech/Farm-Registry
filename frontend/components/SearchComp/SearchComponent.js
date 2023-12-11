@@ -1,4 +1,4 @@
-import { React, connect, PropTypes, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements } from 'perun-core'
+import { React, connect, PropTypes, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements, Loading } from 'perun-core'
 const { alertUser } = elements
 const { useState, useEffect } = React
 import style from "../style/registration.module.css"
@@ -8,6 +8,7 @@ const SearchComp = (props, context) => {
   const [formState, setFormState] = useState(undefined)
   const [gridResult, setGridResults] = useState(undefined)
   const [tableName, setTableName] = useState("FARM")
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     if (props.person) {
       setTableName("PERSON")
@@ -19,7 +20,6 @@ const SearchComp = (props, context) => {
 
 
   const showSearchForm = () => {
-
     let configWs = `/WsFarmUtils/getTableSearchJSONSchemaCustom/${props.svSession}/FARM`
     let tableName = "FARM"
     if (props.person) {
@@ -27,7 +27,7 @@ const SearchComp = (props, context) => {
       configWs = `/ReactElements/getTableSearchJSONSchema/${props.svSession}/PERSON`
     }
     let searchForm = (
-        <div>
+      <div>
         <GenericForm
           className={`farm-registry-forms ${style["form-SC"]}`}
           params={'READ_URL'}
@@ -47,6 +47,7 @@ const SearchComp = (props, context) => {
   };
 
   const assignSearchResultGrid = (e) => {
+    setLoading(true)
     let tableName = "FARM"
     let url = `${window.server}/WsFarmUtils/search-farm-person/sid/${props.svSession}`
     if (props.person) {
@@ -78,9 +79,10 @@ const SearchComp = (props, context) => {
         ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
           saveExecuted: false,
         });
-
+        setLoading(false)
       }).catch(err => {
         console.error(err)
+        setLoading(false)
         const title = err.response?.data?.title || err
         const msg = err.response?.data?.message || ''
         alertUser(true, "error", title, msg);
@@ -134,6 +136,7 @@ const SearchComp = (props, context) => {
 
   return (
     <React.Fragment>
+      {loading && <Loading />}
       {showSearchForm()}
       {gridResult}
     </React.Fragment>
