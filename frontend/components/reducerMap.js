@@ -1,4 +1,4 @@
-export default function mapDataReducer(state = { farmData: undefined, lpisback: { backFromLpis: false, tableName: '' } }, action) {
+export default function mapDataReducer(state = { farmData: undefined, lpisback: { backFromLpis: false, tableName: undefined } }, action) {
   switch (action.type) {
     case "GET_FR_MAP_DATA":
       return { ...state, farmData: action.payload }
