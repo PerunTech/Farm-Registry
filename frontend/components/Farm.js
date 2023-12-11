@@ -32,6 +32,12 @@ class Farm extends React.Component {
     if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search') {
       this.displayComponent(this.props.paramsComponent.params);
     }
+    if (this.props.lpisback.backFromLpis) {
+      this.getConfiguration(this.props.farmObjId)
+      this.generateInfo(this.props.farmData.rowsData)
+      this.setState({ showDynamicMenu: true })
+      store.dispatch({ type: 'BACK_FROM_LPIS', payload: { backFromLpis: false, tableName: '' } })
+    }
   }
 
   //function used to get the side menu confirguration from backend
@@ -261,7 +267,8 @@ class Farm extends React.Component {
 const mapStateToProps = (state) => ({
   svSession: state.security.svSession,
   farmData: state['farm_registry.mapData']?.farmData,
-  farmObjId: state['farm_registry.mapData']?.farmData?.objectId
+  farmObjId: state['farm_registry.mapData']?.farmData?.objectId,
+  lpisback: state['farm_registry.mapData']?.lpisback
 });
 
 Farm.contextTypes = {
