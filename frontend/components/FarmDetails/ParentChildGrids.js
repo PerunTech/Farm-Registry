@@ -60,7 +60,7 @@ const ParentChildGrids = (props, context) => {
                     refreshData={true}
                     toggleCustomButton={true}
                     customButton={() => {
-                        props.addFormFunc()
+                        props.addFormFunc(gridId)
                         props.setRowChild(0)
                     }}
                     customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}

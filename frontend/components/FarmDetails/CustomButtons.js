@@ -22,7 +22,7 @@ const CustomButtons = (props, context) => {
     const [flagFormChild, setFlagFormChild] = useState(undefined)
     const [clickedRowChild, setRowChild] = useState(0)
     const [clickedRowParent, setRowParent] = useState(undefined)
-
+    const [childGridId, setChildGridId] = useState(undefined)
     useEffect(() => {
         setWrapper(props.tableName.replace(/(\w)(\w*)/g,
             function (g0, g1, g2) { return g1.toUpperCase() + g2.toLowerCase(); }).replace(/_/g, ''))
@@ -239,7 +239,11 @@ const CustomButtons = (props, context) => {
                 } else {
                     alertUser(true, resType?.toLowerCase(), title, msg, () => resetFormSaveState());
                     if (isModal) {
-                        GridManager.reloadGridData(props.tableName + props.farmObjId)
+                        if (childGridId) {
+                            GridManager.reloadGridData(childGridId)
+                        } else {
+                            GridManager.reloadGridData(props.tableName + props.farmObjId)
+                        }
                         closeFormModal()
                     } else {
                         props.getConfiguration(props.farmObjId)
@@ -297,9 +301,10 @@ const CustomButtons = (props, context) => {
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
                 {props.configuration?.objectConfiguration?.type === 'address' && <Address personObjId={props.personObjId} defaultCountry={props.defaultCountry} />}
-                {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids} addFormFunc={() => {
+                {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids} addFormFunc={(gridId) => {
                     setShowModal(true)
                     setFlagFormChild(true)
+                    setChildGridId(gridId)
                 }} />}
                 {showModal && (
                     <Modal className={style["farm-registry-modal"]} show={showModal} onHide={() => closeFormModal()}>
