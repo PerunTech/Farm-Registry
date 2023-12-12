@@ -273,7 +273,8 @@ const Address = (props, context) => {
 
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
-    farmObjId: state['farm_registry.mapData']?.farmData?.objectId
+    farmObjId: state['farm_registry.mapData']?.farmData?.objectId,
+    personObjId: state['farm_registry.mapData']?.farmData?.rowsData?.['PERSON.OBJECT_ID']
 });
 
 Address.contextTypes = {

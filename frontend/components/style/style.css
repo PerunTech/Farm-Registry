@@ -21,7 +21,7 @@
   color: white !important;
 }
 
-.custom-farm-registry-modal-form legend {
+.hide-legend-form legend {
   display: none !important;
 }
 
@@ -85,17 +85,18 @@
   border: none;
 }
 
-.farm-farm-registry-form {
+.read-only-form {
   pointer-events: none;
 }
 
-.farm-farm-registry-form .btn_save_form {
+.read-only-form .btn_save_form {
   display: none;
 }
 
-.farm-farm-registry-form .field-string input,
-.farm-farm-registry-form .field-integer input {
-  background-color: #d0d2d3;
+.read-only-form .field-string input,
+.read-only-form .field-integer input,
+.read-only-form .field-string select {
+  background-color: #d0d2d38c;
 }
 
 .registration-module-farm-registry-modal {
