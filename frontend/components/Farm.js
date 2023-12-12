@@ -17,7 +17,7 @@ class Farm extends React.Component {
       hideSearchForm: true,
       defaultCountry: undefined,
       activeElement: 'SEARCH',
-      activeChild: null,
+      activeChild: ''
     };
     this.hashHistory = createHashHistory();
   }
@@ -134,23 +134,39 @@ class Farm extends React.Component {
     this.setState({ showFarmInfo: info })
   }
 
+  setActive = (el) => {
+    if (el.ID === this.state.activeElement) {
+      this.setState({ activeElement: '', loading: false });
+    } else {
+      this.setState({ activeElement: el.ID })
+    }
+  }
+
   generateCustomButtons = () => {
+    const { activeElement, activeChild } = this.state
     if (this.state.configuration && Array.isArray(this.state.configuration.data)) {
       return this.state.configuration.data.map(el => {
-        const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
-        const isActive = this.state.activeElement === el.ID; // Check if the element is active
-        const hasChildren = this.state[el.ID] !== undefined;  // Check if the element has children
+        let modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
         return (
           <>
             <button
-              className={isActive && !hasChildren ? `${style["btn_sub"]} ${style["active"]}` : `${style["btn_sub"]}`}
-              onClick={() => (el.data ? this.generateChild(el.ID, el.data) : this.onButtonClick(el))}
+              className={`${style["btn_sub"]} ${activeElement === el.ID && !el.data && style['active']}`}
+              onClick={() => (el.data ? this.setActive(el) : this.onButtonClick(el))}
             >
               <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
             </button>
-            {el.data && <div>
-              {this.state[el.ID]}
-            </div>}
+            {el.data && <div className={el.ID === activeElement ? style['sub-menu-sub-item-active'] : style['sub-menu-sub-item-hidden']}>
+              {el.data.map(sub => {
+                modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '')
+                return < button
+                  className={`${style["btn_sub"]} ${activeChild === sub.ID && style['active']}`
+                  }
+                  onClick={() => (sub.ID.includes('PRINT') ? this.printFunc(sub) : this.onButtonClick(sub, true))}
+                >
+                  <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{sub.label}</p>
+                </button>
+              })}
+            </div >}
           </>
         );
       });
@@ -158,39 +174,22 @@ class Farm extends React.Component {
       return <></>;
     }
   }
-  generateChild = (id, children) => {
-    if (this.state[id]) {
-      this.setState({ [id]: null });
-    } else {
-      let html = children.map(el => {
-        const modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
-        const isActive = this.state.activeChild === el.ID; // Check if the child is active
-        return (
-          <button
-            className={isActive ? `${style["btn_sub"]} ${style["submenu-print"]} ${style["active"]}` : `${style["btn_sub"]} ${style["submenu-print"]}`}
-            id={el.ID}
-            onClick={() => {
-              if (el.ID.includes('PRINT')) {
-                let url = window.server + el.onSubmit;
-                window.open(url, '_blank');
-              } else {
-                this.onButtonClick(el)
-              }
-            }}
-          >
-            <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
-          </button>
-        );
-      });
-      this.setState({ [id]: html });
-    }
+
+  printFunc = (sub) => {
+    let url = window.server + sub.onSubmit;
+    window.open(url, '_blank');
   }
 
-  onButtonClick = (element) => {
+  onButtonClick = (element, childEl) => {
     const id = element.ID;
     const splitID = id.replace(/\d/g, '').replace(/_$/, '');
-    this.displayComponent('DYNAMIC', splitID, element);
-    this.setState({ activeElement: id, loading: false });
+    if (childEl) {
+      this.displayComponent('DYNAMIC', splitID, element);
+      this.setState({ activeChild: id, loading: false });
+    } else {
+      this.displayComponent('DYNAMIC', splitID, element);
+      this.setState({ activeElement: id, loading: false, activeChild: '' });
+    }
   }
   render() {
     const {
