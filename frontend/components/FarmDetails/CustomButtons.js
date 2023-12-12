@@ -127,8 +127,6 @@ const CustomButtons = (props, context) => {
     }
 
     const generateForm = (isModal, resetTheId, formFromChild) => {
-        let customClass = `${props.tableName.toLowerCase()}-farm-registry-form` || 'customClass'
-        let className = 'form-test custom-farm-registry-form ' + customClass
         let inputWrapper
         if (props.configuration.objectConfiguration.wrapper) {
             wrappers.forEach(wrap => {
@@ -157,7 +155,6 @@ const CustomButtons = (props, context) => {
             // If the form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
             formDataWs = repalceFunc(formDataWs, props.tableName, clickedRowObjectId)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
-            className = 'custom-farm-registry-modal-form ' + customClass
         }
         if (formFromChild) {
             const { grids } = props.configuration.objectConfiguration
@@ -174,7 +171,7 @@ const CustomButtons = (props, context) => {
         }
         return (
             <GenericForm
-                className={className}
+                className={`form-test custom-farm-registry-form ${isModal && 'hide-legend-form'} ${props.tableName.toLowerCase()}-farm-registry-form ${props.configuration.objectConfiguration?.readOnly && 'read-only-form'} `}
                 params={'READ_URL'}
                 key={dynamicFormId}
                 id={dynamicFormId}
@@ -300,7 +297,7 @@ const CustomButtons = (props, context) => {
                 {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
-                {props.configuration?.objectConfiguration?.type === 'address' && <Address personObjId={props.personObjId} defaultCountry={props.defaultCountry} />}
+                {props.configuration?.objectConfiguration?.type === 'address' && <Address defaultCountry={props.defaultCountry} />}
                 {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids} addFormFunc={(gridId) => {
                     setShowModal(true)
                     setFlagFormChild(true)
