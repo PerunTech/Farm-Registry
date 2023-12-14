@@ -704,6 +704,10 @@
   text-align: start;
 }
 
+.file-name-upload:active {
+  transform: scale(.96);
+}
+
 .file-name-upload:hover {
   background-color: #e6e6e6;
 }
@@ -726,6 +730,10 @@
 
 .download-file-btn {
   color: #181818;
+}
+
+.delete-file-btn:active {
+  transform: scale(.96);
 }
 
 .delete-file-btn:hover {
