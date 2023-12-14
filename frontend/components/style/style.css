@@ -117,3 +117,25 @@
 .farm_activities_yn-farm-registry-form .field-string {
   width: 100%
 }
+
+.ahv_single_animal-farm-registry-form fieldset {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.ahv_single_animal-farm-registry-form .field-string,
+.ahv_single_animal-farm-registry-form .field-integer,
+.ahv_single_animal-farm-registry-form .field-number,
+.ahv_single_animal-farm-registry-form .field-boolean {
+  width: 100%;
+}
+
+.ahv_single_animal-farm-registry-form .form-group .form-group:has(select[name="initialDropdown"]) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ahv_single_animal-farm-registry-form .form-group .form-group:has(select[name="initialDropdown"]) .form-group {
+  width: 50%;
+}
