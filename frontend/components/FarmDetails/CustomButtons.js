@@ -178,9 +178,9 @@ const CustomButtons = (props, context) => {
                 method={jsonSchemaConfig}
                 uiSchemaConfigMethod={uiSchemaConfig}
                 tableFormDataMethod={formDataWs}
-                addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal)}
-                addDeleteFunction={deleteFunc}
-                hideBtns={clickedRowObjectId === 0 ? 'closeAndDelete' : 'close'}
+                addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal, childGridId)}
+                addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData, childGridId)}
+                hideBtns={(clickedRowObjectId === 0 && clickedRowChild === 0) ? 'closeAndDelete' : 'close'}
                 inputWrapper={inputWrapper}
             />
         )
@@ -261,7 +261,7 @@ const CustomButtons = (props, context) => {
         }
     };
 
-    const deleteFunc = (_id, _action, _session, formData) => {
+    const deleteFunc = (_id, _action, _session, formData, childGridId) => {
         const { svSession } = props;
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
@@ -276,7 +276,11 @@ const CustomButtons = (props, context) => {
             if (resType?.toLowerCase() === "success") {
                 alertUser(true, "success", title, msg);
                 closeFormModal()
-                GridManager.reloadGridData(props.tableName + props.farmObjId);
+                if (childGridId) {
+                    GridManager.reloadGridData(childGridId);
+                } else {
+                    GridManager.reloadGridData(props.tableName + props.farmObjId);
+                }
             } else {
                 alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => resetFormDeleteState())
             }
