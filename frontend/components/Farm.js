@@ -17,7 +17,8 @@ class Farm extends React.Component {
       hideSearchForm: true,
       defaultCountry: undefined,
       activeElement: 'SEARCH',
-      activeChild: ''
+      activeChild: '',
+      activeParent: ''
     };
     this.hashHistory = createHashHistory();
   }
@@ -135,15 +136,15 @@ class Farm extends React.Component {
   }
 
   setActive = (el) => {
-    if (el.ID === this.state.activeElement) {
-      this.setState({ activeElement: '', loading: false });
+    if (el.ID === this.state.activeParent) {
+      this.setState({ activeParent: '', loading: false });
     } else {
-      this.setState({ activeElement: el.ID })
+      this.setState({ activeParent: el.ID })
     }
   }
 
   generateCustomButtons = () => {
-    const { activeElement, activeChild } = this.state
+    const { activeElement, activeChild, activeParent } = this.state
     if (this.state.configuration && Array.isArray(this.state.configuration.data)) {
       return this.state.configuration.data.map(el => {
         let modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
@@ -155,7 +156,7 @@ class Farm extends React.Component {
             >
               <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
             </button>
-            {el.data && <div className={el.ID === activeElement ? style['sub-menu-sub-item-active'] : style['sub-menu-sub-item-hidden']}>
+            {el.data && <div className={el.ID === activeParent ? style['sub-menu-sub-item-active'] : style['sub-menu-sub-item-hidden']}>
               {el.data.map(sub => {
                 modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '')
                 return < button
@@ -185,7 +186,7 @@ class Farm extends React.Component {
     const splitID = id.replace(/\d/g, '').replace(/_$/, '');
     if (childEl) {
       this.displayComponent('DYNAMIC', splitID, element);
-      this.setState({ activeChild: id, loading: false });
+      this.setState({ activeChild: id, loading: false, activeElement: '' });
     } else {
       this.displayComponent('DYNAMIC', splitID, element);
       this.setState({ activeElement: id, loading: false, activeChild: '' });

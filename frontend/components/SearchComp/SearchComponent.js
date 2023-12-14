@@ -47,7 +47,6 @@ const SearchComp = (props, context) => {
   };
 
   const assignSearchResultGrid = (e) => {
-    setLoading(true)
     let tableName = "FARM"
     let url = `${window.server}/WsFarmUtils/search-farm-person/sid/${props.svSession}`
     if (props.person) {
@@ -68,6 +67,7 @@ const SearchComp = (props, context) => {
           formData['NAME'] = formData['NAME']?.toUpperCase()
         }
       }
+      setLoading(true)
       axios({
         method: 'post',
         data: formData,
