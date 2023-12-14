@@ -178,8 +178,8 @@ const CustomButtons = (props, context) => {
                 method={jsonSchemaConfig}
                 uiSchemaConfigMethod={uiSchemaConfig}
                 tableFormDataMethod={formDataWs}
-                addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal, childGridId)}
-                addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData, childGridId)}
+                addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal)}
+                addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData)}
                 hideBtns={(clickedRowObjectId === 0 && clickedRowChild === 0) ? 'closeAndDelete' : 'close'}
                 inputWrapper={inputWrapper}
             />
@@ -261,7 +261,7 @@ const CustomButtons = (props, context) => {
         }
     };
 
-    const deleteFunc = (_id, _action, _session, formData, childGridId) => {
+    const deleteFunc = (_id, _action, _session, formData) => {
         const { svSession } = props;
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
@@ -291,7 +291,11 @@ const CustomButtons = (props, context) => {
             alertUser(true, "error", title, msg, () => resetFormDeleteState());
         });
     };
-
+    const addFormFunc = (gridId) => {
+        setShowModal(true)
+        setFlagFormChild(true)
+        setChildGridId(gridId)
+    }
     return (
         <>
             {loading && <Loading />}
@@ -302,11 +306,8 @@ const CustomButtons = (props, context) => {
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
                 {props.configuration?.objectConfiguration?.type === 'address' && <Address defaultCountry={props.defaultCountry} />}
-                {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids} addFormFunc={(gridId) => {
-                    setShowModal(true)
-                    setFlagFormChild(true)
-                    setChildGridId(gridId)
-                }} />}
+                {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
+                    addFormFunc={addFormFunc} />}
                 {showModal && (
                     <Modal className={style["farm-registry-modal"]} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
