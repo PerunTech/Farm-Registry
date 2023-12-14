@@ -479,7 +479,7 @@
 }
 
 .farmer-info-right {
-  padding: 10px;
+  padding-left: 6px;
   border: 1px solid rgb(91 112 101);
   box-shadow: 2px 2px 5px rgb(37 37 37);
   background: #5b7065;
@@ -490,6 +490,7 @@
   flex-direction: column;
   justify-content: space-around;
   font-size: 0.8vw;
+  margin-bottom: 5px;
 }
 
 .farmer-info-right p {

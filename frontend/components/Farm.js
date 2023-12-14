@@ -215,7 +215,7 @@ class Farm extends React.Component {
                 this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
                 let href = `/main/farm-registry/farm/search`
                 this.hashHistory.push(href)
-                this.setState({ activeElement: 'SEARCH' })
+                this.setState({ activeElement: 'SEARCH', activeChild: '', activeParent: '' })
                 this.setState({
                   showDynamicMenu: false,
                   showFarmInfo: false,
@@ -237,7 +237,7 @@ class Farm extends React.Component {
                   })
                   GridManager.reloadGridData("FARM_GRID");
                   this.displayComponent('ADD_FARM');
-                  this.setState({ activeElement: 'ADD_FARM' })
+                  this.setState({ activeElement: 'ADD_FARM', activeChild: '', activeParent: '' })
                 }}
               >
                 {iconManager.getIcon("add")}
