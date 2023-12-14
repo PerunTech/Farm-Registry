@@ -56,7 +56,7 @@ const ParentChildGrids = (props, context) => {
                     configTableName={configWs}
                     dataTableName={dataWs}
                     heightRatio={0.7}
-                    onRowClickFunct={(id, idx, row) => handleRowClick(id, idx, row, grid.ID)}
+                    onRowClickFunct={(id, idx, row) => handleRowClick(id, idx, row, grid.ID, gridId)}
                     refreshData={true}
                     toggleCustomButton={true}
                     customButton={() => {
@@ -77,9 +77,9 @@ const ParentChildGrids = (props, context) => {
         ComponentManager.cleanComponentReducerState(gridId + prev)
         generateGrid(row[`${gridId}.OBJECT_ID`], grid)
     }
-    const handleRowClick = (_id, _rowIdx, row, gridId) => {
+    const handleRowClick = (_id, _rowIdx, row, gridId, gridAndDynamic) => {
         props.setRowChild(row[`${gridId}.OBJECT_ID`] || 0)
-        props.addFormFunc()
+        props.addFormFunc(gridAndDynamic)
     }
     return (
         <>{generateParentGrid()}
