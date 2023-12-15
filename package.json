@@ -14,8 +14,6 @@
         "url": "https://gitlab.prtech.mk/svarog4/farm-registry.git"
     },
     "dependencies": {
-        "ag-grid-community": "^22.1.1",
-        "ag-grid-react": "^22.1.1",
         "lpis": "git+https://git@gitlab.prtech.mk/svarog4/lpis#dev",
         "perun-core": "git+https://git@gitlab.prtech.mk/perunv3/perun-core#dev"
     },
