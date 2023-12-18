@@ -139,3 +139,17 @@
 .ahv_single_animal-farm-registry-form .form-group .form-group:has(select[name="initialDropdown"]) .form-group {
   width: 50%;
 }
+
+.other_gainful_activities-farm-registry-form #root__title {
+  display: none;
+}
+
+.other_gainful_activities-farm-registry-form>.form-group>fieldset>.form-group>fieldset {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 33% 33% 33%;
+}
+
+.other_gainful_activities-farm-registry-form .field-string {
+  width: 100%;
+}
