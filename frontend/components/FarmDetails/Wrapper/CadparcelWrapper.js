@@ -66,24 +66,30 @@ const CadparcelWrapper = (props, context) => {
     const handleInputs = () => {
         const firstInput = document.getElementById(firstInputId);
         if (firstInput) {
-            firstInput.addEventListener("focusout", handleTest);
+            firstInput.addEventListener("focusout", CheckArea);
         }
     };
-    const handleTest = () => {
+    const CheckArea = () => {
         const { formid } = props
         const formData = ComponentManager.getStateForComponent(
             formid,
             "formTableData"
         );
-        console.log(formData);
         const cadastralCode = formData['CODCADASTRAL']
         let url = window.server + `/mdfr/getCadParcelData/${props.svSession}/${cadastralCode}`
         axios.get(url).then(res => {
             if (res.data) {
                 if (Object.keys(res.data).length > 0) {
                     formData['AREA'] = res.data.area
-                    formData['NATIONAL_CODE'] = res.data.block
+                    formData['NATIONAL_CODE_NAME'] = res.data.block
                     formData['MUNICIPALITY_NAME'] = res.data.region
+                    ComponentManager.setStateForComponent(formid, "formTableData", formData);
+                    props.formInstance.setState({ formTableData: formData })
+
+                } else {
+                    formData['AREA'] = undefined
+                    formData['NATIONAL_CODE_NAME'] = undefined
+                    formData['MUNICIPALITY_NAME'] = undefined
                     ComponentManager.setStateForComponent(formid, "formTableData", formData);
                     props.formInstance.setState({ formTableData: formData })
                 }
@@ -94,6 +100,7 @@ const CadparcelWrapper = (props, context) => {
             const msg = err.response?.data?.message || ''
             alertUser(true, "error", title, msg);
         });
+
     }
     return (
         <>
