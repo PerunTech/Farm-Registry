@@ -3,7 +3,8 @@ import style from "../style/registration.module.css"
 import { getDynamicKey } from '../../utils'
 import { labelsManager } from '../utils_tools/LabelsExport';
 import Documents from './Documents';
-import FarmmembersWrapper from './FarmmembersWrapper';
+import FarmmembersWrapper from './Wrapper/FarmmembersWrapper';
+import CadparcelWrapper from './Wrapper/CadparcelWrapper'
 import Address from './Address/Address'
 import ParentChildGrids from './ParentChildGrids';
 const { ReactBootstrap, alertUser } = elements;
@@ -18,7 +19,7 @@ const CustomButtons = (props, context) => {
     const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
-    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }])
+    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }])
     const [flagFormChild, setFlagFormChild] = useState(undefined)
     const [clickedRowChild, setRowChild] = useState(0)
     const [clickedRowParent, setRowParent] = useState(undefined)
@@ -182,6 +183,7 @@ const CustomButtons = (props, context) => {
                 addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData)}
                 hideBtns={(clickedRowObjectId === 0 && clickedRowChild === 0) ? 'closeAndDelete' : 'close'}
                 inputWrapper={inputWrapper}
+                closeModalFunc={() => setShowModal(false)}
             />
         )
     }
