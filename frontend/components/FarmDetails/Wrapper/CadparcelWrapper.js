@@ -55,7 +55,7 @@ const CadparcelWrapper = (props, context) => {
                 console.error(err)
                 const title = err.response?.data?.title || err
                 const msg = err.response?.data?.message || ''
-                alertUser(true, "error", title, msg);
+                alertUser(true, "error", title, msg, () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) });
             });
         } else {
             alertUser(true, 'info', labelsManager.importLabel("invalid_cad_parcel", context, "farm_registry"), '', () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) })
