@@ -3,6 +3,7 @@ const { alertUser } = elements
 const { useState, useEffect } = React
 import style from "../style/registration.module.css"
 import { labelsManager } from '../utils_tools/LabelsExport';
+import SearchFormWrapper from './SearchFormWrapper';
 let searchGridId;
 const SearchComp = (props, context) => {
   const [formState, setFormState] = useState(undefined)
@@ -40,6 +41,7 @@ const SearchComp = (props, context) => {
           customSaveButtonName={labelsManager.importLabel('search', context, 'farm_registry')}
           hideBtns={'closeAndDelete'}
           customSave={true}
+          inputWrapper={SearchFormWrapper}
         />
       </div>
     );
