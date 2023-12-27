@@ -81,8 +81,8 @@ const CadparcelWrapper = (props, context) => {
             if (res.data) {
                 if (Object.keys(res.data).length > 0) {
                     formData['AREA'] = res.data.area
-                    formData['NATIONAL_CODE_NAME'] = res.data.block
-                    formData['MUNICIPALITY_NAME'] = res.data.region
+                    formData['NATIONAL_CODE_NAME'] = res.data.block || undefined
+                    formData['MUNICIPALITY_NAME'] = res.data.region || undefined
                     ComponentManager.setStateForComponent(formid, "formTableData", formData);
                     props.formInstance.setState({ formTableData: formData })
 

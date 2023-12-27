@@ -485,7 +485,7 @@
   background: #5b7065;
   border-radius: 3px;
   color: white;
-  height: 12%;
+  height: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
