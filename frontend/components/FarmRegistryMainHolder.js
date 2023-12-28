@@ -1,4 +1,4 @@
-import { React, connect, MenuHolder, PropTypes, redux, createHashHistory, } from "perun-core";;
+import { React, connect, PropTypes, redux, createHashHistory, } from "perun-core";;
 import Farm from './Farm'
 const { store } = redux
 class FarmRegistryMainHolder extends React.Component {
