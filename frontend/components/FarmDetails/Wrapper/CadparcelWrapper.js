@@ -7,10 +7,8 @@ import {
     axios,
     GridManager
 } from "perun-core";
-import style from "../../style/registration.module.css";
 import { labelsManager } from '../../utils_tools/LabelsExport';
 const { useState, useEffect } = React;
-const { ReactBootstrap } = elements;
 const { alertUser } = elements;
 
 const CadparcelWrapper = (props, context) => {
@@ -45,6 +43,7 @@ const CadparcelWrapper = (props, context) => {
                 alertUser(true, res.data.type?.toLowerCase(), res.data.title, res.data.message, () => {
                     ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
                     GridManager.reloadGridData(`CAD_PARCEL${props.farmObjId}`)
+                    ComponentManager.setStateForComponent(`CAD_PARCEL${props.farmObjId}`, null, { rowClicked: undefined })
                     const closeModalFunc = ComponentManager.getStateForComponent(
                         formid,
                         "closeModalFunc"

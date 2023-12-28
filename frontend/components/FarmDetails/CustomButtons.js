@@ -118,7 +118,7 @@ const CustomButtons = (props, context) => {
         }
     }
 
-    const repalceFunc = (wsPath, id, obj) => {
+    const replaceFunc = (wsPath, id, obj) => {
         if (wsPath.indexOf(`{${id}.OBJECT_ID}`) >= 0) {
             wsPath = wsPath.replace(`{${id}.OBJECT_ID}`, obj)
             return wsPath
@@ -154,7 +154,7 @@ const CustomButtons = (props, context) => {
             uiSchemaConfig = props.configuration.objectConfiguration?.form?.uischema?.onSubmit
             formDataWs = props.configuration.objectConfiguration?.form?.data?.onSubmit
             // If the form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
-            formDataWs = repalceFunc(formDataWs, props.tableName, clickedRowObjectId)
+            formDataWs = replaceFunc(formDataWs, props.tableName, clickedRowObjectId)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
         }
         if (formFromChild) {
@@ -164,10 +164,10 @@ const CustomButtons = (props, context) => {
             formDataWs = grids[1].objectConfiguration.form?.data?.onSubmit
             onSubmitWs = grids[1].objectConfiguration.form?.save?.onSave
 
-            formDataWs = repalceFunc(formDataWs, grids[0].ID, clickedRowParent)
-            formDataWs = repalceFunc(formDataWs, grids[1].ID, clickedRowChild)
-            onSubmitWs = repalceFunc(onSubmitWs, grids[0].ID, clickedRowParent)
-            onSubmitWs = repalceFunc(onSubmitWs, grids[1].ID, clickedRowChild)
+            formDataWs = replaceFunc(formDataWs, grids[0].ID, clickedRowParent)
+            formDataWs = replaceFunc(formDataWs, grids[1].ID, clickedRowChild)
+            onSubmitWs = replaceFunc(onSubmitWs, grids[0].ID, clickedRowParent)
+            onSubmitWs = replaceFunc(onSubmitWs, grids[1].ID, clickedRowChild)
 
         }
         return (
