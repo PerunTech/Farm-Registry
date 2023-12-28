@@ -65,10 +65,10 @@ const CadparcelWrapper = (props, context) => {
     const handleInputs = () => {
         const firstInput = document.getElementById(firstInputId);
         if (firstInput) {
-            firstInput.addEventListener("focusout", CheckArea);
+            firstInput.addEventListener("focusout", getCadParcelData);
         }
     };
-    const CheckArea = () => {
+    const getCadParcelData = () => {
         const { formid } = props
         const formData = ComponentManager.getStateForComponent(
             formid,
