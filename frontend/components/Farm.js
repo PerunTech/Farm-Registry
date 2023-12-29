@@ -43,7 +43,7 @@ class Farm extends React.Component {
   //function used to get the side menu confirguration from backend
   getConfiguration = (objid, fromLpisTable) => {
     this.setState({ loading: true })
-    let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/db-menu/object-id/${objid}`
+    let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/db-menu/object-id/${objid}/object-type/FARM`
     axios.get(url).then(res => {
       this.setState({ configuration: res.data, loading: false })
       if (fromLpisTable) {
