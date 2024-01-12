@@ -14,7 +14,7 @@ const { store, updateSelectedRows } = redux;
 let hashHistory = createHashHistory();
 let systemFields = {}
 const CustomButtons = (props, context) => {
-    const [loading, _setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
@@ -36,6 +36,7 @@ const CustomButtons = (props, context) => {
     }, [])
 
     const buildCustomBtnArr = (btnArray, multiSelect) => {
+        console.log(`custom-btn-holder-${props.tableName.toLowerCase()}`)
         const div = <div className={style[`custom-btn-holder-${props.tableName.toLowerCase()}`]}>
             {btnArray.map(el => (
                 <button id={el['ID']} className={`${style[`${props.tableName.toLowerCase()}-btn`]}`} onClick={() => customBtnAction(el, multiSelect)}>
@@ -46,6 +47,7 @@ const CustomButtons = (props, context) => {
         return div
     }
     const customBtnAction = (el, multiSelect) => {
+        console.log(el)
         const saveUrl = `${window.server}${el?.['onSave']}`
         if (multiSelect && el['type'] === 'POST') {
             if (props.selectedGridRows.length > 0) {
@@ -75,6 +77,21 @@ const CustomButtons = (props, context) => {
             let href = el['route']
             hashHistory.push(href)
         }
+        if (el['type'] === 'GET') {
+            setLoading(true)
+            axios.get(saveUrl).then(res => {
+                if (res.data.type === 'SUCCESS') {
+                    alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
+                    setLoading(false)
+                }
+            }).catch(err => {
+                setLoading(false)
+                console.error(err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg);
+            });
+        }
     }
 
     const generateGrid = () => {
@@ -83,7 +100,7 @@ const CustomButtons = (props, context) => {
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
 
-        const grid = <div className={`${multiSelect ? style['custom-grid-container'] : style['dynamic-grid']}`}>
+        const grid = <div className={`${style[`custom-grid-container-${props.tableName.toLowerCase()}`]}`}>
             {btnArray && buildCustomBtnArr(btnArray, multiSelect)}
 
             <ExportableGrid
