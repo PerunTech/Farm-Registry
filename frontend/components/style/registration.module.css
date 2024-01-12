@@ -654,7 +654,8 @@
   border-left: 0;
 }
 
-.custom-btn-holder-cad_parcel {
+.custom-btn-holder-cad_parcel,
+.custom-btn-holder-ahv_holding {
   width: 100%;
   position: absolute;
   top: 1.45%;
@@ -663,11 +664,13 @@
   text-align: right;
 }
 
-.custom-grid-container {
+.custom-grid-container-cad_parcel,
+.custom-grid-container-ahv_holding {
   position: relative;
 }
 
-.cad_parcel-btn,
+
+.ahv_holding-btn,
 .cad_parcel-btn {
   display: inline-block;
   padding: 6px 12px;

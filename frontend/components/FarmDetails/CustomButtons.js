@@ -14,7 +14,7 @@ const { store, updateSelectedRows } = redux;
 let hashHistory = createHashHistory();
 let systemFields = {}
 const CustomButtons = (props, context) => {
-    const [loading, _setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
@@ -75,6 +75,21 @@ const CustomButtons = (props, context) => {
             let href = el['route']
             hashHistory.push(href)
         }
+        if (el['type'] === 'GET') {
+            setLoading(true)
+            axios.get(saveUrl).then(res => {
+                if (res.data.type === 'SUCCESS') {
+                    alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
+                    setLoading(false)
+                }
+            }).catch(err => {
+                setLoading(false)
+                console.error(err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg);
+            });
+        }
     }
 
     const generateGrid = () => {
@@ -83,7 +98,7 @@ const CustomButtons = (props, context) => {
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
 
-        const grid = <div className={`${multiSelect ? style['custom-grid-container'] : style['dynamic-grid']}`}>
+        const grid = <div className={`${style[`custom-grid-container-${props.tableName.toLowerCase()}`]}`}>
             {btnArray && buildCustomBtnArr(btnArray, multiSelect)}
 
             <ExportableGrid
