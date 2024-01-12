@@ -36,7 +36,6 @@ const CustomButtons = (props, context) => {
     }, [])
 
     const buildCustomBtnArr = (btnArray, multiSelect) => {
-        console.log(`custom-btn-holder-${props.tableName.toLowerCase()}`)
         const div = <div className={style[`custom-btn-holder-${props.tableName.toLowerCase()}`]}>
             {btnArray.map(el => (
                 <button id={el['ID']} className={`${style[`${props.tableName.toLowerCase()}-btn`]}`} onClick={() => customBtnAction(el, multiSelect)}>
@@ -47,7 +46,6 @@ const CustomButtons = (props, context) => {
         return div
     }
     const customBtnAction = (el, multiSelect) => {
-        console.log(el)
         const saveUrl = `${window.server}${el?.['onSave']}`
         if (multiSelect && el['type'] === 'POST') {
             if (props.selectedGridRows.length > 0) {
