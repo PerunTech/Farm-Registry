@@ -110,7 +110,7 @@ const CustomButtons = (props, context) => {
                 heightRatio={0.7}
                 onRowClickFunct={handleRowClick}
                 refreshData={() => reloadGrid(props.tableName + props.farmObjId, multiSelect)}
-                toggleCustomButton={true}
+                toggleCustomButton={!props.configuration.objectConfiguration.readOnly}
                 customButton={() => setShowModal(true)}
                 customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
                 enableMultiSelect={multiSelect}

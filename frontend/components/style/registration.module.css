@@ -655,7 +655,8 @@
 }
 
 .custom-btn-holder-cad_parcel,
-.custom-btn-holder-ahv_holding {
+.custom-btn-holder-ahv_holding,
+.custom-btn-holder-agri_parcel {
   width: 100%;
   position: absolute;
   top: 1.45%;
@@ -664,14 +665,20 @@
   text-align: right;
 }
 
+.custom-btn-holder-agri_parcel {
+  margin-left: -99px;
+}
+
 .custom-grid-container-cad_parcel,
-.custom-grid-container-ahv_holding {
+.custom-grid-container-ahv_holding,
+.custom-grid-container-agri_parcel {
   position: relative;
 }
 
 
 .ahv_holding-btn,
-.cad_parcel-btn {
+.cad_parcel-btn,
+.agri_parcel-btn {
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
@@ -843,22 +850,6 @@
 
 .toggle-off-child {
   display: none;
-}
-
-.agri_parcel-btn {
-  text-align: center;
-  transition: 0.5s;
-  background-size: 200% auto;
-  color: white;
-  box-shadow: 0 0 20px #eee;
-  height: auto;
-  width: auto;
-  border-radius: 4px;
-  border: none;
-  background-image: linear-gradient(to right, #304040 0%, #52695d 51%, #304040 100%);
-  font-weight: bold;
-  height: 50px;
-  margin-bottom: 5px;
 }
 
 .dynamic-comp-main-div {
