@@ -57,7 +57,7 @@ const CadparcelWrapper = (props, context) => {
                 alertUser(true, "error", title, msg, () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) });
             });
         } else {
-            alertUser(true, 'info', labelsManager.importLabel("invalid_cad_parcel", context, "farm_registry"), '', () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) })
+            alertUser(true, 'info', labelsManager.importLabel("invalid_cad_parcel", context, "farm_registry"), labelsManager.importLabel("invalid_cad_parcel_msg", context, "farm_registry"), () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) })
         }
 
     }
