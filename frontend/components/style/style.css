@@ -151,13 +151,6 @@
   width: 100%;
 }
 
-.farm_activities_yn-farm-registry-form .field-string,
-.farm_activities_yn-farm-registry-form .field-integer,
-.farm_activities_yn-farm-registry-form .field-number,
-.farm_activities_yn-farm-registry-form .field-boolean {
-  width: 50%;
-}
-
 .agri_parcel-farm-registry-form .field-string,
 .agri_parcel-farm-registry-form .field-integer,
 .agri_parcel-farm-registry-form .field-number,
