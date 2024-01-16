@@ -196,7 +196,7 @@ const CustomButtons = (props, context) => {
                 tableFormDataMethod={formDataWs}
                 addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal)}
                 addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData)}
-                hideBtns={(clickedRowObjectId === 0 && clickedRowChild === 0) ? 'closeAndDelete' : 'close'}
+                hideBtns={(clickedRowObjectId === 0 && clickedRowChild === 0) || props.configuration.objectConfiguration?.readOnly ? 'closeAndDelete' : 'close'}
                 inputWrapper={inputWrapper}
                 closeModalFunc={() => setShowModal(false)}
             />
