@@ -85,17 +85,14 @@
   border: none;
 }
 
-.read-only-form {
-  pointer-events: none;
-}
-
 .read-only-form .btn_save_form {
   display: none;
 }
 
 .read-only-form .field-string input,
 .read-only-form .field-integer input,
-.read-only-form .field-string select {
+.read-only-form .field-string select,
+.read-only-form .field-number input {
   background-color: #d0d2d38c;
 }
 
