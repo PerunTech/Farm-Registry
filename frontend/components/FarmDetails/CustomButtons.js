@@ -76,19 +76,19 @@ const CustomButtons = (props, context) => {
             hashHistory.push(href)
         }
         if (el['type'] === 'GET') {
-            setLoading(true)
-            axios.get(saveUrl).then(res => {
-                if (res.data.type === 'SUCCESS') {
+            alertUser(true, 'info', labelsManager.importLabel('confirm_btn_action', context, 'farm_registry'), '', () => {
+                setLoading(true)
+                axios.get(saveUrl).then(res => {
                     alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
                     setLoading(false)
-                }
-            }).catch(err => {
-                setLoading(false)
-                console.error(err)
-                const title = err.response?.data?.title || err
-                const msg = err.response?.data?.message || ''
-                alertUser(true, "error", title, msg);
-            });
+                }).catch(err => {
+                    setLoading(false)
+                    console.error(err)
+                    const title = err.response?.data?.title || err
+                    const msg = err.response?.data?.message || ''
+                    alertUser(true, "error", title, msg);
+                });
+            }, () => { }, true, labelsManager.importLabel('yes', context, 'farm_registry'), labelsManager.importLabel('no', context, 'farm_registry'))
         }
     }
 
