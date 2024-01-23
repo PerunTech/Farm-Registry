@@ -40,7 +40,7 @@ import com.prtech.svarog_common.DbSearchCriterion.DbCompareOperand;
 public class DbReader {
 
 	static final Logger log4j = SvConf.getLogger(DbReader.class);
-	
+
 	Map<String, JsonObject> landUseCache = new HashMap<>();
 
 	private static String getLocaleId(SvReader svr) {
@@ -94,8 +94,8 @@ public class DbReader {
 
 	public DbDataArray searchFarmAndPersonData(String option, String value, SvReader svr) throws SvException {
 		DbDataArray dba = new DbDataArray();
-		String [] opt = option.split("[.]");
-	
+		String[] opt = option.split("[.]");
+
 		DbSearchCriterion critFarm = null;
 		DbSearchCriterion critPerson = null;
 
@@ -104,7 +104,7 @@ public class DbReader {
 		} else if (option.equals("PERSON.ID_NO") || option.equals("PERSON.TAX_NO")) {
 			critPerson = new DbSearchCriterion(opt[1], DbCompareOperand.LIKE, value + "%");
 		}
-	
+
 		DbQueryObject dqoFarm = new DbQueryObject(SvCore.getDbtByName(CC.FARM), critFarm, DbJoinType.INNER, null,
 				LinkType.CUSTOM, null, null);
 		dqoFarm.addCustomJoinLeft("PERSON_OBJECT_ID");
@@ -117,7 +117,7 @@ public class DbReader {
 		dba = svr.getObjects(dqe, 0, 0);
 		return dba;
 	}
-	
+
 	public JsonObject getSpecificLandUseCodesMainMethod(SvReader svr, Integer year, Integer landCover,
 			Boolean includeOnlyBasic, Boolean includeOtscCrops) throws SvException {
 		JsonObject jObjectResult = new JsonObject();
@@ -342,14 +342,14 @@ public class DbReader {
 				String table = tables[i];
 				DbDataObject dboTable = SvCore.getDbtByName(table);
 				DbDataArray dbaFields = SvCore.getFields(dboTable.getObjectId());
-				
-				jobj.addProperty(table + ".OBJECT_ID", Long
-						.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_OBJECT_ID").toString()));
-				jobj.addProperty(table + ".PARENT_ID", Long
-						.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_PARENT_ID").toString()));
-				jobj.addProperty(table + ".STATUS", String
-						.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_STATUS").toString()));
-				
+
+				jobj.addProperty(table + ".OBJECT_ID",
+						Long.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_OBJECT_ID").toString()));
+				jobj.addProperty(table + ".PARENT_ID",
+						Long.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_PARENT_ID").toString()));
+				jobj.addProperty(table + ".STATUS",
+						String.valueOf(dbo.getVal("TBL" + String.valueOf(i) + "_STATUS").toString()));
+
 				for (DbDataObject field : dbaFields.getItems()) {
 					String fieldName = field.getVal("FIELD_NAME").toString();
 					String fieldType = field.getVal("FIELD_TYPE").toString();

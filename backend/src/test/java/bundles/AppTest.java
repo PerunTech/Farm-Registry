@@ -8,7 +8,8 @@ import org.junit.Test;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.prtech.fr.ws.DbReader;
-import com.prtech.perun_core.ws.Rc;
+import com.prtech.fr.ws.FarmRegistryConfigurator;
+import com.prtech.fr.ws.WsFarmUtils;
 import com.prtech.svarog.SvCore;
 import com.prtech.svarog.SvException;
 import com.prtech.svarog.SvReader;
@@ -21,24 +22,22 @@ import com.prtech.svarog_common.DbDataObject;
  */
 
 public class AppTest {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    //@Test
-	public void getLandUseByLandCover() {
+	/**
+	 * Create the test case
+	 *
+	 * @param testName name of the test case
+	 */
+
+	// @Test
+	public void testGetLandUseByLandCover() {
 		try {
 			SvSecurity svs = new SvSecurity();
 			String token = svs.logon("ADMIN", SvUtil.getMD5("welcome"));
 			SvReader svr = new SvReader(token);
 			DbReader rdr = new DbReader();
-			JsonObject jObjectResult = rdr.getSpecificLandUseCodesMainMethod(svr, 2022,
-					410, false,true);
+			JsonObject jObjectResult = rdr.getSpecificLandUseCodesMainMethod(svr, 2022, 410, false, true);
 			System.out.println(jObjectResult.toString());
-			//System.out.println(getLandUseByLandCover.toString().equals(jObjectResult.toString()));
-
-
+			// System.out.println(getLandUseByLandCover.toString().equals(jObjectResult.toString()));
 		} catch (SvException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,9 +45,37 @@ public class AppTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-    //@Test
+
+	// @Test
+	public void testGetAllLandUseCodes() {
+		try {
+			SvSecurity svs = new SvSecurity();
+			String token = svs.logon("ADMIN", SvUtil.getMD5("welcome"));
+			SvReader svr = new SvReader(token);
+			DbReader dbr = new DbReader();
+
+			System.out.println("All land use codes: ");
+			JsonObject jobj = dbr.getAllLandUseCodes(false, svr);
+			System.out.println(jobj);
+
+			System.out.println("Dependent land use codes: ");
+			JsonObject jobj2 = dbr.getDependentLandUseCodes("410", true, true, svr);
+			System.out.println(jobj2);
+
+			System.out.println("Dependent land use codes: ");
+			JsonObject jobj3 = dbr.getDependentLandUseCodesPerYear("410", true, true, 2023L, svr);
+			System.out.println(jobj3);
+		} catch (SvException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// @Test
 	public void testImportbyFic() {
 		System.out.println("before test 1");
 
@@ -66,9 +93,9 @@ public class AppTest {
 				SvCore svc = (SvCore) svr;
 				params.put("isUnitTest", true);
 				params.put("farmId", 692014988L);
-				//(Long) params.get("farmId")
-				//ImporterSDIByFarmExe hex = new ImporterSDIByFarmExe();
-				//hex.execute(params, svc);
+				// (Long) params.get("farmId")
+				// ImporterSDIByFarmExe hex = new ImporterSDIByFarmExe();
+				// hex.execute(params, svc);
 				System.out.println("finished");
 			}
 		} catch (SvException e) {
@@ -76,9 +103,44 @@ public class AppTest {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-
 		System.out.println("test 1 finished");
 	}
-	
+
+	// @Test
+	public void testConfigurator() {
+		try {
+			SvSecurity svs = new SvSecurity();
+			String token = svs.logon("ADMIN", SvUtil.getMD5("welcome"));
+			SvReader svr = new SvReader(token);
+			FarmRegistryConfigurator frc = new FarmRegistryConfigurator();
+
+			// with commit
+			frc.afterUpdate(null, svr, null);
+		} catch (SvException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// @Test
+	public void testGetTableSearchJSONSchema() {
+		try {
+			SvSecurity svs = new SvSecurity();
+			String token = svs.logon("ADMIN", SvUtil.getMD5("welcome"));
+			WsFarmUtils ws = new WsFarmUtils();
+
+			String d = ws.getTableSearchJSONSchema(token, "FARM", null).getEntity().toString();
+			System.out.println(d);
+		} catch (SvException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
