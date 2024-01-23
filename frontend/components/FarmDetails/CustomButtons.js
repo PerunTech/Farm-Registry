@@ -115,7 +115,7 @@ const CustomButtons = (props, context) => {
                 customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
                 enableMultiSelect={multiSelect}
                 onSelectChangeFunct={customRowSelection}
-                editContextFunc={editFunc}
+                editContextFunc={handleRowClick}
             />
 
         </div>
@@ -203,11 +203,6 @@ const CustomButtons = (props, context) => {
             />
         )
     }
-    const editFunc = (row) => {
-        setClickedRowObjectId(row[`${props.tableName}.OBJECT_ID`] || 0)
-        setShowModal(true)
-    }
-
     const handleRowClick = (_id, _rowIdx, row) => {
         setClickedRowObjectId(row[`${props.tableName}.OBJECT_ID`] || 0)
         setShowModal(true)

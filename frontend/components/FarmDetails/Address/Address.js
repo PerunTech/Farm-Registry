@@ -164,10 +164,6 @@ const Address = (props, context) => {
         generateMainForm(row)
         changeField = 'LOCALITY1'
     }
-    const editFunc = (row) => {
-        generateMainForm(row)
-        changeField = 'LOCALITY1'
-    }
 
     const deleteFunc = (formData) => {
         const { svSession } = props;
@@ -231,7 +227,7 @@ const Address = (props, context) => {
                         context,
                         "farm_registry"
                     )}
-                    editContextFunc={editFunc}
+                    editContextFunc={handleRowClick}
                 />
                 {show && <Modal className={style["farm-registry-modal"]} show={show} onHide={() => setShow(false)}>
                     <Modal.Header className={style["farm-registry-modal-header"]} closeButton>

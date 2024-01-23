@@ -57,7 +57,7 @@ const ParentChildGrids = (props, context) => {
                     dataTableName={dataWs}
                     heightRatio={0.7}
                     onRowClickFunct={(id, idx, row) => handleRowClick(id, idx, row, grid.ID, gridId)}
-                    editContextFunc={(row) => editFunc(row, grid.ID, gridId)}
+                    editContextFunc={(id, idx, row) => handleRowClick(id, idx, row, grid.ID, gridId)}
                     refreshData={true}
                     toggleCustomButton={true}
                     customButton={() => {
@@ -79,10 +79,6 @@ const ParentChildGrids = (props, context) => {
         generateGrid(row[`${gridId}.OBJECT_ID`], grid)
     }
     const handleRowClick = (_id, _rowIdx, row, gridId, gridAndDynamic) => {
-        props.setRowChild(row[`${gridId}.OBJECT_ID`] || 0)
-        props.addFormFunc(gridAndDynamic)
-    }
-    const editFunc = (row, gridId, gridAndDynamic) => {
         props.setRowChild(row[`${gridId}.OBJECT_ID`] || 0)
         props.addFormFunc(gridAndDynamic)
     }
