@@ -167,7 +167,3 @@
 .agri_parcel-farm-registry-form .field-boolean {
   margin-bottom: 0;
 }
-
-.agri_parcel-farm-registry-form .field-boolean>.checkbox>label>span {
-  margin-left: 15px;
-}
