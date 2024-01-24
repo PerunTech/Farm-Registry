@@ -229,7 +229,7 @@ public class WsFarmUtils {
 		}
 		return Response.status(200).entity(jrh.getAll().toString()).build();
 	}
-	
+
 	@Path("/getTableFieldListCustom/{session_id}/{table_name}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -271,8 +271,7 @@ public class WsFarmUtils {
 		}
 		return Response.status(200).entity(jArray.toString()).build();
 	}
-	
-	
+
 	@Path("/getTableSearchJSONSchemaCustom/{session_id}/{table_name}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -315,7 +314,7 @@ public class WsFarmUtils {
 							enumNames.add(I18n.getText(localeId, jsonField.get("name").getAsString()));
 							enums.add(jsonField.get("enum").getAsString());
 						}
-						if(jsonField.has("default")) {
+						if (jsonField.has("default")) {
 							defaultField = jsonField.get("default").getAsString();
 						}
 					}
@@ -355,7 +354,7 @@ public class WsFarmUtils {
 		}
 		return Response.status(200).entity(jObjectResult.toString()).build();
 	}
-	
+
 	@Path("/search-farm-person/sid/{sessionId}")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
