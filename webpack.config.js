@@ -1,10 +1,10 @@
 let path = require('path');
 
-module.exports = (mode, { env }) => {
+module.exports = (_, { mode }) => {
   return {
     devtool: 'source-map',
     mode: mode,
-    entry: env === 'production' ? './frontend/index.js' : './frontend/client.js',
+    entry: mode === 'production' ? './frontend/index.js' : './frontend/client.js',
     output: {
       path: path.resolve('./backend/www'),
       filename: 'farm-registry.js',
@@ -13,7 +13,13 @@ module.exports = (mode, { env }) => {
       globalObject: 'this'
     },
     devServer: {
-      contentBase: './backend/www',
+      client: {
+        overlay: false
+      },
+      static: {
+        directory: path.join(__dirname, './backend/www'),
+      },
+      compress: true,
     },
     module: {
       rules: [
@@ -23,7 +29,7 @@ module.exports = (mode, { env }) => {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env', '@babel/preset-react', { 'plugins': ['@babel/plugin-proposal-class-properties'] }],
+              presets: ['@babel/preset-env', '@babel/preset-react'],
               cacheDirectory: true
             }
           }
@@ -38,7 +44,7 @@ module.exports = (mode, { env }) => {
             }
           },
           enforce: 'pre',
-          include: [/lpis/, /perun-core/]
+          include: [/perun-core/]
         },
         {
           // For pure CSS (without CSS modules)
@@ -54,11 +60,7 @@ module.exports = (mode, { env }) => {
             {
               loader: 'css-loader',
               options: {
-                sourceMap: true,
                 modules: true,
-                modules: {
-                  localIdentName: '[name]-[local]'
-                }
               },
             },
           ],
@@ -73,8 +75,8 @@ module.exports = (mode, { env }) => {
       ]
     },
     resolve: {
-      extensions: ['.js', '.jsx']
+      extensions: ['.js', '.jsx'],
     },
-    externals: env === 'production' ? { 'lpis': 'lpis', 'perun-core': 'perun-core' } : {}
+    externals: mode === 'production' ? { 'perun-core': 'perun-core' } : {}
   }
 };

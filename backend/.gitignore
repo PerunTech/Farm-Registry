@@ -1,17 +1,4 @@
-/target/
-/.classpath
-/.project
-/conf/
-*.retry
-# ignore build folder
-/build/*
-/.classpath
-/.settings
-/.directory
-/.project
-/build/
-/doc/
-/target/
-/bin/
-node_modules
-/www/
+/node_modules
+backend/www/*.js.map
+package-lock.json
+backend/www/farm-registry.js.LICENSE.txt
