@@ -8,7 +8,8 @@ import {
     elements,
     GenericGrid,
     GridManager,
-    ComponentManager
+    ComponentManager,
+    validator
 } from 'perun-core'
 import style from "../../style/registration.module.css"
 const { ReactBootstrap, alertUser } = elements;
@@ -239,6 +240,7 @@ const Address = (props, context) => {
                     </Modal.Header>
                     <Modal.Body className={style["farm-registry-modal-body"]}>
                         {flagForm && <Form
+                            validator={validator}
                             schema={schema}
                             uiSchema={uiSchema}
                             onSubmit={(e) => saveAddress(e)}
