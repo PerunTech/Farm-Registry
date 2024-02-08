@@ -25,7 +25,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.prtech.perun.PerunUtil;
-import com.prtech.perun_core.ws.WsReactElements;
+import com.prtech.perun.services.ws.*;
 import com.prtech.svarog.I18n;
 import com.prtech.svarog.SvConf;
 import com.prtech.svarog.SvCore;
