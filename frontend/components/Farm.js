@@ -31,7 +31,10 @@ class Farm extends React.Component {
       }
     })
     if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search') {
-      this.displayComponent(this.props.paramsComponent.params);
+      this.displayComponent('DYNAMIC', this.props.paramsComponent.params);
+      this.getConfiguration(this.props.farmObjId, this.props.paramsComponent.params)
+      this.generateInfo(this.props.farmData.rowsData)
+      this.setState({ showDynamicMenu: true })
     }
     if (this.props.lpisback.backFromLpis) {
       this.getConfiguration(this.props.farmObjId, this.props.lpisback.tableName)
@@ -39,20 +42,40 @@ class Farm extends React.Component {
       this.setState({ showDynamicMenu: true })
     }
   }
+  removePrefix = (str) => {
+    return str.replace(/^SUB-/, '');
+  }
+
+  hasSubPrefix = (str) => {
+    return str.includes("SUB-");
+  }
 
   //function used to get the side menu confirguration from backend
-  getConfiguration = (objid, fromLpisTable) => {
+  getConfiguration = (objid, preSelectedTable) => {
     this.setState({ loading: true })
+    let isSubElement = false
     let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/db-menu/object-id/${objid}/object-type/FARM`
     axios.get(url).then(res => {
       this.setState({ configuration: res.data, loading: false })
-      if (fromLpisTable) {
+      //condition used to determine if the user reloaded the page while looking at farm details
+      if (preSelectedTable) {
+        if (this.hasSubPrefix(preSelectedTable)) {
+          isSubElement = true
+        }
         res.data.data.map(el => {
-          if (el.ID.includes(fromLpisTable)) {
+          if (el.data) {
+            el.data.map(child => {
+              if (child.ID.includes(this.removePrefix(preSelectedTable))) {
+                this.onButtonClick(child, true);
+                this.setActive(el)
+              }
+            })
+          } else if (el.ID.includes(this.removePrefix(preSelectedTable))) {
             this.onButtonClick(el);
             store.dispatch({ type: 'BACK_FROM_LPIS', payload: { backFromLpis: false, tableName: undefined } })
           }
         })
+
       }
     }).catch(err => {
       console.error(err)
@@ -60,7 +83,7 @@ class Farm extends React.Component {
     })
   }
 
-  displayComponent = (component, tableName, configuration) => {
+  displayComponent = (component, tableName, configuration, child) => {
     let componentAddReg;
     let href = '/main/farm-registry/farm/'
     switch (component) {
@@ -72,7 +95,10 @@ class Farm extends React.Component {
         );
         break;
       case "DYNAMIC":
-        href = `/main/farm-registry/farm/${tableName}`
+        if (child) {
+          href = `/main/farm-registry/farm/SUB-${tableName}`
+        }
+        else href = `/main/farm-registry/farm/${tableName}`
         this.hashHistory.push(href)
         const customButtonsProps = {
           key: tableName,
@@ -185,7 +211,7 @@ class Farm extends React.Component {
     const id = element.ID;
     const splitID = id.replace(/\d/g, '').replace(/_$/, '');
     if (childEl) {
-      this.displayComponent('DYNAMIC', splitID, element);
+      this.displayComponent('DYNAMIC', splitID, element, true);
       this.setState({ activeChild: id, loading: false, activeElement: '' });
     } else {
       this.displayComponent('DYNAMIC', splitID, element);
