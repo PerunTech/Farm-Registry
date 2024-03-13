@@ -30,11 +30,23 @@ class Farm extends React.Component {
         this.setState({ defaultCountry: res.data.VALUE })
       }
     })
-    if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search') {
-      this.displayComponent('DYNAMIC', this.props.paramsComponent.params);
-      this.getConfiguration(this.props.farmObjId, this.props.paramsComponent.params)
-      this.generateInfo(this.props.farmData.rowsData)
-      this.setState({ showDynamicMenu: true })
+    if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search' || this.props.paramsComponent.params !== 'register') {
+      //extra code added to ensure that project wont crash on reload/hard reload -remove this after perun-core route fix
+      if (this.props.farmData) {
+        this.displayComponent('DYNAMIC', this.props.paramsComponent.params);
+        this.getConfiguration(this.props.farmObjId, this.props.paramsComponent.params)
+        this.generateInfo(this.props.farmData.rowsData)
+        this.setState({ showDynamicMenu: true })
+      } else {
+        this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
+        let href = `/main/farm-registry/farm/search`
+        this.hashHistory.push(href)
+        this.setState({ activeElement: 'SEARCH', activeChild: '', activeParent: '' })
+        this.setState({
+          showDynamicMenu: false,
+          showFarmInfo: false,
+        })
+      }
     }
     if (this.props.lpisback.backFromLpis) {
       this.getConfiguration(this.props.farmObjId, this.props.lpisback.tableName)
