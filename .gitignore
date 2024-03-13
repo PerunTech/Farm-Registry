@@ -10,3 +10,5 @@
 /backend/target/
 /backend/bin/
 node_modules
+backend/www/farm-registry.js.LICENSE.txt
+backend/www/farm-registry.js.map
