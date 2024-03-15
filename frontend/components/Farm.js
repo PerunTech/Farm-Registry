@@ -30,30 +30,33 @@ class Farm extends React.Component {
         this.setState({ defaultCountry: res.data.VALUE })
       }
     })
-    if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search' || this.props.paramsComponent.params !== 'register') {
+    if (this.props.paramsComponent.params && this.props.paramsComponent.params !== 'search' && this.props.paramsComponent.params !== 'register' && this.props.paramsComponent.params !== 'undefined') {
       //extra code added to ensure that project wont crash on reload/hard reload -remove this after perun-core route fix
-      if (this.props.farmData) {
-        this.displayComponent('DYNAMIC', this.props.paramsComponent.params);
-        this.getConfiguration(this.props.farmObjId, this.props.paramsComponent.params)
-        this.generateInfo(this.props.farmData.rowsData)
-        this.setState({ showDynamicMenu: true })
-      } else {
-        this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
-        let href = `/main/farm-registry/farm/search`
-        this.hashHistory.push(href)
-        this.setState({ activeElement: 'SEARCH', activeChild: '', activeParent: '' })
-        this.setState({
-          showDynamicMenu: false,
-          showFarmInfo: false,
-        })
-      }
+      if (this.props.farmData) this.backToFarmComponent(this.props.paramsComponent.params)
+      else this.backToSearch()
     }
-    if (this.props.lpisback.backFromLpis) {
-      this.getConfiguration(this.props.farmObjId, this.props.lpisback.tableName)
-      this.generateInfo(this.props.farmData.rowsData)
-      this.setState({ showDynamicMenu: true })
-    }
+    else if (this.props.lpisback.backFromLpis) this.backToFarmComponent(this.props.lpisback.tableName)
+    else this.backToSearch()
   }
+
+  backToFarmComponent = (tableName) => {
+    this.displayComponent('DYNAMIC', tableName);
+    this.getConfiguration(this.props.farmObjId, tableName)
+    this.generateInfo(this.props.farmData.rowsData)
+    this.setState({ showDynamicMenu: true })
+  }
+
+  backToSearch = () => {
+    this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
+    let href = `/main/farm-registry/farm/search`
+    this.hashHistory.push(href)
+    this.setState({ activeElement: 'SEARCH', activeChild: '', activeParent: '' })
+    this.setState({
+      showDynamicMenu: false,
+      showFarmInfo: false,
+    })
+  }
+
   removePrefix = (str) => {
     return str.replace(/^SUB-/, '');
   }
