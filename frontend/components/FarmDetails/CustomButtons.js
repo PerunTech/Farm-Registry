@@ -7,6 +7,7 @@ import FarmmembersWrapper from './Wrapper/FarmmembersWrapper';
 import CadparcelWrapper from './Wrapper/CadparcelWrapper'
 import Address from './Address/Address'
 import ParentChildGrids from './ParentChildGrids';
+import { getCookie } from '../utils_tools/getCookie'
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -34,9 +35,8 @@ const CustomButtons = (props, context) => {
             ComponentManager.setStateForComponent(props.tableName + props.farmObjId, 'selectedIndexes', [])
         }
     }, [])
-
     const buildCustomBtnArr = (btnArray, multiSelect) => {
-        const div = <div className={style[`custom-btn-holder-${props.tableName.toLowerCase()}`]}>
+        const div = <div className={style[`custom-btn-holder-${props.tableName.toLowerCase()}_${getCookie('defaultLocale')}`]}>
             {btnArray.map(el => (
                 <button id={el['ID']} className={`${style[`${props.tableName.toLowerCase()}-btn`]}`} onClick={() => customBtnAction(el, multiSelect)}>
                     {el['label']}
