@@ -654,26 +654,31 @@
   border-left: 0;
 }
 
-.custom-btn-holder-cad_parcel,
-.custom-btn-holder-ahv_holding,
-.custom-btn-holder-agri_parcel {
-  width: 100%;
+.custom-btn-holder-cad_parcel_en_US,
+.custom-btn-holder-ahv_holding_en_US,
+.custom-btn-holder-agri_parcel_en_US {
   position: absolute;
-  top: 1.45%;
-  float: right;
-  margin-left: -163px;
-  text-align: right;
+  top: 9.1%;
+  float: left;
+  z-index: 999;
+  right: 10.6%;
 }
 
-.custom-btn-holder-agri_parcel {
-  margin-left: -99px;
+.custom-btn-holder-cad_parcel_ro_RO,
+.custom-btn-holder-ahv_holding_ro_RO,
+.custom-btn-holder-agri_parcel_ro_RO {
+  position: absolute;
+  top: 9.1%;
+  float: left;
+  z-index: 999;
+  right: 12.3%;
 }
 
-.custom-grid-container-cad_parcel,
+/* .custom-grid-container-cad_parcel,
 .custom-grid-container-ahv_holding,
 .custom-grid-container-agri_parcel {
   position: relative;
-}
+} */
 
 
 .ahv_holding-btn,
