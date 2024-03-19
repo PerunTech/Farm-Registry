@@ -6,14 +6,9 @@ import { labelsManager } from '../utils_tools/LabelsExport';
 import SearchFormWrapper from './SearchFormWrapper';
 let searchGridId;
 const SearchComp = (props, context) => {
-  const [formState, setFormState] = useState(undefined)
   const [gridResult, setGridResults] = useState(undefined)
-  const [tableName, setTableName] = useState("FARM")
   const [loading, setLoading] = useState(false)
   useEffect(() => {
-    if (props.person) {
-      setTableName("PERSON")
-    }
     return () => {
       ComponentManager.cleanComponentReducerState(searchGridId);
     }
@@ -37,7 +32,7 @@ const SearchComp = (props, context) => {
           method={configWs}
           uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/${tableName}`}
           tableFormDataMethod={`/ReactElements/getTableFormData/${props.svSession}/0/${tableName}`}
-          addSaveFunction={(e) => assignSearchResultGrid(e)}
+          addSaveFunction={(e) => assignSearchResultGrid(e.formData)}
           customSaveButtonName={labelsManager.importLabel('search', context, 'farm_registry')}
           hideBtns={'closeAndDelete'}
           customSave={true}
@@ -48,7 +43,7 @@ const SearchComp = (props, context) => {
     return searchForm
   };
 
-  const assignSearchResultGrid = (e) => {
+  const assignSearchResultGrid = (data) => {
     let tableName = "FARM"
     let url = `${window.server}/WsFarmUtils/search-farm-person/sid/${props.svSession}`
     if (props.person) {
@@ -58,7 +53,7 @@ const SearchComp = (props, context) => {
     ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
       saveExecuted: false,
     });
-    let formData = e.formData
+    let formData = data
     if ((!props.person && formData['SEARCH_VALUES'] && formData['SEARCH_OPTION']) || (props.person && formData)) {
       formData['SEARCH_VALUES'] = formData['SEARCH_VALUES']?.toUpperCase()
       if (props.person) {
@@ -76,8 +71,7 @@ const SearchComp = (props, context) => {
         url,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then(res => {
-        searchResult(res.data)
-        setFormState(e.formData)
+        searchResult(res.data, data)
         ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
           saveExecuted: false,
         });
@@ -103,7 +97,7 @@ const SearchComp = (props, context) => {
 
   };
 
-  const searchResult = (data) => {
+  const searchResult = (data, formData) => {
     //SEARCH CUSTOM BELOW
     let configWs = `/WsFarmUtils/getTableFieldListCustom/${props.svSession}/FARM`
     let tableName = "FARM"
@@ -124,7 +118,7 @@ const SearchComp = (props, context) => {
         onRowClickFunct={props.onRowClick}
         heightRatio={0.50}
         className={"farm-registry-search-grid"}
-        refreshData={() => assignSearchResultGrid(formState)}
+        refreshData={() => assignSearchResultGrid(formData)}
       />
     </div>)
 
