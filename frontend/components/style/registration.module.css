@@ -171,10 +171,6 @@
   color: #e8b763;
   outline: none;
 }
-.btb_sub{
-  height: auto;
-  min-height: 45px;
-}
 
 .btn_sub {
   background: #304040;
@@ -187,7 +183,8 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  height: 45px;
+  height: auto;
+  min-height: 45px;
   width: 96%;
 }
 
