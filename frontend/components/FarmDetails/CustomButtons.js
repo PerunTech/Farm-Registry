@@ -37,14 +37,27 @@ const CustomButtons = (props, context) => {
     }, [])
     const buildCustomBtnArr = (btnArray, multiSelect) => {
         const div = <div className={style[`custom-btn-holder-${props.tableName.toLowerCase()}_${getCookie('defaultLocale')}`]}>
-            {btnArray.map(el => (
-                <button id={el['ID']} className={`${style[`${props.tableName.toLowerCase()}-btn`]}`} onClick={() => customBtnAction(el, multiSelect)}>
+            {btnArray.map((el, i) => (
+                <button id={el['ID']} key={el['ID']} className={`${style[`${props.tableName.toLowerCase()}-btn`]}`} onClick={() => customBtnAction(el, multiSelect)}>
                     {el['label']}
                 </button>
             ))}
         </div>
         return div
     }
+
+    const btnArrCreate = (btnArray, multiSelect) => {
+        let btnTest = []
+        btnArray.map((el, i) => {
+            btnTest.push({
+                name: el['label'],
+                action: () => customBtnAction(el, multiSelect),
+                id: `btn-${i}`,
+            })
+        })
+        return btnTest
+    }
+
     const customBtnAction = (el, multiSelect) => {
         const saveUrl = `${window.server}${el?.['onSave']}`
         if (multiSelect && el['type'] === 'POST') {
@@ -97,9 +110,7 @@ const CustomButtons = (props, context) => {
         const dataWs = props.configuration.objectConfiguration.data.onSubmit
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
-
-        const grid = <div className={`${style[`custom-grid-container-${props.tableName.toLowerCase()}`]}`}>
-            {btnArray && buildCustomBtnArr(btnArray, multiSelect)}
+        const grid = (<div className={`${style[`custom-grid-container-${props.tableName.toLowerCase()}`]} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
 
             <ExportableGrid
                 gridType={"READ_URL"}
@@ -110,15 +121,15 @@ const CustomButtons = (props, context) => {
                 heightRatio={0.7}
                 onRowClickFunct={handleRowClick}
                 refreshData={() => reloadGrid(props.tableName + props.farmObjId, multiSelect)}
-                toggleCustomButton={!props.configuration.objectConfiguration.readOnly}
+                toggleCustomButton={true}
                 customButton={() => setShowModal(true)}
                 customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
                 enableMultiSelect={multiSelect}
                 onSelectChangeFunct={customRowSelection}
                 editContextFunc={handleRowClick}
+                buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : undefined}
             />
-
-        </div>
+        </div>)
         return grid
     }
     //multiselect functions 

@@ -167,3 +167,7 @@
 .agri_parcel-farm-registry-form .field-boolean {
   margin-bottom: 0;
 }
+
+.read-only-grid .tools :first-child {
+  display: none;
+}
