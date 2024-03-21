@@ -60,9 +60,10 @@ const CustomButtons = (props, context) => {
 
     const customBtnAction = (el, multiSelect) => {
         const saveUrl = `${window.server}${el?.['onSave']}`
+        const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
         if (multiSelect && el['type'] === 'POST') {
-            if (props.selectedGridRows.length > 0) {
-                const data = JSON.stringify(props.selectedGridRows)
+            if (selectedGridRows.length > 0) {
+                const data = JSON.stringify(selectedGridRows)
                 axios({
                     method: "post",
                     data,
