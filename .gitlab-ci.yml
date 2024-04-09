@@ -50,7 +50,8 @@ after_script:
     - pwd
     - mvn clean compile deploy -DskipTests
   only:
-    - dev    
+    - dev
+    - dev_ol
 
 2_farm-registry-stable-install:
   stage: 3_mvn_install
@@ -88,7 +89,7 @@ after_script:
     name: $CI_COMMIT_REF_NAME
   only:
     - staging
-    - dev  
+    - dev
   when: manual
 
 3_sonarqube_frontend:
