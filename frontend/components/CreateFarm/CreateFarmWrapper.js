@@ -74,8 +74,15 @@ const CreateFarmWrapper = (props, context) => {
             "formTableData"
         );
         if (formData) {
+            const secondInput = document.getElementById(secondInputId)
             formData["PERSON_OBJECT_ID"] = objid[0];
             formData["FULL_NAME"] = objid[1];
+            secondInput.value = formData["FULL_NAME"]
+
+            //  skip the form validation bug
+            ComponentManager.setStateForComponent(formid, "noValidate", true);
+            props.formInstance.setState({ noValidate: true })
+
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             setShow(false);
