@@ -30,6 +30,7 @@ const FarmmembersWrapper = (props, context) => {
     useEffect(() => {
         handleInputs();
     }, []);
+
     useEffect(() => {
         return () => {
             ComponentManager.cleanComponentReducerState(gridId);
@@ -74,10 +75,20 @@ const FarmmembersWrapper = (props, context) => {
             "formTableData"
         );
         if (formData) {
-
+            const firstInput = document.getElementById(firstInputId);
+            const secondInput = document.getElementById(secondInputId)
+            // form
             formData["PERSON_OBJECT_ID"] = objid[0];
             formData["FULL_NAME"] = objid[1];
             formData["ID_NO"] = objid[2];
+            // html
+            firstInput.value = formData["ID_NO"]
+            secondInput.value = formData["FULL_NAME"]
+
+            //  skip the form validation bug
+            ComponentManager.setStateForComponent(formid, "noValidate", true);
+            props.formInstance.setState({ noValidate: true })
+
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             setShow(false);
