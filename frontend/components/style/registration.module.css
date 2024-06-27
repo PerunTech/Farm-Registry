@@ -939,6 +939,10 @@
   padding: 0 15px;
 }
 
+.summary-item-container:nth-child(even) {
+  background: #9cbcab;
+}
+
 .summary-item-label {
   font-weight: bold;
   font-size: 20px;
@@ -966,7 +970,7 @@
   margin-bottom: 0;
   color: white;
   text-align: center;
-  background: #4c704d;
+  background: #5e825f;
   padding: 5px;
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
@@ -974,4 +978,25 @@
 
 .summary-title h3 {
   margin-bottom: 0;
+}
+
+.summary-header-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 90%;
+  box-shadow: 2px 2px 5px rgb(37 37 37);
+  background: #5b7065;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 1vh;
+}
+
+.summary-header-item-container {
+  display: flex;
+  gap: 5px;
+}
+
+.summary-header-item-container .summary-item-label {
+  font-weight: normal;
 }

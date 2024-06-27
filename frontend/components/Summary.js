@@ -19,16 +19,27 @@ const Summary = (props, context) => {
     const getFarmSummary = (id) => {
         let url = `${window.server}/mdfr/get-farm-summary/sessionId/${props.svSession}/farm-object-id/${id}`
         axios.get(url).then(res => {
-            console.log(res.data);
-            setSummaryArray(res.data)
+            setSummaryArray(res.data.data)
         })
     }
     const generateSummaryItems = (arr) => {
-        return arr.map(el => (
-            <div key={el['ID']} id={el['ID']} className={`${style['summary-item-container']}`}>
-                <p className={style['summary-item-label']}>{el['label']} : </p>
-                <p className={style['summary-item-value']}>{el['value.display']}</p>
-            </div>
+        return arr.map((el, i) => (
+            <>
+                {i > 2 && <div key={el['ID']} id={el['ID']} className={`${style['summary-item-container']}`}>
+                    <p className={style['summary-item-label']}>{el['label']} : </p>
+                    <p className={style['summary-item-value']}>{el['value.display']}</p>
+                </div >}
+            </>
+        ))
+    }
+    const generateSummaryHeader = (arr) => {
+        return arr.map((el, i) => (
+            <>
+                {i <= 2 && <div key={el['ID']} id={el['ID']} className={`${style['summary-header-item-container']}`}>
+                    <p className={style['summary-item-label']}>{el['label']} : </p>
+                    <p className={style['summary-item-value']}> {el['value.display']}</p>
+                </div >}
+            </>
         ))
     }
     return (
@@ -37,7 +48,7 @@ const Summary = (props, context) => {
                 <div className={style['summary-title']}>
                     <h3>{labelsManager.importLabel('summary', context, "farm_registry")}</h3>
                 </div>
-                {(summaryArray && summaryArray?.length > 0) ? generateSummaryItems(summaryArray) : <p>{labelsManager.importLabel('summary_no_data', context, "farm_registry")}</p>}
+                {(summaryArray && summaryArray?.length > 0) ? <><div className={style['summary-header-container']}>{generateSummaryHeader(summaryArray)}</div>{generateSummaryItems(summaryArray)}</> : <p>{labelsManager.importLabel('summary_no_data', context, "farm_registry")}</p>}
             </div>
         </React.Fragment>
     )
