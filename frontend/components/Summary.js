@@ -20,6 +20,8 @@ const Summary = (props, context) => {
         let url = `${window.server}/mdfr/get-farm-summary/sessionId/${props.svSession}/farm-object-id/${id}`
         axios.get(url).then(res => {
             setSummaryArray(res.data.data)
+        }).catch(err => {
+            console.error(err)
         })
     }
     const generateSummaryItems = (arr) => {
@@ -48,7 +50,8 @@ const Summary = (props, context) => {
                 <div className={style['summary-title']}>
                     <h3>{labelsManager.importLabel('summary', context, "farm_registry")}</h3>
                 </div>
-                {(summaryArray && summaryArray?.length > 0) ? <><div className={style['summary-header-container']}>{generateSummaryHeader(summaryArray)}</div>{generateSummaryItems(summaryArray)}</> : <p>{labelsManager.importLabel('summary_no_data', context, "farm_registry")}</p>}
+                {(summaryArray && summaryArray?.length > 0) ? <><div className={style['summary-header-container']}>{generateSummaryHeader(summaryArray)}</div><div className={style['summary-item-main-container']}>
+                    {generateSummaryItems(summaryArray)}</div></> : <p>{labelsManager.importLabel('summary_no_data', context, "farm_registry")}</p>}
             </div>
         </React.Fragment>
     )

@@ -926,6 +926,7 @@
   align-items: center;
   flex-direction: column;
   box-shadow: 2px 2px 10px 2px #26303838;
+  justify-content: space-between;
 }
 
 .summary-item-container {
@@ -933,15 +934,12 @@
   gap: 20px;
   width: 100%;
   justify-content: space-between;
-  background: #809b8d;
+  background: #5e825f;
   color: white;
   border-bottom: white 1px solid;
   padding: 0 15px;
 }
 
-.summary-item-container:nth-child(even) {
-  background: #9cbcab;
-}
 
 .summary-item-label {
   font-weight: bold;
@@ -999,4 +997,10 @@
 
 .summary-header-item-container .summary-item-label {
   font-weight: normal;
+}
+
+.summary-item-main-container {
+  width: 100%;
+  overflow: auto;
+  max-height: 300px;
 }
