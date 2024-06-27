@@ -11,7 +11,7 @@ import style from "../style/registration.module.css";
 const { useState, useEffect } = React;
 const { alertUser } = elements;
 import { labelsManager } from '../utils_tools/LabelsExport';
-import { iconManager } from "../../assets/svgHolder";
+import { iconManager } from "../utils_tools/svgHolder"
 const Documents = (props, context) => {
     const [fileItems, setFileItems] = useState(undefined)
     const [loading, setLoading] = useState(false)

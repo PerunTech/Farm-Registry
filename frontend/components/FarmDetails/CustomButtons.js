@@ -2,12 +2,16 @@ import { React, connect, axios, PropTypes, Loading, createHashHistory, elements,
 import style from "../style/registration.module.css"
 import { getDynamicKey } from '../../utils'
 import { labelsManager } from '../utils_tools/LabelsExport';
-import Documents from './Documents';
+import { getCookie } from '../utils_tools/getCookie'
+//WRAPPERS
 import FarmmembersWrapper from './Wrapper/FarmmembersWrapper';
 import CadparcelWrapper from './Wrapper/CadparcelWrapper'
+import FarmWrapper from './Wrapper/FarmWrapper';
+//SPECIAL CASE COMPONENTS
 import Address from './Address/Address'
 import ParentChildGrids from './ParentChildGrids';
-import { getCookie } from '../utils_tools/getCookie'
+import Documents from './Documents';
+
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -20,14 +24,13 @@ const CustomButtons = (props, context) => {
     const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
-    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }])
+    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper }])
     const [flagFormChild, setFlagFormChild] = useState(undefined)
     const [clickedRowChild, setRowChild] = useState(0)
     const [clickedRowParent, setRowParent] = useState(undefined)
     const [childGridId, setChildGridId] = useState(undefined)
     useEffect(() => {
-        setWrapper(props.tableName.replace(/(\w)(\w*)/g,
-            function (g0, g1, g2) { return g1.toUpperCase() + g2.toLowerCase(); }).replace(/_/g, ''))
+        setWrapper(setWrapperName(props.tableName))
         return () => {
             ComponentManager.cleanComponentReducerState(props.tableName + props.farmObjId);
             systemFields = {}
@@ -45,6 +48,12 @@ const CustomButtons = (props, context) => {
         </div>
         return div
     }
+    const setWrapperName = (tableName) => {
+        return tableName.replace(/(\w)(\w*)/g, function (g0, g1, g2) {
+            return g1.toUpperCase() + g2.toLowerCase();
+        }).replace(/_/g, '');
+    };
+
 
     const btnArrCreate = (btnArray, multiSelect) => {
         let btnTest = []

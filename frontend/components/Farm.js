@@ -1,6 +1,6 @@
 import { React, connect, GridManager, PropTypes, Loading, axios, redux, createHashHistory } from "perun-core";
 import style from "./style/registration.module.css";
-import { iconManager } from "../assets/svgHolder";
+import { iconManager } from "./utils_tools/svgHolder";
 import { labelsManager } from "./utils_tools/LabelsExport";
 import SearchComponent from './SearchComp/SearchComponent';
 import CustomButtons from "./FarmDetails/CustomButtons";
@@ -18,7 +18,8 @@ class Farm extends React.Component {
       defaultCountry: undefined,
       activeElement: 'SEARCH',
       activeChild: '',
-      activeParent: ''
+      activeParent: '',
+      summary: false
     };
     this.hashHistory = createHashHistory();
   }
@@ -139,6 +140,7 @@ class Farm extends React.Component {
   };
 
   onRowClick = (_rowId, _rowPosition, rowsData) => {
+    this.setState({ summary: true })
     const objectId = rowsData["FARM.OBJECT_ID"]
     const objectTypeId = rowsData["FARM.OBJECT_TYPE"]
     store.dispatch({ type: 'WRITE_FARM_INFO', payload: rowsData })
@@ -227,10 +229,10 @@ class Farm extends React.Component {
     const splitID = id.replace(/\d/g, '').replace(/_$/, '');
     if (childEl) {
       this.displayComponent('DYNAMIC', splitID, element, true);
-      this.setState({ activeChild: id, loading: false, activeElement: '' });
+      this.setState({ activeChild: id, loading: false, activeElement: '', summary: false });
     } else {
       this.displayComponent('DYNAMIC', splitID, element);
-      this.setState({ activeElement: id, loading: false, activeChild: '' });
+      this.setState({ activeElement: id, loading: false, activeChild: '', summary: false });
     }
   }
   render() {
@@ -260,6 +262,7 @@ class Farm extends React.Component {
                 this.setState({
                   showDynamicMenu: false,
                   showFarmInfo: false,
+                  summary: false
                 })
               }}>
                 {iconManager.getIcon("search")}
@@ -275,6 +278,7 @@ class Farm extends React.Component {
                   this.setState({
                     showDynamicMenu: false,
                     showFarmInfo: false,
+                    summary: false
                   })
                   GridManager.reloadGridData("FARM_GRID");
                   this.displayComponent('ADD_FARM');
@@ -298,7 +302,7 @@ class Farm extends React.Component {
           <div className={`${style["farm-registry-content"]}`} id="farm-registry-content">
             {showSearchForm && (
               <div className={`${style["farm-registry-content-search"]}`} id="farm-registry-content-search">
-                <SearchComponent onRowClick={this.onRowClick} />
+                <SearchComponent summary={this.state.summary} onRowClick={this.onRowClick} />
               </div>
             )}
             <div id="dataHolder" className={`${dataForm ? style["dataHolder"] : ''} ${componentAddReg ? style['farm-registry-submenu-comp'] : ""}`}>
