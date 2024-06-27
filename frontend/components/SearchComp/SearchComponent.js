@@ -4,6 +4,7 @@ const { useState, useEffect } = React
 import style from "../style/registration.module.css"
 import { labelsManager } from '../utils_tools/LabelsExport';
 import SearchFormWrapper from './SearchFormWrapper';
+import Summary from '../Summary';
 let searchGridId;
 const SearchComp = (props, context) => {
   const [gridResult, setGridResults] = useState(undefined)
@@ -134,7 +135,12 @@ const SearchComp = (props, context) => {
     <React.Fragment>
       {loading && <Loading />}
       {showSearchForm()}
-      {gridResult}
+      {props.summary ?
+        <div className={style["farm-registry-search-grid-container"]}>
+          <Summary />
+          <div className={`${props.summary && style['search-grid-with-summary']}`} >{gridResult}</div>
+        </div>
+        : gridResult}
     </React.Fragment>
   )
 }
