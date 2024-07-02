@@ -287,7 +287,7 @@ class Farm extends React.Component {
               >
                 {iconManager.getIcon("add")}
                 {labelsManager.importLabel(
-                  "add_family_agri_holding",
+                  "add_agri_holding",
                   this.context,
                   "farm_registry"
                 )}
