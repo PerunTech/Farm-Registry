@@ -5,6 +5,7 @@ import { labelsManager } from "./utils_tools/LabelsExport";
 import SearchComponent from './SearchComp/SearchComponent';
 import CustomButtons from "./FarmDetails/CustomButtons";
 import CreateFarm from './CreateFarm/CreateFarm';
+import Reports from './Reports/Reports';
 const { store } = redux
 class Farm extends React.Component {
   constructor(props) {
@@ -19,7 +20,8 @@ class Farm extends React.Component {
       activeElement: 'SEARCH',
       activeChild: '',
       activeParent: '',
-      summary: false
+      summary: false,
+      showReports: true
     };
     this.hashHistory = createHashHistory();
   }
@@ -140,7 +142,7 @@ class Farm extends React.Component {
   };
 
   onRowClick = (_rowId, _rowPosition, rowsData) => {
-    this.setState({ summary: true })
+    this.setState({ summary: true, showReports: false })
     const objectId = rowsData["FARM.OBJECT_ID"]
     const objectTypeId = rowsData["FARM.OBJECT_TYPE"]
     store.dispatch({ type: 'WRITE_FARM_INFO', payload: rowsData })
@@ -262,7 +264,8 @@ class Farm extends React.Component {
                 this.setState({
                   showDynamicMenu: false,
                   showFarmInfo: false,
-                  summary: false
+                  summary: false,
+                  showReports: true
                 })
               }}>
                 {iconManager.getIcon("search")}
@@ -282,7 +285,10 @@ class Farm extends React.Component {
                   })
                   GridManager.reloadGridData("FARM_GRID");
                   this.displayComponent('ADD_FARM');
-                  this.setState({ activeElement: 'ADD_FARM', activeChild: '', activeParent: '' })
+                  this.setState({
+                    activeElement: 'ADD_FARM', activeChild: '', activeParent: '',
+                    showReports: true
+                  })
                 }}
               >
                 {iconManager.getIcon("add")}
@@ -292,6 +298,7 @@ class Farm extends React.Component {
                   "farm_registry"
                 )}
               </button>
+              {this.state.showReports && <Reports />}
             </div>
             {showFarmInfo}
             {showDynamicMenu && (<div className={[style['dynamic-comp-main-div']]}>

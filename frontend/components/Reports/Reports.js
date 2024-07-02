@@ -1,0 +1,94 @@
+import {
+    React,
+    connect,
+    PropTypes,
+    axios,
+    Loading
+} from "perun-core";
+import style from "../style/registration.module.css";
+import { labelsManager } from '../utils_tools/LabelsExport';
+import { iconManager } from "../utils_tools/svgHolder";
+const { useState, useEffect, useReducer } = React;
+
+const Reports = (props, context) => {
+    const [showSubReports, setShowSub] = useState(false)
+    const [configuration, setConfig] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        getConfiguration()
+    }, [])
+
+    const getConfiguration = () => {
+        setLoading(true)
+        let url = window.server + `/custom-menu/get-configuration/sid/929acf2b-c5ae-4821-8aba-d028f16e9216/component-name/db-menu/object-id/18227/object-type/FARM`
+        axios.get(url).then(res => {
+            setLoading(false)
+            setConfig(res.data)
+            //condition used to determine if the user reloaded the page while looking at farm details
+        }).catch(err => {
+            console.error(err)
+            setLoading(false)
+        })
+    }
+
+
+    const generateCustomButtons = () => {
+        if (configuration && Array.isArray(configuration.data) && configuration.data?.length > 0) {
+            return configuration.data.map(el => (
+                <>
+                    {el.data && <div className={style['sub-menu-sub-item-active']}>
+                        {el.data.map(sub => {
+                            return < button
+                                className={`${style["btn_sub"]}`}
+                                onClick={() => printReport(sub)}
+                            >
+                                <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(sub.ID.replace(/\d/g, '').replace(/_$/, ''))}</span><p>{sub.label}</p>
+                            </button>
+                        })}
+                    </div >}
+                </>
+            ));
+        } else {
+            return <><p className={style['no-reports']}>   {labelsManager.importLabel(
+                "no-reports",
+                context,
+                "farm_registry"
+            )}</p></>;
+        }
+    }
+
+    const printReport = (sub) => {
+        let url = window.server + sub.onSubmit;
+        window.open(url, '_blank');
+    }
+
+    return (
+        <>
+            {loading && <Loading />}
+            <button
+                className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']}`}
+                onClick={() => {
+                    setShowSub(!showSubReports)
+                }}
+            >
+                <span className={style['reports-svg-holder']}>{iconManager.getIcon("PRINT_FARM")}</span>
+                {labelsManager.importLabel(
+                    "reports",
+                    context,
+                    "farm_registry"
+                )}
+            </button>
+            {showSubReports && generateCustomButtons()}
+        </>
+    );
+};
+
+const mapStateToProps = (state) => ({
+    svSession: state.security.svSession,
+});
+Reports.contextTypes = {
+    intl: PropTypes.object.isRequired,
+};
+
+export default connect(mapStateToProps)(Reports);

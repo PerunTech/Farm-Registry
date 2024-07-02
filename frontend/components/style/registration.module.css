@@ -1004,3 +1004,14 @@
   overflow: auto;
   max-height: 300px;
 }
+
+.reports-svg-holder {
+  width: 25px;
+  height: 25px;
+}
+
+.no-reports {
+  margin: 0;
+  color: white;
+  padding-left: 15px;
+}
