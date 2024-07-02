@@ -21,7 +21,7 @@ const Reports = (props, context) => {
 
     const getConfiguration = () => {
         setLoading(true)
-        let url = window.server + `/custom-menu/get-configuration/sid/929acf2b-c5ae-4821-8aba-d028f16e9216/component-name/db-menu/object-id/18227/object-type/FARM`
+        let url = window.server + `/custom-menu/get-configuration/sid/${props.svSession}/component-name/reports-menu/object-id/0/object-type/FARM`
         axios.get(url).then(res => {
             setLoading(false)
             setConfig(res.data)
