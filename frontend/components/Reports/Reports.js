@@ -33,19 +33,19 @@ const Reports = (props, context) => {
 
 
     const generateCustomButtons = () => {
-
         if (configuration && Array.isArray(configuration.data) && configuration.data?.length > 0) {
             return configuration.data.map(el => (
                 <>
-                    <div className={style['sub-menu-sub-item-active']}>
-                        < button
-                            className={`${style["btn_sub"]}`}
-                            onClick={() => printReport(el)}
-                        >
-                            <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(el.ID.replace(/\d/g, '').replace(/_$/, ''))}</span><p>{el.label}</p>
-                        </button>
-
-                    </div >
+                    {el.data && <div className={style['sub-menu-sub-item-active']}>
+                        {el.data.map(sub => {
+                            return < button
+                                className={`${style["btn_sub"]}`}
+                                onClick={() => printReport(sub)}
+                            >
+                                <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(sub.ID.replace(/\d/g, '').replace(/_$/, ''))}</span><p>{sub.label}</p>
+                            </button>
+                        })}
+                    </div >}
                 </>
             ));
         } else {
