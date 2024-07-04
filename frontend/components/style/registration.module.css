@@ -1018,9 +1018,9 @@
 
 .redirect-person {
   font-weight: bold;
-  color: #668168;
+  color: #ffc107;
   cursor: pointer;
-  margin-left: 3px;
+  margin-left: 10px;
 }
 
 .redirect-to-pr-initial {
