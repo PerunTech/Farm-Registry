@@ -4,6 +4,7 @@ import {
     elements,
     ComponentManager,
     PropTypes,
+    createHashHistory
 } from "perun-core";
 import SearchComponent from '../SearchComp/SearchComponent'
 import style from "../style/registration.module.css";
@@ -11,7 +12,7 @@ import { labelsManager } from '../utils_tools/LabelsExport';
 const { useState, useEffect, useReducer } = React;
 const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
-
+let hashHistory = createHashHistory();
 let gridId;
 let inputholder = "";
 const CreateFarmWrapper = (props, context) => {
@@ -92,6 +93,7 @@ const CreateFarmWrapper = (props, context) => {
     return (
         <>
             {props.children}
+
             {show && (
                 <Modal className={style["farm-registry-modal"]} show={show} onHide={() => { setShow(false) }}>
 
@@ -105,6 +107,9 @@ const CreateFarmWrapper = (props, context) => {
                     </Modal.Header>
                     <Modal.Body className={style["farm-registry-modal-body"]}>
                         <SearchComponent person={true} onRowClick={handleRowClick} />
+                        <p className={style['redirect-to-pr-initial']}>{labelsManager.importLabel('register-person', context, 'farm_registry')}<span className={style['redirect-person']} onClick={() => {
+                            hashHistory.push('/main/persons-registry')
+                        }}>{labelsManager.importLabel('redirect-person', context, 'farm_registry')}</span></p>
                     </Modal.Body>
                     <Modal.Footer className={style["farm-registry-modal-footer"]}></Modal.Footer>
                 </Modal>
