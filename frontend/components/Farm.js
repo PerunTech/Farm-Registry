@@ -46,7 +46,7 @@ class Farm extends React.Component {
     this.displayComponent('DYNAMIC', tableName);
     this.getConfiguration(this.props.farmObjId, tableName)
     this.generateInfo(this.props.farmData.rowsData)
-    this.setState({ showDynamicMenu: true })
+    this.setState({ showDynamicMenu: true, showReports: false })
   }
 
   backToSearch = () => {
