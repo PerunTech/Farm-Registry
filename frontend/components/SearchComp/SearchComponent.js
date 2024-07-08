@@ -100,7 +100,7 @@ const SearchComp = (props, context) => {
 
   const searchResult = (data, formData) => {
     //SEARCH CUSTOM BELOW
-    let configWs = `/WsFarmUtils/getTableFieldListCustom/${props.svSession}/FARM`
+    let configWs = `/mdfr/getTableFieldListCustom/${props.svSession}/FARM`
     let tableName = "FARM"
     if (props.person) {
       tableName = "PERSON"
