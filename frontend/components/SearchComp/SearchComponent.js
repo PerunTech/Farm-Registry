@@ -16,7 +16,7 @@ const SearchComp = (props, context) => {
   }, [])
 
   useEffect(() => {
-    if (samlFlag) {
+    if (props.samlFlag) {
       let url = window.server + `/SvSecurity/getPersonalUserInfo/${props.svSession}/user_info`
       axios.get(url).then(res => {
         if (res.data) {
