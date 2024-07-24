@@ -15,6 +15,25 @@ const SearchComp = (props, context) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (samlFlag) {
+      let url = window.server + `/SvSecurity/getPersonalUserInfo/${props.svSession}/user_info`
+      axios.get(url).then(res => {
+        if (res.data) {
+          const userName = res.data.data['com.prtech.svarog_common.DbDataObject'].values[2]['USER_NAME']
+          const userGroup = res.data.data['default_user_group']['GROUP_SECURITY_TYPE']
+          if (userGroup === 'POA') {
+            let data = {
+              "SEARCH_OPTION": "PERSON.ID_NO",
+              "SEARCH_VALUES": userName
+            }
+            searchCurrentUser(data)
+          }
+
+        }
+      })
+    }
+  }, [])
 
   const showSearchForm = () => {
     let configWs = `/WsFarmUtils/getTableSearchJSONSchemaCustom/${props.svSession}/FARM`
@@ -43,6 +62,27 @@ const SearchComp = (props, context) => {
     );
     return searchForm
   };
+  const searchCurrentUser = (data) => {
+    let url = `${window.server}/WsFarmUtils/search-farm-person/sid/${props.svSession}`
+    setLoading(true)
+    axios({
+      method: 'post',
+      data,
+      url,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).then(res => {
+      if (res.data.length === 0) alertUser(true, 'info', labelsManager.importLabel('no_farm_data', context, 'farm_registry'))
+      searchResult(res.data, data)
+      setLoading(false)
+    }).catch(err => {
+      console.error(err)
+      setLoading(false)
+      const title = err.response?.data?.title || err
+      const msg = err.response?.data?.message || ''
+      alertUser(true, "error", title, msg);
+    })
+  }
+
 
   const assignSearchResultGrid = (data) => {
     let tableName = "FARM"
@@ -147,7 +187,8 @@ const SearchComp = (props, context) => {
 
 const mapStateToProps = (state) => ({
   svSession: state.security.svSession,
-  farmObjId: state['farm_registry.mapData']?.farmData?.objectId
+  farmObjId: state['farm_registry.mapData']?.farmData?.objectId,
+  samlFlag: state.security?.saml
 });
 
 SearchComp.contextTypes = {
