@@ -16,12 +16,12 @@ const SearchComp = (props, context) => {
   }, [])
 
   useEffect(() => {
-    if (props.samlFlag) {
+    if (props?.samlFlag) {
       let url = window.server + `/SvSecurity/getPersonalUserInfo/${props.svSession}/user_info`
       axios.get(url).then(res => {
-        if (res.data) {
-          const userName = res.data.data['com.prtech.svarog_common.DbDataObject'].values[2]['USER_NAME']
-          const userGroup = res.data.data['default_user_group']['GROUP_SECURITY_TYPE']
+        if (res.data?.data) {
+          const userName = res.data?.data?.['com.prtech.svarog_common.DbDataObject']?.values[2]?.['USER_NAME'] || undefined
+          const userGroup = res.data?.data?.['default_user_group']?.['GROUP_SECURITY_TYPE'] || undefined
           if (userGroup === 'POA') {
             let data = {
               "SEARCH_OPTION": "PERSON.ID_NO",
@@ -31,6 +31,8 @@ const SearchComp = (props, context) => {
           }
 
         }
+      }).catch(err => {
+        console.error(err)
       })
     }
   }, [])
@@ -71,7 +73,9 @@ const SearchComp = (props, context) => {
       url,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then(res => {
-      if (res.data.length === 0) alertUser(true, 'info', labelsManager.importLabel('no_farm_data', context, 'farm_registry'))
+      if (res.data.length === 0) { alertUser(true, 'info', labelsManager.importLabel('no_farm_data', context, 'farm_registry')) } else {
+        props.onRowClick(null, null, res.data[0])
+      }
       searchResult(res.data, data)
       setLoading(false)
     }).catch(err => {
