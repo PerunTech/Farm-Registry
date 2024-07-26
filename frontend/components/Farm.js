@@ -17,17 +17,19 @@ class Farm extends React.Component {
       showDynamicMenu: false,
       hideSearchForm: true,
       defaultCountry: undefined,
-      activeElement: 'SEARCH',
+      activeElement: 'SEARCH_FARM',
       activeChild: '',
       activeParent: '',
       summary: false,
-      showReports: true
+      showReports: true,
+      configurationBtn: undefined
     };
     this.hashHistory = createHashHistory();
   }
 
   componentDidMount = () => {
     let url = window.server + `/WsConf/params/get/sys/DEFAULT_COUNTRY`
+    this.getBtnConfiguration()
     axios.get(url).then(res => {
       if (res.data.VALUE) {
         this.setState({ defaultCountry: res.data.VALUE })
@@ -53,7 +55,7 @@ class Farm extends React.Component {
     this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
     let href = `/main/farm-registry/farm/search`
     this.hashHistory.push(href)
-    this.setState({ activeElement: 'SEARCH', activeChild: '', activeParent: '' })
+    this.setState({ activeElement: 'SEARCH_FARM', activeChild: '', activeParent: '' })
     this.setState({
       showDynamicMenu: false,
       showFarmInfo: false,
@@ -237,6 +239,18 @@ class Farm extends React.Component {
       this.setState({ activeElement: id, loading: false, activeChild: '', summary: false });
     }
   }
+
+  getBtnConfiguration = () => {
+    this.setState({ loading: true })
+    let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/farm-adm-menu/object-id/0/object-type/FARM`
+    axios.get(url).then(res => {
+      this.setState({ configurationBtn: res.data.data, loading: false })
+    }).catch(err => {
+      console.error(err)
+      this.setState({ loading: false })
+    })
+  }
+
   render() {
     const {
       dataHolder,
@@ -248,6 +262,7 @@ class Farm extends React.Component {
       showFarmInfo,
       loading,
       activeElement,
+      configurationBtn
     } = this.state;
 
     return (
@@ -256,49 +271,46 @@ class Farm extends React.Component {
         <div className={`${style["farm-registry-main-container"]}`} id="farm-registry-main-container">
           <div className={`${style["farm-registry-sidemenu"]}`} id="farm-registry-sidemenu">
             <div className={`${style["btnHolder"]}`}>
-              <button className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']} ${activeElement === 'SEARCH' && style['active']}`} onClick={() => {
-                this.setState({ showSearchForm: true, dataForm: undefined, componentAddReg: undefined })
-                let href = `/main/farm-registry/farm/search`
-                this.hashHistory.push(href)
-                this.setState({ activeElement: 'SEARCH', activeChild: '', activeParent: '' })
-                this.setState({
-                  showDynamicMenu: false,
-                  showFarmInfo: false,
-                  summary: false,
-                  showReports: true
-                })
-              }}>
-                {iconManager.getIcon("search")}
-                {labelsManager.importLabel(
-                  "searching",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              <button
-                className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']} ${activeElement === 'ADD_FARM' && style['active']}`}
-                onClick={() => {
-                  this.setState({
-                    showDynamicMenu: false,
-                    showFarmInfo: false,
-                    summary: false
-                  })
-                  GridManager.reloadGridData("FARM_GRID");
-                  this.displayComponent('ADD_FARM');
-                  this.setState({
-                    activeElement: 'ADD_FARM', activeChild: '', activeParent: '',
-                    showReports: true
-                  })
-                }}
-              >
-                {iconManager.getIcon("add")}
-                {labelsManager.importLabel(
-                  "add_agri_holding",
-                  this.context,
-                  "farm_registry"
-                )}
-              </button>
-              {this.state.showReports && <Reports />}
+              {configurationBtn && configurationBtn?.length > 0 && <>
+                {configurationBtn.map(el => (
+                  <> {el['objectConfiguration']['type'] === 'button' && <button
+                    className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']} ${activeElement === el['ID'] && style['active']}`} onClick={() => {
+                      if (el['ID'] === 'SEARCH_FARM') {
+                        this.setState({
+                          activeElement: el['ID'],
+                          activeChild: '',
+                          activeParent: '',
+                          summary: false,
+                          showReports: true,
+                          showFarmInfo: false,
+                          showDynamicMenu: false,
+                          componentAddReg: undefined,
+                          dataForm: undefined,
+                          showSearchForm: true,
+                        })
+                        let href = `/main/farm-registry/farm/search`
+                        this.hashHistory.push(href)
+                      } else if (el['ID'] === 'ADD_FARM') {
+                        this.setState({
+                          activeElement: el['ID'],
+                          activeChild: '',
+                          activeParent: '',
+                          summary: false,
+                          showReports: true,
+                          showFarmInfo: false,
+                          showDynamicMenu: false,
+                        })
+                        GridManager.reloadGridData("FARM_GRID");
+                        this.displayComponent(el['ID']);
+                      }
+                    }}>
+                    {iconManager.getIcon(el['ID'])}
+                    {el['label']}
+                  </button>}
+                    {this.state.showReports && el['objectConfiguration']['type'] === 'reports' && <Reports />}
+                  </>
+                ))}
+              </>}
             </div>
             {showFarmInfo}
             {showDynamicMenu && (<div className={[style['dynamic-comp-main-div']]}>
