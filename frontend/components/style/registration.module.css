@@ -1026,3 +1026,12 @@
 .redirect-to-pr-initial {
   margin-left: 30px;
 }
+
+.menu-plus-reports {
+  height: 100%;
+}
+
+.reports-active-menu {
+  overflow: hidden auto;
+  height: 75%;
+}

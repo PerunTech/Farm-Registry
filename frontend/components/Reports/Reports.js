@@ -36,7 +36,7 @@ const Reports = (props, context) => {
         if (configuration && Array.isArray(configuration.data) && configuration.data?.length > 0) {
             return configuration.data.map(el => (
                 <>
-                    {el.data && <div className={style['sub-menu-sub-item-active']}>
+                    {el.data && <div className={`${style['sub-menu-sub-item-active']} ${style['reports-active-menu']}`}>
                         {el.data.map(sub => {
                             return < button
                                 className={`${style["btn_sub"]}`}
