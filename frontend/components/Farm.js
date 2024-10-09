@@ -1,4 +1,4 @@
-import { React, connect, GridManager, PropTypes, Loading, axios, redux, createHashHistory } from "perun-core";
+import { React, connect, GridManager, PropTypes, Loading, axios, redux, createHashHistory, elements } from "perun-core";
 import style from "./style/registration.module.css";
 import { iconManager } from "./utils_tools/svgHolder";
 import { labelsManager } from "./utils_tools/LabelsExport";
@@ -6,6 +6,7 @@ import SearchComponent from './SearchComp/SearchComponent';
 import CustomButtons from "./FarmDetails/CustomButtons";
 import CreateFarm from './CreateFarm/CreateFarm';
 import Reports from './Reports/Reports';
+const { alertUser } = elements
 const { store } = redux
 class Farm extends React.Component {
   constructor(props) {
@@ -177,9 +178,27 @@ class Farm extends React.Component {
         <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{rowData['FARM.FULL_NAME']}</b></p>
         <p>{labelsManager.importLabel("holding_code", this.context, "farm_registry")}: <b>{rowData['FARM.FIC']}</b></p>
         <p>{labelsManager.importLabel("archive_number", this.context, "farm_registry")}: <b>{rowData['FARM.ARCHIVE_NUMBER'] || ''}</b></p>
+        <button className={`${style['update-farm-btn']}`} onClick={() => this.updateData(rowData)}><span className={`${style['update-farm-btn-container']}`}>{labelsManager.importLabel("update_data_btn", this.context, "farm_registry")} <span className={`${style['update-farm-btn-icon']}`}>{iconManager.getIcon('reloadData')}</span></span></button>
       </div>
     </>
     this.setState({ showFarmInfo: info })
+  }
+
+  updateData = (rowData) => {
+    alertUser(true, 'info', labelsManager.importLabel('confirm_update_action', this.context, 'farm_registry'), labelsManager.importLabel('confirm_update_action_msg', this.context, 'farm_registry'), () => {
+      this.setState({ loading: true })
+      const url = `${window.server}/mdfr/importFarmData/${this.props.svSession}/${rowData['FARM.OBJECT_ID']}`
+      axios.get(url).then(res => {
+        alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
+        this.setState({ loading: false })
+      }).catch(err => {
+        this.setState({ loading: false })
+        console.error(err)
+        const title = err.response?.data?.title || err
+        const msg = err.response?.data?.message || ''
+        alertUser(true, "error", title, msg);
+      });
+    }, () => { }, true, labelsManager.importLabel('yes', this.context, 'farm_registry'), labelsManager.importLabel('no', this.context, 'farm_registry'))
   }
 
   setActive = (el) => {
