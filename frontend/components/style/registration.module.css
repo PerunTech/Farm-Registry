@@ -1035,3 +1035,45 @@
   overflow: hidden auto;
   height: 75%;
 }
+
+.update-farm-btn {
+  border: none;
+  border-radius: 4px;
+  transition: 0.5s;
+  box-shadow: 2px 3px 5px #464646;
+  width: max-content;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background: #e0ab11;
+}
+
+.update-farm-btn:focus,
+.update-farm-btn:active {
+  border: none;
+  outline: none;
+}
+
+.update-farm-btn:active {
+  transform: scale(.96);
+}
+
+.update-farm-btn-icon:hover {
+  transform: rotate(360deg);
+  transition-duration: 1s;
+}
+
+.update-farm-btn-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+}
+
+.update-farm-btn-icon {
+  display: block;
+  height: 35px;
+  width: 35px;
+  margin-left: 5px;
+}
