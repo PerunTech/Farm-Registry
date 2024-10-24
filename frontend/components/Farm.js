@@ -1,5 +1,4 @@
 import { React, connect, GridManager, PropTypes, Loading, axios, redux, createHashHistory, elements } from "perun-core";
-import style from "./style/registration.module.css";
 import { iconManager } from "./utils_tools/svgHolder";
 import { labelsManager } from "./utils_tools/LabelsExport";
 import SearchComponent from './SearchComp/SearchComponent';
@@ -173,12 +172,12 @@ class Farm extends React.Component {
       labelStatus = this.context.intl.formatMessage({ id: 'perun.farm_registry.inactive', defaultMessage: 'perun.farm_registry.inactive' })
     }
     let info = <>
-      <div className={`${style['farmer-info-right']}`}>
+      <div className={`farmer-info-right`}>
         <p>{labelsManager.importLabel("status", this.context, "farm_registry")}: <b>{labelStatus}</b></p>
         <p>{labelsManager.importLabel("full_name", this.context, "farm_registry")}: <b>{rowData['FARM.FULL_NAME']}</b></p>
         <p>{labelsManager.importLabel("holding_code", this.context, "farm_registry")}: <b>{rowData['FARM.FIC']}</b></p>
         <p>{labelsManager.importLabel("archive_number", this.context, "farm_registry")}: <b>{rowData['FARM.ARCHIVE_NUMBER'] || ''}</b></p>
-        <button className={`${style['update-farm-btn']}`} onClick={() => this.updateData(rowData)}><span className={`${style['update-farm-btn-container']}`}>{labelsManager.importLabel("update_data_btn", this.context, "farm_registry")} <span className={`${style['update-farm-btn-icon']}`}>{iconManager.getIcon('reloadData')}</span></span></button>
+        <button className={'update-farm-btn'} onClick={() => this.updateData(rowData)}><span className={'update-farm-btn-container'}>{labelsManager.importLabel("update_data_btn", this.context, "farm_registry")} <span className={'update-farm-btn-icon'}>{iconManager.getIcon('reloadData')}</span></span></button>
       </div>
     </>
     this.setState({ showFarmInfo: info })
@@ -217,20 +216,20 @@ class Farm extends React.Component {
         return (
           <>
             <button
-              className={`${style["btn_sub"]} ${activeElement === el.ID && !el.data && style['active']}`}
+              className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
               onClick={() => (el.data ? this.setActive(el) : this.onButtonClick(el))}
             >
-              <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
+              <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
             </button>
-            {el.data && <div className={el.ID === activeParent ? style['sub-menu-sub-item-active'] : style['sub-menu-sub-item-hidden']}>
+            {el.data && <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
               {el.data.map(sub => {
                 modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '')
                 return < button
-                  className={`${style["btn_sub"]} ${activeChild === sub.ID && style['active']}`
+                  className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`
                   }
                   onClick={() => (sub.ID.includes('PRINT') ? this.printFunc(sub) : this.onButtonClick(sub, true))}
                 >
-                  <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(modifiedID)}</span><p>{sub.label}</p>
+                  <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span><p>{sub.label}</p>
                 </button>
               })}
             </div >}
@@ -287,13 +286,13 @@ class Farm extends React.Component {
     return (
       <>
         {loading && <Loading />}
-        <div className={`${style["farm-registry-main-container"]}`} id="farm-registry-main-container">
-          <div className={`${style["farm-registry-sidemenu"]}`} id="farm-registry-sidemenu">
-            <div className={`${style["btnHolder"]} ${this.state.showReports && style['menu-plus-reports']}`}>
+        <div className={`sidemenu-main-container`} id="sidemenu-main-container ">
+          <div className={'sidemenu-main-container'} id="sidemenu-main-container">
+            <div className={`sidemnu-btn-holder ${this.state.showReports && 'menu-plus-reports'}`}>
               {configurationBtn && configurationBtn?.length > 0 && <>
                 {configurationBtn.map(el => (
                   <> {el['objectConfiguration']['type'] === 'button' && <button
-                    className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']} ${activeElement === el['ID'] && style['active']}`} onClick={() => {
+                    className={`sidemenu-btn_sub 'initial-farm-registry-btns' ${activeElement === el['ID'] && 'sidemenu-active'}`} onClick={() => {
                       if (el['ID'] === 'SEARCH_FARM') {
                         this.setState({
                           activeElement: el['ID'],
@@ -332,18 +331,18 @@ class Farm extends React.Component {
               </>}
             </div>
             {showFarmInfo}
-            {showDynamicMenu && (<div className={[style['dynamic-comp-main-div']]}>
+            {showDynamicMenu && (<div className={'sidemenu-dynamic-comp-main-div'}>
               {this.generateCustomButtons()}
-              <div className={style['side-menu-bottom-div']} />
+              <div className={'sidemenu-bottom-div'} />
             </div>)}
           </div>
-          <div className={`${style["farm-registry-content"]}`} id="farm-registry-content">
+          <div className={`farm-registry-content`} id="farm-registry-content">
             {showSearchForm && (
-              <div className={`${style["farm-registry-content-search"]}`} id="farm-registry-content-search">
+              <div className={`farm-registry-content-search`} id="farm-registry-content-search">
                 <SearchComponent summary={this.state.summary} onRowClick={this.onRowClick} />
               </div>
             )}
-            <div id="dataHolder" className={`${dataForm ? style["dataHolder"] : ''} ${componentAddReg ? style['farm-registry-submenu-comp'] : ""}`}>
+            <div id="dataHolder" className={`${dataForm ? 'farm-registry-data-holder' : ''} ${componentAddReg ? 'farm-registry-submenu-comp' : ""}`}>
               {showGrid && dataHolder}
               {componentAddReg}
             </div>
