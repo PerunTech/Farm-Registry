@@ -5,7 +5,6 @@
  */
 import FarmRegistryMainHolder from "./components/FarmRegistryMainHolder";
 import mapDataReducer from './components/reducerMap'
-import "./components/style/style.css";
 
 import { redux, persistBundleReducers } from 'perun-core'
 const { store, injectAsyncReducer } = redux;
