@@ -288,7 +288,7 @@ class Farm extends React.Component {
         {loading && <Loading />}
         <div className={`farm-registry-main-container`} id="farm-registry-main-container">
           <div className={'sidemenu-main-container farm-registry-sidemenu-main-container'} id="sidemenu-main-container">
-            <div className={`sidemnu-btn-holder ${this.state.showReports && 'menu-plus-reports'}`}>
+            <div className={`sidemenu-btn-holder ${this.state.showReports && 'menu-plus-reports'}`}>
               {configurationBtn && configurationBtn?.length > 0 && <>
                 {configurationBtn.map(el => (
                   <> {el['objectConfiguration']['type'] === 'button' && <button
