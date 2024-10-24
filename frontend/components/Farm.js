@@ -286,7 +286,7 @@ class Farm extends React.Component {
     return (
       <>
         {loading && <Loading />}
-        <div className={`sidemenu-main-container`} id="sidemenu-main-container ">
+        <div className={`farm-registry-main-container`} id="farm-registry-main-container">
           <div className={'sidemenu-main-container'} id="sidemenu-main-container">
             <div className={`sidemnu-btn-holder ${this.state.showReports && 'menu-plus-reports'}`}>
               {configurationBtn && configurationBtn?.length > 0 && <>
