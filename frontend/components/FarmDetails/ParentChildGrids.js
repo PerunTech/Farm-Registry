@@ -1,6 +1,5 @@
 import { React, connect, PropTypes, ExportableGrid, ComponentManager } from 'perun-core'
 const { useState, useEffect } = React
-import style from "../style/registration.module.css"
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { getDynamicKey } from '../../utils';
 let prev
@@ -19,7 +18,7 @@ const ParentChildGrids = (props, context) => {
         const dataWs = props.grids[0].objectConfiguration.data.onSubmit
         const btnArray = props.grids[0].objectConfiguration.additionalBtns
         const gridDiv = <>
-            <div className={`${style['parent-dynamic-grid']}`}>
+            <div className={`farm-registry-parent-dynamic-grid`}>
                 {btnArray && props.buildCustomBtnArr(btnArray, false)}
                 <ExportableGrid
                     gridType={"READ_URL"}
@@ -47,8 +46,8 @@ const ParentChildGrids = (props, context) => {
             const configWs = grid.objectConfiguration.configuration.onSubmit
             let dataWs = grid.objectConfiguration.data.onSubmit
             dataWs = dataWs.replace(/{([^}]+)}/g, objectId)
-            const gridDiv = <div className={` ${style['child-dynamic-grid']}`}>
-                {btnArray && <div className={style['child-grid-balancer']} />}
+            const gridDiv = <div className={`farm-registry-child-dynamic-grid`}>
+                {btnArray && <div className={'farm-registry-child-grid-balancer'} />}
                 <ExportableGrid
                     gridType={"READ_URL"}
                     key={gridId}

@@ -1,7 +1,6 @@
 import { React, connect, PropTypes, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements, Loading } from 'perun-core'
 const { alertUser } = elements
 const { useState, useEffect } = React
-import style from "../style/registration.module.css"
 import { labelsManager } from '../utils_tools/LabelsExport';
 import SearchFormWrapper from './SearchFormWrapper';
 import Summary from '../Summary';
@@ -47,7 +46,7 @@ const SearchComp = (props, context) => {
     let searchForm = (
       <div>
         <GenericForm
-          className={`farm-registry-forms ${style["form-SC"]}`}
+          className={`farm-registry-forms farm-registry-form-SC`}
           params={'READ_URL'}
           key={`${tableName}_SEARCH_FORM`}
           id={`${tableName}_SEARCH_FORM`}
@@ -180,9 +179,9 @@ const SearchComp = (props, context) => {
       {loading && <Loading />}
       {showSearchForm()}
       {props.summary ?
-        <div className={style["farm-registry-search-grid-container"]}>
+        <div className={"farm-registry-search-grid-container"}>
           <Summary />
-          <div className={`${props.summary && style['search-grid-with-summary']}`} >{gridResult}</div>
+          <div className={`${props.summary && 'search-grid-with-summary'}`} >{gridResult}</div>
         </div>
         : gridResult}
     </React.Fragment>

@@ -7,7 +7,6 @@ import {
     createHashHistory
 } from "perun-core";
 import SearchComponent from '../SearchComp/SearchComponent'
-import style from "../style/registration.module.css";
 import { labelsManager } from '../utils_tools/LabelsExport';
 const { useState, useEffect, useReducer } = React;
 const { ReactBootstrap } = elements;
@@ -95,24 +94,24 @@ const CreateFarmWrapper = (props, context) => {
             {props.children}
 
             {show && (
-                <Modal className={style["farm-registry-modal"]} show={show} onHide={() => { setShow(false) }}>
+                <Modal className={"farm-registry-modal"} show={show} onHide={() => { setShow(false) }}>
 
 
-                    <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
+                    <Modal.Header className={"farm-registry-modal-header"} closeButton>
                         <Modal.Title>{labelsManager.importLabel(
                             "search_person",
                             context,
                             "farm_registry"
                         )}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className={style["farm-registry-modal-body"]}>
+                    <Modal.Body className={"farm-registry-modal-body"}>
                         <SearchComponent person={true} onRowClick={handleRowClick} />
-                        <p className={style['redirect-to-pr-initial']}>{labelsManager.importLabel('register-person', context, 'farm_registry')}<span className={style['redirect-person']} onClick={() => {
+                        <p className={'redirect-to-pr-initial'}>{labelsManager.importLabel('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
                             hashHistory.push('/main/persons-registry')
                         }}>{labelsManager.importLabel('redirect-person', context, 'farm_registry')}</span></p>
-                    </Modal.Body>
-                    <Modal.Footer className={style["farm-registry-modal-footer"]}></Modal.Footer>
-                </Modal>
+                    </Modal.Body >
+                    <Modal.Footer className={"farm-registry-modal-footer"}></Modal.Footer>
+                </Modal >
             )}
         </>
     );
