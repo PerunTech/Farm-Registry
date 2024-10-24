@@ -7,7 +7,6 @@ import {
     axios,
     Loading
 } from "perun-core";
-import style from "../style/registration.module.css";
 const { useState, useEffect } = React;
 const { alertUser } = elements;
 import { labelsManager } from '../utils_tools/LabelsExport';
@@ -61,15 +60,15 @@ const Documents = (props, context) => {
         axios.get(`${window.server}${props.getUploadedFiles}`).then(res => {
             if (res.data) {
                 if (res.data.data.items?.length > 0) {
-                    let files = res.data.data.items.map((el) => (<div className={`${style['downloadable-item-div']}`}>
-                        <div className={style['download-icon-text']}>
-                            <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={`${style['file-name-upload']}`} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{el.FILE_NAME}</button>
+                    let files = res.data.data.items.map((el) => (<div className={'downloadable-item-div'}>
+                        <div className={'download-icon-text'}>
+                            <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{el.FILE_NAME}</button>
                         </div>
                         <div>
-                            <button type='button' id='deleteBtn' className={`${style['delete-file-btn']}`}
+                            <button type='button' id='deleteBtn' className={`delete-file-btn`}
                                 onClick={(e) => { alertUser(true, 'warning', labelsManager.importLabel('delete_uploaded_file', context, 'farm_registry'), "", () => { deleteDownload(el, e,) }, () => { }, true, labelsManager.importLabel('yes', context, 'farm_registry'), labelsManager.importLabel('no', context, 'farm_registry')) }}>{iconManager.getIcon('delete')}
                             </button>
-                            <button type='button' id='downloadBtn' className={`${style['download-file-btn']} ${style['upload-to-download-btn']}`}
+                            <button type='button' id='downloadBtn' className={`download-file-btn upload-to-download-btn`}
                                 onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('upload')}
                             </button>
                         </div>
@@ -151,13 +150,13 @@ const Documents = (props, context) => {
     return (
         <>
             {loading && <Loading />}
-            <div className={style['farm-registry-documents-container']}>
-                <div className={style['farm-registry-upload']}>
+            <div className={'farm-registry-documents-container'}>
+                <div className={'farm-registry-upload'}>
                     <p>{labelsManager.importLabel('attachment_title', context, 'farm_registry')}</p>
-                    <label title={labelsManager.importLabel('upload_file_btn', context, 'farm_registry')} for={'upload-file'} className={`${style['upload-file-btn']}`} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
-                    <input className={style['farm-registry-upload-input']} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
+                    <label title={labelsManager.importLabel('upload_file_btn', context, 'farm_registry')} for={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
+                    <input className={'farm-registry-upload-input'} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
                 </div>
-                <div className={style['farm-registry-files']}>
+                <div className={'farm-registry-files'}>
                     {fileItems}
                 </div>
             </div>

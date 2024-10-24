@@ -5,7 +5,6 @@ import {
     axios,
     Loading
 } from "perun-core";
-import style from "../style/registration.module.css";
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { iconManager } from "../utils_tools/svgHolder";
 const { useState, useEffect, useReducer } = React;
@@ -36,20 +35,20 @@ const Reports = (props, context) => {
         if (configuration && Array.isArray(configuration.data) && configuration.data?.length > 0) {
             return configuration.data.map(el => (
                 <>
-                    {el.data && <div className={`${style['sub-menu-sub-item-active']} ${style['reports-active-menu']}`}>
+                    {el.data && <div className={`sidemenu-sub-item-active reports-active-menu`}>
                         {el.data.map(sub => {
                             return < button
-                                className={`${style["btn_sub"]}`}
+                                className={`sidemenu-btn_sub`}
                                 onClick={() => printReport(sub)}
                             >
-                                <span className={style['dynamic-comp-icon-holder']}>{iconManager.getIcon(sub.ID.replace(/\d/g, '').replace(/_$/, ''))}</span><p>{sub.label}</p>
+                                <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(sub.ID.replace(/\d/g, '').replace(/_$/, ''))}</span><p>{sub.label}</p>
                             </button>
                         })}
                     </div >}
                 </>
             ));
         } else {
-            return <><p className={style['no-reports']}>   {labelsManager.importLabel(
+            return <><p className={'no-reports'}>   {labelsManager.importLabel(
                 "no-reports",
                 context,
                 "farm_registry"
@@ -66,12 +65,12 @@ const Reports = (props, context) => {
         <>
             {loading && <Loading />}
             <button
-                className={`${style["btn_sub"]} ${style['initial-farm-registry-btns']}`}
+                className={`sidemenu-btn_sub initial-farm-registry-btns`}
                 onClick={() => {
                     setShowSub(!showSubReports)
                 }}
             >
-                <span className={style['reports-svg-holder']}>{iconManager.getIcon("PRINT_FARM")}</span>
+                <span className={'reports-svg-holder'}>{iconManager.getIcon("PRINT_FARM")}</span>
                 {labelsManager.importLabel(
                     "reports",
                     context,

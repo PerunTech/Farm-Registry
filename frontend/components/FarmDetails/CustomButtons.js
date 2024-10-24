@@ -1,5 +1,4 @@
 import { React, connect, axios, PropTypes, Loading, createHashHistory, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux } from 'perun-core'
-import style from "../style/registration.module.css"
 import { getDynamicKey } from '../../utils'
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { getCookie } from '../utils_tools/getCookie'
@@ -39,9 +38,9 @@ const CustomButtons = (props, context) => {
         }
     }, [])
     const buildCustomBtnArr = (btnArray, multiSelect) => {
-        const div = <div className={style[`custom-btn-holder-${props.tableName.toLowerCase()}_${getCookie('defaultLocale')}`]}>
+        const div = <div className={`custom-btn-holder-${props.tableName.toLowerCase()}_${getCookie('defaultLocale')}`}>
             {btnArray.map((el, i) => (
-                <button id={el['ID']} key={el['ID']} className={`${style[`${props.tableName.toLowerCase()}-btn`]}`} onClick={() => customBtnAction(el, multiSelect)}>
+                <button id={el['ID']} key={el['ID']} className={`${props.tableName.toLowerCase()}-btn`} onClick={() => customBtnAction(el, multiSelect)}>
                     {el['label']}
                 </button>
             ))}
@@ -120,7 +119,7 @@ const CustomButtons = (props, context) => {
         const dataWs = props.configuration.objectConfiguration.data.onSubmit
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
-        const grid = (<div className={`${style[`custom-grid-container-${props.tableName.toLowerCase()}`]} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
+        const grid = (<div className={`${`custom-grid-container-${props.tableName.toLowerCase()}`} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
 
             <ExportableGrid
                 gridType={"READ_URL"}
@@ -337,7 +336,7 @@ const CustomButtons = (props, context) => {
     return (
         <>
             {loading && <Loading />}
-            <div className={`${style['custom-menu-holder']} ${style[`custom-menu-${props.tableName.toLowerCase()}-container`]}`}>
+            <div className={`custom-menu-holder ${`custom-menu-${props.tableName.toLowerCase()}-container`}`}>
                 {props.configuration?.objectConfiguration?.type === 'form' && generateForm()}
                 {props.configuration?.objectConfiguration?.type === 'grid' && generateGrid()}
                 {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}
@@ -347,14 +346,14 @@ const CustomButtons = (props, context) => {
                 {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
                     addFormFunc={addFormFunc} />}
                 {showModal && (
-                    <Modal className={style["farm-registry-modal"]} show={showModal} onHide={() => closeFormModal()}>
-                        <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
+                    <Modal className={"farm-registry-modal"} show={showModal} onHide={() => closeFormModal()}>
+                        <Modal.Header className={"farm-registry-modal-header"} closeButton>
                             <Modal.Title>{props.configuration.label}</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body className={style["farm-registry-modal-body"]}>
+                        <Modal.Body className={"farm-registry-modal-body"}>
                             {generateForm(true, false, flagFormChild)}
                         </Modal.Body>
-                        <Modal.Footer className={style["farm-registry-modal-footer"]} />
+                        <Modal.Footer className={"farm-registry-modal-footer"} />
                     </Modal>
                 )}
             </div>

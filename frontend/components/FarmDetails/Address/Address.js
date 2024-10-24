@@ -11,7 +11,6 @@ import {
     ComponentManager,
     validator
 } from 'perun-core'
-import style from "../../style/registration.module.css"
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -230,15 +229,15 @@ const Address = (props, context) => {
                     )}
                     editContextFunc={handleRowClick}
                 />
-                {show && <Modal className={style["farm-registry-modal"]} show={show} onHide={() => setShow(false)}>
-                    <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
+                {show && <Modal className={"farm-registry-modal"} show={show} onHide={() => setShow(false)}>
+                    <Modal.Header className={"farm-registry-modal-header"} closeButton>
                         <Modal.Title>{labelsManager.importLabel(
                             "add_address",
                             context,
                             "farm_registry"
                         )}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className={style["farm-registry-modal-body"]}>
+                    <Modal.Body className={"farm-registry-modal-body"}>
                         {flagForm && <Form
                             validator={validator}
                             schema={schema}
@@ -251,7 +250,7 @@ const Address = (props, context) => {
                             onChange={(e) => onChange(e)}
                         >
                             <></>
-                            <div className={style['farm-registry-btn-holder']} >
+                            <div className={'farm-registry-btn-holder'} >
                                 {deleteBtn && <button onClick={() => alertUser(true, 'warning', labelsManager.importLabel('delete_record_prompt_title', context, 'main'), labelsManager.importLabel('delete_record_prompt_message', context, 'main'), () => { deleteFunc(formData) }, () => { }, true, labelsManager.importLabel('yes', context, 'admin_console'), labelsManager.importLabel('no', context, 'admin_console'))
                                 } className='btn-danger btn_delete_form' type='button'>{labelsManager.importLabel(
                                     "delete",
@@ -266,7 +265,7 @@ const Address = (props, context) => {
                             </div>
                         </Form>}
                     </Modal.Body>
-                    <Modal.Footer className={style["farm-registry-modal-footer"]}></Modal.Footer>
+                    <Modal.Footer className={"farm-registry-modal-footer"}></Modal.Footer>
                 </Modal>}
             </div>
 

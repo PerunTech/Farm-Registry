@@ -6,7 +6,6 @@ import {
     PropTypes,
 } from "perun-core";
 import SearchComponent from '../../SearchComp/SearchComponent';
-import style from "../../style/registration.module.css";
 import { labelsManager } from '../../utils_tools/LabelsExport';
 const { useState, useEffect, useReducer } = React;
 const { ReactBootstrap } = elements;
@@ -99,20 +98,20 @@ const FarmmembersWrapper = (props, context) => {
         <>
             {props.children}
             {show && (
-                <Modal className={style["farm-registry-modal"]} show={show} onHide={() => { setShow(false) }}>
+                <Modal className={"farm-registry-modal"} show={show} onHide={() => { setShow(false) }}>
 
 
-                    <Modal.Header className={style["farm-registry-modal-header"]} closeButton>
+                    <Modal.Header className={"farm-registry-modal-header"} closeButton>
                         <Modal.Title>{labelsManager.importLabel(
                             "search_person",
                             context,
                             "farm_registry"
                         )}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className={style["farm-registry-modal-body"]}>
+                    <Modal.Body className={"farm-registry-modal-body"}>
                         <SearchComponent person={true} onRowClick={handleRowClick} />
                     </Modal.Body>
-                    <Modal.Footer className={style["farm-registry-modal-footer"]}></Modal.Footer>
+                    <Modal.Footer className={"farm-registry-modal-footer"}></Modal.Footer>
                 </Modal>
             )}
         </>
