@@ -75,7 +75,7 @@ const CadparcelWrapper = (props, context) => {
             "formTableData"
         );
         const cadastralCode = formData['CODCADASTRAL']
-        let url = window.server + `/mdfr/getCadParcelData/${props.svSession}/${cadastralCode}`
+        let url = window.server + `/farm-registry/getCadParcelData/${props.svSession}/${cadastralCode}`
         axios.get(url).then(res => {
             if (res.data) {
                 if (Object.keys(res.data).length > 0) {

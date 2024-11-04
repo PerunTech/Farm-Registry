@@ -16,7 +16,7 @@ const Summary = (props, context) => {
     }, [props.farmObjId])
 
     const getFarmSummary = (id) => {
-        let url = `${window.server}/mdfr/get-farm-summary/sessionId/${props.svSession}/farm-object-id/${id}`
+        let url = `${window.server}/farm-registry/get-farm-summary/sessionId/${props.svSession}/farm-object-id/${id}`
         axios.get(url).then(res => {
             setSummaryArray(res.data.data)
         }).catch(err => {

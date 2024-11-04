@@ -74,7 +74,7 @@ class Farm extends React.Component {
   getConfiguration = (objid, preSelectedTable) => {
     this.setState({ loading: true })
     let isSubElement = false
-    let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/db-menu/object-id/${objid}/object-type/FARM`
+    let url = window.server + `/custom-menu/get-configuration/sid/${this.props.svSession}/component-name/farm-registry-menu/object-id/${objid}/object-type/FARM`
     axios.get(url).then(res => {
       this.setState({ configuration: res.data, loading: false })
       //condition used to determine if the user reloaded the page while looking at farm details
@@ -186,7 +186,7 @@ class Farm extends React.Component {
   updateData = (rowData) => {
     alertUser(true, 'info', labelsManager.importLabel('confirm_update_action', this.context, 'farm_registry'), labelsManager.importLabel('confirm_update_action_msg', this.context, 'farm_registry'), () => {
       this.setState({ loading: true })
-      const url = `${window.server}/mdfr/importFarmData/${this.props.svSession}/${rowData['FARM.OBJECT_ID']}`
+      const url = `${window.server}/farm-registry/importFarmData/${this.props.svSession}/${rowData['FARM.OBJECT_ID']}`
       axios.get(url).then(res => {
         alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
         this.setState({ loading: false })
