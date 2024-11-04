@@ -100,6 +100,9 @@ class Farm extends React.Component {
     }).catch(err => {
       console.error(err)
       this.setState({ loading: false })
+      const title = err.response?.data?.title || err
+      const msg = err.response?.data?.message || ''
+      alertUser(true, 'error', title, msg);
     })
   }
 
@@ -266,6 +269,9 @@ class Farm extends React.Component {
     }).catch(err => {
       console.error(err)
       this.setState({ loading: false })
+      const title = err.response?.data?.title || err
+      const msg = err.response?.data?.message || ''
+      alertUser(true, 'error', title, msg);
     })
   }
 
