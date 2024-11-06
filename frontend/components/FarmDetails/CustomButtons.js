@@ -333,6 +333,14 @@ const CustomButtons = (props, context) => {
         setFlagFormChild(true)
         setChildGridId(gridId)
     }
+
+    const reRouteFunc = (href) => {
+        if (href) {
+            hashHistory.push(href)
+        } else {
+            alertUser(true, 'error', labelsManager.importLabel('missing_route', context, 'farm_registry'))
+        }
+    }
     return (
         <>
             {loading && <Loading />}
@@ -345,6 +353,7 @@ const CustomButtons = (props, context) => {
                 {props.configuration?.objectConfiguration?.type === 'address' && <Address defaultCountry={props.defaultCountry} />}
                 {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
                     addFormFunc={addFormFunc} />}
+                {props.configuration?.objectConfiguration?.type === 'link' && reRouteFunc(props.configuration?.objectConfiguration?.configuration?.onSubmit)}
                 {showModal && (
                     <Modal className={"farm-registry-modal"} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={"farm-registry-modal-header"} closeButton>
