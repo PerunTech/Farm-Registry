@@ -244,21 +244,34 @@ class Farm extends React.Component {
     }
   }
 
+  reRouteFunc = (href) => {
+    if (href) {
+      this.hashHistory.push(href)
+    } else {
+      alertUser(true, 'error', labelsManager.importLabel('missing_route', context, 'farm_registry'))
+    }
+  }
+
   printFunc = (sub) => {
     let url = window.server + sub.onSubmit;
     window.open(url, '_blank');
   }
 
   onButtonClick = (element, childEl) => {
-    const id = element.ID;
-    const splitID = id.replace(/\d/g, '').replace(/_$/, '');
-    if (childEl) {
-      this.displayComponent('DYNAMIC', splitID, element, true);
-      this.setState({ activeChild: id, loading: false, activeElement: '', summary: false });
+    if (element?.objectConfiguration?.type === 'link') {
+      this.reRouteFunc(element?.objectConfiguration?.configuration?.onSubmit)
     } else {
-      this.displayComponent('DYNAMIC', splitID, element);
-      this.setState({ activeElement: id, loading: false, activeChild: '', summary: false });
+      const id = element.ID;
+      const splitID = id.replace(/\d/g, '').replace(/_$/, '');
+      if (childEl) {
+        this.displayComponent('DYNAMIC', splitID, element, true);
+        this.setState({ activeChild: id, loading: false, activeElement: '', summary: false });
+      } else {
+        this.displayComponent('DYNAMIC', splitID, element);
+        this.setState({ activeElement: id, loading: false, activeChild: '', summary: false });
+      }
     }
+
   }
 
   getBtnConfiguration = () => {
