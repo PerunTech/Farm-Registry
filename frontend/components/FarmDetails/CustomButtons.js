@@ -21,6 +21,7 @@ const CustomButtons = (props, context) => {
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
+    const [dynamicGridId, setDynamicGridId] = useState(`${props.tableName}_${props.farmObjId}_${getDynamicKey()}`)
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
     const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper }])
@@ -31,10 +32,10 @@ const CustomButtons = (props, context) => {
     useEffect(() => {
         setWrapper(setWrapperName(props.tableName))
         return () => {
-            ComponentManager.cleanComponentReducerState(props.tableName + props.farmObjId);
+            ComponentManager.cleanComponentReducerState(dynamicGridId);
             systemFields = {}
-            store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], props.tableName + props.farmObjId] })
-            ComponentManager.setStateForComponent(props.tableName + props.farmObjId, 'selectedIndexes', [])
+            store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], dynamicGridId] })
+            ComponentManager.setStateForComponent(dynamicGridId, 'selectedIndexes', [])
         }
     }, [])
     const buildCustomBtnArr = (btnArray, multiSelect) => {
@@ -79,7 +80,7 @@ const CustomButtons = (props, context) => {
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 }).then(res => {
                     if (res.data) {
-                        alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => reloadGrid(props.tableName + props.farmObjId, multiSelect));
+                        alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => reloadGrid(dynamicGridId, multiSelect));
 
                     }
                 }).catch(err => {
@@ -123,13 +124,13 @@ const CustomButtons = (props, context) => {
 
             <ExportableGrid
                 gridType={"READ_URL"}
-                key={props.tableName + props.farmObjId}
-                id={props.tableName + props.farmObjId}
+                key={dynamicGridId}
+                id={dynamicGridId}
                 configTableName={configWs}
                 dataTableName={dataWs}
                 heightRatio={0.7}
                 onRowClickFunct={handleRowClick}
-                refreshData={() => reloadGrid(props.tableName + props.farmObjId, multiSelect)}
+                refreshData={() => reloadGrid(dynamicGridId, multiSelect)}
                 toggleCustomButton={true}
                 customButton={() => setShowModal(true)}
                 customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
@@ -225,13 +226,25 @@ const CustomButtons = (props, context) => {
     }
     const handleRowClick = (_id, _rowIdx, row) => {
         setClickedRowObjectId(row[`${props.tableName}.OBJECT_ID`] || 0)
-        setShowModal(true)
+        if (props?.configuration?.objectConfiguration?.customRowClick) {
+            switch (props.configuration.objectConfiguration?.customRowClick?.type) {
+                case "route":
+                    let route = props.configuration.objectConfiguration?.customRowClick?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
+                    console.log(route);
+                    hashHistory.push(route)
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            setShowModal(true)
+        }
     }
 
     const closeFormModal = () => {
         setShowModal(false)
         setClickedRowObjectId(0)
-        ComponentManager.setStateForComponent(props.tableName + props.farmObjId, null, { rowClicked: undefined })
+        ComponentManager.setStateForComponent(dynamicGridId, null, { rowClicked: undefined })
     }
 
     const resetFormDeleteState = () => {
@@ -276,7 +289,7 @@ const CustomButtons = (props, context) => {
                         if (childGridId) {
                             GridManager.reloadGridData(childGridId)
                         } else {
-                            GridManager.reloadGridData(props.tableName + props.farmObjId)
+                            GridManager.reloadGridData(dynamicGridId)
                         }
                         closeFormModal()
                     } else {
@@ -316,7 +329,7 @@ const CustomButtons = (props, context) => {
                 if (childGridId) {
                     GridManager.reloadGridData(childGridId);
                 } else {
-                    GridManager.reloadGridData(props.tableName + props.farmObjId);
+                    GridManager.reloadGridData(dynamicGridId);
                 }
             } else {
                 alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => resetFormDeleteState())
@@ -333,7 +346,6 @@ const CustomButtons = (props, context) => {
         setFlagFormChild(true)
         setChildGridId(gridId)
     }
-
 
     return (
         <>
