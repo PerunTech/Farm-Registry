@@ -230,7 +230,6 @@ const CustomButtons = (props, context) => {
             switch (props.configuration.objectConfiguration?.customRowClick?.type) {
                 case "route":
                     let route = props.configuration.objectConfiguration?.customRowClick?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
-                    console.log(route);
                     hashHistory.push(route)
                     break;
                 default:
