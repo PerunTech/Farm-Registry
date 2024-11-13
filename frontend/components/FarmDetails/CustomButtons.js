@@ -10,6 +10,7 @@ import FarmWrapper from './Wrapper/FarmWrapper';
 import Address from './Address/Address'
 import ParentChildGrids from './ParentChildGrids';
 import Documents from './Documents';
+import SearchDynamic from './SearchDynamic';
 
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
@@ -355,6 +356,7 @@ const CustomButtons = (props, context) => {
                 {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
+                {props.configuration?.objectConfiguration?.type === 'search-grid' && <SearchDynamic configuration={props.configuration.objectConfiguration} />}
                 {props.configuration?.objectConfiguration?.type === 'address' && <Address defaultCountry={props.defaultCountry} />}
                 {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
                     addFormFunc={addFormFunc} />}
