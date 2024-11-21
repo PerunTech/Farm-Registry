@@ -1,61 +1,56 @@
-import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, createHashHistory } from 'perun-core'
+import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory } from 'perun-core'
 import { labelsManager } from '../utils_tools/LabelsExport';
-const { alertUser, ReactBootstrap } = elements
-const { Modal } = ReactBootstrap
+import { jsonToURI, flattenObject } from '../../utils';
+const { alertUser } = elements
 const { store, dataToRedux, removeAsyncReducer } = redux
 const { useState, useEffect } = React
 const hashHistory = createHashHistory()
 
 const SearchDynamic = (props, context) => {
-    const tableName = props.match?.params?.tableName?.toUpperCase() || ''
-    const gridId = `${tableName}_SEARCH_GRID`
-    const [resultsData, setResultsData] = useState([])
+    const tableName = props.tableName?.toUpperCase() || ''
+    const gridId = `${props.tableName}_SEARCH`
+    const [resultsData, setResultsData] = useState(undefined)
+    useEffect(() => {
+        performSearch({}, false)
+    }, [])
 
     const generateForm = () => {
         const searchConfig = props.configuration?.searchForm
         return (
             <GenericForm
+                className={`aims-forms hide-all-form-legends`}
                 params='FORM_DATA'
-                key='AR_SEARCH_FORM'
-                id='AR_SEARCH_FORM'
+                key={gridId + '_FORM'}
+                id={gridId + '_FORM'}
                 method={searchConfig?.configuration?.onSubmit}
                 uiSchemaConfigMethod={searchConfig?.uischema?.onSubmit}
                 tableFormDataMethod={searchConfig?.data?.onSubmit}
                 hideBtns='closeAndDelete'
                 customSave
-                addSaveFunction={(e) => { handleSearch(e.formData) }}
-                customSaveButtonName={`getMainLabel('search', context)`}
+                addSaveFunction={(e) => {
+                    performSearch(e.formData, true)
+                }}
+                customSaveButtonName={labelsManager.importLabel('search', context, 'farm_registry')}
             />
         )
     }
-
 
     const onRowClick = (_id, _idx, row) => {
         const href = `/main/aims/${tableName}/${row[`${tableName}.OBJECT_ID`]}/summary`
         hashHistory.push(href)
     }
 
-    const generateGrid = (data) => {
+    const generateGrid = () => {
         const buttonsArray = []
         const configWs = props.configuration?.configuration?.onSubmit
-        // const addFormConfig = configuration?.addForm
-        // // if (addFormConfig) {
-        // //     const addButton = {
-        // //         type: 'button',
-        // //         id: 'add-new-record-btn',
-        // //         action: () => setShowRegistrationModal(true),
-        // //         name: `${getMainLabel('add', context)}`
-        // //     }
-        // //     buttonsArray.push(addButton)
-        // // }
         return (
             <ExportableGrid
                 gridType='SEARCH_GRID_DATA'
-                key={gridId}
-                id={gridId}
+                key={gridId + '_GRID'}
+                id={gridId + '_GRID'}
                 heightRatio={0.6}
                 configTableName={configWs}
-                dataTableName={data}
+                dataTableName={resultsData}
                 onRowClickFunct={onRowClick}
                 className='animals-search-grid'
                 buttonsArray={buttonsArray}
@@ -63,28 +58,45 @@ const SearchDynamic = (props, context) => {
         )
     }
 
-    const handleSearch = (formData) => {
-        setResultsData(undefined)
-        removeAsyncReducer(store, gridId)
-        dataToRedux(null, 'componentIndex', gridId, '')
-        const searchConfig = configuration?.searchForm
-        const searchType = searchConfig?.save?.type || 'GET'
-        const url = searchConfig?.save?.onSave
-        const reqConfig = { method: searchType, url: `${window.server}${url}` }
+    const performSearch = (formData, isForm) => {
+        const searchConfig = props.configuration?.searchForm;
+        const searchType = searchConfig?.save?.type || 'GET';
+        const url = searchConfig?.save?.onSave;
+        const reqConfig = { method: searchType, url: `${window.server}${url}` };
+        const shouldEncode = props.configuration?.searchForm.save.encode;
         if (searchType === 'POST') {
-            reqConfig.data = JSON.stringify(formData)
+            reqConfig.data = shouldEncode ? jsonToURI(flattenObject(formData)) : JSON.stringify(formData)
         }
-        axios(reqConfig).then(res => {
-            if (res.data) {
-                setResultsData(res.data)
-            }
-        }).catch(err => {
-            console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, 'error', title, msg)
-        })
-    }
+
+        // Handle form-specific logic
+        if (isForm) {
+            setResultsData(undefined);
+            removeAsyncReducer(store, gridId + '_GRID');
+            dataToRedux(null, 'componentIndex', gridId + '_GRID', '');
+        }
+
+        axios(reqConfig)
+            .then(res => {
+
+                if (res.data?.data && Array.isArray(res.data.data)) {
+                    setResultsData(res.data.data)
+                    GridManager.reloadGridData(gridId + '_GRID');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                const title = err.response?.data?.title || err;
+                const msg = err.response?.data?.message || '';
+                alertUser(true, 'error', title, msg);
+
+                // Handle form-specific error logic
+                if (isForm) {
+                    ComponentManager.setStateForComponent(`${gridId}_FORM`, null, {
+                        saveExecuted: false,
+                    });
+                }
+            });
+    };
 
     return (
         <>
@@ -93,7 +105,7 @@ const SearchDynamic = (props, context) => {
                     {props.configuration && generateForm()}
                 </div>
                 <div className='animals-search-grid-container'>
-                    {generateGrid(resultsData)}
+                    {resultsData && generateGrid()}
                 </div>
             </div>
         </>

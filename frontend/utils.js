@@ -5,7 +5,7 @@ export const getDynamicKey = () => {
   return (+ new Date() + Math.floor(Math.random() * 999999)).toString(36)
 }
 
-export function strcmp (string1, string2) {
+export function strcmp(string1, string2) {
   return (
     typeof string1 === 'string' &&
     typeof string2 === 'string' &&
@@ -13,15 +13,15 @@ export function strcmp (string1, string2) {
   )
 }
 
-export function isValidArray (array, minNumberOfElements) {
+export function isValidArray(array, minNumberOfElements) {
   return (array && array.constructor === Array && array.length >= minNumberOfElements)
 }
 
-export function isValidObject (object, minNumberOfKeys) {
+export function isValidObject(object, minNumberOfKeys) {
   return (object && object.constructor === Object && Object.keys(object).length >= minNumberOfKeys)
 }
 
-export function isJSON (value) {
+export function isJSON(value) {
   value = !strcmp(typeof value, 'string') ? JSON.stringify(value) : value
   try {
     value = JSON.parse(value);
@@ -36,7 +36,7 @@ export function isJSON (value) {
   return false
 }
 
-export function handleRowSelection (selectedRows, gridId) {
+export function handleRowSelection(selectedRows, gridId) {
   store.dispatch(updateSelectedRows(selectedRows, gridId))
 }
 
@@ -44,7 +44,7 @@ export function handleRowSelection (selectedRows, gridId) {
  * A function that converts all letters from a string to lowercase, except the first one
  * @param  {string} string The string whose letters need to be converted to lowercase
  */
-export function allLettersToLowerCaseExceptTheFirstOne (string) {
+export function allLettersToLowerCaseExceptTheFirstOne(string) {
   return string.charAt(0) + string.substring(1).toLowerCase()
 }
 
@@ -60,7 +60,7 @@ export function allLettersToLowerCaseExceptTheFirstOne (string) {
  * @param  {string} charToAppend An optional character that will be appended at the end of truncated string
  * @param  {number} position The position of the string portion, if it's a multiple word one
  */
-export function truncateString (string, startOfSubstr, endOfSubstr, charToAppend, position) {
+export function truncateString(string, startOfSubstr, endOfSubstr, charToAppend, position) {
   // If the position param exists & it's of type number, we know it's a multiple word string
   if (!isNaN(position)) {
     const portionToTruncate = string.split(' ')[position]
@@ -86,7 +86,7 @@ export function truncateString (string, startOfSubstr, endOfSubstr, charToAppend
  * @param  {RegExp} inputFilter The filter which will be applied to the input/textarea
  * (the filter will be a regular expression)
  */
-export function setInputFilter (element, inputFilter) {
+export function setInputFilter(element, inputFilter) {
   const events = ['input', 'keydown', 'keyup', 'mousedown', 'mouseup', 'select', 'contextmenu', 'drop']
   events.forEach(function (event) {
     element.addEventListener(event, function () {
@@ -104,17 +104,7 @@ export function setInputFilter (element, inputFilter) {
   })
 }
 
-export function jsonToURI (json) {
-  let arr = []
-  for (let property in json) {
-    if (Object.prototype.hasOwnProperty.call(json, property) && json[property] !== undefined) {
-      arr.push(encodeURIComponent(property) + '=' + encodeURIComponent(json[property]))
-    }
-  }
-  return arr.join('&')
-}
-
-export function convertBytes (bytes, decimal) {
+export function convertBytes(bytes, decimal) {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
@@ -122,11 +112,41 @@ export function convertBytes (bytes, decimal) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(decimal)) + ' ' + sizes[i]
 }
 
-export function getFormWsPathsPerTable (tableName, objectId, session, saveWs, parentId) {
+export function getFormWsPathsPerTable(tableName, objectId, session, saveWs, parentId) {
   return {
     urlDataForm: `/ReactElements/getTableFormData/${session}/${objectId}/${tableName}`,
     uiSchema: `/ReactElements/getTableUISchema/${session}/${tableName}`,
     formMethod: `/ReactElements/getTableJSONSchema/${session}/${tableName}`,
     ...saveWs && { urlSaveForm: `${window.server}/ReactElements/createTableRecordFormData/${session}/${tableName}/${parentId}` }
   }
+}
+
+export const jsonToURI = (json, shouldStringify) => {
+  let arr = []
+  for (let property in json) {
+    if (Object.prototype.hasOwnProperty.call(json, property) && json[property] !== undefined) {
+      if (shouldStringify && typeof json[property] === 'object') {
+        if (Array.isArray(json[property])) {
+          arr.push(encodeURIComponent(property) + '=' + encodeURIComponent(json[property].toString()))
+        } else {
+          arr.push(encodeURIComponent(property) + '=' + encodeURIComponent(JSON.stringify(json[property])))
+        }
+      } else {
+        arr.push(encodeURIComponent(property) + '=' + encodeURIComponent(json[property]))
+      }
+    }
+  }
+  return arr.join('&')
+}
+
+export const flattenObject = (obj) => {
+  const flattened = {}
+  Object.keys(obj).forEach((key) => {
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      Object.assign(flattened, flattenObject(obj[key]))
+    } else {
+      flattened[key] = obj[key]
+    }
+  })
+  return flattened
 }
