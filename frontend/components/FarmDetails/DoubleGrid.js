@@ -45,7 +45,7 @@ const DoubleGrid = (props, context) => {
                 className='animals-search-grid'
                 buttonsArray={buttonsArray}
                 toggleCustomButton={grid.additionalBtns ? true : false}
-                customButton={() => { setShow(true), console.log('test'); }}
+                customButton={() => { setShow(true) }}
                 customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
             />
         )
@@ -57,8 +57,8 @@ const DoubleGrid = (props, context) => {
             <GenericForm
                 className={`aims-forms`}
                 params={'FORM_DATA'}
-                key={`menjaj`}
-                id={`menjaj`}
+                key={gridIds[0] + '_FORM'}
+                id={gridIds[0] + '_FORM'}
                 method={addFormConfig?.configuration?.onSubmit}
                 uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
                 tableFormDataMethod={addFormConfig?.data?.onSubmit}
@@ -80,7 +80,7 @@ const DoubleGrid = (props, context) => {
                     if (resType === 'success') {
                         setShowModal(false)
                     } else {
-                        ComponentManager.setStateForComponent('menjaj', null, { saveExecuted: false })
+                        ComponentManager.setStateForComponent(gridIds[0] + '_FORM', null, { saveExecuted: false })
                     }
                 }
                 alertUser(true, resType, title, msg, onConfirm)
@@ -89,7 +89,7 @@ const DoubleGrid = (props, context) => {
             console.error(err)
             const title = err.response?.data?.title || err
             const msg = err.response?.data?.message || ''
-            alertUser(true, 'error', title, msg, () => ComponentManager.setStateForComponent('menjaj', null, { saveExecuted: false }))
+            alertUser(true, 'error', title, msg, () => ComponentManager.setStateForComponent(gridIds[0] + '_FORM', null, { saveExecuted: false }))
         })
     }
 
