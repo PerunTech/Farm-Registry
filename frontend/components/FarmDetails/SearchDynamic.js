@@ -100,11 +100,11 @@ const SearchDynamic = (props, context) => {
 
     return (
         <>
-            <div className='animals-search-main-container'>
-                <div className='animals-search-form'>
+            <div className='dynamic-search-main-container'>
+                <div className='dynamic-search-form'>
                     {props.configuration && generateForm()}
                 </div>
-                <div className='animals-search-grid-container'>
+                <div className='dynamic-search-grid-container'>
                     {resultsData && generateGrid()}
                 </div>
             </div>
