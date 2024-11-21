@@ -48,7 +48,7 @@ const SearchDynamic = (props, context) => {
                 gridType='SEARCH_GRID_DATA'
                 key={gridId + '_GRID'}
                 id={gridId + '_GRID'}
-                heightRatio={0.6}
+                heightRatio={0.8}
                 configTableName={configWs}
                 dataTableName={resultsData}
                 onRowClickFunct={onRowClick}
