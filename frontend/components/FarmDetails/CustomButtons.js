@@ -361,7 +361,7 @@ const CustomButtons = (props, context) => {
                 {props.configuration?.objectConfiguration?.type === 'address' && <Address defaultCountry={props.defaultCountry} />}
                 {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
                     addFormFunc={addFormFunc} />}
-                {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid configuration={props.configuration.objectConfiguration} />}
+                {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {showModal && (
                     <Modal className={"farm-registry-modal"} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={"farm-registry-modal-header"} closeButton>

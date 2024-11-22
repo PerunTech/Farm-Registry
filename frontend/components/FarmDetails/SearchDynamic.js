@@ -18,7 +18,7 @@ const SearchDynamic = (props, context) => {
         const searchConfig = props.configuration?.searchForm
         return (
             <GenericForm
-                className={`sectioned-search-form hide-all-legends`}
+                className={`sectioned-search-form aims-forms hide-all-form-legends`}
                 params='FORM_DATA'
                 key={gridId + '_FORM'}
                 id={gridId + '_FORM'}
@@ -48,7 +48,7 @@ const SearchDynamic = (props, context) => {
                 gridType='SEARCH_GRID_DATA'
                 key={gridId + '_GRID'}
                 id={gridId + '_GRID'}
-                heightRatio={0.8}
+                heightRatio={0.6}
                 configTableName={configWs}
                 dataTableName={resultsData}
                 onRowClickFunct={onRowClick}

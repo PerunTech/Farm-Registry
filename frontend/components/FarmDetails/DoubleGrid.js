@@ -6,7 +6,6 @@ const { useState, useEffect } = React
 
 const DoubleGrid = (props, context) => {
     let hashHistory = createHashHistory();
-    const tableName = props.match?.params?.tableName?.toUpperCase() || ''
     const [show, setShow] = useState(false)
     useEffect(() => {
         return () => {
@@ -16,11 +15,10 @@ const DoubleGrid = (props, context) => {
     }, []);
 
     const handleRowClick = (_id, _rowIdx, row, grid) => {
-        console.log(grid);
         if (grid.customRowClick) {
             switch (grid.customRowClick?.type) {
                 case "route":
-                    let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${tableName}.OBJECT_ID`]);
+                    let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
                     hashHistory.push(route)
                     break;
                 default:
