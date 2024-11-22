@@ -8,22 +8,19 @@ const DoubleGrid = (props, context) => {
     let hashHistory = createHashHistory();
     const tableName = props.match?.params?.tableName?.toUpperCase() || ''
     const [show, setShow] = useState(false)
-    const [gridIds, setGridIds] = useState([])
     useEffect(() => {
-        setGridIds([props.configuration.leftGrid.ID, props.configuration.rightGrid.ID])
         return () => {
-            if (gridIds.length > 0) {
-                ComponentManager.cleanComponentReducerState(gridIds[0]);
-                ComponentManager.cleanComponentReducerState(gridIds[1]);
-            }
+            ComponentManager.cleanComponentReducerState(props.configuration.leftGrid.ID,);
+            ComponentManager.cleanComponentReducerState(props.configuration.rightGrid.ID);
         }
     }, []);
 
-    const handleRowClick = (_id, _rowIdx, row) => {
-        if (props?.configuration?.objectConfiguration?.customRowClick) {
-            switch (props.configuration.objectConfiguration?.customRowClick?.type) {
+    const handleRowClick = (_id, _rowIdx, row, grid) => {
+        console.log(grid);
+        if (grid.customRowClick) {
+            switch (grid.customRowClick?.type) {
                 case "route":
-                    let route = props.configuration.objectConfiguration?.customRowClick?.route?.replace("{rowObjectId}", row[`${tableName}.OBJECT_ID`]);
+                    let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${tableName}.OBJECT_ID`]);
                     hashHistory.push(route)
                     break;
                 default:
@@ -41,7 +38,7 @@ const DoubleGrid = (props, context) => {
                 heightRatio={0.6}
                 configTableName={grid.configuration.onSubmit}
                 dataTableName={grid.data.onSubmit}
-                onRowClickFunct={handleRowClick}
+                onRowClickFunct={(id, rowIdx, row) => handleRowClick(id, rowIdx, row, grid)}
                 className='animals-search-grid'
                 buttonsArray={buttonsArray}
                 toggleCustomButton={grid.additionalBtns ? true : false}
@@ -57,8 +54,8 @@ const DoubleGrid = (props, context) => {
             <GenericForm
                 className={`aims-forms`}
                 params={'FORM_DATA'}
-                key={gridIds[0] + '_FORM'}
-                id={gridIds[0] + '_FORM'}
+                key={props.configuration.leftGrid.ID + '_FORM'}
+                id={props.configuration.leftGrid.ID + '_FORM'}
                 method={addFormConfig?.configuration?.onSubmit}
                 uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
                 tableFormDataMethod={addFormConfig?.data?.onSubmit}
@@ -78,9 +75,9 @@ const DoubleGrid = (props, context) => {
                 const msg = res?.data?.message || ''
                 const onConfirm = () => {
                     if (resType === 'success') {
-                        setShowModal(false)
+                        setShow(false)
                     } else {
-                        ComponentManager.setStateForComponent(gridIds[0] + '_FORM', null, { saveExecuted: false })
+                        ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false })
                     }
                 }
                 alertUser(true, resType, title, msg, onConfirm)
@@ -89,7 +86,7 @@ const DoubleGrid = (props, context) => {
             console.error(err)
             const title = err.response?.data?.title || err
             const msg = err.response?.data?.message || ''
-            alertUser(true, 'error', title, msg, () => ComponentManager.setStateForComponent(gridIds[0] + '_FORM', null, { saveExecuted: false }))
+            alertUser(true, 'error', title, msg, () => ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false }))
         })
     }
 

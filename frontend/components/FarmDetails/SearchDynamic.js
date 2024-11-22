@@ -18,7 +18,7 @@ const SearchDynamic = (props, context) => {
         const searchConfig = props.configuration?.searchForm
         return (
             <GenericForm
-                className={`aims-forms hide-all-form-legends`}
+                className={`sectioned-search-form hide-all-legends`}
                 params='FORM_DATA'
                 key={gridId + '_FORM'}
                 id={gridId + '_FORM'}
