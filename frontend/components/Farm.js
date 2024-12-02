@@ -222,7 +222,7 @@ class Farm extends React.Component {
               className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
               onClick={() => (el.data ? this.setActive(el) : this.onButtonClick(el))}
             >
-              <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span><p>{el.label}</p>
+              {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{el.label}</p>
             </button>
             {el.data && <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
               {el.data.map(sub => {
@@ -232,7 +232,7 @@ class Farm extends React.Component {
                   }
                   onClick={() => (sub.ID.includes('PRINT') ? this.printFunc(sub) : this.onButtonClick(sub, true))}
                 >
-                  <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span><p>{sub.label}</p>
+                  {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{sub.label}</p>
                 </button>
               })}
             </div >}
