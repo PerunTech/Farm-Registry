@@ -231,6 +231,7 @@ const CustomButtons = (props, context) => {
         if (props?.configuration?.objectConfiguration?.customRowClick) {
             switch (props.configuration.objectConfiguration?.customRowClick?.type) {
                 case "route":
+                    store.dispatch({ type: 'SAVE', payload: { "farm-registry": { "objectId": props.farmObjId, "route": hashHistory.location.pathname } } })
                     let route = props.configuration.objectConfiguration?.customRowClick?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
                     hashHistory.push(route)
                     break;
@@ -361,7 +362,7 @@ const CustomButtons = (props, context) => {
                 {props.configuration?.objectConfiguration?.type === 'address' && <Address defaultCountry={props.defaultCountry} />}
                 {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
                     addFormFunc={addFormFunc} />}
-                {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
+                {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid farmObjId={props.farmObjId} tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {showModal && (
                     <Modal className={"farm-registry-modal"} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={"farm-registry-modal-header"} closeButton>
