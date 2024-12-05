@@ -17,9 +17,9 @@ const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
 const { store, updateSelectedRows } = redux;
-let hashHistory = createHashHistory();
 let systemFields = {}
 const CustomButtons = (props, context) => {
+    let hashHistory = createHashHistory();
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
