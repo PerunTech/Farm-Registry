@@ -70,60 +70,141 @@ const CustomButtons = (props, context) => {
     }
 
     const customBtnAction = (el, multiSelect) => {
-        const saveUrl = `${window.server}${el?.['onSave']}`
         const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
-        if (multiSelect && el['type'] === 'POST') {
-            if (selectedGridRows.length > 0) {
-                const data = JSON.stringify(selectedGridRows)
-                axios({
-                    method: "post",
-                    data,
-                    url: saveUrl,
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                }).then(res => {
-                    if (res.data) {
-                        alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => reloadGrid(dynamicGridId, multiSelect));
 
-                    }
-                }).catch(err => {
-                    console.error(err)
-                    const title = err.response?.data?.title || err
-                    const msg = err.response?.data?.message || ''
-                    alertUser(true, "error", title, msg);
-                });
-            } else {
-                alertUser(true, 'info', labelsManager.importLabel('select_parcel', context, 'farm_registry'));
+        const executeAction = () => {
+            let promptLabel = labelsManager.importLabel('confirm_submit_action', context, 'farm-registry')
+            if (el.useMulti) {
+                promptLabel = labelsManager.importLabel('confirm_action_execution', context, 'farm-registry')
             }
+            let saveUrl = `${window.server}${el?.['onSave']}`
+            let data
+            switch (el['type']) {
+                case 'GET':
+                    alertUser(true, 'info', promptLabel, '', () => {
+                        setLoading(true)
+                        axios.get(saveUrl).then(res => {
+                            alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
+                            setLoading(false)
+                        }).catch(err => {
+                            setLoading(false)
+                            console.error(err)
+                            const title = err.response?.data?.title || err
+                            const msg = err.response?.data?.message || ''
+                            alertUser(true, "error", title, msg);
+                        });
+                    }, () => { }, true, labelsManager.importLabel('yes', context, 'farm-registry'), labelsManager.importLabel('no', context, 'farm-registry'))
+                    break;
+                case 'POST':
+                    alertUser(true, 'info', promptLabel, '', () => {
+                        setLoading(true)
+                        data = JSON.stringify(selectedGridRows)
+                        axios({
+                            method: "post",
+                            data,
+                            url: saveUrl,
+                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        }).then(res => {
+                            if (res.data) {
+                                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => {
+                                    reloadGrid(props.tableName + props.appObjId, multiSelect)
+                                    setLoading(false)
+                                });
+                            }
+                        }).catch(err => {
+                            console.error(err)
+                            const title = err.response?.data?.title || err
+                            const msg = err.response?.data?.message || ''
+                            alertUser(true, "error", title, msg);
+                            setLoading(false)
+                        });
+                    }, () => { }, true, labelsManager.importLabel('yes', context, 'farm-registry'), labelsManager.importLabel('no', context, 'farm-registry'))
+                    break;
+                case 'action':
+                    alertUser(true, 'info', promptLabel, '', () => {
+                        setLoading(true)
+                        data = {
+                            "objectArray": selectedGridRows,
+                            "objectParams": [{}]
+                        }
+                        axios({
+                            method: el.method,
+                            data: JSON.stringify(data),
+                            url: `${window.server}${el.url}`,
+                            headers: { "Content-Type": el.contentType },
+                        }).then(res => {
+                            if (res.data) {
+                                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => {
+                                    reloadGrid(props.tableName + props.appObjId, multiSelect)
+                                    setLoading(false)
+                                });
+                            }
+                        }).catch(err => {
+                            console.error(err)
+                            const title = err.response?.data?.title || err
+                            const msg = err.response?.data?.message || ''
+                            alertUser(true, "error", title, msg);
+                            setLoading(false)
+                        });
+                    }, () => { }, true, labelsManager.importLabel('yes', context, 'farm-registry'), labelsManager.importLabel('no', context, 'farm-registry'))
+                    break;
+                case 'toggle-action':
+                    if (actionToggle === el.ID) {
+                        setActionToggle(undefined)
+                    } else {
+                        setActionToggle(el.ID)
+                    }
+                    break;
+                case 'link':
+                    let href = el['route']
+                    hashHistory.push(href)
+                    break;
+                default:
+                    break;
+            }
+        }
 
-        }
-        if (el['type'] === 'link') {
-            let href = el['route']
-            hashHistory.push(href)
-        }
-        if (el['type'] === 'GET') {
-            alertUser(true, 'info', labelsManager.importLabel('confirm_btn_action', context, 'farm_registry'), '', () => {
-                setLoading(true)
-                axios.get(saveUrl).then(res => {
-                    alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
-                    setLoading(false)
-                }).catch(err => {
-                    setLoading(false)
-                    console.error(err)
-                    const title = err.response?.data?.title || err
-                    const msg = err.response?.data?.message || ''
-                    alertUser(true, "error", title, msg);
-                });
-            }, () => { }, true, labelsManager.importLabel('yes', context, 'farm_registry'), labelsManager.importLabel('no', context, 'farm_registry'))
+        if (el.useMulti) {
+            if (selectedGridRows.length > 0) {
+                executeAction()
+            } else {
+                alertUser(true, 'info', labelsManager.importLabel('select_multi', context, 'farm-registry'));
+            }
+        } else {
+            executeAction()
         }
     }
+
+    const generateOuterBtns = (outerBtnArray, multiSelect, togglableChild) => {
+        if (outerBtnArray && outerBtnArray.length > 0) {
+            return (
+                <div className={`${togglableChild ? 'aims-outer-btn-container-togglable-child' : 'aims-outer-btn-container'}`}>
+                    {outerBtnArray.map(el => {
+                        return (
+                            <div className={`${el.childBtnArray ? 'aims-outer-togglable-child' : ''}`}>
+                                <button
+                                    onClick={() => customBtnAction(el, multiSelect)}
+                                    className={`${togglableChild ? 'aims-outer-btn-togglableChild' : 'aims-outer-btn'} ${el.ID.toLowerCase()}-aims-btn`}
+                                    id={el.ID}>
+                                    {!togglableChild && <span className="aims-outer-btn-img">{el.icon && iconManager.getIcon(el.icon)}</span>} {el.label}</button>
+                                {el.childBtnArray && actionToggle === el.ID && generateOuterBtns(el.childBtnArray, multiSelect, true)}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
+        return null;
+    };
 
     const generateGrid = () => {
         const configWs = props.configuration.objectConfiguration.configuration.onSubmit
         const dataWs = props.configuration.objectConfiguration.data.onSubmit
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
+        const outerBtnArray = props.configuration.objectConfiguration.outerBtnArray
         const grid = (<div className={`${`custom-grid-container-${props.tableName.toLowerCase()}`} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
-
+            {outerBtnArray && generateOuterBtns(outerBtnArray, multiSelect)}
             <ExportableGrid
                 gridType={"READ_URL"}
                 key={dynamicGridId}
