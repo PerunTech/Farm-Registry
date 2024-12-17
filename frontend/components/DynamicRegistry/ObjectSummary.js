@@ -44,30 +44,28 @@ const ObjectSummary = (props, context) => {
             hashHistory.push(props?.businessLogicReducer?.['farm-registry']?.['route'])
             store.dispatch({ type: 'SAVE', payload: { "farm-registry": {} } })
         } else {
-            hashHistory.push(`/main/aims-animals-management/search/${props.tableName.toLowerCase()}`)
+            hashHistory.push('/main/farm-registry')
         }
     }
 
-    const generateMenuData = () => (
-        <div className="aims-object-summary">
-            <button className='aims-summary-back-btn' onClick={() => backButtonFunction()}>
-                <i className='fas fa-chevron-left' />
-                <span className='back-btn-text'>{getMainLabel('back', context)}</span>
-            </button>
-            {menuData.map(({ label, value }) => (
-                <div className="aims-object-summary-row" key={label}>
-                    <p>{label}</p>
-                    <p>: {value}</p>
-                </div>
-            ))}
-            {modalData.length > 0 && <button
-                className="aims-object-summary-show-more"
-                onClick={() => setShow(true)}
-            >
-                {getMainLabel('show_more', context)}
-            </button>}
-        </div>
-    );
+    const generateMenuData = () => {
+        return (
+            <>
+                {menuData.map(({ label, value }) => (
+                    <div className="aims-object-summary-row" key={label}>
+                        <p>{label}</p>
+                        <p>: {value}</p>
+                    </div>
+                ))}
+                {modalData.length > 0 && <button
+                    className="aims-object-summary-show-more"
+                    onClick={() => setShow(true)}
+                >
+                    {getMainLabel('show_more', context)}
+                </button>}
+            </>
+        )
+    }
 
     const generateModalData = () => (
         <div className="aims-object-summary-modal">
@@ -83,6 +81,12 @@ const ObjectSummary = (props, context) => {
     return (
         <>
             {loading && <Loading />}
+            <div className="aims-object-summary">
+                <button className='aims-summary-back-btn' onClick={() => backButtonFunction()}>
+                    <i className='fas fa-chevron-left' />
+                    <span className='back-btn-text'>{getMainLabel('back', context)}</span>
+                </button>
+            </div>
             {menuData.length > 0 && generateMenuData()}
             {show && (
                 <Modal
