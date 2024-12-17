@@ -2,6 +2,7 @@ import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, Gr
 import { getMainLabel } from '../utils_tools/LabelsExport';
 import { replaceFunc, generateDynamicKey } from '../utils_tools/UtilFunctions';
 import DoubleGrid from './DoubleGrid';
+import SearchDynamic from './SearchDynamic';
 import { iconManager } from '../utils_tools/svgHolder';
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
