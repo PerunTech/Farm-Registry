@@ -415,7 +415,7 @@ const CustomButtons = (props, context) => {
                             <Modal.Title>{props.configuration.label}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body className={"farm-registry-modal-body"}>
-                            {generateForm(true, false, flagFormChild)}
+                            {generateForm(true, false)}
                         </Modal.Body>
                         <Modal.Footer className={"farm-registry-modal-footer"} />
                     </Modal>
