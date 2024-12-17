@@ -9,7 +9,7 @@ const DoubleGrid = (props, context) => {
     const [show, setShow] = useState(false)
     useEffect(() => {
         return () => {
-            ComponentManager.cleanComponentReducerState(props.configuration.leftGrid.ID,);
+            ComponentManager.cleanComponentReducerState(props.configuration.leftGrid.ID);
             ComponentManager.cleanComponentReducerState(props.configuration.rightGrid.ID);
         }
     }, []);
@@ -74,6 +74,7 @@ const DoubleGrid = (props, context) => {
                 const onConfirm = () => {
                     if (resType === 'success') {
                         setShow(false)
+                        GridManager.reloadGridData(props.configuration.leftGrid.ID)
                     } else {
                         ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false })
                     }
@@ -87,7 +88,6 @@ const DoubleGrid = (props, context) => {
             alertUser(true, 'error', title, msg, () => ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false }))
         })
     }
-
 
     return (
         <>
