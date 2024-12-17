@@ -25,3 +25,18 @@ export const labelsManager = {
     }
   },
 };
+
+
+export function getMainLabel(labelCode, context) {
+  return context.intl.formatMessage({
+    id: `perun.aims.${labelCode}`,
+    defaultMessage: `perun.aims.${labelCode}`
+  })
+}
+
+export function getPluginLabel(labelCode, context) {
+  return context.intl.formatMessage({
+    id: `perun.plugin.${labelCode}`,
+    defaultMessage: `perun.plugin.${labelCode}`
+  })
+}

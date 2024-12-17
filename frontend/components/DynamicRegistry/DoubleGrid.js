@@ -1,6 +1,5 @@
-import { React, PropTypes, redux, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory } from 'perun-core'
-import { labelsManager } from '../utils_tools/LabelsExport';
-const { store } = redux;
+import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory } from 'perun-core'
+import { getMainLabel } from '../utils_tools/LabelsExport';
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -19,7 +18,6 @@ const DoubleGrid = (props, context) => {
         if (grid.customRowClick) {
             switch (grid.customRowClick?.type) {
                 case "route":
-                    store.dispatch({ type: 'SAVE', payload: { "farm-registry": { "objectId": props.farmObjId, "route": hashHistory.location.pathname } } })
                     let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
                     hashHistory.push(route)
                     break;
@@ -43,7 +41,7 @@ const DoubleGrid = (props, context) => {
                 buttonsArray={buttonsArray}
                 toggleCustomButton={grid.additionalBtns ? true : false}
                 customButton={() => { setShow(true) }}
-                customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
+                customButtonLabel={getMainLabel('add', context)}
             />
         )
     }
