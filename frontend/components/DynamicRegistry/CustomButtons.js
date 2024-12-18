@@ -140,8 +140,9 @@ const CustomButtons = (props, context) => {
         }
     }
     const customRowClick = (_id, _rowIdx, row) => {
-        let href = `/main/application/${row['APPLICATION.OBJECT_ID']}/${row['APPLICATION.APP_TYPE_ID']}`
-        hashHistory.push(href)
+        const customRowClickConfig = props.configuration?.objectConfiguration?.customRowClick
+        const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
+        hashHistory.push(route)
     }
     const btnArrCreate = (btnArray, multiSelect) => {
         let btnTest = []
