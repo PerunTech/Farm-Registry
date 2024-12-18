@@ -121,7 +121,7 @@ const SideMenu = (props) => {
     return (
         <>
             {loading && <Loading />}
-            <div className={`animal-registry-sidemenu-main-container sidemenu-main-container`} id="sidemenu-main-container">
+            <div className={`sidemenu-main-container farm-registry-sidemenu-main-containers`} id="sidemenu-main-container">
                 <ObjectSummary tableName={props.tableName} objectId={props.objectId} />
                 {generateSideMenuButtons()}
             </div>
