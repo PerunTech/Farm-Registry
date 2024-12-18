@@ -156,7 +156,7 @@ const Search = (props, context) => {
       {loading && <Loading />}
       <div className='animals-search-main-container'>
         <div className='aims-search-form-container hide-all-form-legends'>
-          <button className='btn back-btn' onClick={() => hashHistory.goBack()}>
+          <button className='btn back-btn' onClick={() => hashHistory.push('/main')}>
             <i className='fas fa-chevron-left' />
             <span className='back-btn-text'>{getMainLabel('back', context)}</span>
           </button>
