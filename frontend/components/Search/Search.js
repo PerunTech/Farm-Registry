@@ -128,15 +128,19 @@ const Search = (props, context) => {
     }
     axios(reqConfig).then(res => {
       setLoading(false)
-      const resType = res.data?.type?.toLowerCase() || 'info'
-      const title = res.data?.title || ''
-      const msg = res.data?.message || ''
-      if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+      const resType = res?.data?.type?.toLowerCase() || 'info'
+      const title = res?.data?.title || ''
+      const msg = res?.data?.message || ''
+      if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
         setResultsData(res.data)
-      } else if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+      } else if (res?.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
         setResultsData(res.data.data)
       } else {
-        alertUser(true, resType, title, msg)
+        if (res?.data && Array.isArray(res?.data)) {
+          setResultsData([])
+        } else {
+          alertUser(true, resType, title, msg)
+        }
       }
     }).catch(err => {
       setLoading(false)
