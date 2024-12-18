@@ -4,6 +4,8 @@ import { replaceFunc, generateDynamicKey } from '../utils_tools/UtilFunctions';
 import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
 import { iconManager } from '../utils_tools/svgHolder';
+import ParentChildGrids from './ParentChildGrids'
+import Documents from './Documents'
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -183,7 +185,7 @@ const CustomButtons = (props, context) => {
         const btnArray = props.configuration.objectConfiguration.additionalBtns
         const outerBtnArray = props.configuration.objectConfiguration.outerBtnArray
         const maxLength = props.configuration.objectConfiguration.maxLength || 9999
-        const grid = <div className={`${`custom-grid-container-${cssTableName.toLowerCase()}`} ${wrapperName?.toLowerCase()}-grid`}>
+        const grid = <div className={`${`custom-grid-container-${props.tableName.toLowerCase()}`} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
             {outerBtnArray && generateOuterBtns(outerBtnArray, multiSelect)}
             <ExportableGrid
                 gridType={"READ_URL"}
@@ -287,7 +289,7 @@ const CustomButtons = (props, context) => {
         }
         return (
             <GenericForm
-                className={`aims-forms ${cssTableName.toLowerCase()}-aims-form ${props.configuration.objectConfiguration?.form?.configuration?.readOnly ? 'read-only-form' : ''}`}
+                className={`form-test custom-farm-registry-form ${isModal && 'hide-legend-form'} ${props.tableName.toLowerCase()}-farm-registry-form ${props.configuration.objectConfiguration?.readOnly && 'read-only-form'} `}
                 params={'READ_URL'}
                 key={dynamicFormId}
                 id={dynamicFormId}
@@ -406,8 +408,8 @@ const CustomButtons = (props, context) => {
                 {/* SEARCH-GRID*/}
                 {props.configuration?.objectConfiguration?.type === 'search-grid' && <SearchDynamic tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {/* PARENT-CHILD-GRID */}
-                {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
-                    addFormFunc={addFormFunc} />}
+                {/* {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
+                    addFormFunc={addFormFunc} />} */}
                 {/* DOUBLE-GRID */}
                 {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid farmObjId={props.farmObjId} tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {showModal && (

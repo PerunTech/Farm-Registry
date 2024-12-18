@@ -12,13 +12,13 @@ const DynamicRegistry = (props, context) => {
         setDynamicComponent(comp)
     }
     return (
-        <div className="animals-registry-main-container">
+        <div className="farm-registry-main-container">
             <SideMenu
                 objectId={props?.match?.params?.objectId}
                 tableName={props?.match?.params?.tableName}
                 setDynamicComponentFunction={setDynamicComponentFunction}
             />
-            <div className="animals-registry-dynamic-content-container">
+            <div className="farm-registry-content">
                 {dynamicComponent}
             </div>
         </div>
