@@ -1,81 +1,50 @@
-import { React, connect, axios, PropTypes, Loading, createHashHistory, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux } from 'perun-core'
-import { getDynamicKey } from '../../utils'
-import { labelsManager } from '../utils_tools/LabelsExport';
-import { getCookie } from '../utils_tools/getCookie'
-//WRAPPERS
-import FarmmembersWrapper from './Wrapper/FarmmembersWrapper';
-import CadparcelWrapper from './Wrapper/CadparcelWrapper'
-import FarmWrapper from './Wrapper/FarmWrapper';
-//SPECIAL CASE COMPONENTS
-import Address from './Address/Address'
-import ParentChildGrids from './ParentChildGrids';
-import Documents from './Documents';
-import SearchDynamic from './SearchDynamic';
+import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux, createHashHistory } from 'perun-core'
+import { getMainLabel } from '../utils_tools/LabelsExport';
+import { replaceFunc, generateDynamicKey } from '../utils_tools/UtilFunctions';
 import DoubleGrid from './DoubleGrid';
-
+import SearchDynamic from './SearchDynamic';
+import { iconManager } from '../utils_tools/svgHolder';
+import ParentChildGrids from './ParentChildGrids'
+import Documents from './Documents'
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
 const { store, updateSelectedRows } = redux;
-let systemFields = {}
+const hashHistory = createHashHistory();
 const CustomButtons = (props, context) => {
-    let hashHistory = createHashHistory();
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
-    const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
-    const [dynamicGridId, setDynamicGridId] = useState(`${props.tableName}_${props.farmObjId}_${getDynamicKey()}`)
+    const [dynamicFormId, setDynamicFormId] = useState(generateDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
-    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper }])
-    const [flagFormChild, setFlagFormChild] = useState(undefined)
-    const [clickedRowChild, setRowChild] = useState(0)
-    const [clickedRowParent, setRowParent] = useState(undefined)
-    const [childGridId, setChildGridId] = useState(undefined)
+    const [wrappers, _setWrappers] = useState([])
+    const [renderForm, setRender] = useState(true)
+    const [rowCliked, setRowClicked] = useState(undefined)
+    const [cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
+    const [actionToggle, setActionToggle] = useState(undefined)
     useEffect(() => {
-        setWrapper(setWrapperName(props.tableName))
+        let wrapper = props.tableName.replace(/\d/g, '').replace(/_$/, '').replace(/(\w)(\w*)/g, function (g0, g1, g2) {
+            return g1.toUpperCase() + g2.toLowerCase();
+        }).replace(/_/g, '').replaceAll(' ', '');
+        wrapper = wrapper.charAt(0).toUpperCase() + wrapper.slice(1).toLowerCase();
+        wrapper = wrapper.replace(/[0-9]/g, '');
+        setWrapper(wrapper)
         return () => {
-            ComponentManager.cleanComponentReducerState(dynamicGridId);
-            systemFields = {}
-            store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], dynamicGridId] })
-            ComponentManager.setStateForComponent(dynamicGridId, 'selectedIndexes', [])
+            ComponentManager.cleanComponentReducerState(props.tableName + props.appObjId);
+            store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], props.tableName + props.appObjId] })
+            ComponentManager.setStateForComponent(props.tableName + props.appObjId, 'selectedIndexes', [])
+            ComponentManager.setStateForComponent(props.tableName + props.appObjId, 'selectedIndexesBeforeFilters', [])
+            ComponentManager.setStateForComponent(props.tableName + props.appObjId, 'selectedRowsBeforeFilters', [])
         }
     }, [])
-    const buildCustomBtnArr = (btnArray, multiSelect) => {
-        const div = <div className={`custom-btn-holder-${props.tableName.toLowerCase()}_${getCookie('defaultLocale')}`}>
-            {btnArray.map((el, i) => (
-                <button id={el['ID']} key={el['ID']} className={`${props.tableName.toLowerCase()}-btn`} onClick={() => customBtnAction(el, multiSelect)}>
-                    {el['label']}
-                </button>
-            ))}
-        </div>
-        return div
-    }
-    const setWrapperName = (tableName) => {
-        return tableName.replace(/(\w)(\w*)/g, function (g0, g1, g2) {
-            return g1.toUpperCase() + g2.toLowerCase();
-        }).replace(/_/g, '');
-    };
-
-
-    const btnArrCreate = (btnArray, multiSelect) => {
-        let btnTest = []
-        btnArray.map((el, i) => {
-            btnTest.push({
-                name: el['label'],
-                action: () => customBtnAction(el, multiSelect),
-                id: `btn-${i}`,
-            })
-        })
-        return btnTest
-    }
 
     const customBtnAction = (el, multiSelect) => {
         const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
 
         const executeAction = () => {
-            let promptLabel = labelsManager.importLabel('confirm_submit_action', context, 'farm-registry')
+            let promptLabel = getMainLabel('confirm_submit_action', context)
             if (el.useMulti) {
-                promptLabel = labelsManager.importLabel('confirm_action_execution', context, 'farm-registry')
+                promptLabel = getMainLabel('confirm_action_execution', context)
             }
             let saveUrl = `${window.server}${el?.['onSave']}`
             let data
@@ -93,7 +62,7 @@ const CustomButtons = (props, context) => {
                             const msg = err.response?.data?.message || ''
                             alertUser(true, "error", title, msg);
                         });
-                    }, () => { }, true, labelsManager.importLabel('yes', context, 'farm-registry'), labelsManager.importLabel('no', context, 'farm-registry'))
+                    }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
                     break;
                 case 'POST':
                     alertUser(true, 'info', promptLabel, '', () => {
@@ -118,7 +87,7 @@ const CustomButtons = (props, context) => {
                             alertUser(true, "error", title, msg);
                             setLoading(false)
                         });
-                    }, () => { }, true, labelsManager.importLabel('yes', context, 'farm-registry'), labelsManager.importLabel('no', context, 'farm-registry'))
+                    }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
                     break;
                 case 'action':
                     alertUser(true, 'info', promptLabel, '', () => {
@@ -146,7 +115,7 @@ const CustomButtons = (props, context) => {
                             alertUser(true, "error", title, msg);
                             setLoading(false)
                         });
-                    }, () => { }, true, labelsManager.importLabel('yes', context, 'farm-registry'), labelsManager.importLabel('no', context, 'farm-registry'))
+                    }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
                     break;
                 case 'toggle-action':
                     if (actionToggle === el.ID) {
@@ -154,10 +123,6 @@ const CustomButtons = (props, context) => {
                     } else {
                         setActionToggle(el.ID)
                     }
-                    break;
-                case 'link':
-                    let href = el['route']
-                    hashHistory.push(href)
                     break;
                 default:
                     break;
@@ -168,11 +133,27 @@ const CustomButtons = (props, context) => {
             if (selectedGridRows.length > 0) {
                 executeAction()
             } else {
-                alertUser(true, 'info', labelsManager.importLabel('select_multi', context, 'farm-registry'));
+                alertUser(true, 'info', getMainLabel('select_multi', context));
             }
         } else {
             executeAction()
         }
+    }
+    const customRowClick = (_id, _rowIdx, row) => {
+        let href = `/main/application/${row['APPLICATION.OBJECT_ID']}/${row['APPLICATION.APP_TYPE_ID']}`
+        hashHistory.push(href)
+    }
+    const btnArrCreate = (btnArray, multiSelect) => {
+        let btnTest = []
+        btnArray.map((el, i) => {
+            btnTest.push({
+                name: el['label'],
+                action: () => customBtnAction(el, multiSelect),
+                id: `btn-${i}-${el['ID'].replace('.', '-')}`,
+                class: 'test'
+            })
+        })
+        return btnTest
     }
 
     const generateOuterBtns = (outerBtnArray, multiSelect, togglableChild) => {
@@ -203,51 +184,53 @@ const CustomButtons = (props, context) => {
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
         const outerBtnArray = props.configuration.objectConfiguration.outerBtnArray
-        const grid = (<div className={`${`custom-grid-container-${props.tableName.toLowerCase()}`} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
+        const maxLength = props.configuration.objectConfiguration.maxLength || 9999
+        const grid = <div className={`${`custom-grid-container-${props.tableName.toLowerCase()}`} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
             {outerBtnArray && generateOuterBtns(outerBtnArray, multiSelect)}
             <ExportableGrid
                 gridType={"READ_URL"}
-                key={dynamicGridId}
-                id={dynamicGridId}
+                key={props.tableName + props.appObjId}
+                id={props.tableName + props.appObjId}
                 configTableName={configWs}
                 dataTableName={dataWs}
-                heightRatio={0.7}
-                onRowClickFunct={handleRowClick}
-                refreshData={() => reloadGrid(dynamicGridId, multiSelect)}
-                toggleCustomButton={true}
+                onRowClickFunct={props.configuration.objectConfiguration.disableRowClick ? () => { } : props.configuration.objectConfiguration.customRowClick ? customRowClick : handleRowClick}
+                refreshData={() => reloadGrid(props.tableName + props.appObjId, multiSelect)}
+                toggleCustomButton={!props.configuration.objectConfiguration.configuration.readOnly}
                 customButton={() => setShowModal(true)}
-                customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
+                customButtonLabel={getMainLabel('add', context)}
                 enableMultiSelect={multiSelect}
                 onSelectChangeFunct={customRowSelection}
-                editContextFunc={handleRowClick}
                 buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : undefined}
+                heightRatio={outerBtnArray ? 0.7 : 0.8}
             />
-        </div>)
+
+        </div >
         return grid
     }
+
     //multiselect functions 
     const customRowSelection = (selectedRows, gridId) => {
         store.dispatch(updateSelectedRows(selectedRows, gridId));
     };
-
     const reloadGrid = (gridId, multiSelect) => {
         GridManager.reloadGridData(gridId)
         if (multiSelect) {
             store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], gridId] })
             ComponentManager.setStateForComponent(gridId, 'selectedIndexes', [])
+            ComponentManager.setStateForComponent(gridId, 'selectedIndexesBeforeFilters', [])
+            ComponentManager.setStateForComponent(gridId, 'selectedRowsBeforeFilters', [])
         }
     }
-
-    const replaceFunc = (wsPath, id, obj) => {
-        if (wsPath.indexOf(`{${id}.OBJECT_ID}`) >= 0) {
-            wsPath = wsPath.replace(`{${id}.OBJECT_ID}`, obj)
-            return wsPath
+    const handleRowClick = (_id, _rowIdx, row) => {
+        if (props.configuration.objectConfiguration?.isSvarogForm) {
+            setClickedRowObjectId(row[`SVAROG_FORM.OBJECT_ID`] || 0)
         } else {
-            return wsPath
+            setClickedRowObjectId(row[`${props.tableName}.OBJECT_ID`] || 0)
+            setRowClicked(row)
         }
+        setShowModal(true)
     }
-
-    const generateForm = (isModal, resetTheId, formFromChild) => {
+    const generateForm = (isModal, resetTheId) => {
         let inputWrapper
         if (props.configuration.objectConfiguration.wrapper) {
             wrappers.forEach(wrap => {
@@ -259,7 +242,7 @@ const CustomButtons = (props, context) => {
         }
         // Set a new ID for the form, so we get a re-render
         if (resetTheId) {
-            setDynamicFormId(getDynamicKey())
+            setDynamicFormId(generateDynamicKey())
         }
         // Get the WS paths from the configuration object
         let jsonSchemaConfig = props.configuration.objectConfiguration?.configuration?.onSubmit
@@ -267,28 +250,42 @@ const CustomButtons = (props, context) => {
         let formDataWs = props.configuration.objectConfiguration?.data?.onSubmit
         let onSubmitWs = props.configuration.objectConfiguration?.save?.onSave
         // If we're rendering a modal, the configuration services are a bit nested
-        if (isModal && !flagFormChild) {
+        if (isModal) {
             // #revise_me
             // We need to find a smarter way to get the WS paths, instead of duplicating the nested properties all over again
             jsonSchemaConfig = props.configuration.objectConfiguration?.form?.configuration?.onSubmit
             uiSchemaConfig = props.configuration.objectConfiguration?.form?.uischema?.onSubmit
             formDataWs = props.configuration.objectConfiguration?.form?.data?.onSubmit
             // If the form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
-            formDataWs = replaceFunc(formDataWs, props.tableName, clickedRowObjectId)
+            formDataWs = replaceFunc(formDataWs, props.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
         }
-        if (formFromChild) {
-            const { grids } = props.configuration.objectConfiguration
-            jsonSchemaConfig = grids[1].objectConfiguration.form?.configuration?.onSubmit
-            uiSchemaConfig = grids[1].objectConfiguration.form?.uischema?.onSubmit
-            formDataWs = grids[1].objectConfiguration.form?.data?.onSubmit
-            onSubmitWs = grids[1].objectConfiguration.form?.save?.onSave
+        let hideBtns = 'close'
 
-            formDataWs = replaceFunc(formDataWs, grids[0].ID, clickedRowParent)
-            formDataWs = replaceFunc(formDataWs, grids[1].ID, clickedRowChild)
-            onSubmitWs = replaceFunc(onSubmitWs, grids[0].ID, clickedRowParent)
-            onSubmitWs = replaceFunc(onSubmitWs, grids[1].ID, clickedRowChild)
-
+        let readOnlyConfig
+        let deleteConfig
+        if (props.configuration.objectConfiguration.form) {
+            readOnlyConfig = props.configuration.objectConfiguration?.form?.configuration?.readOnly || false;
+            deleteConfig = props.configuration.objectConfiguration?.form?.delete?.enabled || false;
+        } else if (props.configuration.objectConfiguration.type === 'form') {
+            readOnlyConfig = props.configuration.objectConfiguration?.configuration?.readOnly || false;
+            deleteConfig = props.configuration.objectConfiguration?.delete?.enabled || false;
+        }
+        switch (true) {
+            case readOnlyConfig:
+                hideBtns = 'all';
+                break;
+            case clickedRowObjectId === 0:
+                hideBtns = 'closeAndDelete';
+                break;
+            case !readOnlyConfig && deleteConfig:
+                hideBtns = 'close';
+                break;
+            case !readOnlyConfig && !deleteConfig:
+                hideBtns = 'closeAndDelete';
+                break;
+            default:
+                break;
         }
         return (
             <GenericForm
@@ -301,58 +298,47 @@ const CustomButtons = (props, context) => {
                 tableFormDataMethod={formDataWs}
                 addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal)}
                 addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData)}
-                hideBtns={(clickedRowObjectId === 0 && clickedRowChild === 0) || props.configuration.objectConfiguration?.readOnly ? 'closeAndDelete' : 'close'}
+                hideBtns={hideBtns}
                 inputWrapper={inputWrapper}
                 closeModalFunc={() => setShowModal(false)}
+                objId={props.appObjId}
+                appObjId={props.appObjId}
+                onSubmitWs={onSubmitWs}
+                rowClicked={rowCliked}
+                tableName={props.tableName}
+                disabled={hideBtns === 'all' ? true : false}
+                config={props.configuration.objectConfiguration}
+                formName={props.tableName}
+                heightRatio={0.8}
             />
         )
     }
-    const handleRowClick = (_id, _rowIdx, row) => {
-        setClickedRowObjectId(row[`${props.tableName}.OBJECT_ID`] || 0)
-        if (props?.configuration?.objectConfiguration?.customRowClick) {
-            switch (props.configuration.objectConfiguration?.customRowClick?.type) {
-                case "route":
-                    store.dispatch({ type: 'SAVE', payload: { "farm-registry": { "objectId": props.farmObjId, "route": hashHistory.location.pathname } } })
-                    let route = props.configuration.objectConfiguration?.customRowClick?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
-                    hashHistory.push(route)
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            setShowModal(true)
-        }
-    }
-
     const closeFormModal = () => {
         setShowModal(false)
         setClickedRowObjectId(0)
-        ComponentManager.setStateForComponent(dynamicGridId, null, { rowClicked: undefined })
+        ComponentManager.setStateForComponent(props.tableName + props.appObjId, null, { rowClicked: undefined })
     }
-
     const resetFormDeleteState = () => {
+        setLoading(false)
         ComponentManager.setStateForComponent(dynamicFormId, null, { deleteExecuted: false })
     }
-
     const resetFormSaveState = () => {
         ComponentManager.setStateForComponent(dynamicFormId, null, { saveExecuted: false })
+        ComponentManager.cleanComponentReducerState(dynamicFormId)
+        setRender(true)
     }
-
     const saveForm = (e, wsPath, isModal) => {
         let formData = e.formData
-        // Check if every value in the form data object is nullish
+        // // Check if every value in the form data object is nullish
         const isEmpty = Object.values(formData).every(v => v === null || v === undefined)
-        // Filter out every nullish value from the form data object
+        // // Filter out every nullish value from the form data object
         const nonNullishFormData = Object.fromEntries(Object.entries(formData).filter(([_, v]) => v !== null && v !== undefined))
-        // Check if the filtered form data object has only four keys and they are only system fields
+        // // Check if the filtered form data object has only four keys and they are only system fields
         const onlyHasSystemFields = Object.keys(nonNullishFormData).length === 4 && Object.keys(nonNullishFormData).every(k => k === 'OBJECT_ID' || k === 'OBJECT_TYPE' || k === 'PKID' || k === 'PARENT_ID')
         if (isEmpty || onlyHasSystemFields) {
-            const label = labelsManager.importLabel('enter_some_values', context, 'farm_registry')
+            const label = getMainLabel('enter_some_values', context)
             alertUser(true, 'info', label, '', () => resetFormSaveState())
         } else {
-            if (!isModal) {
-                formData = { ...formData, ...systemFields }
-            }
             const url = `${window.server}${wsPath}`
             axios({
                 method: "post",
@@ -360,29 +346,17 @@ const CustomButtons = (props, context) => {
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
-                const createdRecord = res.data.data
                 const resType = res.data.type
                 const title = res.data.title || ''
                 const msg = res.data.message || ''
                 if (resType?.toLowerCase() === 'error') {
                     alertUser(true, 'error', title, msg, () => resetFormSaveState());
                 } else {
-                    alertUser(true, resType?.toLowerCase(), title, msg, () => resetFormSaveState());
+                    setRender(false)
+                    alertUser(true, resType?.toLowerCase(), title, msg, () => { resetFormSaveState() });
                     if (isModal) {
-                        if (childGridId) {
-                            GridManager.reloadGridData(childGridId)
-                        } else {
-                            GridManager.reloadGridData(dynamicGridId)
-                        }
+                        GridManager.reloadGridData(props.tableName + props.appObjId)
                         closeFormModal()
-                    } else {
-                        props.getConfiguration(props.farmObjId)
-                        systemFields = {
-                            OBJECT_ID: createdRecord.object_id,
-                            OBJECT_TYPE: createdRecord.object_type,
-                            PARENT_ID: createdRecord.parent_id,
-                            PKID: createdRecord.pkid
-                        }
                     }
                 }
             }).catch(err => {
@@ -393,7 +367,6 @@ const CustomButtons = (props, context) => {
             });
         }
     };
-
     const deleteFunc = (_id, _action, _session, formData) => {
         const { svSession } = props;
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
@@ -407,13 +380,9 @@ const CustomButtons = (props, context) => {
             const title = res.data.title || ''
             const msg = res.data.message || ''
             if (resType?.toLowerCase() === "success") {
-                alertUser(true, "success", title, msg);
+                alertUser(true, "success", title, msg, () => resetFormDeleteState());
                 closeFormModal()
-                if (childGridId) {
-                    GridManager.reloadGridData(childGridId);
-                } else {
-                    GridManager.reloadGridData(dynamicGridId);
-                }
+                GridManager.reloadGridData(props.tableName + props.appObjId);
             } else {
                 alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => resetFormDeleteState())
             }
@@ -424,25 +393,24 @@ const CustomButtons = (props, context) => {
             alertUser(true, "error", title, msg, () => resetFormDeleteState());
         });
     };
-    const addFormFunc = (gridId) => {
-        setShowModal(true)
-        setFlagFormChild(true)
-        setChildGridId(gridId)
-    }
-
     return (
         <>
             {loading && <Loading />}
             <div className={`custom-menu-holder ${`custom-menu-${props.tableName.toLowerCase()}-container`}`}>
-                {props.configuration?.objectConfiguration?.type === 'form' && generateForm()}
+                {/* FORM */}
+                {renderForm && props.configuration?.objectConfiguration?.type === 'form' && generateForm()}
+                {/* GRID */}
                 {props.configuration?.objectConfiguration?.type === 'grid' && generateGrid()}
+                {/* ATTACHMENTS */}
                 {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
+                {/* SEARCH-GRID*/}
                 {props.configuration?.objectConfiguration?.type === 'search-grid' && <SearchDynamic tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
-                {props.configuration?.objectConfiguration?.type === 'address' && <Address defaultCountry={props.defaultCountry} />}
-                {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
-                    addFormFunc={addFormFunc} />}
+                {/* PARENT-CHILD-GRID */}
+                {/* {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
+                    addFormFunc={addFormFunc} />} */}
+                {/* DOUBLE-GRID */}
                 {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid farmObjId={props.farmObjId} tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {showModal && (
                     <Modal className={"farm-registry-modal"} show={showModal} onHide={() => closeFormModal()}>
@@ -450,7 +418,7 @@ const CustomButtons = (props, context) => {
                             <Modal.Title>{props.configuration.label}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body className={"farm-registry-modal-body"}>
-                            {generateForm(true, false, flagFormChild)}
+                            {generateForm(true, false)}
                         </Modal.Body>
                         <Modal.Footer className={"farm-registry-modal-footer"} />
                     </Modal>
@@ -459,9 +427,7 @@ const CustomButtons = (props, context) => {
         </>
     )
 }
-
 const mapStateToProps = (state) => ({
-    farmObjId: state['farm_registry.mapData']?.farmData?.objectId,
     svSession: state.security.svSession,
     selectedGridRows: state.selectedGridRows.selectedGridRows,
 });

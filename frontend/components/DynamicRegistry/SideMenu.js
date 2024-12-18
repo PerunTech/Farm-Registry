@@ -1,0 +1,139 @@
+import { React, connect, PropTypes, Loading, axios, createHashHistory, elements } from "perun-core";
+const { useEffect, useState } = React
+const { alertUser } = elements
+import { iconManager } from "../utils_tools/svgHolder";
+import CustomButtons from "./CustomButtons";
+import ObjectSummary from './ObjectSummary';
+let hashHistory = createHashHistory();
+const SideMenu = (props) => {
+    const [activeElement, setActiveElement] = useState('');
+    const [activeChild, setActiveChild] = useState('');
+    const [activeParent, setActiveParent] = useState('');
+    const [configuration, setConfiguration] = useState(null);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        getConfiguration();
+    }, []);
+    const getConfiguration = () => {
+        const menuName = `${props.tableName.toLowerCase()}-registry-menu`
+        setLoading(true)
+        let url = window.server + `/custom-menu/get-configuration/sid/${props.svSession}/component-name/${menuName}/object-id/${props.objectId}/object-type/${props.tableName}`
+        axios.get(url).then(res => {
+            setLoading(false)
+            const resType = res.data?.type?.toLowerCase()
+            if (resType && resType === 'error') {
+                const title = res.data?.title || ''
+                const msg = res.data?.message || ''
+                alertUser(true, 'error', title, msg)
+            } else {
+                setConfiguration(res.data)
+            }
+        }).catch(err => {
+            console.error(err)
+            setLoading(false)
+            const title = err.response?.data?.title || err
+            const msg = err.response?.data?.message || ''
+            alertUser(true, 'error', title, msg)
+        })
+    }
+    const setActive = (el) => {
+        if (el.ID === activeParent) {
+            setActiveParent('')
+            setLoading(false)
+        } else {
+            setActiveParent(el.ID)
+        }
+    }
+    const generateSideMenuButtons = () => {
+        if (configuration && Array.isArray(configuration.data)) {
+            return configuration.data.map(el => {
+                let modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
+                return (
+                    <>
+                        <button
+                            className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
+                            onClick={() => (el.data ? setActive(el) : onButtonClick(el))}
+                        >
+                            {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{el.label}</p>
+                        </button>
+                        {el.data && <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
+                            {el.data.map(sub => {
+                                modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '')
+                                return < button
+                                    className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`
+                                    }
+                                    onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
+                                >
+                                    {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{sub.label}</p>
+                                </button>
+                            })}
+                        </div >}
+                    </>
+                );
+            });
+        } else {
+            return <></>;
+        }
+    }
+    const onButtonClick = (element, childEl) => {
+        const id = element.ID;
+        const splitID = id.replace(/\d/g, '').replace(/_$/, '');
+        if (childEl) {
+            displayComponent('DYNAMIC', splitID, element, true);
+            setActiveChild(id)
+            setLoading(false)
+            setActiveElement('')
+        } else {
+            displayComponent('DYNAMIC', splitID, element);
+            setActiveElement(id)
+            setLoading(false)
+            setActiveChild('')
+
+        }
+    }
+    const printFunc = (sub) => {
+        let url = window.server + sub.onSubmit;
+        window.open(url, '_blank');
+    }
+    const displayComponent = (component, tableName, configuration, child) => {
+        let dynamicComponent;
+        let href = `/main/registry/${props.tableName}/${props.objectId}/`
+        switch (component) {
+            case "DYNAMIC":
+                if (child) {
+                    href = `/main/registry/${props.tableName}/${props.objectId}/SUB-${tableName}`
+                }
+                else href = `/main/registry/${props.tableName}/${props.objectId}/${tableName}`
+                hashHistory.push(href)
+                const customButtonsProps = {
+                    key: tableName,
+                    tableName,
+                    configuration,
+                    getConfiguration: (objId) => getConfiguration(objId)
+                }
+                dynamicComponent = <CustomButtons {...customButtonsProps} />
+                break;
+            default:
+                break;
+        }
+        props.setDynamicComponentFunction(dynamicComponent)
+    };
+    return (
+        <>
+            {loading && <Loading />}
+            <div className={`sidemenu-main-container farm-registry-sidemenu-main-containers`} id="sidemenu-main-container">
+                <ObjectSummary tableName={props.tableName} objectId={props.objectId} />
+                {generateSideMenuButtons()}
+            </div>
+        </>
+    )
+}
+const mapStateToProps = (state) => ({
+    svSession: state.security.svSession,
+});
+
+SideMenu.contextTypes = {
+    intl: PropTypes.object.isRequired,
+};
+
+export default connect(mapStateToProps)(SideMenu);
