@@ -10,8 +10,9 @@ const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
 const { store, updateSelectedRows } = redux;
-const hashHistory = createHashHistory();
+
 const CustomButtons = (props, context) => {
+    const hashHistory = createHashHistory();
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [dynamicFormId, setDynamicFormId] = useState(generateDynamicKey())
@@ -140,6 +141,7 @@ const CustomButtons = (props, context) => {
         }
     }
     const customRowClick = (_id, _rowIdx, row) => {
+        store.dispatch({ type: 'SAVE', payload: { "farm-registry": { "objectId": props.objectId, "route": hashHistory.location.pathname } } })
         const customRowClickConfig = props.configuration?.objectConfiguration?.customRowClick
         const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
         hashHistory.push(route)
@@ -412,7 +414,7 @@ const CustomButtons = (props, context) => {
                 {/* {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
                     addFormFunc={addFormFunc} />} */}
                 {/* DOUBLE-GRID */}
-                {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid farmObjId={props.farmObjId} tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
+                {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid farmObjId={props.objectId} tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {showModal && (
                     <Modal className={"farm-registry-modal"} show={showModal} onHide={() => closeFormModal()}>
                         <Modal.Header className={"farm-registry-modal-header"} closeButton>

@@ -108,6 +108,7 @@ const SideMenu = (props) => {
                 const customButtonsProps = {
                     key: tableName,
                     tableName,
+                    objectId: props.objectId,
                     configuration,
                     getConfiguration: (objId) => getConfiguration(objId)
                 }
