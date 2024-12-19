@@ -4,8 +4,9 @@ const { alertUser } = elements
 import { iconManager } from "../utils_tools/svgHolder";
 import CustomButtons from "./CustomButtons";
 import ObjectSummary from './ObjectSummary';
-let hashHistory = createHashHistory();
+
 const SideMenu = (props) => {
+    let hashHistory = createHashHistory();
     const [activeElement, setActiveElement] = useState('');
     const [activeChild, setActiveChild] = useState('');
     const [activeParent, setActiveParent] = useState('');
@@ -27,6 +28,23 @@ const SideMenu = (props) => {
                 alertUser(true, 'error', title, msg)
             } else {
                 setConfiguration(res.data)
+                const component = props.routeParams?.component
+                const isChild = component.includes('SUB-')
+                const tableName = component.replace(/^SUB-/, '')
+                res.data?.data?.map(item => {
+                    if (item.data && isChild) {
+                        item.data.map(child => {
+                            if (child?.ID?.includes(tableName)) {
+                                onButtonClick(child, true)
+                                setActive(item)
+                            }
+                        })
+                    } else {
+                        if (item?.ID?.includes(tableName)) {
+                            onButtonClick(item)
+                        }
+                    }
+                })
             }
         }).catch(err => {
             console.error(err)
