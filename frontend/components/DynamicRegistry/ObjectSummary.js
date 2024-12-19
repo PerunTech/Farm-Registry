@@ -34,9 +34,9 @@ const ObjectSummary = (props, context) => {
             .catch(err => {
                 console.error(err);
                 setLoading(false);
-                const title = err.response?.data?.title || err.message;
-                const msg = err.response?.data?.message || '';
-                alertUser(true, 'error', title, msg);
+                // const title = err.response?.data?.title || err.message;
+                // const msg = err.response?.data?.message || '';
+                // alertUser(true, 'error', title, msg);
             });
     };
     const backButtonFunction = () => {
@@ -90,15 +90,15 @@ const ObjectSummary = (props, context) => {
             {menuData.length > 0 && generateMenuData()}
             {show && (
                 <Modal
-                    className="aims-modal aims-modal-object-summary"
+                    className="farm-registry-modal farm-registry-modal-object-summary"
                     show={show}
                     onHide={() => setShow(false)}
                 >
-                    <Modal.Header className="aims-modal-header" closeButton />
-                    <Modal.Body className="aims-modal-body">
+                    <Modal.Header className="farm-registry-modal-header" closeButton />
+                    <Modal.Body className="farm-registry-modal-body">
                         {modalData.length > 0 && generateModalData()}
                     </Modal.Body>
-                    <Modal.Footer className="aims-modal-footer" />
+                    <Modal.Footer className="farm-registry-modal-footer" />
                 </Modal>
             )}
         </>

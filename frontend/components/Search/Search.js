@@ -166,17 +166,17 @@ const Search = (props, context) => {
           {resultsData && generateGrid(resultsData)}
         </div>
         {showRegistrationModal && (
-          <Modal className={'aims-modal'} show={showRegistrationModal} onHide={() => setShowRegistrationModal(false)}>
-            <Modal.Header className={'aims-modal-header'} closeButton>
+          <Modal className={'farm-registry-modal'} show={showRegistrationModal} onHide={() => setShowRegistrationModal(false)}>
+            <Modal.Header className={'farm-registry-modal-header'} closeButton>
               <Modal.Title>{getMainLabel(`register_new_${bussinessObjectName?.toLowerCase()}`, context)}</Modal.Title>
             </Modal.Header>
-            <Modal.Body className={'aims-modal-body'}>
+            <Modal.Body className={'farm-registry-modal-body'}>
               <CreateNewRecordForm
                 configuration={configuration}
                 setShowRegistrationModal={setShowRegistrationModal}
               />
             </Modal.Body>
-            <Modal.Footer className={'aims-modal-footer'} />
+            <Modal.Footer className={'farm-registry-modal-footer'} />
           </Modal>
         )}
       </div>
