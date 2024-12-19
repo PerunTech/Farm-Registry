@@ -331,7 +331,6 @@ const CustomButtons = (props, context) => {
     }
     const resetFormSaveState = () => {
         ComponentManager.setStateForComponent(dynamicFormId, null, { saveExecuted: false })
-        ComponentManager.cleanComponentReducerState(dynamicFormId)
         setRender(true)
     }
     const saveForm = (e, wsPath, isModal) => {
