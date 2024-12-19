@@ -17,6 +17,7 @@ const DynamicRegistry = (props, context) => {
                 objectId={props?.match?.params?.objectId}
                 tableName={props?.match?.params?.tableName}
                 setDynamicComponentFunction={setDynamicComponentFunction}
+                routeParams={props.match.params}
             />
             <div className="farm-registry-content">
                 {dynamicComponent}
