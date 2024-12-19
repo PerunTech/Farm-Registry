@@ -50,6 +50,7 @@ const ParentChildGrids = (props, context) => {
             let dataWs = grid.objectConfiguration.data.onSubmit
             dataWs = dataWs.replace(/{([^}]+)}/g, objectId)
             const gridDiv = <div className={`farm-registry-child-dynamic-grid`}>
+                {props.outerBtnArray && <div className={'farm-registry-child-grid-balancer'} />}
                 <ExportableGrid
                     gridType={"READ_URL"}
                     key={gridId}
