@@ -26,7 +26,7 @@ const SearchForm = (props, context) => {
     const searchConfig = props.configuration?.searchForm
     return (
       <GenericForm
-        className={`aims-forms aims-search-form`}
+        className={`aims-search-form`}
         params='FORM_DATA'
         key='AR_SEARCH_FORM'
         id='AR_SEARCH_FORM'
