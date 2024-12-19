@@ -29,11 +29,10 @@ export const labelsManager = {
 
 export function getMainLabel(labelCode, context) {
   return context.intl.formatMessage({
-    id: `perun.aims.${labelCode}`,
-    defaultMessage: `perun.aims.${labelCode}`
+    id: `perun.farm_registry.${labelCode}`,
+    defaultMessage: `perun.farm_registry.${labelCode}`
   })
 }
-
 export function getPluginLabel(labelCode, context) {
   return context.intl.formatMessage({
     id: `perun.plugin.${labelCode}`,

@@ -125,6 +125,10 @@ const CustomButtons = (props, context) => {
                         setActionToggle(el.ID)
                     }
                     break;
+                case 'link':
+                    let href = el['route']
+                    hashHistory.push(href)
+                    break;
                 default:
                     break;
             }
@@ -170,7 +174,7 @@ const CustomButtons = (props, context) => {
                                     onClick={() => customBtnAction(el, multiSelect)}
                                     className={`${togglableChild ? 'aims-outer-btn-togglableChild' : 'aims-outer-btn'} ${el.ID.toLowerCase()}-aims-btn`}
                                     id={el.ID}>
-                                    {!togglableChild && <span className="aims-outer-btn-img">{el.icon && iconManager.getIcon(el.icon)}</span>} {el.label}</button>
+                                    {!togglableChild && <span className={iconManager.getIcon(el.icon) ? "aims-outer-btn-img" : ''}>{el.icon && iconManager.getIcon(el.icon)}</span>} {el.label}</button>
                                 {el.childBtnArray && actionToggle === el.ID && generateOuterBtns(el.childBtnArray, multiSelect, true)}
                             </div>
                         );
@@ -411,8 +415,7 @@ const CustomButtons = (props, context) => {
                 {/* SEARCH-GRID*/}
                 {props.configuration?.objectConfiguration?.type === 'search-grid' && <SearchDynamic tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {/* PARENT-CHILD-GRID */}
-                {/* {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids buildCustomBtnArr={buildCustomBtnArr} setRowChild={setRowChild} setRowParent={setRowParent} grids={props.configuration?.objectConfiguration?.grids}
-                    addFormFunc={addFormFunc} />} */}
+                {props.configuration?.objectConfiguration?.type === "multigrid" && <ParentChildGrids generateOuterBtns={generateOuterBtns} outerBtnArray={props.configuration.objectConfiguration.outerBtnArray} grids={props.configuration?.objectConfiguration?.grids} />}
                 {/* DOUBLE-GRID */}
                 {props.configuration?.objectConfiguration?.type === 'double-grid' && <DoubleGrid farmObjId={props.objectId} tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {showModal && (
