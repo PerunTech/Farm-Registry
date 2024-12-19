@@ -76,7 +76,6 @@ const ParentChildGrids = (props, context) => {
         let formData = form.data?.onSubmit
         formData = replaceFunc(form.data?.onSubmit, props.grids[1].ID, rowChild, false)
         formData = replaceFunc(formData, props.grids[0].ID, rowParent, false)
-        console.log(formData);
         return (
             <GenericForm
                 className={`form-test custom-farm-registry-form`}
