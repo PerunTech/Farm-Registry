@@ -31,14 +31,17 @@ const Search = (props, context) => {
   }, [bussinessObjectName])
 
   const getBussinessObjectName = () => {
+    setLoading(true)
     const url = `${window.server}/WsConf/params/get/sys/BUSINESS_OBJECT_NAME`
     axios.get(url).then(res => {
+      setLoading(false)
       if (res?.data?.VALUE) {
         const objectName = res.data.VALUE
         setBussinessObjectName(objectName)
         setGridId(`${objectName}_SEARCH_GRID`)
       }
     }).catch(err => {
+      setLoading(false)
       console.error(err)
       const title = err.response?.data?.title || err
       const msg = err.response?.data?.message || ''
