@@ -4,7 +4,7 @@ import {
     PropTypes,
 } from "perun-core";
 
-import Summary from '../../Summary';
+import Summary from '../Summary';
 
 const FarmWrapper = (props, context) => {
 

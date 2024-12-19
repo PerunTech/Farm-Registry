@@ -5,8 +5,8 @@ import {
     ComponentManager,
     PropTypes,
 } from "perun-core";
-import SearchComponent from '../../SearchComp/SearchComponent';
-import { labelsManager } from '../../utils_tools/LabelsExport';
+import SearchComponent from '../SearchComp/SearchComponent';
+import { labelsManager } from '../utils_tools/LabelsExport';
 const { useState, useEffect, useReducer } = React;
 const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;

@@ -7,7 +7,7 @@ import {
     axios,
     GridManager
 } from "perun-core";
-import { labelsManager } from '../../utils_tools/LabelsExport';
+import { labelsManager } from '../utils_tools/LabelsExport'
 const { useState, useEffect } = React;
 const { alertUser } = elements;
 
@@ -18,7 +18,7 @@ const CadparcelWrapper = (props, context) => {
 
     useEffect(() => {
         const { formid } = props
-
+        console.log('EJJJJJJJJJ');
         ComponentManager.setStateForComponent(formid, "addSaveFunction", addSaveFunction);
         props.formInstance.setState({ addSaveFunction: addSaveFunction })
 
