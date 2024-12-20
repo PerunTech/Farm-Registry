@@ -11,7 +11,7 @@ const { useState, useEffect } = React
 const hashHistory = createHashHistory()
 
 const Search = (props, context) => {
-  const [bussinessObjectName, setBussinessObjectName] = useState(undefined)
+  const [businessObjectName, setBusinessObjectName] = useState(undefined)
   const [gridId, setGridId] = useState(undefined)
   const [loading, setLoading] = useState(false)
   const [configuration, setConfiguration] = useState(undefined)
@@ -20,24 +20,24 @@ const Search = (props, context) => {
 
   useEffect(() => {
     updateIdScreen(context)
-    getBussinessObjectName()
+    getBusinessObjectName()
     store.dispatch({ type: 'SAVE', payload: { 'farm-registry': {} } })
   }, [])
 
   useEffect(() => {
-    if (bussinessObjectName) {
+    if (businessObjectName) {
       getConfiguration()
     }
-  }, [bussinessObjectName])
+  }, [businessObjectName])
 
-  const getBussinessObjectName = () => {
+  const getBusinessObjectName = () => {
     setLoading(true)
     const url = `${window.server}/WsConf/params/get/sys/BUSINESS_OBJECT_NAME`
     axios.get(url).then(res => {
       setLoading(false)
       if (res?.data?.VALUE) {
         const objectName = res.data.VALUE
-        setBussinessObjectName(objectName)
+        setBusinessObjectName(objectName)
         setGridId(`${objectName}_SEARCH_GRID`)
       }
     }).catch(err => {
@@ -52,7 +52,7 @@ const Search = (props, context) => {
   const getConfiguration = () => {
     setLoading(true)
     const { svSession } = props
-    const url = `${window.server}/custom-menu/get-configuration/sid/${svSession}/component-name/main-registry-search-menu/object-id/0/object-type/${bussinessObjectName}`
+    const url = `${window.server}/custom-menu/get-configuration/sid/${svSession}/component-name/main-registry-search-menu/object-id/0/object-type/${businessObjectName}`
     axios.get(url).then(res => {
       setLoading(false)
       const resType = res?.data?.type?.toLowerCase()
@@ -64,7 +64,7 @@ const Search = (props, context) => {
         if (res?.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
           res.data.data.forEach(item => {
             // Match the appropriate configuration item according to the selected table
-            if (item.ID === bussinessObjectName) {
+            if (item.ID === businessObjectName) {
               setConfiguration(item.objectConfiguration)
             }
           })
@@ -80,7 +80,7 @@ const Search = (props, context) => {
   }
 
   const onRowClick = (_id, _idx, row) => {
-    const href = `/main/registry/${bussinessObjectName}/${row[`${bussinessObjectName}.OBJECT_ID`]}/summary`
+    const href = `/main/registry/${businessObjectName}/${row[`${businessObjectName}.OBJECT_ID`]}/summary`
     hashHistory.push(href)
   }
 
@@ -171,12 +171,13 @@ const Search = (props, context) => {
         {showRegistrationModal && (
           <Modal className={'farm-registry-modal'} show={showRegistrationModal} onHide={() => setShowRegistrationModal(false)}>
             <Modal.Header className={'farm-registry-modal-header'} closeButton>
-              <Modal.Title>{getMainLabel(`register_new_${bussinessObjectName?.toLowerCase()}`, context)}</Modal.Title>
+              <Modal.Title>{getMainLabel(`register_new_${businessObjectName?.toLowerCase()}`, context)}</Modal.Title>
             </Modal.Header>
             <Modal.Body className={'farm-registry-modal-body'}>
               <CreateNewRecordForm
                 configuration={configuration}
                 setShowRegistrationModal={setShowRegistrationModal}
+                businessObjectName={businessObjectName}
               />
             </Modal.Body>
             <Modal.Footer className={'farm-registry-modal-footer'} />
