@@ -52,7 +52,7 @@ const DoubleGrid = (props, context) => {
 
         return (
             <GenericForm
-                className={`aims-forms`}
+                className={`form-test custom-farm-registry-form`}
                 params={'FORM_DATA'}
                 key={props.configuration.leftGrid.ID + '_FORM'}
                 id={props.configuration.leftGrid.ID + '_FORM'}

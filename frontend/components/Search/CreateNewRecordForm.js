@@ -2,10 +2,25 @@ import { React, PropTypes, GenericForm, ComponentManager, axios, elements } from
 const { alertUser } = elements
 import { jsonToURI, flattenObject } from '../../utils'
 import { getMainLabel } from '../utils_tools/LabelsExport'
-
+const { useState, useEffect } = React
+import FarmWrapper from '../Wrapper/FarmWrapper';
 const CreateNewRecordForm = (props, context) => {
+  const [wrappers] = useState([{ Farm: FarmWrapper }]);
+  const [wrapperName, setWrapperName] = useState(undefined);
+  useEffect(() => {
+    if (props.configuration?.wrapper) {
+      const formattedWrapper = props.businessObjectName
+        .replace(/\d/g, '')
+        .replace(/_$/, '')
+        .replace(/(\w)(\w*)/g, (g0, g1, g2) => g1.toUpperCase() + g2.toLowerCase())
+        .replace(/_/g, '')
+        .trim();
+
+      setWrapperName(formattedWrapper);
+    }
+  }, []);
   const resetFormSaveState = () => {
-    ComponentManager.setStateForComponent('AR_REGISTRATION_FORM', null, { saveExecuted: false })
+    ComponentManager.setStateForComponent('REGISTRATION_FORM', null, { saveExecuted: false })
   }
 
   const onSubmit = (e) => {
@@ -39,20 +54,31 @@ const CreateNewRecordForm = (props, context) => {
   }
 
   const generateForm = () => {
+    let inputWrapper = undefined;
+
     const addFormConfig = props.configuration?.addForm
+    if (props.configuration?.wrapper) {
+      wrappers.forEach(wrap => {
+        const [key] = Object.keys(wrap);
+        if (wrapperName === key) {
+          inputWrapper = wrap[key];
+        }
+      });
+    }
 
     return (
       <GenericForm
-        className={`aims-forms`}
+        className={`form-test custom-farm-registry-form`}
         params={'FORM_DATA'}
-        key={`AR_REGISTRATION_FORM`}
-        id={`AR_REGISTRATION_FORM`}
+        key={`REGISTRATION_FORM`}
+        id={`REGISTRATION_FORM`}
         method={addFormConfig?.configuration?.onSubmit}
         uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
         tableFormDataMethod={addFormConfig?.data?.onSubmit}
         addSaveFunction={(e) => onSubmit(e)}
         customSaveButtonName={getMainLabel('save', context)}
         hideBtns={'closeAndDelete'}
+        inputWrapper={inputWrapper}
       />
     )
   }
