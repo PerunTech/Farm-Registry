@@ -34,9 +34,9 @@ const ObjectSummary = (props, context) => {
             .catch(err => {
                 console.error(err);
                 setLoading(false);
-                // const title = err.response?.data?.title || err.message;
-                // const msg = err.response?.data?.message || '';
-                // alertUser(true, 'error', title, msg);
+                const title = err.response?.data?.title || err.message;
+                const msg = err.response?.data?.message || '';
+                alertUser(true, 'error', title, msg);
             });
     };
     const backButtonFunction = () => {
