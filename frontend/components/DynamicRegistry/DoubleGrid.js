@@ -35,7 +35,7 @@ const DoubleGrid = (props, context) => {
                 gridType={"READ_URL"}
                 key={grid.ID}
                 id={grid.ID}
-                heightRatio={0.6}
+                heightRatio={0.8}
                 configTableName={grid.configuration.onSubmit}
                 dataTableName={grid.data.onSubmit}
                 onRowClickFunct={(id, rowIdx, row) => handleRowClick(id, rowIdx, row, grid)}
