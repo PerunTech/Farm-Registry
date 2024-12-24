@@ -86,8 +86,8 @@ const ObjectSummary = (props, context) => {
                     <i className='fas fa-chevron-left' />
                     <span className='back-btn-text'>{getMainLabel('back', context)}</span>
                 </button>
+                {menuData.length > 0 && generateMenuData()}
             </div>
-            {menuData.length > 0 && generateMenuData()}
             {show && (
                 <Modal
                     className="farm-registry-modal farm-registry-modal-object-summary"
