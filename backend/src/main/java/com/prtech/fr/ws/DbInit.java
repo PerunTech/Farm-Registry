@@ -154,6 +154,66 @@ public class DbInit implements IDbInit {
 		objR.addProperty("width", uiWidth);
 		return objR;
 	}
+	
+	//HOLDING_TYPE
+	private static DbDataTable createHoldingType() {
+		DbDataTable dbe = new DbDataTable();
+		dbe.setDbTableName("HOLDING_TYPE");
+		dbe.setDbRepoName(CONST_MASTER_REPO);
+		dbe.setDbSchema(CONST_DEFAULT_SCHEMA);
+		dbe.setIsSystemTable(false);
+		dbe.setIsRepoTable(false);
+		dbe.setLabel_code("master_repo.holding_type");
+		dbe.setUse_cache(false);
+		
+		DbDataField dbe1 = new DbDataField();
+		dbe1.setDbFieldName("PKID");
+		dbe1.setIsPrimaryKey(true);
+		dbe1.setDbFieldType(DbFieldType.NUMERIC);
+		dbe1.setDbFieldSize(18);
+		dbe1.setDbFieldScale(0);
+		dbe1.setIsNull(false);
+		dbe1.setLabel_code("holding_type.pkid");
+		
+		DbDataField dbe2 = new DbDataField();
+		dbe2.setDbFieldName("NAME");
+		dbe2.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe2.setDbFieldSize(50);
+		dbe2.setIsUnique(true);
+		dbe2.setIsNull(false);
+		dbe2.setLabel_code("holding_type.name");
+		
+		DbDataField dbe3 = new DbDataField();
+		dbe3.setDbFieldName("MENU_OBJECT_ID");
+		dbe3.setDbFieldType(DbFieldType.NUMERIC);
+		dbe3.setDbFieldSize(18);
+		dbe3.setDbFieldScale(0);
+		dbe3.setIsNull(true);
+		dbe3.setLabel_code("holding_type.menu_object_id");
+		
+		DbDataField dbe4 = new DbDataField();
+		dbe4.setDbFieldName("WORKFLOW");
+		dbe4.setDbFieldType(DbFieldType.NUMERIC);
+		dbe4.setDbFieldSize(18);
+		dbe4.setDbFieldScale(0);
+		dbe4.setIsNull(true);
+		dbe4.setLabel_code("holding_type.workflow");
+		
+		DbDataField dbe5= new DbDataField();
+		dbe5.setDbFieldName("SERVICES");
+		dbe5.setDbFieldType(DbFieldType.TEXT);
+		dbe5.setIsNull(true);
+		dbe5.setLabel_code("holding_type.services");
+		
+		DbDataField[] dbTableFields = new DbDataField[5];
+		dbTableFields[0] = dbe1;
+		dbTableFields[1] = dbe2;
+		dbTableFields[2] = dbe3;
+		dbTableFields[3] = dbe4;
+		dbTableFields[4] = dbe5;
+		dbe.setDbTableFields(dbTableFields);
+		return dbe;
+	}
 
 	// EEDBAR2016
 	// Farmer
@@ -2155,6 +2215,8 @@ public class DbInit implements IDbInit {
 	public ArrayList<DbDataTable> getCustomObjectTypes() {
 		DbDataTable dbtt = null;
 		ArrayList<DbDataTable> dbtList = new ArrayList<DbDataTable>();
+		dbtt = DbInit.createHoldingType();
+		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createCertificationInfo();
 		dbtList.add(addSortOrder(dbtt));
 		dbtt = DbInit.createFarm();
