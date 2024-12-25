@@ -57,12 +57,6 @@ const ObjectSummary = (props, context) => {
                         <p>: {value}</p>
                     </div>
                 ))}
-                {modalData.length > 0 && <button
-                    className="farm-registry-object-summary-show-more"
-                    onClick={() => setShow(true)}
-                >
-                    {getMainLabel('show_more', context)}
-                </button>}
             </>
         )
     }
@@ -86,7 +80,21 @@ const ObjectSummary = (props, context) => {
                     <i className='fas fa-chevron-left' />
                     <span className='back-btn-text'>{getMainLabel('back', context)}</span>
                 </button>
-                {menuData.length > 0 && generateMenuData()}
+                {menuData.length > 0 && (
+                    <>
+                        <div className='farm-registry-object-summary-rows-container'>
+                            {generateMenuData()}
+                        </div>
+                        {modalData.length > 0 && (
+                            <button
+                                className="farm-registry-object-summary-show-more"
+                                onClick={() => setShow(true)}
+                            >
+                                {getMainLabel('show_more', context)}
+                            </button>
+                        )}
+                    </>
+                )}
             </div>
             {show && (
                 <Modal
