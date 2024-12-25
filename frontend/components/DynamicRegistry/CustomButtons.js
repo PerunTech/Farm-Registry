@@ -170,15 +170,15 @@ const CustomButtons = (props, context) => {
     const generateOuterBtns = (outerBtnArray, multiSelect, togglableChild) => {
         if (outerBtnArray && outerBtnArray.length > 0) {
             return (
-                <div className={`${togglableChild ? 'aims-outer-btn-container-togglable-child' : 'aims-outer-btn-container'}`}>
+                <div className={`${togglableChild ? 'farm-registry-outer-btn-container-togglable-child' : 'farm-registry-outer-btn-container'}`}>
                     {outerBtnArray.map(el => {
                         return (
-                            <div className={`${el.childBtnArray ? 'aims-outer-togglable-child' : ''}`}>
+                            <div className={`${el.childBtnArray ? 'farm-registry-outer-togglable-child' : ''}`}>
                                 <button
                                     onClick={() => customBtnAction(el, multiSelect)}
-                                    className={`${togglableChild ? 'aims-outer-btn-togglableChild' : 'aims-outer-btn'} ${el.ID.toLowerCase()}-aims-btn`}
+                                    className={`${togglableChild ? 'farm-registry-outer-btn-togglableChild' : 'farm-registry-outer-btn'} ${el.ID.toLowerCase()}-aims-btn`}
                                     id={el.ID}>
-                                    {!togglableChild && <span className={iconManager.getIcon(el.icon) ? "aims-outer-btn-img" : ''}>{el.icon && iconManager.getIcon(el.icon)}</span>} {el.label}</button>
+                                    {!togglableChild && <span className={iconManager.getIcon(el.icon) ? "farm-registry-outer-btn-img" : ''}>{el.icon && iconManager.getIcon(el.icon)}</span>} {el.label}</button>
                                 {el.childBtnArray && actionToggle === el.ID && generateOuterBtns(el.childBtnArray, multiSelect, true)}
                             </div>
                         );
