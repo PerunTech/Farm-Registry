@@ -52,13 +52,13 @@ const ObjectSummary = (props, context) => {
         return (
             <>
                 {menuData.map(({ label, value }) => (
-                    <div className="aims-object-summary-row" key={label}>
+                    <div className="farm-registry-object-summary-row" key={label}>
                         <p>{label}</p>
                         <p>: {value}</p>
                     </div>
                 ))}
                 {modalData.length > 0 && <button
-                    className="aims-object-summary-show-more"
+                    className="farm-registry-object-summary-show-more"
                     onClick={() => setShow(true)}
                 >
                     {getMainLabel('show_more', context)}
@@ -68,9 +68,9 @@ const ObjectSummary = (props, context) => {
     }
 
     const generateModalData = () => (
-        <div className="aims-object-summary-modal">
+        <div className="farm-registry-object-summary-modal">
             {modalData.map(({ label, value }) => (
-                <div className="aims-object-summary-row" key={label}>
+                <div className="farm-registry-object-summary-row" key={label}>
                     <p>{label}</p>
                     <p>: {value}</p>
                 </div>
@@ -81,8 +81,8 @@ const ObjectSummary = (props, context) => {
     return (
         <>
             {loading && <Loading />}
-            <div className="aims-object-summary">
-                <button className='aims-summary-back-btn' onClick={() => backButtonFunction()}>
+            <div className="farm-registry-object-summary">
+                <button className='farm-registry-summary-back-btn' onClick={() => backButtonFunction()}>
                     <i className='fas fa-chevron-left' />
                     <span className='back-btn-text'>{getMainLabel('back', context)}</span>
                 </button>
