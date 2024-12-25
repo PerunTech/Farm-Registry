@@ -176,7 +176,7 @@ const CustomButtons = (props, context) => {
                             <div className={`${el.childBtnArray ? 'farm-registry-outer-togglable-child' : ''}`}>
                                 <button
                                     onClick={() => customBtnAction(el, multiSelect)}
-                                    className={`${togglableChild ? 'farm-registry-outer-btn-togglableChild' : 'farm-registry-outer-btn'} ${el.ID.toLowerCase()}-aims-btn`}
+                                    className={`${togglableChild ? 'farm-registry-outer-btn-togglableChild' : 'farm-registry-outer-btn'} ${el.ID.toLowerCase()}-farm-registry-btn`}
                                     id={el.ID}>
                                     {!togglableChild && <span className={iconManager.getIcon(el.icon) ? "farm-registry-outer-btn-img" : ''}>{el.icon && iconManager.getIcon(el.icon)}</span>} {el.label}</button>
                                 {el.childBtnArray && actionToggle === el.ID && generateOuterBtns(el.childBtnArray, multiSelect, true)}
