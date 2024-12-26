@@ -201,7 +201,6 @@ public class DbInit implements IDbInit {
 		dbe4.setDbFieldScale(0);
 		dbe4.setIsNull(true);
 		dbe4.setLabel_code("holding_type.workflow");
-		dbe4.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true,\"uischema\":{\"ui:readonly\":false,\"ui:widget\":\"DependencyDropdown\",\"codelistName\":\"WORKFLOW_TYPE\",order:0}}}");
 		
 		DbDataField dbe5= new DbDataField();
 		dbe5.setDbFieldName("SERVICES");
