@@ -174,6 +174,7 @@ public class DbInit implements IDbInit {
 		dbe1.setDbFieldScale(0);
 		dbe1.setIsNull(false);
 		dbe1.setLabel_code("holding_type.pkid");
+		dbe1.setGui_metadata(CONST_GUI_FIL_HIDE);
 		
 		DbDataField dbe2 = new DbDataField();
 		dbe2.setDbFieldName("NAME");
@@ -182,6 +183,7 @@ public class DbInit implements IDbInit {
 		dbe2.setIsUnique(true);
 		dbe2.setIsNull(false);
 		dbe2.setLabel_code("holding_type.name");
+		dbe2.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
 		
 		DbDataField dbe3 = new DbDataField();
 		dbe3.setDbFieldName("MENU_OBJECT_ID");
@@ -190,20 +192,22 @@ public class DbInit implements IDbInit {
 		dbe3.setDbFieldScale(0);
 		dbe3.setIsNull(true);
 		dbe3.setLabel_code("holding_type.menu_object_id");
+		dbe3.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":false,\"idtable\":\"SVAROG_MENU\",\"idgetfield\":\"MENU_CODE\",\"idsetfield\":\"OBJECT_ID\",\"uischema\":{\"ui:readonly\":true}}}");
 		
 		DbDataField dbe4 = new DbDataField();
 		dbe4.setDbFieldName("WORKFLOW");
-		dbe4.setDbFieldType(DbFieldType.NUMERIC);
-		dbe4.setDbFieldSize(18);
-		dbe4.setDbFieldScale(0);
+		dbe4.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe4.setDbFieldSize(100);
 		dbe4.setIsNull(true);
 		dbe4.setLabel_code("holding_type.workflow");
+		dbe4.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
 		
 		DbDataField dbe5= new DbDataField();
 		dbe5.setDbFieldName("SERVICES");
 		dbe5.setDbFieldType(DbFieldType.TEXT);
 		dbe5.setIsNull(true);
 		dbe5.setLabel_code("holding_type.services");
+		dbe5.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
 		
 		DbDataField[] dbTableFields = new DbDataField[5];
 		dbTableFields[0] = dbe1;
