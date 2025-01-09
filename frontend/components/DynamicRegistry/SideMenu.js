@@ -140,9 +140,11 @@ const SideMenu = (props) => {
     return (
         <>
             {loading && <Loading />}
-            <div className={`sidemenu-main-container farm-registry-sidemenu-main-containers`} id="sidemenu-main-container">
+            <div className={`sidemenu-main-container farm-registry-sidemenu-main-container`} id="sidemenu-main-container">
                 <ObjectSummary tableName={props.tableName} objectId={props.objectId} />
-                {generateSideMenuButtons()}
+                <div className='farm-registry-sidemenu-buttons-container'>
+                    {generateSideMenuButtons()}
+                </div>
             </div>
         </>
     )

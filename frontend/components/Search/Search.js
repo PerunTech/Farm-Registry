@@ -92,7 +92,7 @@ const Search = (props, context) => {
     if (!readOnly && addFormConfig) {
       const addButton = {
         type: 'button',
-        id: 'add-new-record-btn',
+        id: 'add-new-record-btn-grid-toolbar',
         action: () => setShowRegistrationModal(true),
         name: `${getMainLabel('add', context)}`
       }
@@ -157,15 +157,15 @@ const Search = (props, context) => {
   return (
     <>
       {loading && <Loading />}
-      <div className='animals-search-main-container'>
-        <div className='aims-search-form-container hide-all-form-legends'>
+      <div className='farm-registry-search-main-container'>
+        <div className='farm-registry-search-form-container hide-all-form-legends'>
           <button className='btn back-btn' onClick={() => hashHistory.push('/main')}>
             <i className='fas fa-chevron-left' />
             <span className='back-btn-text'>{getMainLabel('back', context)}</span>
           </button>
           {configuration && <SearchForm configuration={configuration} handleSearch={handleSearch} setShowRegistrationModal={setShowRegistrationModal} />}
         </div>
-        <div className='animals-search-grid-container'>
+        <div className='farm-registry-search-grid-container'>
           {resultsData && generateGrid(resultsData)}
         </div>
         {showRegistrationModal && (

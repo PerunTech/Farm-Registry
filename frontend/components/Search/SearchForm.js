@@ -13,7 +13,7 @@ const SearchForm = (props, context) => {
       },
       {
         type: 'submit',
-        id: 'add-new-record-btn',
+        id: 'search-records-btn',
         className: 'btn-success btn_save_form',
         action: () => props.handleSearch(),
         label: getMainLabel('search', context)
@@ -26,7 +26,7 @@ const SearchForm = (props, context) => {
     const searchConfig = props.configuration?.searchForm
     return (
       <GenericForm
-        className={`aims-search-form`}
+        className='farm-registry-search-form'
         params='FORM_DATA'
         key='AR_SEARCH_FORM'
         id='AR_SEARCH_FORM'

@@ -34,9 +34,9 @@ const ObjectSummary = (props, context) => {
             .catch(err => {
                 console.error(err);
                 setLoading(false);
-                // const title = err.response?.data?.title || err.message;
-                // const msg = err.response?.data?.message || '';
-                // alertUser(true, 'error', title, msg);
+                const title = err.response?.data?.title || err.message;
+                const msg = err.response?.data?.message || '';
+                alertUser(true, 'error', title, msg);
             });
     };
     const backButtonFunction = () => {
@@ -52,25 +52,19 @@ const ObjectSummary = (props, context) => {
         return (
             <>
                 {menuData.map(({ label, value }) => (
-                    <div className="aims-object-summary-row" key={label}>
+                    <div className="farm-registry-object-summary-row" key={label}>
                         <p>{label}</p>
                         <p>: {value}</p>
                     </div>
                 ))}
-                {modalData.length > 0 && <button
-                    className="aims-object-summary-show-more"
-                    onClick={() => setShow(true)}
-                >
-                    {getMainLabel('show_more', context)}
-                </button>}
             </>
         )
     }
 
     const generateModalData = () => (
-        <div className="aims-object-summary-modal">
+        <div className="farm-registry-object-summary-modal">
             {modalData.map(({ label, value }) => (
-                <div className="aims-object-summary-row" key={label}>
+                <div className="farm-registry-object-summary-row" key={label}>
                     <p>{label}</p>
                     <p>: {value}</p>
                 </div>
@@ -81,13 +75,27 @@ const ObjectSummary = (props, context) => {
     return (
         <>
             {loading && <Loading />}
-            <div className="aims-object-summary">
-                <button className='aims-summary-back-btn' onClick={() => backButtonFunction()}>
+            <div className="farm-registry-object-summary">
+                <button className='farm-registry-summary-back-btn' onClick={() => backButtonFunction()}>
                     <i className='fas fa-chevron-left' />
                     <span className='back-btn-text'>{getMainLabel('back', context)}</span>
                 </button>
+                {menuData.length > 0 && (
+                    <>
+                        <div className='farm-registry-object-summary-rows-container'>
+                            {generateMenuData()}
+                        </div>
+                        {modalData.length > 0 && (
+                            <button
+                                className="farm-registry-object-summary-show-more"
+                                onClick={() => setShow(true)}
+                            >
+                                {getMainLabel('show_more', context)}
+                            </button>
+                        )}
+                    </>
+                )}
             </div>
-            {menuData.length > 0 && generateMenuData()}
             {show && (
                 <Modal
                     className="farm-registry-modal farm-registry-modal-object-summary"
