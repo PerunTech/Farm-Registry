@@ -4,8 +4,9 @@ import { jsonToURI, flattenObject } from '../../utils'
 import { getMainLabel } from '../utils_tools/LabelsExport'
 const { useState, useEffect } = React
 import FarmWrapper from '../Wrapper/FarmWrapper';
+import HoldingWrapper from '../Wrapper/HoldingWrapper';
 const CreateNewRecordForm = (props, context) => {
-  const [wrappers] = useState([{ Farm: FarmWrapper }]);
+  const [wrappers] = useState([{ Farm: FarmWrapper }, { Holding: HoldingWrapper }]);
   const [wrapperName, setWrapperName] = useState(undefined);
   useEffect(() => {
     if (props.configuration?.wrapper) {
