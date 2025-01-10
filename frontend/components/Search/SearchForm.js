@@ -15,7 +15,6 @@ const SearchForm = (props, context) => {
         type: 'submit',
         id: 'search-records-btn',
         className: 'btn-success btn_save_form',
-        action: () => props.handleSearch(),
         label: getMainLabel('search', context)
       }
     ]
@@ -35,6 +34,7 @@ const SearchForm = (props, context) => {
         tableFormDataMethod={searchConfig?.data?.onSubmit}
         hideBtns='all'
         buttonsArray={buttonsArray}
+        addSaveFunction={() => props.handleSearch()}
         isSearchForm
       />
     )
