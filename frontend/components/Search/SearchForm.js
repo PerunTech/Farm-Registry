@@ -36,6 +36,7 @@ const SearchForm = (props, context) => {
         buttonsArray={buttonsArray}
         addSaveFunction={() => props.handleSearch()}
         isSearchForm
+        customSave
       />
     )
   }
