@@ -30,13 +30,23 @@ const HoldingWrapper = (props, context) => {
     }, []);
     useEffect(() => {
         return () => {
+            cleanInput()
             ComponentManager.cleanComponentReducerState(gridId);
         };
     }, []);
+    const cleanInput = () => {
+        const inputs = document.querySelectorAll("#root_holding\\.info_NAME")
+        if (inputs.length > 1) {
+            inputs[0].style.cursor = "";
+            inputs[0].onclick = null;
+            inputs[0].placeholder = "";
+            inputs[0].style.background = "";
 
+        }
+    }
     const handleInputs = () => {
         const inputs = document.querySelectorAll("#root_holding\\.info_NAME")
-        const firstInput = inputs[1]
+        let firstInput = inputs[1] ? inputs[1] : inputs[0]
         if (firstInput) {
             firstInput.style.cursor = "pointer";
             firstInput.onclick = handleShow;
@@ -63,7 +73,7 @@ const HoldingWrapper = (props, context) => {
         );
         if (formData) {
             const inputs = document.querySelectorAll("#root_holding\\.info_NAME")
-            const firstInput = inputs[1]
+            let firstInput = inputs[1] ? inputs[1] : inputs[0]
             formData["PERSON_OBJECT_ID"] = objid[0];
             formData["holding.info_NAME"] = objid[1];
             firstInput.value = formData["holding.info_NAME"]
