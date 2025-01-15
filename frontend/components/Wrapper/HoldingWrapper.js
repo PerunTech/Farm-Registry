@@ -76,6 +76,7 @@ const HoldingWrapper = (props, context) => {
             let firstInput = inputs[1] ? inputs[1] : inputs[0]
             formData["PERSON_OBJECT_ID"] = objid[0];
             formData["holding.info_NAME"] = objid[1];
+            formData["NAME"] = objid[1];
             firstInput.value = formData["holding.info_NAME"]
 
             //  skip the form validation bug
