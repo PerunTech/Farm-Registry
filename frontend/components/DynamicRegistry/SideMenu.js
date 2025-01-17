@@ -66,28 +66,30 @@ const SideMenu = (props) => {
         if (configuration && Array.isArray(configuration.data)) {
             return configuration.data.map(el => {
                 let modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
-                return (
-                    <>
-                        <button
-                            className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
-                            onClick={() => (el.data ? setActive(el) : onButtonClick(el))}
-                        >
-                            {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{el.label}</p>
-                        </button>
-                        {el.data && <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
-                            {el.data.map(sub => {
-                                modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '')
-                                return < button
-                                    className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`
-                                    }
-                                    onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
-                                >
-                                    {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{sub.label}</p>
-                                </button>
-                            })}
-                        </div >}
-                    </>
-                );
+                if (!el.ID.toUpperCase().includes('SUMMARY')) {
+                    return (
+                        <>
+                            <button
+                                className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
+                                onClick={() => (el.data ? setActive(el) : onButtonClick(el))}
+                            >
+                                {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{el.label}</p>
+                            </button>
+                            {el.data && <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
+                                {el.data.map(sub => {
+                                    modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '')
+                                    return < button
+                                        className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`
+                                        }
+                                        onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
+                                    >
+                                        {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{sub.label}</p>
+                                    </button>
+                                })}
+                            </div >}
+                        </>
+                    );
+                }
             });
         } else {
             return <></>;
