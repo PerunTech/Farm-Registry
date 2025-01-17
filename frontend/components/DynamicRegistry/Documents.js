@@ -153,7 +153,7 @@ const Documents = (props, context) => {
             <div className={'farm-registry-documents-container'}>
                 <div className={'farm-registry-upload'}>
                     <p>{labelsManager.importLabel('attachment_title', context, 'farm_registry')}</p>
-                    <label title={labelsManager.importLabel('upload_file_btn', context, 'farm_registry')} for={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
+                    <label title={labelsManager.importLabel('upload_file_btn', context, 'farm_registry')} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
                     <input className={'farm-registry-upload-input'} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
                 </div>
                 <div className={'farm-registry-files'}>
