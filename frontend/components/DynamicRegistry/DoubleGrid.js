@@ -82,6 +82,7 @@ const DoubleGrid = (props, context) => {
                     }
                 }
                 alertUser(true, resType, title, msg, onConfirm)
+                if (props?.configuration?.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
             }
         }).catch(err => {
             console.error(err)

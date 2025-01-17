@@ -67,6 +67,7 @@ const CustomButtons = (props, context) => {
                             const title = err.response?.data?.title || err
                             const msg = err.response?.data?.message || ''
                             alertUser(true, "error", title, msg);
+                            if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                         });
                     }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
                     break;
@@ -84,6 +85,7 @@ const CustomButtons = (props, context) => {
                                 alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => {
                                     reloadGrid(props.tableName + props.appObjId, multiSelect)
                                     setLoading(false)
+                                    if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                                 });
                             }
                         }).catch(err => {
@@ -112,6 +114,7 @@ const CustomButtons = (props, context) => {
                                 alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => {
                                     reloadGrid(props.tableName + props.appObjId, multiSelect)
                                     setLoading(false)
+                                    if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                                 });
                             }
                         }).catch(err => {
@@ -262,6 +265,7 @@ const CustomButtons = (props, context) => {
         let formDataWs = props.configuration.objectConfiguration?.data?.onSubmit
         let onSubmitWs = props.configuration.objectConfiguration?.save?.onSave
         // If we're rendering a modal, the configuration services are a bit nested
+        let refreshSummary = props.configuration.objectConfiguration?.refreshSummary
         if (isModal) {
             // #revise_me
             // We need to find a smarter way to get the WS paths, instead of duplicating the nested properties all over again
@@ -308,8 +312,8 @@ const CustomButtons = (props, context) => {
                 method={jsonSchemaConfig}
                 uiSchemaConfigMethod={uiSchemaConfig}
                 tableFormDataMethod={formDataWs}
-                addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal)}
-                addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData)}
+                addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal, refreshSummary)}
+                addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData, refreshSummary)}
                 hideBtns={hideBtns}
                 inputWrapper={inputWrapper}
                 closeModalFunc={() => setShowModal(false)}
@@ -338,7 +342,7 @@ const CustomButtons = (props, context) => {
         ComponentManager.setStateForComponent(dynamicFormId, null, { saveExecuted: false })
         setRender(true)
     }
-    const saveForm = (e, wsPath, isModal) => {
+    const saveForm = (e, wsPath, isModal, refreshSummary) => {
         let formData = e.formData
         // // Check if every value in the form data object is nullish
         const isEmpty = Object.values(formData).every(v => v === null || v === undefined)
@@ -369,6 +373,7 @@ const CustomButtons = (props, context) => {
                         GridManager.reloadGridData(props.tableName + props.appObjId)
                         closeFormModal()
                     }
+                    if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                 }
             }).catch(err => {
                 console.error(err)
@@ -378,7 +383,7 @@ const CustomButtons = (props, context) => {
             });
         }
     };
-    const deleteFunc = (_id, _action, _session, formData) => {
+    const deleteFunc = (_id, _action, _session, formData, refreshSummary) => {
         const { svSession } = props;
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
@@ -394,6 +399,7 @@ const CustomButtons = (props, context) => {
                 alertUser(true, "success", title, msg, () => resetFormDeleteState());
                 closeFormModal()
                 GridManager.reloadGridData(props.tableName + props.appObjId);
+                if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
             } else {
                 alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => resetFormDeleteState())
             }
