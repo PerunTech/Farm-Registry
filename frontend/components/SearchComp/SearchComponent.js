@@ -3,7 +3,6 @@ const { alertUser } = elements
 const { useState, useEffect } = React
 import { labelsManager } from '../utils_tools/LabelsExport';
 import SearchFormWrapper from './SearchFormWrapper';
-import Summary from '../Summary';
 let searchGridId;
 const SearchComp = (props, context) => {
   const [gridResult, setGridResults] = useState(undefined)
@@ -178,12 +177,7 @@ const SearchComp = (props, context) => {
     <React.Fragment>
       {loading && <Loading />}
       {showSearchForm()}
-      {props.summary ?
-        <div className={"farm-registry-search-grid-container"}>
-          <Summary />
-          <div className={`${props.summary && 'search-grid-with-summary'}`} >{gridResult}</div>
-        </div>
-        : gridResult}
+      {gridResult}
     </React.Fragment>
   )
 }
@@ -197,4 +191,5 @@ const mapStateToProps = (state) => ({
 SearchComp.contextTypes = {
   intl: PropTypes.object.isRequired,
 };
+
 export default connect(mapStateToProps)(SearchComp);
