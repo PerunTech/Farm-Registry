@@ -1,10 +1,11 @@
-import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory } from 'perun-core'
+import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, redux } from 'perun-core'
 const { useState, useEffect } = React
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { getDynamicKey } from '../../utils';
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 import { replaceFunc } from '../utils_tools/UtilFunctions';
+const { store } = redux
 let prev
 const ParentChildGrids = (props, context) => {
     useEffect(() => {
@@ -109,6 +110,7 @@ const ParentChildGrids = (props, context) => {
                     } else {
                         ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { saveExecuted: false })
                     }
+                    if (props?.grids[1]?.objectConfiguration?.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                 }
                 alertUser(true, resType, title, msg, onConfirm)
             }
