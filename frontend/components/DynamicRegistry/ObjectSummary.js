@@ -12,13 +12,17 @@ const ObjectSummary = (props, context) => {
     const [modalData, setModalData] = useState([]);
 
     useEffect(() => {
-        getObjectSummary();
+        props?.configuration?.data?.map(el => {
+            if (el.ID.toUpperCase().includes('SUMMARY')) {
+                getObjectSummary(el.url);
+            }
+        })
+
     }, []);
 
-    const getObjectSummary = () => {
+    const getObjectSummary = (url) => {
         setLoading(true);
-        const url = `${window.server}/WsAims/getObjectSummary/${props.svSession}/${props.tableName}/${props.objectId}`;
-        axios.get(url)
+        axios.get(`${window.server}/${url}`)
             .then(res => {
                 setLoading(false);
                 const resType = res.data?.type?.toLowerCase();
