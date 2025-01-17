@@ -17,10 +17,21 @@ const ObjectSummary = (props, context) => {
                 getObjectSummary(el.url);
             }
         })
-
     }, []);
 
+    useEffect(() => {
+        if (props.refreshSummary) {
+            props?.configuration?.data?.map(el => {
+                if (el.ID.toUpperCase().includes('SUMMARY')) {
+                    getObjectSummary(el.url);
+                    store.dispatch({ type: 'REFRESH_SUMMARY', payload: false })
+                }
+            })
+        }
+    }, [props.refreshSummary]);
+
     const getObjectSummary = (url) => {
+
         setLoading(true);
         axios.get(`${window.server}/${url}`)
             .then(res => {
@@ -120,6 +131,7 @@ const ObjectSummary = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
     businessLogicReducer: state.businessLogicReducer,
+    refreshSummary: state.refreshSummary.refresh
 });
 
 ObjectSummary.contextTypes = {
