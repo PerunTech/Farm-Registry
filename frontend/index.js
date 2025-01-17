@@ -7,7 +7,7 @@ import { redux, persistBundleReducers } from 'perun-core'
 const { store, injectAsyncReducer } = redux;
 injectAsyncReducer(store, 'farm_registry.mapData', mapDataReducer)
 injectAsyncReducer(store, 'refreshSummary', refreshSummary)
-persistBundleReducers(['farm_registry.mapData,registry.refreshSummary'])
+persistBundleReducers(['farm_registry.mapData'])
 const routes = [
   {
     name: 'dynamic-registry-search',
