@@ -4,13 +4,14 @@ const { useEffect, useState } = React;
 const { ReactBootstrap, alertUser } = elements;
 const { Modal } = ReactBootstrap;
 const { store } = redux
+import { iconManager } from '../utils_tools/svgHolder';
 const hashHistory = createHashHistory();
 const ObjectSummary = (props, context) => {
     const [loading, setLoading] = useState(false);
     const [show, setShow] = useState(false);
     const [menuData, setMenuData] = useState([]);
     const [modalData, setModalData] = useState([]);
-
+    const [importUrl, setImportUrl] = useState(undefined)
     useEffect(() => {
         props?.configuration?.data?.map(el => {
             if (el.ID.toUpperCase().includes('SUMMARY')) {
@@ -44,6 +45,7 @@ const ObjectSummary = (props, context) => {
                 } else {
                     setMenuData(res.data?.data?.DETAILED || []);
                     setModalData(res.data?.data?.SHORT || []);
+                    setImportUrl(res.data?.data?.IMPORT?.[0]['import'] || undefined)
                 }
             })
             .catch(err => {
@@ -86,6 +88,23 @@ const ObjectSummary = (props, context) => {
             ))}
         </div>
     );
+    const updateData = () => {
+        alertUser(true, 'info', getMainLabel('confirm_update_action', context), getMainLabel('confirm_update_action_msg', context), () => {
+            setLoading(true)
+            const url = `${window.server}${importUrl}   `
+            axios.get(url).then(res => {
+                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
+                setLoading(false)
+            }).catch(err => {
+                setLoading(false)
+                console.error(err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg);
+            });
+        }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
+    }
+
 
     return (
         <>
@@ -108,6 +127,7 @@ const ObjectSummary = (props, context) => {
                                 {getMainLabel('show_more', context)}
                             </button>
                         )}
+                        {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{getMainLabel("update_data_btn", context)} <span className={`update-farm-btn-icon`}>{iconManager.getIcon('reloadData')}</span></span></button>}
                     </>
                 )}
             </div>
