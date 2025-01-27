@@ -1,5 +1,5 @@
 import { React, PropTypes, ExportableGrid, Loading, ComponentManager, connect, redux, elements, axios, createHashHistory } from 'perun-core'
-import { getMainLabel } from '../utils_tools/LabelsExport'
+import { getMainLabel, labelsManager } from '../utils_tools/LabelsExport'
 import { updateIdScreen } from '../utils_tools/UtilFunctions'
 import { jsonToURI, flattenObject } from '../../utils'
 import SearchForm from './SearchForm'
