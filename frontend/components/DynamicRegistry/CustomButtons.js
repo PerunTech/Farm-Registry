@@ -61,13 +61,13 @@ const CustomButtons = (props, context) => {
                         axios.get(saveUrl).then(res => {
                             alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
                             setLoading(false)
+                            if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                         }).catch(err => {
                             setLoading(false)
                             console.error(err)
                             const title = err.response?.data?.title || err
                             const msg = err.response?.data?.message || ''
                             alertUser(true, "error", title, msg);
-                            if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                         });
                     }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
                     break;
@@ -305,7 +305,7 @@ const CustomButtons = (props, context) => {
         }
         return (
             <GenericForm
-                className={`form-test custom-farm-registry-form ${isModal && 'hide-legend-form'} ${props.tableName.toLowerCase()}-farm-registry-form ${props.configuration.objectConfiguration?.readOnly && 'read-only-form'} `}
+                className={`form-test aims-forms custom-farm-registry-form ${isModal && 'hide-legend-form'} ${props.tableName.toLowerCase()}-farm-registry-form ${props.configuration.objectConfiguration?.readOnly && 'read-only-form'} `}
                 params={'READ_URL'}
                 key={dynamicFormId}
                 id={dynamicFormId}

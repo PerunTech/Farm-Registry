@@ -1,7 +1,7 @@
 import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux } from "perun-core";
 import { getMainLabel } from '../utils_tools/LabelsExport';
 const { useEffect, useState } = React;
-const { ReactBootstrap, alertUser } = elements;
+const { ReactBootstrap, alertUser, alertUserResponse } = elements;
 const { Modal } = ReactBootstrap;
 const { store } = redux
 import { iconManager } from '../utils_tools/svgHolder';
@@ -11,6 +11,7 @@ const ObjectSummary = (props, context) => {
     const [show, setShow] = useState(false);
     const [menuData, setMenuData] = useState([]);
     const [modalData, setModalData] = useState([]);
+    const [actions, setActions] = useState([])
     const [importUrl, setImportUrl] = useState(undefined)
     useEffect(() => {
         props?.configuration?.data?.map(el => {
@@ -45,6 +46,7 @@ const ObjectSummary = (props, context) => {
                 } else {
                     setMenuData(res.data?.data?.DETAILED || []);
                     setModalData(res.data?.data?.SHORT || []);
+                    setActions(res.data?.data?.ACTIONS || [])
                     setImportUrl(res.data?.data?.IMPORT?.[0]['import'] || undefined)
                 }
             })
@@ -105,6 +107,24 @@ const ObjectSummary = (props, context) => {
         }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
     }
 
+    const generateSummaryActions = () => {
+        return actions?.map(el => (
+            < button className="farm-registry-object-summary-show-more" onClick={() => summaryAction(el.onSubmit)}> {el.label}</button >
+        ))
+    }
+
+    const summaryAction = (url) => {
+        setLoading(true)
+        axios.get(`${window.server + url}`).then(res => {
+            setLoading(false)
+            alertUserResponse({ response: res })
+            store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+
+        }).catch(err => {
+            alertUserResponse({ response: err })
+            setLoading(false)
+        })
+    }
 
     return (
         <>
@@ -119,15 +139,18 @@ const ObjectSummary = (props, context) => {
                         <div className='farm-registry-object-summary-rows-container'>
                             {generateMenuData()}
                         </div>
-                        {modalData.length > 0 && (
-                            <button
-                                className="farm-registry-object-summary-show-more"
-                                onClick={() => setShow(true)}
-                            >
-                                {getMainLabel('show_more', context)}
-                            </button>
-                        )}
-                        {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{getMainLabel("update_data_btn", context)} <span className={`update-farm-btn-icon`}>{iconManager.getIcon('reloadData')}</span></span></button>}
+                        <div className='farm-registry-object-summary-btn-container'>
+                            {modalData.length > 0 && (
+                                <button
+                                    className="farm-registry-object-summary-show-more"
+                                    onClick={() => setShow(true)}
+                                >
+                                    {getMainLabel('show_more', context)}
+                                </button>
+                            )}
+                            {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{getMainLabel("update_data_btn", context)} <span className={`update-farm-btn-icon`}>{iconManager.getIcon('reloadData')}</span></span></button>}
+                            {actions && generateSummaryActions()}
+                        </div>
                     </>
                 )}
             </div>

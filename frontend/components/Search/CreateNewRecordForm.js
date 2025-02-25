@@ -69,7 +69,7 @@ const CreateNewRecordForm = (props, context) => {
 
     return (
       <GenericForm
-        className={`form-test custom-farm-registry-form`}
+        className={`form-test custom-farm-registry-form aims-forms hide-initial-form-legend`}
         params={'FORM_DATA'}
         key={`REGISTRATION_FORM`}
         id={`REGISTRATION_FORM`}
