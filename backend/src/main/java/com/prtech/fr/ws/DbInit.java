@@ -2214,6 +2214,16 @@ public class DbInit implements IDbInit {
 			dbLink.setVal("LINK_OBJ_TYPE_2", svCONST.OBJECT_TYPE_FILE);
 			return dbLink;
 	}
+	
+	private static DbDataObject createUserFilesLink() {
+			DbDataObject dbLink = new DbDataObject();
+			dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
+			dbLink.setVal("LINK_TYPE", "LINK_FILE");
+			dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between USER and FILE");
+			dbLink.setVal("LINK_OBJ_TYPE_1", svCONST.OBJECT_TYPE_USER);
+			dbLink.setVal("LINK_OBJ_TYPE_2", svCONST.OBJECT_TYPE_FILE);
+			return dbLink;
+}
 
 	@Override
 	public ArrayList<DbDataTable> getCustomObjectTypes() {
@@ -2267,6 +2277,7 @@ public class DbInit implements IDbInit {
 		dbtList.add(createLinkOrgUnitPerson());
 		dbtList.add(createLinkOrgUnitGroup());
 		dbtList.add(createFarmFilesLink());
+		dbtList.add(createUserFilesLink());
 		//dbtList.add(createLinkSupportClaimWithReceiptMilk());
 		return dbtList;
 	}
