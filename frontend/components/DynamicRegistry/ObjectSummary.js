@@ -121,7 +121,7 @@ const ObjectSummary = (props, context) => {
                 <div className='farm-registry-alert-fields'>
                     {data['FIELDS'].map((el, index) => (
                         <div className='farm-registry-alert-field' key={index}>
-                            <>                         <div className='farm-registry-alert-field-icon'>{el.value ? iconManager.getIcon('Xmark') : iconManager.getIcon('Cmark')}</div>
+                            <>                         <div className='farm-registry-alert-field-icon'>{!el.value ? iconManager.getIcon('Xmark') : iconManager.getIcon('Cmark')}</div>
                                 <p>{el.label}</p></>
                         </div>
                     ))}
@@ -132,7 +132,6 @@ const ObjectSummary = (props, context) => {
         alertUserV2({
             html: customElement,
             allowOutsideClick: true,
-            showConfirmButton: false,
         });
         store.dispatch({ type: 'REFRESH_SUMMARY', payload: true });
     }
