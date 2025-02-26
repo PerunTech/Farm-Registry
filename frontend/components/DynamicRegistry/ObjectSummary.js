@@ -1,7 +1,7 @@
-import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux } from "perun-core";
+import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM, Swal } from "perun-core";
 import { getMainLabel } from '../utils_tools/LabelsExport';
 const { useEffect, useState } = React;
-const { ReactBootstrap, alertUser, alertUserResponse } = elements;
+const { ReactBootstrap, alertUser, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { store } = redux
 import { iconManager } from '../utils_tools/svgHolder';
@@ -109,22 +109,52 @@ const ObjectSummary = (props, context) => {
 
     const generateSummaryActions = () => {
         return actions?.map(el => (
-            < button className="farm-registry-object-summary-show-more" onClick={() => summaryAction(el.onSubmit)}> {el.label}</button >
+            < button className="farm-registry-object-summary-show-more farm-registry-object-summary-btn-action" onClick={() => summaryAction(el.onSubmit)}> {el.label}</button >
         ))
     }
 
-    const summaryAction = (url) => {
-        setLoading(true)
-        axios.get(`${window.server + url}`).then(res => {
-            setLoading(false)
-            alertUserResponse({ response: res })
-            store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
-
-        }).catch(err => {
-            alertUserResponse({ response: err })
-            setLoading(false)
-        })
+    const generateCheckList = (data) => {
+        const customElement = document.createElement('div');
+        ReactDOM.render(
+            <div className='farm-registry-alert'>
+                <div className='farm-registry-alert-title'><p>{getMainLabel('alert-title', context)}</p></div>
+                <div className='farm-registry-alert-fields'>
+                    {data['FIELDS'].map((el, index) => (
+                        <div className='farm-registry-alert-field' key={index}>
+                            {Object.entries(el).map(([key, value], idx) => (
+                                <>                         <div className='farm-registry-alert-field-icon'>{value ? iconManager.getIcon('Xmark') : iconManager.getIcon('Cmark')}</div>
+                                    <p>{key}</p></>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+                <button className='btn-success btn_save_form' onClick={() => Swal.close()}>Close</button>
+            </div>,
+            customElement
+        );
+        alertUserV2({
+            html: customElement,
+            allowOutsideClick: true
+        });
+        store.dispatch({ type: 'REFRESH_SUMMARY', payload: true });
     }
+
+    const summaryAction = (url) => {
+        setLoading(true);
+
+        axios.get(`${window.server + url}`)
+            .then(res => {
+                setLoading(false);
+                const data = JSON.parse(res.data.data);
+                data?.['FIELDS'] ? generateCheckList(data) : alertUserResponse({ response: res })
+
+            })
+            .catch(err => {
+                setLoading(false);
+                alertUserResponse({ response: err });
+            });
+    };
+
 
     return (
         <>

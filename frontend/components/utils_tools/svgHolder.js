@@ -235,7 +235,8 @@ export const svgIcons = {
       </g>
     </g>
   </svg>,
-
+  Xmark: <svg style={{ width: '100%', height: '100%' }} version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 191.812 191.812" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style={{ fill: "#FF9800" }} d="M95.906,121.003c6.903,0,12.5-5.597,12.5-12.5V51.511c0-6.904-5.597-12.5-12.5-12.5 s-12.5,5.596-12.5,12.5v56.993C83.406,115.407,89.003,121.003,95.906,121.003z"></path> <path style={{ fill: "#FF9800" }} d="M95.909,127.807c-3.29,0-6.521,1.33-8.841,3.66c-2.329,2.32-3.659,5.54-3.659,8.83 s1.33,6.52,3.659,8.84c2.32,2.33,5.551,3.66,8.841,3.66s6.51-1.33,8.84-3.66c2.319-2.32,3.66-5.55,3.66-8.84s-1.341-6.51-3.66-8.83 C102.419,129.137,99.199,127.807,95.909,127.807z"></path> <path style={{ fill: "#FF9800" }} d="M95.906,0C43.024,0,0,43.023,0,95.906s43.023,95.906,95.906,95.906s95.905-43.023,95.905-95.906 S148.789,0,95.906,0z M95.906,176.812C51.294,176.812,15,140.518,15,95.906S51.294,15,95.906,15 c44.611,0,80.905,36.294,80.905,80.906S140.518,176.812,95.906,176.812z"></path> </g> </g></svg>,
+  Cmark: <svg style={{ width: '100%', height: '100%' }} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="12" cy="12" r="10" stroke="green" stroke-width="1.5"></circle> <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="green" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>,
 }
 
 export const iconManager = {
