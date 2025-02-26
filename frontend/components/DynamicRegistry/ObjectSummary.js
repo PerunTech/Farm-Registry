@@ -121,10 +121,8 @@ const ObjectSummary = (props, context) => {
                 <div className='farm-registry-alert-fields'>
                     {data['FIELDS'].map((el, index) => (
                         <div className='farm-registry-alert-field' key={index}>
-                            {Object.entries(el).map(([key, value], idx) => (
-                                <>                         <div className='farm-registry-alert-field-icon'>{value ? iconManager.getIcon('Xmark') : iconManager.getIcon('Cmark')}</div>
-                                    <p>{key}</p></>
-                            ))}
+                            <>                         <div className='farm-registry-alert-field-icon'>{el.value ? iconManager.getIcon('Xmark') : iconManager.getIcon('Cmark')}</div>
+                                <p>{el.label}</p></>
                         </div>
                     ))}
                 </div>
