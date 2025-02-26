@@ -1,4 +1,4 @@
-import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM, Swal } from "perun-core";
+import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM } from "perun-core";
 import { getMainLabel } from '../utils_tools/LabelsExport';
 const { useEffect, useState } = React;
 const { ReactBootstrap, alertUser, alertUserResponse, alertUserV2 } = elements;
@@ -126,7 +126,6 @@ const ObjectSummary = (props, context) => {
                         </div>
                     ))}
                 </div>
-                <button className='btn-success btn_save_form' onClick={() => Swal.close()}>Close</button>
             </div>,
             customElement
         );
