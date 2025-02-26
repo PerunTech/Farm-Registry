@@ -132,7 +132,8 @@ const ObjectSummary = (props, context) => {
         );
         alertUserV2({
             html: customElement,
-            allowOutsideClick: true
+            allowOutsideClick: true,
+            showConfirmButton: false,
         });
         store.dispatch({ type: 'REFRESH_SUMMARY', payload: true });
     }
