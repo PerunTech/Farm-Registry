@@ -7,3 +7,4 @@ export const core = spatial.core
 export const data = spatial.data
 export const tools = spatial.tools
 export const ui = spatial.ui
+export const proj4 = spatial.proj4
