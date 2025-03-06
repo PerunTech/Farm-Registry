@@ -25,7 +25,7 @@ const Reports = (props, context) => {
         let url = window.server + `/custom-menu/get-configuration/sid/${props.svSession}/component-name/reports-menu/object-id/0/object-type/FARM`
         axios.get(url).then(res => {
             setLoading(false)
-            setConfig(res.data)
+            setConfig(res?.data)
         }).catch(err => {
             console.error(err)
             setLoading(false)

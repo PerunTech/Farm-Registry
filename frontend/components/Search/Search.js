@@ -100,21 +100,24 @@ const Search = (props, context) => {
     const url = `${window.server}/custom-menu/get-configuration/sid/${svSession}/component-name/main-registry-search-menu/object-id/0/object-type/${businessObjectName}`
     axios.get(url).then(res => {
       setLoading(false)
-      const resType = res?.data?.type?.toLowerCase()
-      if (resType && resType === 'error') {
-        const title = res.data?.title || ''
-        const msg = res.data?.message || ''
-        alertUser(true, 'error', title, msg)
-      } else {
-        if (res?.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
-          res.data.data.forEach(item => {
-            // Match the appropriate configuration item according to the selected table
-            if (item.ID === businessObjectName) {
-              setConfiguration(item.objectConfiguration)
-            }
-          })
+      if (res?.data) {
+        const resType = res.data?.type?.toLowerCase()
+        if (resType && resType === 'error') {
+          const title = res.data?.title || ''
+          const msg = res.data?.message || ''
+          alertUser(true, 'error', title, msg)
+        } else {
+          if (res.data?.data && Array.isArray(res.data?.data) && res.data?.data?.length > 0) {
+            res.data.data.forEach(item => {
+              // Match the appropriate configuration item according to the selected table
+              if (item.ID === businessObjectName) {
+                setConfiguration(item.objectConfiguration)
+              }
+            })
+          }
         }
       }
+
     }).catch(err => {
       setLoading(false)
       console.error(err)

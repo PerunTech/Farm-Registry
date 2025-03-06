@@ -21,30 +21,32 @@ const SideMenu = (props) => {
         let url = window.server + `/custom-menu/get-configuration/sid/${props.svSession}/component-name/${menuName}/object-id/${props.objectId}/object-type/${props.tableName}`
         axios.get(url).then(res => {
             setLoading(false)
-            const resType = res.data?.type?.toLowerCase()
-            if (resType && resType === 'error') {
-                const title = res.data?.title || ''
-                const msg = res.data?.message || ''
-                alertUser(true, 'error', title, msg)
-            } else {
-                setConfiguration(res.data)
-                const component = props.routeParams?.component
-                const isChild = component.includes('SUB-')
-                const tableName = component.replace(/^SUB-/, '')
-                res.data?.data?.map(item => {
-                    if (item.data && isChild) {
-                        item.data.map(child => {
-                            if (child?.ID?.includes(tableName)) {
-                                onButtonClick(child, true)
-                                setActive(item)
+            if (res?.data) {
+                const resType = res.data?.type?.toLowerCase()
+                if (resType && resType === 'error') {
+                    const title = res.data?.title || ''
+                    const msg = res.data?.message || ''
+                    alertUser(true, 'error', title, msg)
+                } else {
+                    setConfiguration(res.data)
+                    const component = props.routeParams?.component
+                    const isChild = component.includes('SUB-')
+                    const tableName = component.replace(/^SUB-/, '')
+                    res.data?.data?.map(item => {
+                        if (item.data && isChild) {
+                            item.data.map(child => {
+                                if (child?.ID?.includes(tableName)) {
+                                    onButtonClick(child, true)
+                                    setActive(item)
+                                }
+                            })
+                        } else {
+                            if (item?.ID?.includes(tableName)) {
+                                onButtonClick(item)
                             }
-                        })
-                    } else {
-                        if (item?.ID?.includes(tableName)) {
-                            onButtonClick(item)
                         }
-                    }
-                })
+                    })
+                }
             }
         }).catch(err => {
             console.error(err)
