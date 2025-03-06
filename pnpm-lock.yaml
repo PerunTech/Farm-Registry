@@ -11,6 +11,9 @@ importers:
       perun-core:
         specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-core#dev
         version: git+https://git@gitlab.prtech.mk/svarog4/perun-core#4139562d047d278bfcfdb2f3ef23c953b7062919(@types/react@19.0.2)
+      spatial:
+        specifier: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#dev
+        version: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#62d4128f31d41c404a41c62e478b4866c47fefeb(@types/react@19.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.23.9
@@ -2032,6 +2035,18 @@ packages:
   launch-editor@2.9.1:
     resolution: {integrity: sha512-Gcnl4Bd+hRO9P9icCP/RVVT2o8SFlPXofuCxvA2SaZuH45whSvf5p8x5oih5ftLiVhEI4sp5xDY+R+b3zJBh5w==}
 
+  leaflet-polylinedecorator@1.6.0:
+    resolution: {integrity: sha512-kn3krmZRetgvN0wjhgYL8kvyLS0tUogAl0vtHuXQnwlYNjbl7aLQpkoFUo8UB8gVZoB0dhI4Tb55VdTJAcYzzQ==}
+
+  leaflet-rotatedmarker@0.2.0:
+    resolution: {integrity: sha512-yc97gxLXwbZa+Gk9VCcqI0CkvIBC9oNTTjFsHqq4EQvANrvaboib4UdeQLyTnEqDpaXHCqzwwVIDHtvz2mUiDg==}
+
+  leaflet.fullscreen@3.0.2:
+    resolution: {integrity: sha512-m27waFVmwdrLGXjZw2L8b7w/W28EY+u7IGzK2x8K99XaPuzKbjI+/H1j0OMawLcRPZyDRh+39XpyLsvDwHUEoA==}
+
+  leaflet@1.5.1:
+    resolution: {integrity: sha512-ekM9KAeG99tYisNBg0IzEywAlp0hYI5XRipsqRXyRTeuU8jcuntilpp+eFf5gaE0xubc9RuSNIVtByEKwqFV0w==}
+
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
@@ -2112,6 +2127,9 @@ packages:
   methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
+
+  mgrs@1.0.0:
+    resolution: {integrity: sha512-awNbTOqCxK1DBGjalK3xqWIstBZgN6fxsMSiXLs9/spqWkF2pAhb2rrYCFSsr1/tT7PhcDGjZndG8SWYn0byYA==}
 
   micromatch@4.0.8:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
@@ -2307,6 +2325,10 @@ packages:
     resolution: {commit: 4139562d047d278bfcfdb2f3ef23c953b7062919, repo: https://git@gitlab.prtech.mk/svarog4/perun-core, type: git}
     version: 0.2.0
 
+  perun-core@git+https://git@gitlab.prtech.mk/svarog4/perun-core#fa766877a0bad013bbc2f2da856fc47d30e66302:
+    resolution: {commit: fa766877a0bad013bbc2f2da856fc47d30e66302, repo: https://git@gitlab.prtech.mk/svarog4/perun-core, type: git}
+    version: 0.2.0
+
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -2376,6 +2398,9 @@ packages:
   progress@2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
+
+  proj4@2.10.0:
+    resolution: {integrity: sha512-0eyB8h1PDoWxucnq88/EZqt7UZlvjhcfbXCcINpE7hqRN0iRPWE/4mXINGulNa/FAvK+Ie7F+l2OxH/0uKV36A==}
 
   promise-polyfill@6.1.0:
     resolution: {integrity: sha512-g0LWaH0gFsxovsU7R5LrrhHhWAWiHRnh1GPrhXnPgYsDkIqjRYUYSZEsej/wtleDrz5xVSIDbeKfidztp2XHFQ==}
@@ -2827,6 +2852,10 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
+  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#62d4128f31d41c404a41c62e478b4866c47fefeb:
+    resolution: {commit: 62d4128f31d41c404a41c62e478b4866c47fefeb, repo: https://git@gitlab.prtech.mk/svarog4/svarog-spatial, type: git}
+    version: 1.0.1
+
   spdy-transport@3.0.0:
     resolution: {integrity: sha512-hsLVFE5SjA6TCisWeJXFKniGGOpBgMLmerfO2aCyCU5s7nJ/rpAepqmFifv/GCbSbueEeAJJnmSQ2rKC/g8Fcw==}
 
@@ -2919,6 +2948,9 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  sweetalert2@11.17.2:
+    resolution: {integrity: sha512-HKxDr1IyV3Lxr3W6sb61qm/p2epFIEdr5EKwteRFHnIg6f8nHFl2kX++DBVz16Mac+fFiU3hMpjq1L6yE2Ge5w==}
 
   sweetalert@2.1.2:
     resolution: {integrity: sha512-iWx7X4anRBNDa/a+AdTmvAzQtkN1+s4j/JJRWlHpYE8Qimkohs8/XnFcWeYHH2lMA8LRCa5tj2d244If3S/hzA==}
@@ -3243,6 +3275,9 @@ packages:
 
   wildcard@2.0.1:
     resolution: {integrity: sha512-CC1bOL87PIWSBhDcTrdeLo6eGT7mCFtrg0uIJtqJUFyK+eJnzl8A1niH56uu7KMa5XFrtiV+AQuHO3n7DsHnLQ==}
+
+  wkt-parser@1.4.0:
+    resolution: {integrity: sha512-qpwO7Ihds/YYDTi1aADFTI1Sm9YC/tTe3SHD24EeIlZxy7Ik6a1b4HOz7jAi0xdUAw487duqpo8OGu+Tf4nwlQ==}
 
   wmf@1.0.2:
     resolution: {integrity: sha512-/p9K7bEh0Dj6WbXg4JG0xvLQmIadrner1bi45VMJTfnbVHsc7yIajZyoSoK60/dtVBs12Fm6WkUI5/3WAVsNMw==}
@@ -5639,6 +5674,16 @@ snapshots:
       picocolors: 1.1.1
       shell-quote: 1.8.2
 
+  leaflet-polylinedecorator@1.6.0:
+    dependencies:
+      leaflet-rotatedmarker: 0.2.0
+
+  leaflet-rotatedmarker@0.2.0: {}
+
+  leaflet.fullscreen@3.0.2: {}
+
+  leaflet@1.5.1: {}
+
   levn@0.4.1:
     dependencies:
       prelude-ls: 1.2.1
@@ -5706,6 +5751,8 @@ snapshots:
   merge-stream@2.0.0: {}
 
   methods@1.1.2: {}
+
+  mgrs@1.0.0: {}
 
   micromatch@4.0.8:
     dependencies:
@@ -5917,6 +5964,51 @@ snapshots:
       - debug
       - encoding
 
+  perun-core@git+https://git@gitlab.prtech.mk/svarog4/perun-core#fa766877a0bad013bbc2f2da856fc47d30e66302(@types/react@19.0.2):
+    dependencies:
+      '@json2csv/plainjs': 7.0.6
+      '@rjsf/core': 5.23.2(@rjsf/utils@5.23.2(react@16.14.0))(react@16.14.0)
+      '@rjsf/utils': 5.23.2(react@16.14.0)
+      '@rjsf/validator-ajv8': 5.23.2(@rjsf/utils@5.23.2(react@16.14.0))
+      axios: 0.24.0
+      axios-retry: 3.9.1
+      history: 4.7.2
+      md5: 2.2.1
+      prop-types: 15.8.1
+      query-string: 6.14.1
+      react: 16.14.0
+      react-bootstrap: 1.6.8(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react-data-grid: 5.0.5(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react-data-grid-addons: 4.0.8(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react-dom: 16.14.0(react@16.14.0)
+      react-draggable: 4.4.6(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react-ga: 2.5.7(prop-types@15.8.1)(react@16.14.0)
+      react-google-recaptcha: 2.1.0(react@16.14.0)
+      react-intl: 2.4.0(prop-types@15.8.1)(react@16.14.0)
+      react-intl-redux: 0.7.0(react-intl@2.4.0(prop-types@15.8.1)(react@16.14.0))(react-redux@5.1.2(react@16.14.0)(redux@4.2.1))
+      react-json-view: 1.21.3(@types/react@19.0.2)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react-redux: 5.1.2(react@16.14.0)(redux@4.2.1)
+      react-router-dom: 5.0.1(react@16.14.0)
+      react-select: 1.2.1(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react-select-fast-filter-options: 0.2.3(react-select@1.2.1(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)
+      react-tooltip: 3.4.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      redux: 4.2.1
+      redux-auth-wrapper: 2.0.2
+      redux-logger: 3.0.6
+      redux-magic-async-middleware: 0.1.0(redux-updeep@0.1.1)
+      redux-persist: 4.10.1(react@16.14.0)
+      redux-promise-middleware: 6.2.0(redux@4.2.1)
+      redux-thunk: 2.4.2(redux@4.2.1)
+      redux-updeep: 0.1.1
+      sweetalert: 2.1.2
+      sweetalert2: 11.17.2
+      validator: 9.1.1
+      xlsx: 0.17.5
+    transitivePeerDependencies:
+      - '@types/react'
+      - debug
+      - encoding
+
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
@@ -5972,6 +6064,11 @@ snapshots:
   process-nextick-args@2.0.1: {}
 
   progress@2.0.3: {}
+
+  proj4@2.10.0:
+    dependencies:
+      mgrs: 1.0.0
+      wkt-parser: 1.4.0
 
   promise-polyfill@6.1.0: {}
 
@@ -6565,6 +6662,18 @@ snapshots:
 
   source-map@0.6.1: {}
 
+  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#62d4128f31d41c404a41c62e478b4866c47fefeb(@types/react@19.0.2):
+    dependencies:
+      leaflet: 1.5.1
+      leaflet-polylinedecorator: 1.6.0
+      leaflet.fullscreen: 3.0.2
+      perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#fa766877a0bad013bbc2f2da856fc47d30e66302(@types/react@19.0.2)
+      proj4: 2.10.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - debug
+      - encoding
+
   spdy-transport@3.0.0:
     dependencies:
       debug: 4.4.0
@@ -6683,6 +6792,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  sweetalert2@11.17.2: {}
 
   sweetalert@2.1.2:
     dependencies:
@@ -7066,6 +7177,8 @@ snapshots:
       isexe: 2.0.0
 
   wildcard@2.0.1: {}
+
+  wkt-parser@1.4.0: {}
 
   wmf@1.0.2: {}
 
