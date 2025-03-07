@@ -1,6 +1,6 @@
 import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory } from 'perun-core'
 import { getMainLabel } from '../utils_tools/LabelsExport';
-const { ReactBootstrap, alertUser } = elements;
+const { ReactBootstrap, alertUserResponse } = elements;
 const { store } = redux;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -66,29 +66,24 @@ const DoubleGrid = (props, context) => {
         )
     }
     const onSubmit = (e) => {
+        const resetFormSaveState = () => ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false })
         const url = props.configuration?.addForm?.save?.onSave
         const reqConfig = { method: 'post', url: `${window.server}${url}`, data: encodeURIComponent(JSON.stringify(e.formData)) }
         axios(reqConfig).then(res => {
-            if (res.data) {
+            if (res?.data) {
                 const resType = res?.data?.type?.toLowerCase() || 'info'
-                const title = res?.data?.title || ''
-                const msg = res?.data?.message || ''
-                const onConfirm = () => {
-                    if (resType === 'success') {
-                        setShow(false)
-                        GridManager.reloadGridData(props.configuration.leftGrid.ID)
-                    } else {
-                        ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false })
+                alertUserResponse({
+                    response: res, onConfirm: () => {
+                        if (resType === 'success') {
+                            setShow(false)
+                        }
+                        resetFormSaveState()
                     }
-                }
-                alertUser(true, resType, title, msg, onConfirm)
-                if (props?.configuration?.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                })
             }
         }).catch(err => {
             console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, 'error', title, msg, () => ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false }))
+            alertUserResponse({ response: err.response?.data, onConfirm: resetFormSaveState })
         })
     }
 

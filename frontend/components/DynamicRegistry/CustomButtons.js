@@ -11,7 +11,7 @@ import FarmmembersWrapper from '../Wrapper/FarmmembersWrapper';
 import CadparcelWrapper from '../Wrapper/CadparcelWrapper'
 import FarmWrapper from '../Wrapper/FarmWrapper'
 import HoldingWrapper from '../Wrapper/HoldingWrapper'
-const { ReactBootstrap, alertUser } = elements;
+const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
 const { store, updateSelectedRows } = redux;
@@ -56,23 +56,31 @@ const CustomButtons = (props, context) => {
             let data
             switch (el['type']) {
                 case 'GET':
-                    alertUser(true, 'info', promptLabel, '', () => {
+                    const executeGetAction = () => {
                         setLoading(true)
                         axios.get(saveUrl).then(res => {
-                            alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
                             setLoading(false)
+                            if (res?.data) {
+                                alertUserResponse({ response: res.data })
+                            }
                             if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                         }).catch(err => {
                             setLoading(false)
                             console.error(err)
-                            const title = err.response?.data?.title || err
-                            const msg = err.response?.data?.message || ''
-                            alertUser(true, "error", title, msg);
+                            alertUserResponse({ response: err.response?.data })
                         });
-                    }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
+                    }
+                    alertUserV2({
+                        type: 'info',
+                        title: promptLabel,
+                        confirmButtonText: getMainLabel('yes', context),
+                        onConfirm: executeGetAction,
+                        showCancel: true,
+                        cancelButtonText: getMainLabel('no', context)
+                    })
                     break;
                 case 'POST':
-                    alertUser(true, 'info', promptLabel, '', () => {
+                    const executePostAction = () => {
                         setLoading(true)
                         data = JSON.stringify(selectedGridRows)
                         axios({
@@ -81,24 +89,32 @@ const CustomButtons = (props, context) => {
                             url: saveUrl,
                             headers: { "Content-Type": "application/x-www-form-urlencoded" },
                         }).then(res => {
-                            if (res.data) {
-                                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => {
-                                    reloadGrid(props.tableName + props.appObjId, multiSelect)
-                                    setLoading(false)
-                                    if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
-                                });
+                            if (res?.data) {
+                                alertUserResponse({
+                                    response: res.data, onConfirm: () => {
+                                        reloadGrid(props.tableName + props.appObjId, multiSelect)
+                                        setLoading(false)
+                                        if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                                    }
+                                })
                             }
                         }).catch(err => {
-                            console.error(err)
-                            const title = err.response?.data?.title || err
-                            const msg = err.response?.data?.message || ''
-                            alertUser(true, "error", title, msg);
                             setLoading(false)
+                            console.error(err)
+                            alertUserResponse({ response: err.response?.data })
                         });
-                    }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
+                    }
+                    alertUserV2({
+                        type: 'info',
+                        title: promptLabel,
+                        confirmButtonText: getMainLabel('yes', context),
+                        onConfirm: executePostAction,
+                        showCancel: true,
+                        cancelButtonText: getMainLabel('no', context)
+                    })
                     break;
                 case 'action':
-                    alertUser(true, 'info', promptLabel, '', () => {
+                    const action = () => {
                         setLoading(true)
                         data = {
                             "objectArray": selectedGridRows,
@@ -110,21 +126,29 @@ const CustomButtons = (props, context) => {
                             url: `${window.server}${el.url}`,
                             headers: { "Content-Type": el.contentType },
                         }).then(res => {
-                            if (res.data) {
-                                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message, () => {
-                                    reloadGrid(props.tableName + props.appObjId, multiSelect)
-                                    setLoading(false)
-                                    if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
-                                });
+                            if (res?.data) {
+                                alertUserResponse({
+                                    response: res.data, onConfirm: () => {
+                                        reloadGrid(props.tableName + props.appObjId, multiSelect)
+                                        setLoading(false)
+                                        if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                                    }
+                                })
                             }
                         }).catch(err => {
                             console.error(err)
-                            const title = err.response?.data?.title || err
-                            const msg = err.response?.data?.message || ''
-                            alertUser(true, "error", title, msg);
                             setLoading(false)
+                            alertUserResponse({ response: err.response?.data })
                         });
-                    }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
+                    }
+                    alertUserV2({
+                        type: 'info',
+                        title: promptLabel,
+                        confirmButtonText: getMainLabel('yes', context),
+                        onConfirm: action,
+                        showCancel: true,
+                        cancelButtonText: getMainLabel('no', context)
+                    })
                     break;
                 case 'toggle-action':
                     if (actionToggle === el.ID) {
@@ -146,7 +170,7 @@ const CustomButtons = (props, context) => {
             if (selectedGridRows.length > 0) {
                 executeAction()
             } else {
-                alertUser(true, 'info', getMainLabel('select_multi', context));
+                alertUserV2({ type: 'info', title: getMainLabel('select_multi', context) })
             }
         } else {
             executeAction()
@@ -352,7 +376,7 @@ const CustomButtons = (props, context) => {
         const onlyHasSystemFields = Object.keys(nonNullishFormData).length === 4 && Object.keys(nonNullishFormData).every(k => k === 'OBJECT_ID' || k === 'OBJECT_TYPE' || k === 'PKID' || k === 'PARENT_ID')
         if (isEmpty || onlyHasSystemFields) {
             const label = getMainLabel('enter_some_values', context)
-            alertUser(true, 'info', label, '', () => resetFormSaveState())
+            alertUserV2({ type: 'info', title: label, onConfirm: resetFormSaveState })
         } else {
             const url = `${window.server}${wsPath}`
             axios({
@@ -361,25 +385,23 @@ const CustomButtons = (props, context) => {
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
-                const resType = res.data.type
-                const title = res.data.title || ''
-                const msg = res.data.message || ''
-                if (resType?.toLowerCase() === 'error') {
-                    alertUser(true, 'error', title, msg, () => resetFormSaveState());
-                } else {
-                    setRender(false)
-                    alertUser(true, resType?.toLowerCase(), title, msg, () => { resetFormSaveState() });
-                    if (isModal) {
-                        GridManager.reloadGridData(props.tableName + props.appObjId)
-                        closeFormModal()
+                if (res?.data) {
+                    const resType = res.data?.type?.toLowerCase() || 'info'
+                    if (resType === 'error') {
+                        alertUserResponse({ response: res.data, onConfirm: resetFormSaveState })
+                    } else {
+                        setRender(false)
+                        alertUserResponse({ response: res.data, onConfirm: resetFormSaveState })
+                        if (isModal) {
+                            GridManager.reloadGridData(props.tableName + props.appObjId)
+                            closeFormModal()
+                        }
+                        if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                     }
-                    if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                 }
             }).catch(err => {
                 console.error(err)
-                const title = err.response?.data?.title || err
-                const msg = err.response?.data?.message || ''
-                alertUser(true, "error", title, msg, () => resetFormSaveState());
+                alertUserResponse({ response: err.response?.data, onConfirm: resetFormSaveState })
             });
         }
     };
@@ -392,24 +414,21 @@ const CustomButtons = (props, context) => {
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {
-            const resType = res.data.type
-            const title = res.data.title || ''
-            const msg = res.data.message || ''
-            if (resType?.toLowerCase() === "success") {
-                alertUser(true, "success", title, msg, () => resetFormDeleteState());
-                closeFormModal()
-                GridManager.reloadGridData(props.tableName + props.appObjId);
-                if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
-            } else {
-                alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => resetFormDeleteState())
+            if (res?.data) {
+                const resType = res.data?.type?.toLowerCase() || 'info'
+                alertUserResponse({ response: res.data, onConfirm: resetFormDeleteState })
+                if (resType === 'success') {
+                    closeFormModal()
+                    GridManager.reloadGridData(props.tableName + props.appObjId);
+                    if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                }
             }
         }).catch(err => {
             console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, "error", title, msg, () => resetFormDeleteState());
+            alertUserResponse({ response: err.response?.data, onConfirm: resetFormDeleteState })
         });
     };
+
     return (
         <>
             {loading && <Loading />}

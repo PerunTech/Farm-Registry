@@ -9,7 +9,7 @@ import {
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { iconManager } from "../utils_tools/svgHolder";
 const { useState, useEffect } = React;
-const { alertUser } = elements;
+const { alertUserResponse } = elements;
 
 const Reports = (props, context) => {
     const [showSubReports, setShowSub] = useState(false)
@@ -29,12 +29,9 @@ const Reports = (props, context) => {
         }).catch(err => {
             console.error(err)
             setLoading(false)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, 'error', title, msg);
+            alertUserResponse({ response: err.response?.data })
         })
     }
-
 
     const generateCustomButtons = () => {
         if (configuration && Array.isArray(configuration.data) && configuration.data?.length > 0) {

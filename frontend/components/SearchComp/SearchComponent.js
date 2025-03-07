@@ -1,5 +1,5 @@
 import { React, connect, PropTypes, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements, Loading } from 'perun-core'
-const { alertUser } = elements
+const { alertUserResponse, alertUserV2 } = elements
 const { useState, useEffect } = React
 import { labelsManager } from '../utils_tools/LabelsExport';
 import SearchFormWrapper from './SearchFormWrapper';
@@ -71,20 +71,21 @@ const SearchComp = (props, context) => {
       url,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then(res => {
-      if (res.data.length === 0) { alertUser(true, 'info', labelsManager.importLabel('no_farm_data', context, 'farm_registry')) } else {
-        props.onRowClick(null, null, res.data[0])
-      }
-      searchResult(res.data, data)
       setLoading(false)
+      if (res?.data) {
+        if (res.data.length === 0) {
+          alertUserV2({ type: 'info', title: labelsManager.importLabel('no_farm_data', context, 'farm_registry') })
+        } else {
+          props.onRowClick(null, null, res.data[0])
+        }
+        searchResult(res.data, data)
+      }
     }).catch(err => {
       console.error(err)
       setLoading(false)
-      const title = err.response?.data?.title || err
-      const msg = err.response?.data?.message || ''
-      alertUser(true, "error", title, msg);
+      alertUserResponse({ response: err.response?.data })
     })
   }
-
 
   const assignSearchResultGrid = (data) => {
     let tableName = "FARM"
@@ -114,30 +115,26 @@ const SearchComp = (props, context) => {
         url,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then(res => {
-        searchResult(res.data, data)
-        ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
-          saveExecuted: false,
-        });
         setLoading(false)
+        if (res?.data) {
+          searchResult(res.data, data)
+          ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false });
+        }
       }).catch(err => {
         console.error(err)
         setLoading(false)
-        const title = err.response?.data?.title || err
-        const msg = err.response?.data?.message || ''
-        alertUser(true, "error", title, msg);
-        ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
-          saveExecuted: false,
-        });
-      })
-    } else {
-      alertUser(true, 'info', labelsManager.importLabel('enter_valid_criteria', context, 'farm_registry'), '', () => {
-        ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
-          saveExecuted: false,
+        alertUserResponse({
+          response: err.response?.data,
+          onConfirm: () => ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false })
         })
       })
-
+    } else {
+      alertUserV2({
+        type: 'info',
+        title: labelsManager.importLabel('enter_valid_criteria', context, 'farm_registry'),
+        onConfirm: () => ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false })
+      })
     }
-
   };
 
   const searchResult = (data, formData) => {

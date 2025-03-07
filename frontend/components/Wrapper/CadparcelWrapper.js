@@ -9,20 +9,14 @@ import {
 } from "perun-core";
 import { labelsManager } from '../utils_tools/LabelsExport'
 const { useState, useEffect } = React;
-const { alertUser } = elements;
+const { alertUserResponse, alertUserV2 } = elements;
 
 const CadparcelWrapper = (props, context) => {
-
     const [firstInputId, _setFirst] = useState("root_CODCADASTRAL")
-
-
     useEffect(() => {
         const { formid } = props
-        console.log('EJJJJJJJJJ');
         ComponentManager.setStateForComponent(formid, "addSaveFunction", addSaveFunction);
         props.formInstance.setState({ addSaveFunction: addSaveFunction })
-
-
         handleInputs();
     }, []);
 
@@ -40,26 +34,36 @@ const CadparcelWrapper = (props, context) => {
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
-                alertUser(true, res.data.type?.toLowerCase(), res.data.title, res.data.message, () => {
-                    ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
-                    GridManager.reloadGridData(`CAD_PARCEL${props.farmObjId}`)
-                    ComponentManager.setStateForComponent(`CAD_PARCEL${props.farmObjId}`, null, { rowClicked: undefined })
-                    const closeModalFunc = ComponentManager.getStateForComponent(
-                        formid,
-                        "closeModalFunc"
-                    );
-                    closeModalFunc()
-                });
+                if (res?.data) {
+                    alertUserResponse({
+                        response: res.data,
+                        onConfirm: () => {
+                            ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
+                            GridManager.reloadGridData(`CAD_PARCEL${props.farmObjId}`)
+                            ComponentManager.setStateForComponent(`CAD_PARCEL${props.farmObjId}`, null, { rowClicked: undefined })
+                            const closeModalFunc = ComponentManager.getStateForComponent(
+                                formid,
+                                "closeModalFunc"
+                            );
+                            closeModalFunc()
+                        }
+                    })
+                }
             }).catch(err => {
                 console.error(err)
-                const title = err.response?.data?.title || err
-                const msg = err.response?.data?.message || ''
-                alertUser(true, "error", title, msg, () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) });
+                alertUserResponse({
+                    response: err.response?.data,
+                    onConfirm: () => ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
+                })
             });
         } else {
-            alertUser(true, 'info', labelsManager.importLabel("invalid_cad_parcel", context, "farm_registry"), labelsManager.importLabel("invalid_cad_parcel_msg", context, "farm_registry"), () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) })
+            alertUserV2({
+                type: 'info',
+                title: labelsManager.importLabel("invalid_cad_parcel", context, "farm_registry"),
+                message: labelsManager.importLabel("invalid_cad_parcel_msg", context, "farm_registry"),
+                onConfirm: () => ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
+            })
         }
-
     }
 
     const handleInputs = () => {
@@ -95,11 +99,8 @@ const CadparcelWrapper = (props, context) => {
             }
         }).catch(err => {
             console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, "error", title, msg);
+            alertUserResponse({ response: err.response?.data })
         });
-
     }
     return (
         <>
