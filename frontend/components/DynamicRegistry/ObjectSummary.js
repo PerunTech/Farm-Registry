@@ -1,7 +1,7 @@
 import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM } from "perun-core";
 import { getMainLabel } from '../utils_tools/LabelsExport';
 const { useEffect, useState } = React;
-const { ReactBootstrap, alertUser, alertUserResponse, alertUserV2 } = elements;
+const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { store } = redux
 import { iconManager } from '../utils_tools/svgHolder';
@@ -33,29 +33,26 @@ const ObjectSummary = (props, context) => {
     }, [props.refreshSummary]);
 
     const getObjectSummary = (url) => {
-
         setLoading(true);
         axios.get(`${window.server}/${url}`)
             .then(res => {
                 setLoading(false);
-                const resType = res.data?.type?.toLowerCase();
-                if (resType === 'error') {
-                    const title = res.data?.title || '';
-                    const msg = res.data?.message || '';
-                    alertUser(true, 'error', title, msg);
-                } else {
-                    setMenuData(res.data?.data?.DETAILED || []);
-                    setModalData(res.data?.data?.SHORT || []);
-                    setActions(res.data?.data?.ACTIONS || [])
-                    setImportUrl(res.data?.data?.IMPORT?.[0]['import'] || undefined)
+                if (res?.data) {
+                    const resType = res.data?.type?.toLowerCase();
+                    if (resType === 'error') {
+                        alertUserResponse({ response: res.data });
+                    } else {
+                        setMenuData(res.data?.data?.DETAILED || []);
+                        setModalData(res.data?.data?.SHORT || []);
+                        setActions(res.data?.data?.ACTIONS || [])
+                        setImportUrl(res.data?.data?.IMPORT?.[0]['import'] || undefined)
+                    }
                 }
             })
             .catch(err => {
                 console.error(err);
                 setLoading(false);
-                const title = err.response?.data?.title || err.message;
-                const msg = err.response?.data?.message || '';
-                alertUser(true, 'error', title, msg);
+                alertUserResponse({ response: err.response?.data });
             });
     };
     const backButtonFunction = () => {
@@ -91,20 +88,29 @@ const ObjectSummary = (props, context) => {
         </div>
     );
     const updateData = () => {
-        alertUser(true, 'info', getMainLabel('confirm_update_action', context), getMainLabel('confirm_update_action_msg', context), () => {
+        const onConfirm = () => {
             setLoading(true)
-            const url = `${window.server}${importUrl}   `
+            const url = `${window.server}${importUrl}`
             axios.get(url).then(res => {
-                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
                 setLoading(false)
+                if (res?.data) {
+                    alertUserResponse({ response: res.data })
+                }
             }).catch(err => {
                 setLoading(false)
                 console.error(err)
-                const title = err.response?.data?.title || err
-                const msg = err.response?.data?.message || ''
-                alertUser(true, "error", title, msg);
+                alertUserResponse({ response: err.response?.data })
             });
-        }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context))
+        }
+        alertUserV2({
+            type: 'info',
+            title: getMainLabel('confirm_update_action', context),
+            message: getMainLabel('confirm_update_action_msg', context),
+            confirmButtonText: getMainLabel('yes', context),
+            onConfirm,
+            showCancel: true,
+            cancelButtonText: getMainLabel('no', context)
+        })
     }
 
     const generateSummaryActions = () => {

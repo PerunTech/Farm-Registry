@@ -1,7 +1,7 @@
-import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory } from 'perun-core'
+import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory } from 'perun-core'
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { jsonToURI, flattenObject } from '../../utils';
-const { alertUser } = elements
+const { alertUserResponse } = elements
 const { store, dataToRedux, removeAsyncReducer } = redux
 const { useState, useEffect } = React
 const hashHistory = createHashHistory()
@@ -9,6 +9,7 @@ const hashHistory = createHashHistory()
 const SearchDynamic = (props, context) => {
     const tableName = props.tableName?.toUpperCase() || ''
     const gridId = `${props.tableName}_SEARCH`
+    const [loading, setLoading] = useState(false)
     const [resultsData, setResultsData] = useState(undefined)
     useEffect(() => {
         performSearch({}, false)
@@ -67,28 +68,25 @@ const SearchDynamic = (props, context) => {
         if (searchType === 'POST') {
             reqConfig.data = shouldEncode ? jsonToURI(flattenObject(formData)) : JSON.stringify(formData)
         }
-
         // Handle form-specific logic
         if (isForm) {
             setResultsData(undefined);
             removeAsyncReducer(store, gridId + '_GRID');
             dataToRedux(null, 'componentIndex', gridId + '_GRID', '');
         }
-
+        setLoading(true)
         axios(reqConfig)
             .then(res => {
-
-                if (res.data?.data && Array.isArray(res.data.data)) {
+                setLoading(false)
+                if (res?.data?.data && Array.isArray(res.data.data)) {
                     setResultsData(res.data.data)
                     GridManager.reloadGridData(gridId + '_GRID');
                 }
             })
             .catch(err => {
                 console.error(err);
-                const title = err.response?.data?.title || err;
-                const msg = err.response?.data?.message || '';
-                alertUser(true, 'error', title, msg);
-
+                setLoading(false)
+                alertUserResponse({ response: err.response?.data })
                 // Handle form-specific error logic
                 if (isForm) {
                     ComponentManager.setStateForComponent(`${gridId}_FORM`, null, {
@@ -100,6 +98,7 @@ const SearchDynamic = (props, context) => {
 
     return (
         <>
+            {loading && <Loading />}
             <div className='dynamic-search-main-container'>
                 <div className='dynamic-search-form'>
                     {props.configuration && generateForm()}

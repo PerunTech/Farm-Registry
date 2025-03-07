@@ -1,6 +1,6 @@
 import { React, connect, PropTypes, Loading, axios, createHashHistory, elements } from "perun-core";
 const { useEffect, useState } = React
-const { alertUser } = elements
+const { alertUserResponse } = elements
 import { iconManager } from "../utils_tools/svgHolder";
 import CustomButtons from "./CustomButtons";
 import ObjectSummary from './ObjectSummary';
@@ -24,9 +24,7 @@ const SideMenu = (props) => {
             if (res?.data) {
                 const resType = res.data?.type?.toLowerCase()
                 if (resType && resType === 'error') {
-                    const title = res.data?.title || ''
-                    const msg = res.data?.message || ''
-                    alertUser(true, 'error', title, msg)
+                    alertUserResponse({ response: res.data })
                 } else {
                     setConfiguration(res.data)
                     const component = props.routeParams?.component
@@ -51,9 +49,7 @@ const SideMenu = (props) => {
         }).catch(err => {
             console.error(err)
             setLoading(false)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, 'error', title, msg)
+            alertUserResponse({ response: err.response?.data })
         })
     }
     const setActive = (el) => {

@@ -4,7 +4,7 @@ import { updateIdScreen } from '../utils_tools/UtilFunctions'
 import { jsonToURI, flattenObject } from '../../utils'
 import SearchForm from './SearchForm'
 import CreateNewRecordForm from './CreateNewRecordForm'
-const { alertUser, ReactBootstrap } = elements
+const { alertUserResponse, alertUserV2, ReactBootstrap } = elements
 const { Modal } = ReactBootstrap
 const { store, dataToRedux, removeAsyncReducer } = redux
 const { useState, useEffect } = React
@@ -61,17 +61,19 @@ const Search = (props, context) => {
       url,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then(res => {
-      if (res.data.length === 0) { alertUser(true, 'info', labelsManager.importLabel('no_farm_data', context, 'farm_registry')) } else {
-        const href = `/main/registry/${businessObjectName}/${res.data[0][`${businessObjectName}.OBJECT_ID`]}/summary`
-        hashHistory.push(href)
-      }
       setLoading(false)
+      if (res?.data) {
+        if (res.data.length === 0) {
+          alertUserV2({ type: 'info', title: labelsManager.importLabel('no_farm_data', context, 'farm_registry') })
+        } else {
+          const href = `/main/registry/${businessObjectName}/${res.data[0][`${businessObjectName}.OBJECT_ID`]}/summary`
+          hashHistory.push(href)
+        }
+      }
     }).catch(err => {
       console.error(err)
       setLoading(false)
-      const title = err.response?.data?.title || err
-      const msg = err.response?.data?.message || ''
-      alertUser(true, "error", title, msg);
+      alertUserResponse({ response: err.response?.data })
     })
   }
 
@@ -88,9 +90,7 @@ const Search = (props, context) => {
     }).catch(err => {
       setLoading(false)
       console.error(err)
-      const title = err.response?.data?.title || err
-      const msg = err.response?.data?.message || ''
-      alertUser(true, 'error', title, msg)
+      alertUserResponse({ response: err.response?.data })
     })
   }
 
@@ -103,9 +103,7 @@ const Search = (props, context) => {
       if (res?.data) {
         const resType = res.data?.type?.toLowerCase()
         if (resType && resType === 'error') {
-          const title = res.data?.title || ''
-          const msg = res.data?.message || ''
-          alertUser(true, 'error', title, msg)
+          alertUserResponse({ response: res.data })
         } else {
           if (res.data?.data && Array.isArray(res.data?.data) && res.data?.data?.length > 0) {
             res.data.data.forEach(item => {
@@ -121,9 +119,7 @@ const Search = (props, context) => {
     }).catch(err => {
       setLoading(false)
       console.error(err)
-      const title = err.response?.data?.title || err
-      const msg = err.response?.data?.message || ''
-      alertUser(true, 'error', title, msg)
+      alertUserResponse({ response: err.response?.data })
     })
   }
 
@@ -179,26 +175,23 @@ const Search = (props, context) => {
     }
     axios(reqConfig).then(res => {
       setLoading(false)
-      const resType = res?.data?.type?.toLowerCase() || 'info'
-      const title = res?.data?.title || ''
-      const msg = res?.data?.message || ''
-      if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
-        setResultsData(res.data)
-      } else if (res?.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
-        setResultsData(res.data.data)
-      } else {
-        if (res?.data && Array.isArray(res?.data)) {
-          setResultsData([])
+      if (res?.data) {
+        if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+          setResultsData(res.data)
+        } else if (res?.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          setResultsData(res.data.data)
         } else {
-          alertUser(true, resType, title, msg)
+          if (res?.data && Array.isArray(res?.data)) {
+            setResultsData([])
+          } else {
+            alertUserResponse({ response: res.data })
+          }
         }
       }
     }).catch(err => {
       setLoading(false)
       console.error(err)
-      const title = err.response?.data?.title || err
-      const msg = err.response?.data?.message || ''
-      alertUser(true, 'error', title, msg)
+      alertUserResponse({ response: err.response?.data })
     })
   }
 

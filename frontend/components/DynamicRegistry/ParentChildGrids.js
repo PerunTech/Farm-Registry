@@ -2,7 +2,7 @@ import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm
 const { useState, useEffect } = React
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { getDynamicKey } from '../../utils';
-const { ReactBootstrap, alertUser } = elements;
+const { ReactBootstrap, alertUserResponse } = elements;
 const { Modal } = ReactBootstrap;
 import { replaceFunc } from '../utils_tools/UtilFunctions';
 const { store } = redux
@@ -99,10 +99,8 @@ const ParentChildGrids = (props, context) => {
         const url = props.grids[1].objectConfiguration.form.save?.onSave
         const reqConfig = { method: 'post', url: `${window.server}${url}`, data: encodeURIComponent(JSON.stringify(e.formData)) }
         axios(reqConfig).then(res => {
-            if (res.data) {
+            if (res?.data) {
                 const resType = res?.data?.type?.toLowerCase() || 'info'
-                const title = res?.data?.title || ''
-                const msg = res?.data?.message || ''
                 const onConfirm = () => {
                     if (resType === 'success') {
                         setShow(false)
@@ -112,13 +110,14 @@ const ParentChildGrids = (props, context) => {
                     }
                     if (props?.grids[1]?.objectConfiguration?.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
                 }
-                alertUser(true, resType, title, msg, onConfirm)
+                alertUserResponse({ response: res.data, onConfirm })
             }
         }).catch(err => {
             console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, 'error', title, msg, () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { saveExecuted: false }))
+            alertUserResponse({
+                response: err.response?.data,
+                onConfirm: () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { saveExecuted: false })
+            })
         })
     }
     const deleteFunc = (_id, _action, _session, formData) => {
@@ -130,21 +129,23 @@ const ParentChildGrids = (props, context) => {
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {
-            const resType = res.data.type
-            const title = res.data.title || ''
-            const msg = res.data.message || ''
-            if (resType?.toLowerCase() === "success") {
-                alertUser(true, "success", title, msg, () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { deleteExecuted: false }));
-                setShow(false)
-                GridManager.reloadGridData(prev);
-            } else {
-                alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { deleteExecuted: false }))
+            if (res?.data) {
+                const resType = res.data?.type?.toLowerCase() || 'info'
+                alertUserResponse({
+                    response: res.data,
+                    onConfirm: () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { deleteExecuted: false })
+                })
+                if (resType === 'success') {
+                    setShow(false)
+                    GridManager.reloadGridData(prev);
+                }
             }
         }).catch(err => {
             console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, "error", title, msg, () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { deleteExecuted: false }));
+            alertUserResponse({
+                response: err.response?.data,
+                onConfirm: () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { deleteExecuted: false })
+            })
         });
     };
 

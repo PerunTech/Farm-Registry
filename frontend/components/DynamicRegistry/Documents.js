@@ -1,14 +1,7 @@
 
-import {
-    React,
-    connect,
-    elements,
-    PropTypes,
-    axios,
-    Loading
-} from "perun-core";
+import { React, connect, elements, PropTypes, axios, Loading } from "perun-core";
 const { useState, useEffect } = React;
-const { alertUser } = elements;
+const { alertUserResponse, alertUserV2 } = elements;
 import { labelsManager } from '../utils_tools/LabelsExport';
 import { iconManager } from "../utils_tools/svgHolder"
 const Documents = (props, context) => {
@@ -40,33 +33,44 @@ const Documents = (props, context) => {
             data: deleteObj,
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        })
-            .then((res) => {
-                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
-                if (res.data.type === 'SUCCESS') {
+        }).then((res) => {
+            if (res?.data) {
+                const resType = res.data?.type?.toLowerCase() || 'info'
+                alertUserResponse({ response: res.data })
+                if (resType === 'success') {
                     generateFileItem()
                 }
-            }).catch(err => {
-                console.error(err)
-                const title = err.response?.data?.title || err
-                const msg = err.response?.data?.message || ''
-                alertUser(true, "error", title, msg);
-            });
+            }
+        }).catch(err => {
+            console.error(err)
+            alertUserResponse({ response: err.response?.data })
+        });
     }
 
-
     const generateFileItem = () => {
+        const onDeleteBtnClick = (el, e) => {
+            alertUserV2({
+                type: 'warning',
+                title: labelsManager.importLabel('delete_uploaded_file', context, 'farm_registry'),
+                confirmButtonText: labelsManager.importLabel('yes', context, 'farm_registry'),
+                confirmButtonColor: '#8d230f',
+                onConfirm: () => deleteDownload(el, e),
+                showCancel: true,
+                cancelButtonText: labelsManager.importLabel('no', context, 'farm_registry')
+            })
+        }
+
         setLoading(true)
         axios.get(`${window.server}${props.getUploadedFiles}`).then(res => {
-            if (res.data) {
-                if (res.data.data.items?.length > 0) {
+            if (res?.data) {
+                if (res.data?.data.items?.length > 0) {
                     let files = res.data.data.items.map((el) => (<div className={'downloadable-item-div'}>
                         <div className={'download-icon-text'}>
                             <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{el.FILE_NAME}</button>
                         </div>
                         <div>
                             <button type='button' id='deleteBtn' className={`delete-file-btn`}
-                                onClick={(e) => { alertUser(true, 'warning', labelsManager.importLabel('delete_uploaded_file', context, 'farm_registry'), "", () => { deleteDownload(el, e,) }, () => { }, true, labelsManager.importLabel('yes', context, 'farm_registry'), labelsManager.importLabel('no', context, 'farm_registry')) }}>{iconManager.getIcon('delete')}
+                                onClick={(e) => onDeleteBtnClick(el, e)}>{iconManager.getIcon('delete')}
                             </button>
                             <button type='button' id='downloadBtn' className={`download-file-btn upload-to-download-btn`}
                                 onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('upload')}
@@ -82,12 +86,9 @@ const Documents = (props, context) => {
             }
         }).catch(err => {
             console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, "error", title, msg);
             setLoading(false)
+            alertUserResponse({ response: err.response?.data })
         });
-
     }
 
     const handleMultiAttach = (arr) => {
@@ -101,7 +102,7 @@ const Documents = (props, context) => {
                     method: 'post',
                     data: data,
                     url: `${window.server}${props.uploadFileUrl}`,
-                    headers: { 'Content-Type': 'multipart/fosrm-data' }
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 }).then(res => {
                     return { res, file }
                 }).catch((error) => {
@@ -124,12 +125,11 @@ const Documents = (props, context) => {
                     responseFunc(errorArr)
                 })
         } else {
-            alertUser(true, 'info', labelsManager.importLabel('no_file_selected', context, 'farm_registry'))
+            alertUserV2({ type: 'info', title: labelsManager.importLabel('no_file_selected', context, 'farm_registry') })
             setLoading(false)
         }
 
         generateFileItem()
-
     }
 
     const responseFunc = (errorArr) => {
@@ -140,9 +140,13 @@ const Documents = (props, context) => {
                 erroArrNames.push(error.name)
             })
             nameString = erroArrNames.join(',')
-            alertUser(true, 'warning', `${labelsManager.importLabel('desc_error_upload', context, 'farm_registry')} :`, ` ${nameString}`)
+            alertUserV2({
+                type: 'warning',
+                title: `${labelsManager.importLabel('desc_error_upload', context, 'farm_registry')} :`,
+                message: ` ${nameString}`
+            })
         } else {
-            alertUser(true, 'success', labelsManager.importLabel('desc_success_upload_title', context, 'farm_registry'))
+            alertUserV2({ type: 'success', title: labelsManager.importLabel('desc_success_upload_title', context, 'farm_registry') })
         }
         generateFileItem()
     }
