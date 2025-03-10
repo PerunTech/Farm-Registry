@@ -76,6 +76,6 @@ module.exports = (_, { mode }) => {
     resolve: {
       extensions: ['.js', '.jsx'],
     },
-    externals: mode === 'production' ? { 'perun-core': 'perun-core' } : {}
+    externals: mode === 'production' ? { 'perun-core': 'perun-core', spatial: 'spatial' } : {}
   }
 };
