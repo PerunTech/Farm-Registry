@@ -42,7 +42,6 @@ const GpsMapSelect = (props, context) => {
         <div className={'holding-map-container'}>
             {ui.init(store.getState().security.svSession)
                 .addRasterLayers(layerList[0], layerList[1], { collapsed: true })
-                .addFullScreenControl()
                 .render(id, true)}
 
         </div>
