@@ -44,7 +44,7 @@ module.exports = (_, { mode }) => {
             }
           },
           enforce: 'pre',
-          include: [/perun-core/]
+          include: [/perun-core/, /spatial/]
         },
         {
           // For pure CSS (without CSS modules)
