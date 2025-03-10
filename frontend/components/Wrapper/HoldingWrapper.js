@@ -131,12 +131,12 @@ const HoldingWrapper = (props, context) => {
             "formTableData"
         );
         if (formData) {
-            if (!formData["holding.info"]) {
-                formData["holding.info"] = {}
+            if (!formData["holding.location.info"]) {
+                formData["holding.location.info"] = {}
             }
-            formData["holding.info"]['GPS_NORTH'] = lat
+            formData["holding.location.info"]['GPS_NORTH'] = lat
             mapInputN.value = lat
-            formData["holding.info"]['GPS_EAST'] = lng
+            formData["holding.location.info"]['GPS_EAST'] = lng
             mapInputE.value = lng
         }
         ComponentManager.setStateForComponent(props.formid, "formTableData", formData);
