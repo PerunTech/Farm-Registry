@@ -32,9 +32,9 @@ const GpsMapSelect = (props, context) => {
     };
 
     function toDMS(deg) {
-        const d = Math.floor(deg);
-        const m = Math.floor((deg - d) * 60);
-        const s = ((deg - d - m / 60) * 3600).toFixed(2);
+        const d = String(Math.floor(deg)).padStart(2, '0');
+        const m = String(Math.floor((deg - d) * 60)).padStart(2, '0');
+        const s = String(Math.round((deg - d - m / 60) * 3600)).padStart(2, '0');
         return `${d}°${m}'${s}''`;
     }
 
