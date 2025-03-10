@@ -65,7 +65,7 @@ const HoldingWrapper = (props, context) => {
                 context,
                 "farm_registry"
             )
-            mapInputE.style.background = '#638569';
+            mapInputE.style.background = '#33628775';
             mapInputE.style.color = '#ffffff';
         }
         if (mapInputN) {
@@ -76,7 +76,7 @@ const HoldingWrapper = (props, context) => {
                 context,
                 "farm_registry"
             )
-            mapInputN.style.background = '#638569';
+            mapInputN.style.background = '#33628775';
             mapInputN.style.color = '#ffffff';
         }
     }
