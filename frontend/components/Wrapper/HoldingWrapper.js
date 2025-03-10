@@ -8,7 +8,8 @@ import {
 } from "perun-core";
 import SearchComponent from '../SearchComp/SearchComponent'
 import { labelsManager } from '../utils_tools/LabelsExport';
-const { useState, useEffect, useReducer } = React;
+import GpsMapSelect from '../utils_tools/GpsMapSelect';
+const { useState, useEffect } = React;
 const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
 let hashHistory = createHashHistory();
@@ -16,17 +17,11 @@ let gridId;
 let inputholder = "";
 const HoldingWrapper = (props, context) => {
     const [show, setShow] = useState(false);
-    const initialState = {
-        firstInputId: "root_holding.info_NAME",
-    };
-    const reducer = (current, next) => ({ ...current, ...next });
-    const [state, setState] = useReducer(reducer, initialState);
-    const {
-        firstInputId,
-    } = state;
-
+    const [showPerson, setPerson] = useState(false)
+    const [showMap, setMap] = useState(false)
     useEffect(() => {
-        handleInputs();
+        handlePersonInputs();
+        handleMapInputs()
     }, []);
     useEffect(() => {
         return () => {
@@ -44,12 +39,12 @@ const HoldingWrapper = (props, context) => {
 
         }
     }
-    const handleInputs = () => {
+    const handlePersonInputs = () => {
         const inputs = document.querySelectorAll("#root_holding\\.info_NAME")
         let firstInput = inputs[1] ? inputs[1] : inputs[0]
         if (firstInput) {
             firstInput.style.cursor = "pointer";
-            firstInput.onclick = handleShow;
+            firstInput.onclick = handleShowPerson;
             firstInput.placeholder = labelsManager.importLabel(
                 "click_to_choose",
                 context,
@@ -58,10 +53,45 @@ const HoldingWrapper = (props, context) => {
             firstInput.style.background = '#b9cfba';
         }
     };
-    const handleShow = (e) => {
+    const handleMapInputs = () => {
+        const mapInputN = document.getElementById('root_holding.location.info_GPS_NORTH')
+        const mapInputE = document.getElementById('root_holding.location.info_GPS_EAST')
+
+        if (mapInputE) {
+            mapInputE.style.cursor = "pointer";
+            mapInputE.onclick = handleShowMap;
+            mapInputE.placeholder = labelsManager.importLabel(
+                "click_to_choose",
+                context,
+                "farm_registry"
+            )
+            mapInputE.style.background = '#638569';
+            mapInputE.style.color = '#ffffff';
+        }
+        if (mapInputN) {
+            mapInputN.style.cursor = "pointer";
+            mapInputN.onclick = handleShowMap;
+            mapInputN.placeholder = labelsManager.importLabel(
+                "click_to_choose",
+                context,
+                "farm_registry"
+            )
+            mapInputN.style.background = '#638569';
+            mapInputN.style.color = '#ffffff';
+        }
+    }
+
+
+    const handleShowPerson = (e) => {
         inputholder = e.target.id;
         setShow(!show);
+        setPerson(true)
     };
+
+    const handleShowMap = (e) => {
+        setShow(true)
+        setMap(true)
+    }
 
     const handleRowClick = (_id, _rowIdx, row) => {
         const { formid } = props;
@@ -91,26 +121,44 @@ const HoldingWrapper = (props, context) => {
         }
     };
 
+    const handleMapClick = (lat, lng) => {
+        const mapInputN = document.getElementById('root_holding.location.info_GPS_NORTH')
+        const mapInputE = document.getElementById('root_holding.location.info_GPS_EAST')
+
+        const formData = ComponentManager.getStateForComponent(
+            props.formid,
+            "formTableData"
+        );
+        if (formData) {
+            if (!formData["holding.info"]) {
+                formData["holding.info"] = {}
+            }
+            formData["holding.info"]['GPS_NORTH'] = lat
+            mapInputN.value = lat
+            formData["holding.info"]['GPS_EAST'] = lng
+            mapInputE.value = lng
+        }
+        ComponentManager.setStateForComponent(props.formid, "formTableData", formData);
+        props.formInstance.setState({ formTableData: formData });
+        setShow(false)
+        setMap(false)
+    }
+
     return (
         <>
             {props.children}
-            {props.children && handleInputs()}
+            {props.children && (handlePersonInputs(), handleMapInputs())}
             {show && (
-                <Modal className={"farm-registry-modal"} show={show} onHide={() => { setShow(false) }}>
-
-
+                <Modal className={"farm-registry-modal"} show={show} onHide={() => { setShow(false), setPerson(false), setMap(false) }}>
                     <Modal.Header className={"farm-registry-modal-header"} closeButton>
-                        <Modal.Title>{labelsManager.importLabel(
-                            "search_person",
-                            context,
-                            "farm_registry"
-                        )}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className={"farm-registry-modal-body"}>
-                        <SearchComponent person={true} onRowClick={handleRowClick} />
-                        <p className={'redirect-to-pr-initial'}>{labelsManager.importLabel('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
-                            hashHistory.push('/main/persons-registry')
-                        }}>{labelsManager.importLabel('redirect-person', context, 'farm_registry')}</span></p>
+                        {showPerson && <>
+                            <SearchComponent person={true} onRowClick={handleRowClick} />
+                            <p className={'redirect-to-pr-initial'}>{labelsManager.importLabel('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
+                                hashHistory.push('/main/persons-registry')
+                            }}>{labelsManager.importLabel('redirect-person', context, 'farm_registry')}</span></p></>}
+                        {showMap && <GpsMapSelect handleMapClick={handleMapClick} />}
                     </Modal.Body >
                     <Modal.Footer className={"farm-registry-modal-footer"}></Modal.Footer>
                 </Modal >
