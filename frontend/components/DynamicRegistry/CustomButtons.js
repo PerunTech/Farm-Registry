@@ -367,6 +367,7 @@ const CustomButtons = (props, context) => {
         setRender(true)
     }
     const saveForm = (e, wsPath, isModal, refreshSummary) => {
+        console.log(isModal)
         let formData = e.formData
         // // Check if every value in the form data object is nullish
         const isEmpty = Object.values(formData).every(v => v === null || v === undefined)
@@ -381,7 +382,7 @@ const CustomButtons = (props, context) => {
             const url = `${window.server}${wsPath}`
             axios({
                 method: "post",
-                data: formData,
+                data: JSON.stringify(formData),
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
@@ -410,7 +411,7 @@ const CustomButtons = (props, context) => {
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
             method: "post",
-            data: formData[4]["PARAM_VALUE"],
+            data: JSON.stringify(formData[4]["PARAM_VALUE"]),
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {

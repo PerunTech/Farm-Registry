@@ -76,6 +76,7 @@ const DoubleGrid = (props, context) => {
                     response: res, onConfirm: () => {
                         if (resType === 'success') {
                             setShow(false)
+                            GridManager.reloadGridData(props.configuration.leftGrid.ID)
                         }
                         resetFormSaveState()
                     }

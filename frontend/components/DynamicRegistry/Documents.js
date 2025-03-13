@@ -30,7 +30,7 @@ const Documents = (props, context) => {
         let url = window.server + `/ReactElements/deleteObject/${props.svSession}`
         axios({
             method: "post",
-            data: deleteObj,
+            data: JSON.stringify(deleteObj),
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {
