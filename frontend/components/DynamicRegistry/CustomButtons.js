@@ -367,7 +367,6 @@ const CustomButtons = (props, context) => {
         setRender(true)
     }
     const saveForm = (e, wsPath, isModal, refreshSummary) => {
-        console.log(isModal)
         let formData = e.formData
         // // Check if every value in the form data object is nullish
         const isEmpty = Object.values(formData).every(v => v === null || v === undefined)
