@@ -81,6 +81,9 @@ const DoubleGrid = (props, context) => {
                         resetFormSaveState()
                     }
                 })
+                if (resType === 'success') {
+                    if (props.configuration.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                }
             }
         }).catch(err => {
             console.error(err)
