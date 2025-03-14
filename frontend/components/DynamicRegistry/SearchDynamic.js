@@ -78,9 +78,14 @@ const SearchDynamic = (props, context) => {
         axios(reqConfig)
             .then(res => {
                 setLoading(false)
-                if (res?.data?.data && Array.isArray(res.data.data)) {
+                if (res?.data?.data && Array.isArray(res.data.data) && res.data.data?.length > 0) {
                     setResultsData(res.data.data)
                     GridManager.reloadGridData(gridId + '_GRID');
+                } else if (res?.data && Array.isArray(res?.data) && res.data?.length > 0) {
+                    setResultsData(res.data)
+                    GridManager.reloadGridData(gridId + '_GRID');
+                } else {
+                    alertUserResponse({ response: res })
                 }
             })
             .catch(err => {

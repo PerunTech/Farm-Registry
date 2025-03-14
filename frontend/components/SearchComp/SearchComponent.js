@@ -111,7 +111,7 @@ const SearchComp = (props, context) => {
       setLoading(true)
       axios({
         method: 'post',
-        data: formData,
+        data: JSON.stringify(formData),
         url,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then(res => {
