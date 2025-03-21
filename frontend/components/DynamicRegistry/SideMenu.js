@@ -1,11 +1,12 @@
 import { React, connect, PropTypes, Loading, axios, createHashHistory, elements } from "perun-core";
-const { useEffect, useState } = React
+const { useEffect, useState, useRef } = React
 const { alertUserResponse } = elements
 import { iconManager } from "../utils_tools/svgHolder";
 import CustomButtons from "./CustomButtons";
 import ObjectSummary from './ObjectSummary';
 
 const SideMenu = (props) => {
+    const sideMenuRef = useRef(null);
     let hashHistory = createHashHistory();
     const [activeElement, setActiveElement] = useState('');
     const [activeChild, setActiveChild] = useState('');
@@ -54,12 +55,26 @@ const SideMenu = (props) => {
     }
     const setActive = (el) => {
         if (el.ID === activeParent) {
-            setActiveParent('')
-            setLoading(false)
+            setActiveParent('');
+            setLoading(false);
         } else {
-            setActiveParent(el.ID)
+            setActiveParent(el.ID);
+            setTimeout(() => {
+                const clickedButton = document.getElementById(el.ID);
+                if (clickedButton) {
+                    const sideMenu = sideMenuRef.current;
+                    if (sideMenu) {
+                        sideMenu.scrollBy({
+                            top: 200,
+                            behavior: 'smooth',
+                        });
+                    }
+                }
+            }, 100);
         }
-    }
+    };
+
+    // Function to generate the buttons (you can keep the one you provided)
     const generateSideMenuButtons = () => {
         if (configuration && Array.isArray(configuration.data)) {
             return configuration.data.map(el => {
@@ -68,23 +83,46 @@ const SideMenu = (props) => {
                     return (
                         <>
                             <button
+                                id={el.ID}
                                 className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
                                 onClick={() => (el.data ? setActive(el) : onButtonClick(el))}
                             >
-                                {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{el.label}</p>
+                                <span className='sidemenu-btn-title'>
+                                    {iconManager.getIcon(modifiedID) && (
+                                        <span className={'sidemenu-dynamic-comp-icon-holder'}>
+                                            {iconManager.getIcon(modifiedID)}
+                                        </span>
+                                    )}
+                                    <p>{el.label}</p>
+                                </span>
+                                {el.data && (
+                                    <span className={`expand-arrow ${el.ID === activeParent && 'rotate-expand'}`}>
+                                        {iconManager.getIcon('EXPAND')}
+                                    </span>
+                                )}
                             </button>
-                            {el.data && <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
-                                {el.data.map(sub => {
-                                    modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '')
-                                    return < button
-                                        className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`
-                                        }
-                                        onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
-                                    >
-                                        {iconManager.getIcon(modifiedID) && <span className={'sidemenu-dynamic-comp-icon-holder'}>{iconManager.getIcon(modifiedID)}</span>}<p>{sub.label}</p>
-                                    </button>
-                                })}
-                            </div >}
+                            {el.data && (
+                                <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
+                                    {el.data.map(sub => {
+                                        modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '');
+                                        return (
+                                            <button
+                                                className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`}
+                                                onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
+                                            >
+                                                <span className="sidemenu-btn-title">
+                                                    {iconManager.getIcon(modifiedID) && (
+                                                        <span className={'sidemenu-dynamic-comp-icon-holder'}>
+                                                            {iconManager.getIcon(modifiedID)}
+                                                        </span>
+                                                    )}
+                                                    <p>{sub.label}</p>
+                                                </span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </>
                     );
                 }
@@ -92,7 +130,7 @@ const SideMenu = (props) => {
         } else {
             return <></>;
         }
-    }
+    };
     const onButtonClick = (element, childEl) => {
         const id = element.ID;
         const splitID = id.replace(/\d/g, '').replace(/_$/, '');
@@ -142,12 +180,15 @@ const SideMenu = (props) => {
             {loading && <Loading />}
             <div className={`sidemenu-main-container farm-registry-sidemenu-main-container`} id="sidemenu-main-container">
                 {configuration && <ObjectSummary configuration={configuration} tableName={props.tableName} objectId={props.objectId} />}
-                <div className='farm-registry-sidemenu-buttons-container'>
+                <div
+                    ref={sideMenuRef}
+                    className='farm-registry-sidemenu-buttons-container'
+                >
                     {generateSideMenuButtons()}
                 </div>
             </div>
         </>
-    )
+    );
 }
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
