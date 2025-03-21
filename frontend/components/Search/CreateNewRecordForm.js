@@ -1,4 +1,4 @@
-import { React, PropTypes, GenericForm, ComponentManager, axios, elements } from 'perun-core'
+import { React, PropTypes, GenericForm, ComponentManager, axios, elements, createHashHistory } from 'perun-core'
 const { alertUserResponse } = elements
 import { jsonToURI, flattenObject } from '../../utils'
 import { getMainLabel } from '../utils_tools/LabelsExport'
@@ -6,6 +6,7 @@ const { useState, useEffect } = React
 import FarmWrapper from '../Wrapper/FarmWrapper';
 import HoldingWrapper from '../Wrapper/HoldingWrapper';
 const CreateNewRecordForm = (props, context) => {
+  const hashHistory = createHashHistory()
   const [wrappers] = useState([{ Farm: FarmWrapper }, { Holding: HoldingWrapper }]);
   const [wrapperName, setWrapperName] = useState(undefined);
   useEffect(() => {
@@ -38,6 +39,8 @@ const CreateNewRecordForm = (props, context) => {
         const onConfirm = () => {
           if (resType === 'success') {
             props.setShowRegistrationModal(false)
+            const href = `/main/registry/${props.businessObjectName}/${res.data.data['object_id']}/farm-summary`
+            hashHistory.push(href)
           } else {
             resetFormSaveState()
           }
