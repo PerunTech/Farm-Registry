@@ -140,6 +140,7 @@ const ObjectSummary = (props, context) => {
             allowOutsideClick: true,
         });
         store.dispatch({ type: 'REFRESH_SUMMARY', payload: true });
+        store.dispatch({ type: 'REFRESH_SIDEMENU', payload: true })
     }
 
     const summaryAction = (url) => {
@@ -150,7 +151,6 @@ const ObjectSummary = (props, context) => {
                 setLoading(false);
                 const data = JSON.parse(res.data.data);
                 data?.['FIELDS'] ? generateCheckList(data) : alertUserResponse({ response: res })
-
             })
             .catch(err => {
                 setLoading(false);

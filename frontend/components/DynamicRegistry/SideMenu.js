@@ -1,6 +1,7 @@
-import { React, connect, PropTypes, Loading, axios, createHashHistory, elements } from "perun-core";
+import { React, connect, PropTypes, Loading, axios, createHashHistory, elements, redux } from "perun-core";
 const { useEffect, useState, useRef } = React
 const { alertUserResponse } = elements
+const { store } = redux;
 import { iconManager } from "../utils_tools/svgHolder";
 import CustomButtons from "./CustomButtons";
 import ObjectSummary from './ObjectSummary';
@@ -16,6 +17,15 @@ const SideMenu = (props) => {
     useEffect(() => {
         getConfiguration();
     }, []);
+
+    useEffect(() => {
+        if (props.refreshSide) {
+            getConfiguration();
+            store.dispatch({ type: 'REFRESH_SIDEMENU', payload: false })
+        }
+    }, [props.refreshSide]);
+
+
     const getConfiguration = () => {
         const menuName = `${props.tableName.toLowerCase()}-registry-menu`
         setLoading(true)
@@ -192,6 +202,7 @@ const SideMenu = (props) => {
 }
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
+    refreshSide: state.refreshSideMenu.refresh
 });
 
 SideMenu.contextTypes = {
