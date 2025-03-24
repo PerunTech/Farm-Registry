@@ -202,7 +202,7 @@ const SideMenu = (props) => {
 }
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
-    refreshSide: state.refreshSideMenu.refresh
+    refreshSide: state.refreshSideMenu.refreshSide
 });
 
 SideMenu.contextTypes = {
