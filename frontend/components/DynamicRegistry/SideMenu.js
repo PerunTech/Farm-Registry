@@ -175,6 +175,7 @@ const SideMenu = (props) => {
                     key: tableName,
                     tableName,
                     objectId: props.objectId,
+                    appObjId: props.objectId,
                     configuration,
                     getConfiguration: (objId) => getConfiguration(objId)
                 }

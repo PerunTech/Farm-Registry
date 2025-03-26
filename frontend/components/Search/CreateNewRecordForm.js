@@ -25,33 +25,51 @@ const CreateNewRecordForm = (props, context) => {
     ComponentManager.setStateForComponent('REGISTRATION_FORM', null, { saveExecuted: false })
   }
 
-  const onSubmit = (e) => {
-    const addFormConfig = props.configuration?.addForm
-    const url = addFormConfig?.save?.onSave
-    const contentType = addFormConfig?.save?.contentType || 'application/x-www-form-urlencoded'
-    const shouldEncode = addFormConfig?.save?.encode
-    const formData = e.formData
-    const data = shouldEncode ? jsonToURI(flattenObject(formData)) : encodeURIComponent(JSON.stringify(formData))
-    const reqConfig = { method: 'post', url: `${window.server}${url}`, data, headers: { 'Content-Type': contentType } }
-    axios(reqConfig).then(res => {
+  const onSubmit = async (e) => {
+    const addFormConfig = props.configuration?.addForm;
+    const url = addFormConfig?.save?.onSave;
+    const contentType = addFormConfig?.save?.contentType || 'application/x-www-form-urlencoded';
+    const shouldEncode = addFormConfig?.save?.encode;
+    const formData = e.formData || e;
+    const data = shouldEncode ? jsonToURI(flattenObject(formData)) : encodeURIComponent(JSON.stringify(formData));
+    const reqConfig = { method: 'post', url: `${window.server}${url}`, data, headers: { 'Content-Type': contentType } };
+
+    try {
+      const res = await axios(reqConfig);
+
       if (res?.data) {
-        const resType = res.data?.type?.toLowerCase() || 'info'
+        const resType = res.data?.type?.toLowerCase() || 'info';
+        const objectId = resType === 'success' ? res.data.data['object_id'] : null;
+
         const onConfirm = () => {
           if (resType === 'success') {
             props.setShowRegistrationModal(false)
             const href = `/main/registry/${props.businessObjectName}/${res.data.data['object_id']}/farm-summary`
             hashHistory.push(href)
           } else {
-            resetFormSaveState()
+            resetFormSaveState();
           }
-        }
-        alertUserResponse({ response: res.data, onConfirm })
+        };
+
+        alertUserResponse({
+          response: res.data,
+          onConfirm
+        });
+
+        return objectId;
       }
-    }).catch(err => {
-      console.error(err)
-      alertUserResponse({ response: err.response?.data, onConfirm: resetFormSaveState })
-    })
-  }
+
+      return null;
+    } catch (err) {
+      console.error(err);
+      alertUserResponse({
+        response: err.response?.data,
+        onConfirm: resetFormSaveState
+      });
+
+      return null;
+    }
+  };
 
   const generateForm = () => {
     let inputWrapper = undefined;
@@ -68,7 +86,7 @@ const CreateNewRecordForm = (props, context) => {
 
     return (
       <GenericForm
-        className={`form-test custom-farm-registry-form aims-forms hide-initial-form-legend`}
+        className={`form-test custom-farm-registry-form aims-forms hide-initial-form-legend initial-holding`}
         params={'FORM_DATA'}
         key={`REGISTRATION_FORM`}
         id={`REGISTRATION_FORM`}
@@ -78,6 +96,7 @@ const CreateNewRecordForm = (props, context) => {
         addSaveFunction={(e) => onSubmit(e)}
         customSaveButtonName={getMainLabel('save', context)}
         hideBtns={'closeAndDelete'}
+        isAddForm={true}
         inputWrapper={inputWrapper}
       />
     )
