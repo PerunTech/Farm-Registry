@@ -55,7 +55,7 @@ const Attachments = (props, context) => {
                 data.append('file', file)
                 return await axios({
                     method: 'post',
-                    data: data,
+                    data: JSON.stringify(data),
                     url: `${window.server}${`/ReactElements/uploadFile/sid/${props.svSession}/object-id/${objId}/object-type/${props.tableName}/file-type/ATTACHMENT/note/note`}`,
                     headers: { 'Content-Type': 'multipart/form-data' }
                 }).then(res => {
