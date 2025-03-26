@@ -56,7 +56,7 @@ const Attachments = (props, context) => {
                 return await axios({
                     method: 'post',
                     data: data,
-                    url: `${window.server}${`/ReactElements/uploadFile/sid/${props.svSession}/object-id/${objId}/object-type/${props.tableName}/file-type/ATTACHMENT/note/%7Bnote%7D`}`,
+                    url: `${window.server}${`/ReactElements/uploadFile/sid/${props.svSession}/object-id/${objId}/object-type/${props.tableName}/file-type/ATTACHMENT/note/note`}`,
                     headers: { 'Content-Type': 'multipart/form-data' }
                 }).then(res => {
                     return { res, file }
@@ -148,7 +148,7 @@ const Attachments = (props, context) => {
                             <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{`${el.FILE_NAME} / ${formatDateAndTime(el.dt_insert)}`}</button>
                         </div>
                         <div>
-                            {showDelete && <button type='button' id='deleteBtn' className={'delete-file-btn'}
+                            {<button type='button' id='deleteBtn' className={'delete-file-btn'}
                                 onClick={(e) => { alertUser(true, 'warning', getMainLabel('delete_uploaded_file', context), "", () => { deleteDownload(el, e,) }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context)) }}>{iconManager.getIcon('delete')}
                             </button>}
                             <button type='button' id='downloadBtn' className={'download-file-btn upload-to-download-btn'}
