@@ -149,8 +149,15 @@ const ObjectSummary = (props, context) => {
         axios.get(`${window.server + url}`)
             .then(res => {
                 setLoading(false);
-                const data = JSON.parse(res.data.data);
-                data?.['FIELDS'] ? generateCheckList(data) : alertUserResponse({ response: res })
+                if (res?.data?.data) {
+                    const data = JSON.parse(res.data.data);
+                    data?.['FIELDS'] ? generateCheckList(data) : () => { }
+                } else {
+                    alertUserResponse({ response: res })
+                    store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                    store.dispatch({ type: 'REFRESH_SIDEMENU', payload: true })
+                }
+
             })
             .catch(err => {
                 setLoading(false);
