@@ -1,0 +1,326 @@
+
+import {
+    React,
+    connect,
+    elements,
+    PropTypes,
+    axios,
+    Loading,
+    ComponentManager,
+    GridManager
+} from "perun-core";
+const { useState, useEffect } = React;
+const { alertUser } = elements;
+import { formatDateAndTime } from './fortDateAndTime';
+import { getMainLabel } from './LabelsExport';
+import { iconManager } from './svgHolder';
+
+const Attachments = (props, context) => {
+    const [fileItems, setFileItems] = useState(undefined)
+    const [loading, setLoading] = useState(false)
+    const [selectedFiles, setSelectedFiles] = useState(undefined)
+    const [temp, setTemp] = useState([])
+    const [showDelete, setDelete] = useState(false)
+    const [showSave, setSave] = useState(false)
+    const [readOnly, setReadOnly] = useState(false)
+    useEffect(() => {
+        const config = ComponentManager.getStateForComponent(props.formid, "config")
+        setReadOnly(config.readOnlyAttachment)
+        setSave(!config.form.configuration.readOnly)
+        setDelete(config.form.delete.enabled)
+        if (props.objId !== 0 && props.objId) {
+            generateFileItem()
+        }
+    }, [])
+
+    useEffect(() => {
+        if (temp && temp?.length > 0) {
+            generateSelectedFiles(temp)
+        } else {
+            setSelectedFiles(<></>)
+        }
+    }, [temp])
+
+    const handleUploadedFiles = (e) => {
+        const uploadedFiles = Array.from(e.target.files);
+        setTemp(temp => [...uploadedFiles, ...temp]);
+    }
+
+    const handleMultiAttach = (arr, objId) => {
+        if (arr.length > 0) {
+            let errorArr = []
+            setLoading(true)
+            const promises = arr.map(async (file, i) => {
+                let data = new FormData()
+                data.append('file', file)
+                return await axios({
+                    method: 'post',
+                    data: data,
+                    url: `${window.server}${`/ReactElements/uploadFile/sid/${props.svSession}/object-id/${objId}/object-type/${props.tableName}/file-type/ATTACHMENT/note/note`}`,
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                }).then(res => {
+                    return { res, file }
+                }).catch((error) => {
+                    return { error, file }
+                })
+            })
+
+            Promise.allSettled(promises).
+                then((results) => {
+                    results.forEach(result => {
+                        if (result.value?.error) {
+                            errorArr.push(result.value.file)
+                        } else {
+                            if (result.value.res.data.type !== "SUCCESS") {
+                                errorArr.push(result.value.file)
+                            }
+                        }
+                    })
+                    setLoading(false)
+                    responseFunc(errorArr)
+
+                })
+        } else {
+            setLoading(false)
+        }
+    }
+
+    const responseFunc = (errorArr) => {
+        const { formid } = props
+        const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
+        const closeModal = ComponentManager.getStateForComponent(props.formid, "closeModalFunc");
+        if (errorArr.length > 0) {
+            let erroArrNames = []
+            let nameString = " "
+            errorArr.forEach(error => {
+                erroArrNames.push(error.name)
+            })
+            nameString = erroArrNames.join(',')
+            alertUser(true, 'warning', `${getMainLabel('desc_error_upload', context)} :`, ` ${nameString}`, () => {
+                closeModal()
+                GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+            })
+        } else {
+            alertUser(true, 'success', getMainLabel('desc_success_upload_title', context), '', () => {
+                closeModal()
+                GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+            })
+        }
+    }
+
+    const downloadFile = (el, e) => {
+        e.preventDefault()
+        if (el['object_id'] && el['FILE_NAME']) {
+            let url = window.server + `/ReactElements/downloadFile/sid/${props.svSession}/object-id/${el['object_id']}/file-name/${el['FILE_NAME']}`
+            window.open(url, '_blank')
+        }
+    }
+    const deleteDownload = (el, e) => {
+        e.preventDefault()
+        let deleteObj = { 'OBJECT_ID': el['object_id'], 'OBJECT_TYPE': 2 }
+        let url = window.server + `/ReactElements/deleteObject/${props.svSession}`
+        axios({
+            method: "post",
+            data: deleteObj,
+            url: url,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        })
+            .then((res) => {
+                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
+                if (res.data.type === 'SUCCESS') {
+                    generateFileItem()
+                }
+            }).catch(err => {
+                console.error(err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg);
+            });
+    }
+
+    const generateFileItem = (objId) => {
+        setLoading(true)
+        axios.get(`${window.server}${`/ReactElements/getUploadedFiles/sid/${props.svSession}/object-id/${objId || props.objId}/object-type/${props.tableName}/file-type/0`}`).then(res => {
+            if (res.data) {
+                if (res.data.data.items?.length > 0) {
+                    let files = res.data.data.items.map((el) => (<div className={'downloadable-item-div'}>
+                        <div className={'download-icon-text'}>
+                            <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{`${el.FILE_NAME} / ${formatDateAndTime(el.dt_insert)}`}</button>
+                        </div>
+                        <div>
+                            {<button type='button' id='deleteBtn' className={'delete-file-btn'}
+                                onClick={(e) => { alertUser(true, 'warning', getMainLabel('delete_uploaded_file', context), "", () => { deleteDownload(el, e,) }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context)) }}>{iconManager.getIcon('delete')}
+                            </button>}
+                            <button type='button' id='downloadBtn' className={'download-file-btn upload-to-download-btn'}
+                                onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('upload')}
+                            </button>
+                        </div>
+                    </div>))
+                    setFileItems(files)
+                    setLoading(false)
+                } else {
+                    setFileItems(undefined)
+                    setLoading(false)
+                }
+            }
+        }).catch(err => {
+            console.error(err)
+            const title = err.response?.data?.title || err
+            const msg = err.response?.data?.message || ''
+            alertUser(true, "error", title, msg);
+            setLoading(false)
+        });
+
+    }
+
+    const handleSubmit = () => {
+        const { formid } = props
+        const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
+        const formData = ComponentManager.getStateForComponent(formid, "formTableData");
+        const closeModal = ComponentManager.getStateForComponent(formid, "closeModalFunc");
+        const onSubmitWs = ComponentManager.getStateForComponent(formid, "onSubmitWs");
+        let url = `${window.server}${onSubmitWs}`
+
+        if (formData) {
+            axios({
+                method: "post",
+                data: formData,
+                url,
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            }).then(res => {
+                if (res.data.type?.toLowerCase() === 'success') {
+                    if (temp && temp.length > 0) {
+                        handleMultiAttach(temp, res.data.data['object_id'] || res.data.data['OBJECT_ID'])
+                    } else {
+                        alertUser(true, res.data.type?.toLowerCase(), res.data.title, res.data.message, () => {
+                            closeModal()
+                            GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+                        })
+                    }
+                }
+
+            }).catch(err => {
+                console.error(err)
+                const title = err.response?.data?.title || err
+                const msg = err.response?.data?.message || ''
+                alertUser(true, "error", title, msg, () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) });
+            });
+        }
+    }
+
+    const deleteSelectedFile = (index, arr) => {
+        const newArr = [...arr.slice(0, index), ...arr.slice(index + 1)];
+        setTemp(newArr);
+    }
+
+    const generateSelectedFiles = (arr) => {
+        let files
+        if (arr && arr?.length > 0) {
+            files = arr.map((el, index) => (
+                <div className={'downloadable-item-div'}>
+                    <div className={'download-icon-text'}>
+                        <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'}>{`${el.name}`}</button>
+                    </div>
+                    <div>
+                        <button type='button' id='deleteBtn' onClick={() => {
+                            deleteSelectedFile(index, arr)
+                        }} className={'delete-file-btn-temp'}>{iconManager.getIcon('addAttachment')}
+                        </button>
+                    </div>
+                </div>
+            ))
+
+        } else {
+            files = <></>
+        }
+        setSelectedFiles(files)
+    }
+
+    const deleteFunc = (_id, _action, _session) => {
+        const { formid } = props
+        const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
+        const formData = ComponentManager.getStateForComponent(formid, "formTableData");
+        const closeModal = ComponentManager.getStateForComponent(formid, "closeModalFunc");
+        const id = ComponentManager.getStateForComponent(formid, "id");
+        const { svSession } = props;
+        let url = window.server + `/ReactElements/deleteObject/${svSession}`;
+        axios({
+            method: "post",
+            data: formData,
+            url: url,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }).then((res) => {
+            const resType = res.data.type
+            const title = res.data.title || ''
+            const msg = res.data.message || ''
+            if (resType?.toLowerCase() === "success") {
+                alertUser(true, "success", title, msg, () => {
+                    ComponentManager.setStateForComponent(id, null, { deleteExecuted: false })
+                    closeModal()
+                    GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+                });
+
+            } else {
+                alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => {
+                    ComponentManager.setStateForComponent(id, null, { deleteExecuted: false })
+                    closeModal()
+                    GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+
+                })
+            }
+        }).catch(err => {
+            console.error(err)
+            const title = err.response?.data?.title || err
+            const msg = err.response?.data?.message || ''
+            alertUser(true, "error", title, msg, () => {
+                ComponentManager.setStateForComponent(id, null, { deleteExecuted: false })
+                closeModal()
+                GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+
+            });
+        });
+    }
+
+    return (
+        <>
+            {loading && <Loading />}
+            <div className={'applications-all-attachments-container'}>
+                {/* attachl left-live */}
+                {!readOnly && <div className={'applications-attachments-selected applications-attachments-container'}>
+                    <div className={'applications-upload'}>
+                        <p>{getMainLabel('attachment_title-temp', context)}</p>
+                        <label title={getMainLabel('upload_file_btn', context)} for={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
+                        <input className={'applications-upload-input'} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
+                    </div>
+                    <div className={'applications-files'}>
+                        {selectedFiles}
+                    </div>
+                </div>}
+                {/* attach right offline */}
+                <div className={'applications-attachments-uploaded applications-attachments-container'}>
+                    <div className={'applications-upload'}>
+                        <p>{getMainLabel('attachment_title', context)}</p>
+                    </div>
+                    <div className={'applications-files'}>
+                        {fileItems}
+                    </div>
+                </div>
+            </div>
+
+            {/* save and delete section */}
+            {<div id="btnSeparator" className={"attachment-btns"}>
+                {showSave && <button onClick={() => { handleSubmit() }} type="submit" id="save_form_btn" className={'wrapper-btn-save btn-success btn_save_form'}>{getMainLabel('save', context)}</button>}
+                {(props.objId !== 0 && props.objId) && showDelete && <button onClick={() => { deleteFunc() }} type="button" id="save_form_btn" className={'wrapper-btn-save btn-danger btn_delete_form'}>{getMainLabel('delete', context)}</button>}
+            </div>}
+        </>
+    );
+};
+
+const mapStateToProps = (state) => ({
+    svSession: state.security.svSession,
+});
+
+Attachments.contextTypes = {
+    intl: PropTypes.object.isRequired,
+};
+export default connect(mapStateToProps)(Attachments);
