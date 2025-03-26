@@ -57,7 +57,7 @@ const Attachments = (props, context) => {
                     method: 'post',
                     data: data,
                     url: `${window.server}${`/ReactElements/uploadFile/sid/${props.svSession}/object-id/${objId}/object-type/${props.tableName}/file-type/ATTACHMENT/note/%7Bnote%7D`}`,
-                    headers: { 'Content-Type': 'multipart/fosrm-data' }
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 }).then(res => {
                     return { res, file }
                 }).catch((error) => {
