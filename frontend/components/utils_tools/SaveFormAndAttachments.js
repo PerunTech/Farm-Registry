@@ -10,7 +10,7 @@ import {
     GridManager
 } from "perun-core";
 const { useState, useEffect } = React;
-const { alertUser } = elements;
+const { alertUserV2, alertUserResponse } = elements;
 import { formatDateAndTime } from './fortDateAndTime';
 import { getMainLabel } from './LabelsExport';
 import { iconManager } from './svgHolder';
@@ -87,6 +87,10 @@ const Attachments = (props, context) => {
 
     const responseFunc = (errorArr) => {
         const { formid } = props
+        const onConfirm = () => {
+            closeModal()
+            GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+        }
         const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
         const closeModal = ComponentManager.getStateForComponent(props.formid, "closeModalFunc");
         if (errorArr.length > 0) {
@@ -96,14 +100,17 @@ const Attachments = (props, context) => {
                 erroArrNames.push(error.name)
             })
             nameString = erroArrNames.join(',')
-            alertUser(true, 'warning', `${getMainLabel('desc_error_upload', context)} :`, ` ${nameString}`, () => {
-                closeModal()
-                GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+            alertUserV2({
+                type: 'warning',
+                title: `${getMainLabel('desc_error_upload', context)} :`,
+                message: ` ${nameString}`,
+                onConfirm
             })
         } else {
-            alertUser(true, 'success', getMainLabel('desc_success_upload_title', context), '', () => {
-                closeModal()
-                GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+            alertUserV2({
+                type: 'success',
+                title: getMainLabel('desc_success_upload_title', context),
+                onConfirm
             })
         }
     }
@@ -124,18 +131,29 @@ const Attachments = (props, context) => {
             data: deleteObj,
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        })
-            .then((res) => {
-                alertUser(true, res.data.type.toLowerCase(), res.data.title, res.data.message)
-                if (res.data.type === 'SUCCESS') {
+        }).then((res) => {
+            if (res?.data) {
+                const resType = res.data?.type?.toLowerCase() || 'info'
+                alertUserResponse({ response: res.data })
+                if (resType === 'SUCCESS') {
                     generateFileItem()
                 }
-            }).catch(err => {
-                console.error(err)
-                const title = err.response?.data?.title || err
-                const msg = err.response?.data?.message || ''
-                alertUser(true, "error", title, msg);
-            });
+            }
+        }).catch(err => {
+            console.error(err)
+            alertUserResponse({ response: err })
+        });
+    }
+
+    const deletePrompt = (el, e) => {
+        alertUserV2({
+            type: 'warning',
+            title: getMainLabel('delete_uploaded_file', context),
+            confirmButtonText: getMainLabel('yes', context),
+            onConfirm: () => deleteDownload(el, e),
+            showCancel: true,
+            cancelButtonText: getMainLabel('no', context)
+        })
     }
 
     const generateFileItem = (objId) => {
@@ -148,9 +166,9 @@ const Attachments = (props, context) => {
                             <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{`${el.FILE_NAME} / ${formatDateAndTime(el.dt_insert)}`}</button>
                         </div>
                         <div>
-                            {<button type='button' id='deleteBtn' className={'delete-file-btn'}
-                                onClick={(e) => { alertUser(true, 'warning', getMainLabel('delete_uploaded_file', context), "", () => { deleteDownload(el, e,) }, () => { }, true, getMainLabel('yes', context), getMainLabel('no', context)) }}>{iconManager.getIcon('delete')}
-                            </button>}
+                            <button type='button' id='deleteBtn' className={'delete-file-btn'} onClick={(e) => deletePrompt(el, e)}>
+                                {iconManager.getIcon('delete')}
+                            </button>
                             <button type='button' id='downloadBtn' className={'download-file-btn upload-to-download-btn'}
                                 onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('upload')}
                             </button>
@@ -165,12 +183,9 @@ const Attachments = (props, context) => {
             }
         }).catch(err => {
             console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, "error", title, msg);
             setLoading(false)
+            alertUserResponse({ response: err })
         });
-
     }
 
     const handleSubmit = () => {
@@ -188,22 +203,21 @@ const Attachments = (props, context) => {
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
-                if (res.data.type?.toLowerCase() === 'success') {
+                if (res?.data) {
                     if (temp && temp.length > 0) {
                         handleMultiAttach(temp, res.data.data['object_id'] || res.data.data['OBJECT_ID'])
                     } else {
-                        alertUser(true, res.data.type?.toLowerCase(), res.data.title, res.data.message, () => {
-                            closeModal()
-                            GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+                        alertUserResponse({
+                            response: res.data, onConfirm: () => {
+                                closeModal()
+                                GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+                            }
                         })
                     }
                 }
-
             }).catch(err => {
                 console.error(err)
-                const title = err.response?.data?.title || err
-                const msg = err.response?.data?.message || ''
-                alertUser(true, "error", title, msg, () => { ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) });
+                alertUserResponse({ response: err, onConfirm: () => ComponentManager.setStateForComponent(formid, null, { saveExecuted: false }) })
             });
         }
     }
@@ -237,12 +251,16 @@ const Attachments = (props, context) => {
     }
 
     const deleteFunc = (_id, _action, _session) => {
-        const { formid } = props
+        const { formid, svSession } = props
         const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
         const formData = ComponentManager.getStateForComponent(formid, "formTableData");
         const closeModal = ComponentManager.getStateForComponent(formid, "closeModalFunc");
         const id = ComponentManager.getStateForComponent(formid, "id");
-        const { svSession } = props;
+        const onConfirm = () => {
+            ComponentManager.setStateForComponent(id, null, { deleteExecuted: false })
+            closeModal()
+            GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+        }
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
             method: "post",
@@ -250,34 +268,12 @@ const Attachments = (props, context) => {
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {
-            const resType = res.data.type
-            const title = res.data.title || ''
-            const msg = res.data.message || ''
-            if (resType?.toLowerCase() === "success") {
-                alertUser(true, "success", title, msg, () => {
-                    ComponentManager.setStateForComponent(id, null, { deleteExecuted: false })
-                    closeModal()
-                    GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
-                });
-
-            } else {
-                alertUser(true, resType?.toLowerCase() || 'info', title, msg, () => {
-                    ComponentManager.setStateForComponent(id, null, { deleteExecuted: false })
-                    closeModal()
-                    GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
-
-                })
+            if (res?.data) {
+                alertUserResponse({ response: res.data, onConfirm })
             }
         }).catch(err => {
             console.error(err)
-            const title = err.response?.data?.title || err
-            const msg = err.response?.data?.message || ''
-            alertUser(true, "error", title, msg, () => {
-                ComponentManager.setStateForComponent(id, null, { deleteExecuted: false })
-                closeModal()
-                GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
-
-            });
+            alertUserResponse({ response: err, onConfirm })
         });
     }
 
