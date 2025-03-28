@@ -55,7 +55,7 @@ const Attachments = (props, context) => {
                 data.append('file', file)
                 return await axios({
                     method: 'post',
-                    data: JSON.stringify(data),
+                    data,
                     url: `${window.server}${`/ReactElements/uploadFile/sid/${props.svSession}/object-id/${objId}/object-type/${props.tableName}/file-type/ATTACHMENT/note/note`}`,
                     headers: { 'Content-Type': 'multipart/form-data' }
                 }).then(res => {
@@ -128,7 +128,7 @@ const Attachments = (props, context) => {
         let url = window.server + `/ReactElements/deleteObject/${props.svSession}`
         axios({
             method: "post",
-            data: deleteObj,
+            data: JSON.stringify(deleteObj),
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {
@@ -199,7 +199,7 @@ const Attachments = (props, context) => {
         if (formData) {
             axios({
                 method: "post",
-                data: formData,
+                data: JSON.stringify(formData),
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
@@ -264,7 +264,7 @@ const Attachments = (props, context) => {
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
             method: "post",
-            data: formData,
+            data: JSON.stringify(formData),
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {
