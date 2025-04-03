@@ -26,7 +26,7 @@ const ObjectSummary = (props, context) => {
             props?.configuration?.data?.map(el => {
                 if (el.ID.toUpperCase().includes('SUMMARY')) {
                     getObjectSummary(el.url);
-                    store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: false } } })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
                 }
             })
         }
@@ -56,9 +56,9 @@ const ObjectSummary = (props, context) => {
             });
     };
     const backButtonFunction = () => {
-        if (props?.businessLogicReducer?.['farm-registry']?.['route']) {
-            hashHistory.push(props?.businessLogicReducer?.['farm-registry']?.['route'])
-            store.dispatch({ type: 'SAVE', payload: { "farm-registry": {} } })
+        if (props?.businessLogicReducer?.['farm-registry-route']) {
+            hashHistory.push(props?.businessLogicReducer?.['farm-registry-route'])
+            store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: '' } })
         } else {
             hashHistory.push('/main/farm-registry')
         }
@@ -139,7 +139,8 @@ const ObjectSummary = (props, context) => {
             html: customElement,
             allowOutsideClick: true,
         });
-        store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true, refreshSideMenu: true } } })
+        store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
+        store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: true } })
     }
 
     const summaryAction = (url) => {
@@ -153,7 +154,8 @@ const ObjectSummary = (props, context) => {
                     data?.['FIELDS'] ? generateCheckList(data) : () => { }
                 } else {
                     alertUserResponse({ response: res })
-                    store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true, refreshSideMenu: true } } })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: true } })
                 }
 
             })

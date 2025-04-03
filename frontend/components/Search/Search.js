@@ -22,7 +22,10 @@ const Search = (props, context) => {
     updateIdScreen(context)
     getBusinessObjectName()
     ssOLogin()
-    store.dispatch({ type: 'SAVE', payload: { 'farm-registry': {} } })
+    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
+    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: false } })
+    store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: '' } })
+    store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: '' } })
   }, [])
 
   useEffect(() => {

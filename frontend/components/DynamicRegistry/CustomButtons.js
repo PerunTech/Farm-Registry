@@ -64,7 +64,7 @@ const CustomButtons = (props, context) => {
                             if (res?.data) {
                                 alertUserResponse({ response: res.data })
                             }
-                            if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
+                            if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                         }).catch(err => {
                             setLoading(false)
                             console.error(err)
@@ -95,7 +95,7 @@ const CustomButtons = (props, context) => {
                                     response: res.data, onConfirm: () => {
                                         reloadGrid(props.tableName + props.appObjId, multiSelect)
                                         setLoading(false)
-                                        if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
+                                        if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                                     }
                                 })
                             }
@@ -132,7 +132,7 @@ const CustomButtons = (props, context) => {
                                     response: res.data, onConfirm: () => {
                                         reloadGrid(props.tableName + props.appObjId, multiSelect)
                                         setLoading(false)
-                                        if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
+                                        if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                                     }
                                 })
                             }
@@ -178,7 +178,8 @@ const CustomButtons = (props, context) => {
         }
     }
     const customRowClick = (_id, _rowIdx, row) => {
-        store.dispatch({ type: 'SAVE', payload: { "farm-registry": { "objectId": props.objectId, "route": hashHistory.location.pathname } } })
+        store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
+        store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
         const customRowClickConfig = props.configuration?.objectConfiguration?.customRowClick
         const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
         hashHistory.push(route)
@@ -397,7 +398,7 @@ const CustomButtons = (props, context) => {
                             GridManager.reloadGridData(props.tableName + props.appObjId)
                             closeFormModal()
                         }
-                        if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
+                        if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                     }
                 }
             }).catch(err => {
@@ -421,7 +422,7 @@ const CustomButtons = (props, context) => {
                 if (resType === 'success') {
                     closeFormModal()
                     GridManager.reloadGridData(props.tableName + props.appObjId);
-                    if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
+                    if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                 }
             }
         }).catch(err => {

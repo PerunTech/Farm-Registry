@@ -19,7 +19,8 @@ const DoubleGrid = (props, context) => {
         if (grid.customRowClick) {
             switch (grid.customRowClick?.type) {
                 case "route":
-                    store.dispatch({ type: 'SAVE', payload: { "farm-registry": { "objectId": props.farmObjId, "route": hashHistory.location.pathname } } })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
                     let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
                     hashHistory.push(route)
                     break;
@@ -60,7 +61,7 @@ const DoubleGrid = (props, context) => {
                 uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
                 tableFormDataMethod={addFormConfig?.data?.onSubmit}
                 addSaveFunction={(e) => onSubmit(e)}
-                customSaveButtonName={'save'}
+                customSaveButtonName={getMainLabel('save', context)}
                 hideBtns={'closeAndDelete'}
             />
         )
@@ -82,7 +83,7 @@ const DoubleGrid = (props, context) => {
                     }
                 })
                 if (resType === 'success') {
-                    if (props.configuration.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
+                    if (props.configuration.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                 }
             }
         }).catch(err => {

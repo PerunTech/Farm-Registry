@@ -21,7 +21,7 @@ const SideMenu = (props) => {
     useEffect(() => {
         if (props.refreshSideMenu) {
             getConfiguration();
-            store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSideMenu: false } } })
+            store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: false } })
         }
     }, [props.refreshSideMenu]);
 
