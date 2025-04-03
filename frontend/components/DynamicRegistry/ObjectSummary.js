@@ -214,7 +214,7 @@ const ObjectSummary = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
     businessLogicReducer: state.businessLogicReducer,
-    refreshSummary: state.businessLogicReducer?.['farm-registry']?.refreshSummary
+    refreshSummary: state.businessLogicReducer?.refreshSummary
 });
 
 ObjectSummary.contextTypes = {

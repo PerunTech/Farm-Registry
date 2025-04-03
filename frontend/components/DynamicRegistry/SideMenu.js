@@ -203,7 +203,7 @@ const SideMenu = (props) => {
 }
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
-    refreshSideMenu: state.businessLogicReducer?.['farm-registry']?.refreshSideMenu
+    refreshSideMenu: state.businessLogicReducer?.refreshSideMenu
 });
 
 SideMenu.contextTypes = {
