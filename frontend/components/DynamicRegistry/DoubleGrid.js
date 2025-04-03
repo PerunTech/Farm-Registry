@@ -82,7 +82,7 @@ const DoubleGrid = (props, context) => {
                     }
                 })
                 if (resType === 'success') {
-                    if (props.configuration.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                    if (props.configuration.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
                 }
             }
         }).catch(err => {
