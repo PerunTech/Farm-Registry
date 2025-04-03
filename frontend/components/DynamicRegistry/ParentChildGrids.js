@@ -108,7 +108,7 @@ const ParentChildGrids = (props, context) => {
                     } else {
                         ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { saveExecuted: false })
                     }
-                    if (props?.grids[1]?.objectConfiguration?.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                    if (props?.grids[1]?.objectConfiguration?.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
                 }
                 alertUserResponse({ response: res.data, onConfirm })
             }

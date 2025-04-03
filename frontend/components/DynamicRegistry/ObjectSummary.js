@@ -26,7 +26,7 @@ const ObjectSummary = (props, context) => {
             props?.configuration?.data?.map(el => {
                 if (el.ID.toUpperCase().includes('SUMMARY')) {
                     getObjectSummary(el.url);
-                    store.dispatch({ type: 'REFRESH_SUMMARY', payload: false })
+                    store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: false } } })
                 }
             })
         }
@@ -139,7 +139,7 @@ const ObjectSummary = (props, context) => {
             html: customElement,
             allowOutsideClick: true,
         });
-        store.dispatch({ type: 'REFRESH_SUMMARY', payload: true });
+        store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
         store.dispatch({ type: 'REFRESH_SIDEMENU', payload: true })
     }
 
@@ -154,7 +154,7 @@ const ObjectSummary = (props, context) => {
                     data?.['FIELDS'] ? generateCheckList(data) : () => { }
                 } else {
                     alertUserResponse({ response: res })
-                    store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                    store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
                     store.dispatch({ type: 'REFRESH_SIDEMENU', payload: true })
                 }
 
@@ -214,7 +214,7 @@ const ObjectSummary = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
     businessLogicReducer: state.businessLogicReducer,
-    refreshSummary: state.refreshSummary.refresh
+    refreshSummary: state.businessLogicReducer?.['farm-registry']?.refreshSummary
 });
 
 ObjectSummary.contextTypes = {

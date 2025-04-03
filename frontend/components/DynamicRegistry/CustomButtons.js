@@ -64,7 +64,7 @@ const CustomButtons = (props, context) => {
                             if (res?.data) {
                                 alertUserResponse({ response: res.data })
                             }
-                            if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                            if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
                         }).catch(err => {
                             setLoading(false)
                             console.error(err)
@@ -95,7 +95,7 @@ const CustomButtons = (props, context) => {
                                     response: res.data, onConfirm: () => {
                                         reloadGrid(props.tableName + props.appObjId, multiSelect)
                                         setLoading(false)
-                                        if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                                        if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
                                     }
                                 })
                             }
@@ -132,7 +132,7 @@ const CustomButtons = (props, context) => {
                                     response: res.data, onConfirm: () => {
                                         reloadGrid(props.tableName + props.appObjId, multiSelect)
                                         setLoading(false)
-                                        if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                                        if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
                                     }
                                 })
                             }
@@ -397,7 +397,7 @@ const CustomButtons = (props, context) => {
                             GridManager.reloadGridData(props.tableName + props.appObjId)
                             closeFormModal()
                         }
-                        if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                        if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
                     }
                 }
             }).catch(err => {
@@ -421,7 +421,7 @@ const CustomButtons = (props, context) => {
                 if (resType === 'success') {
                     closeFormModal()
                     GridManager.reloadGridData(props.tableName + props.appObjId);
-                    if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                    if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
                 }
             }
         }).catch(err => {
