@@ -19,11 +19,11 @@ const SideMenu = (props) => {
     }, []);
 
     useEffect(() => {
-        if (props.refreshSide) {
+        if (props.refreshSideMenu) {
             getConfiguration();
-            store.dispatch({ type: 'REFRESH_SIDEMENU', payload: false })
+            store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSideMenu: false } } })
         }
-    }, [props.refreshSide]);
+    }, [props.refreshSideMenu]);
 
 
     const getConfiguration = () => {
@@ -203,7 +203,7 @@ const SideMenu = (props) => {
 }
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
-    refreshSide: state.refreshSideMenu.refreshSide
+    refreshSideMenu: state.businessLogicReducer?.['farm-registry']?.refreshSideMenu
 });
 
 SideMenu.contextTypes = {

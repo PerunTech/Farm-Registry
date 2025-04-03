@@ -139,8 +139,7 @@ const ObjectSummary = (props, context) => {
             html: customElement,
             allowOutsideClick: true,
         });
-        store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
-        store.dispatch({ type: 'REFRESH_SIDEMENU', payload: true })
+        store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true, refreshSideMenu: true } } })
     }
 
     const summaryAction = (url) => {
@@ -154,8 +153,7 @@ const ObjectSummary = (props, context) => {
                     data?.['FIELDS'] ? generateCheckList(data) : () => { }
                 } else {
                     alertUserResponse({ response: res })
-                    store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true } } })
-                    store.dispatch({ type: 'REFRESH_SIDEMENU', payload: true })
+                    store.dispatch({ type: 'SAVE', payload: { 'farm-registry': { refreshSummary: true, refreshSideMenu: true } } })
                 }
 
             })

@@ -1,11 +1,9 @@
 import { Search } from './components/Search'
 import { DynamicRegistry } from './components/DynamicRegistry'
 import mapDataReducer from './reducers/reducerMap'
-import refreshSideMenu from './reducers/refreshSideMenuReducer'
 import { redux, persistBundleReducers } from 'perun-core'
 const { store, injectAsyncReducer } = redux;
 injectAsyncReducer(store, 'farm_registry.mapData', mapDataReducer)
-injectAsyncReducer(store, 'refreshSideMenu', refreshSideMenu)
 persistBundleReducers(['farm_registry.mapData'])
 const routes = [
   {
