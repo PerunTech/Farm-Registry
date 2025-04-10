@@ -1,4 +1,4 @@
-import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, redux } from 'perun-core'
+import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, redux } from 'perun-core'
 const { useState, useEffect } = React
 import { getMainLabel, labelsManager } from '../utils_tools/LabelsExport';
 import { getDynamicKey } from '../../utils';
@@ -154,7 +154,7 @@ const ParentChildGrids = (props, context) => {
         ComponentManager.cleanComponentReducerState(gridId + prev)
         generateGrid(row[`${gridId}.OBJECT_ID`], grid)
     }
-    const handleRowClick = (_id, _rowIdx, row, gridId, gridAndDynamic) => {
+    const handleRowClick = (_id, _rowIdx, row, gridId, _gridAndDynamic) => {
         setRowChild(row[`${gridId}.OBJECT_ID`] || 0)
         setShow(true)
     }

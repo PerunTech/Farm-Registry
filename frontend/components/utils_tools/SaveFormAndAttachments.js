@@ -50,7 +50,7 @@ const Attachments = (props, context) => {
         if (arr.length > 0) {
             let errorArr = []
             setLoading(true)
-            const promises = arr.map(async (file, i) => {
+            const promises = arr.map(async (file) => {
                 let data = new FormData()
                 data.append('file', file)
                 return await axios({
@@ -285,7 +285,7 @@ const Attachments = (props, context) => {
                 {!readOnly && <div className={'applications-attachments-selected applications-attachments-container'}>
                     <div className={'applications-upload'}>
                         <p>{getMainLabel('attachment_title-temp', context)}</p>
-                        <label title={getMainLabel('upload_file_btn', context)} for={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
+                        <label title={getMainLabel('upload_file_btn', context)} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
                         <input className={'applications-upload-input'} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
                     </div>
                     <div className={'applications-files'}>

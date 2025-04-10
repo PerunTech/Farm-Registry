@@ -117,6 +117,7 @@ const SideMenu = (props) => {
                                         modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '');
                                         return (
                                             <button
+                                                key={sub.ID}
                                                 className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`}
                                                 onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
                                             >
@@ -165,7 +166,7 @@ const SideMenu = (props) => {
         let dynamicComponent;
         let href = `/main/registry/${props.tableName}/${props.objectId}/`
         switch (component) {
-            case "DYNAMIC":
+            case "DYNAMIC": {
                 if (child) {
                     href = `/main/registry/${props.tableName}/${props.objectId}/SUB-${tableName}`
                 }
@@ -181,6 +182,7 @@ const SideMenu = (props) => {
                 }
                 dynamicComponent = <CustomButtons {...customButtonsProps} />
                 break;
+            }
             default:
                 break;
         }

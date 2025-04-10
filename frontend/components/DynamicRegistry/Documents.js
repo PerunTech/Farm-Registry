@@ -95,7 +95,7 @@ const Documents = (props, context) => {
         if (arr.length > 0) {
             let errorArr = []
             setLoading(true)
-            const promises = arr.map(async (file, i) => {
+            const promises = arr.map(async (file) => {
                 let data = new FormData()
                 data.append('file', file)
                 return await axios({
