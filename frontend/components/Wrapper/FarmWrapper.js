@@ -13,7 +13,7 @@ const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
 let hashHistory = createHashHistory();
 let gridId;
-let inputholder = "";
+let _inputholder = "";
 const FarmWrapper = (props, context) => {
     const [show, setShow] = useState(false);
     const initialState = {
@@ -21,7 +21,7 @@ const FarmWrapper = (props, context) => {
         secondInputId: "root_FULL_NAME"
     };
     const reducer = (current, next) => ({ ...current, ...next });
-    const [state, setState] = useReducer(reducer, initialState);
+    const [state, _setState] = useReducer(reducer, initialState);
     const {
         firstInputId,
         secondInputId
@@ -61,7 +61,7 @@ const FarmWrapper = (props, context) => {
         }
     };
     const handleShow = (e) => {
-        inputholder = e.target.id;
+        _inputholder = e.target.id;
         setShow(!show);
     };
 

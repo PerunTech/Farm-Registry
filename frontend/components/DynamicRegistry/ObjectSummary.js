@@ -26,7 +26,7 @@ const ObjectSummary = (props, context) => {
             props?.configuration?.data?.map(el => {
                 if (el.ID.toUpperCase().includes('SUMMARY')) {
                     getObjectSummary(el.url);
-                    store.dispatch({ type: 'REFRESH_SUMMARY', payload: false })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
                 }
             })
         }
@@ -56,9 +56,9 @@ const ObjectSummary = (props, context) => {
             });
     };
     const backButtonFunction = () => {
-        if (props?.businessLogicReducer?.['farm-registry']?.['route']) {
-            hashHistory.push(props?.businessLogicReducer?.['farm-registry']?.['route'])
-            store.dispatch({ type: 'SAVE', payload: { "farm-registry": {} } })
+        if (props?.businessLogicReducer?.['farm-registry-route']) {
+            hashHistory.push(props?.businessLogicReducer?.['farm-registry-route'])
+            store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: '' } })
         } else {
             hashHistory.push('/main/farm-registry')
         }
@@ -114,8 +114,14 @@ const ObjectSummary = (props, context) => {
     }
 
     const generateSummaryActions = () => {
-        return actions?.map(el => (
-            < button className="farm-registry-object-summary-show-more farm-registry-object-summary-btn-action" onClick={() => summaryAction(el.onSubmit)}> {el.label}</button >
+        return actions?.map((el, i) => (
+            <button
+                key={`${props.tableName}_${props.objectId}_ACTION_${i + 1}`}
+                className="farm-registry-object-summary-show-more farm-registry-object-summary-btn-action"
+                onClick={() => summaryAction(el.onSubmit)}
+            >
+                {el.label}
+            </button>
         ))
     }
 
@@ -139,8 +145,8 @@ const ObjectSummary = (props, context) => {
             html: customElement,
             allowOutsideClick: true,
         });
-        store.dispatch({ type: 'REFRESH_SUMMARY', payload: true });
-        store.dispatch({ type: 'REFRESH_SIDEMENU', payload: true })
+        store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
+        store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: true } })
     }
 
     const summaryAction = (url) => {
@@ -154,8 +160,8 @@ const ObjectSummary = (props, context) => {
                     data?.['FIELDS'] ? generateCheckList(data) : () => { }
                 } else {
                     alertUserResponse({ response: res })
-                    store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
-                    store.dispatch({ type: 'REFRESH_SIDEMENU', payload: true })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: true } })
                 }
 
             })
@@ -214,7 +220,7 @@ const ObjectSummary = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
     businessLogicReducer: state.businessLogicReducer,
-    refreshSummary: state.refreshSummary.refresh
+    refreshSummary: state.businessLogicReducer?.refreshSummary
 });
 
 ObjectSummary.contextTypes = {

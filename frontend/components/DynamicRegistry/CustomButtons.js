@@ -27,7 +27,7 @@ const CustomButtons = (props, context) => {
     const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper }, { Holding: HoldingWrapper }, { Documents: DocumentsWrapper }])
     const [renderForm, setRender] = useState(true)
     const [rowCliked, setRowClicked] = useState(undefined)
-    const [cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
+    const [_cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
     const [actionToggle, setActionToggle] = useState(undefined)
     useEffect(() => {
         let wrapper = props.tableName.replace(/\d/g, '').replace(/_$/, '').replace(/(\w)(\w*)/g, function (g0, g1, g2) {
@@ -56,7 +56,7 @@ const CustomButtons = (props, context) => {
             let saveUrl = `${window.server}${el?.['onSave']}`
             let data
             switch (el['type']) {
-                case 'GET':
+                case 'GET': {
                     const executeGetAction = () => {
                         setLoading(true)
                         axios.get(saveUrl).then(res => {
@@ -64,7 +64,7 @@ const CustomButtons = (props, context) => {
                             if (res?.data) {
                                 alertUserResponse({ response: res.data })
                             }
-                            if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                            if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                         }).catch(err => {
                             setLoading(false)
                             console.error(err)
@@ -80,7 +80,8 @@ const CustomButtons = (props, context) => {
                         cancelButtonText: getMainLabel('no', context)
                     })
                     break;
-                case 'POST':
+                }
+                case 'POST': {
                     const executePostAction = () => {
                         setLoading(true)
                         data = JSON.stringify(selectedGridRows)
@@ -95,7 +96,7 @@ const CustomButtons = (props, context) => {
                                     response: res.data, onConfirm: () => {
                                         reloadGrid(props.tableName + props.appObjId, multiSelect)
                                         setLoading(false)
-                                        if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                                        if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                                     }
                                 })
                             }
@@ -114,7 +115,8 @@ const CustomButtons = (props, context) => {
                         cancelButtonText: getMainLabel('no', context)
                     })
                     break;
-                case 'action':
+                }
+                case 'action': {
                     const action = () => {
                         setLoading(true)
                         data = {
@@ -132,7 +134,7 @@ const CustomButtons = (props, context) => {
                                     response: res.data, onConfirm: () => {
                                         reloadGrid(props.tableName + props.appObjId, multiSelect)
                                         setLoading(false)
-                                        if (el.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                                        if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                                     }
                                 })
                             }
@@ -151,17 +153,20 @@ const CustomButtons = (props, context) => {
                         cancelButtonText: getMainLabel('no', context)
                     })
                     break;
-                case 'toggle-action':
+                }
+                case 'toggle-action': {
                     if (actionToggle === el.ID) {
                         setActionToggle(undefined)
                     } else {
                         setActionToggle(el.ID)
                     }
                     break;
-                case 'link':
+                }
+                case 'link': {
                     let href = el['route']
                     hashHistory.push(href)
                     break;
+                }
                 default:
                     break;
             }
@@ -178,7 +183,8 @@ const CustomButtons = (props, context) => {
         }
     }
     const customRowClick = (_id, _rowIdx, row) => {
-        store.dispatch({ type: 'SAVE', payload: { "farm-registry": { "objectId": props.objectId, "route": hashHistory.location.pathname } } })
+        store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
+        store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
         const customRowClickConfig = props.configuration?.objectConfiguration?.customRowClick
         const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
         hashHistory.push(route)
@@ -202,7 +208,7 @@ const CustomButtons = (props, context) => {
                 <div className={`${togglableChild ? 'farm-registry-outer-btn-container-togglable-child' : 'farm-registry-outer-btn-container'}`}>
                     {outerBtnArray.map(el => {
                         return (
-                            <div className={`${el.childBtnArray ? 'farm-registry-outer-togglable-child' : ''}`}>
+                            <div key={el.ID} className={`${el.childBtnArray ? 'farm-registry-outer-togglable-child' : ''}`}>
                                 <button
                                     onClick={() => customBtnAction(el, multiSelect)}
                                     className={`${togglableChild ? 'farm-registry-outer-btn-togglableChild' : 'farm-registry-outer-btn'} ${el.ID.toLowerCase()}-farm-registry-btn`}
@@ -224,7 +230,7 @@ const CustomButtons = (props, context) => {
         const multiSelect = props.configuration.objectConfiguration.multiSelect || false
         const btnArray = props.configuration.objectConfiguration.additionalBtns
         const outerBtnArray = props.configuration.objectConfiguration.outerBtnArray
-        const maxLength = props.configuration.objectConfiguration.maxLength || 9999
+        const _maxLength = props.configuration.objectConfiguration.maxLength || 9999
         const grid = <div className={`${`custom-grid-container-${props.tableName.toLowerCase()}`} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
             {outerBtnArray && generateOuterBtns(outerBtnArray, multiSelect)}
             <ExportableGrid
@@ -397,7 +403,7 @@ const CustomButtons = (props, context) => {
                             GridManager.reloadGridData(props.tableName + props.appObjId)
                             closeFormModal()
                         }
-                        if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                        if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                     }
                 }
             }).catch(err => {
@@ -421,7 +427,7 @@ const CustomButtons = (props, context) => {
                 if (resType === 'success') {
                     closeFormModal()
                     GridManager.reloadGridData(props.tableName + props.appObjId);
-                    if (refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                    if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                 }
             }
         }).catch(err => {

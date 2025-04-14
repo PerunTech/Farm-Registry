@@ -1,6 +1,6 @@
-import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, redux } from 'perun-core'
+import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, redux } from 'perun-core'
 const { useState, useEffect } = React
-import { labelsManager } from '../utils_tools/LabelsExport';
+import { getMainLabel, labelsManager } from '../utils_tools/LabelsExport';
 import { getDynamicKey } from '../../utils';
 const { ReactBootstrap, alertUserResponse } = elements;
 const { Modal } = ReactBootstrap;
@@ -88,7 +88,7 @@ const ParentChildGrids = (props, context) => {
                 uiSchemaConfigMethod={form.uischema?.onSubmit}
                 tableFormDataMethod={formData}
                 addSaveFunction={(e) => onSubmit(e)}
-                customSaveButtonName={'save'}
+                customSaveButtonName={getMainLabel('save', context)}
                 addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData)}
                 hideBtns={rowChild === 0 ? 'closeAndDelete' : 'close'}
             />
@@ -108,7 +108,7 @@ const ParentChildGrids = (props, context) => {
                     } else {
                         ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { saveExecuted: false })
                     }
-                    if (props?.grids[1]?.objectConfiguration?.refreshSummary) store.dispatch({ type: 'REFRESH_SUMMARY', payload: true })
+                    if (props?.grids[1]?.objectConfiguration?.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                 }
                 alertUserResponse({ response: res.data, onConfirm })
             }
@@ -154,7 +154,7 @@ const ParentChildGrids = (props, context) => {
         ComponentManager.cleanComponentReducerState(gridId + prev)
         generateGrid(row[`${gridId}.OBJECT_ID`], grid)
     }
-    const handleRowClick = (_id, _rowIdx, row, gridId, gridAndDynamic) => {
+    const handleRowClick = (_id, _rowIdx, row, gridId, _gridAndDynamic) => {
         setRowChild(row[`${gridId}.OBJECT_ID`] || 0)
         setShow(true)
     }

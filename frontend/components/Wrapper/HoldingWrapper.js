@@ -15,7 +15,7 @@ const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
 let hashHistory = createHashHistory();
 let gridId;
-let inputholder = "";
+let _inputholder = "";
 const HoldingWrapper = (props, context) => {
     const [show, setShow] = useState(false);
     const [showPerson, setPerson] = useState(false)
@@ -91,12 +91,12 @@ const HoldingWrapper = (props, context) => {
 
 
     const handleShowPerson = (e) => {
-        inputholder = e.target.id;
+        _inputholder = e.target.id;
         setShow(!show);
         setPerson(true)
     };
 
-    const handleShowMap = (e) => {
+    const handleShowMap = () => {
         setShow(true)
         setMap(true)
     }

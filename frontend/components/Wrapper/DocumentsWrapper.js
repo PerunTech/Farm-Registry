@@ -1,13 +1,12 @@
 import {
     React,
     connect,
-    elements,
     ComponentManager,
     PropTypes,
 } from "perun-core";
 import SaveFormAndAttachments from '../utils_tools/SaveFormAndAttachments';
 
-const DocumentsWrapper = (props, context) => {
+const DocumentsWrapper = (props) => {
 
 
     const handleSelected = () => {

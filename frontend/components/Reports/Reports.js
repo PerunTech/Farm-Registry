@@ -40,6 +40,7 @@ const Reports = (props, context) => {
                     {el.data && <div className={`sidemenu-sub-item-active reports-active-menu`}>
                         {el.data.map(sub => {
                             return < button
+                                key={sub.ID}
                                 className={`sidemenu-btn_sub`}
                                 onClick={() => printReport(sub)}
                             >
