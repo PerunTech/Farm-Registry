@@ -114,8 +114,14 @@ const ObjectSummary = (props, context) => {
     }
 
     const generateSummaryActions = () => {
-        return actions?.map(el => (
-            < button className="farm-registry-object-summary-show-more farm-registry-object-summary-btn-action" onClick={() => summaryAction(el.onSubmit)}> {el.label}</button >
+        return actions?.map((el, i) => (
+            <button
+                key={`${props.tableName}_${props.objectId}_ACTION_${i + 1}`}
+                className="farm-registry-object-summary-show-more farm-registry-object-summary-btn-action"
+                onClick={() => summaryAction(el.onSubmit)}
+            >
+                {el.label}
+            </button>
         ))
     }
 

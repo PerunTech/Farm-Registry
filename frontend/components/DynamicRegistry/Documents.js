@@ -64,7 +64,7 @@ const Documents = (props, context) => {
         axios.get(`${window.server}${props.getUploadedFiles}`).then(res => {
             if (res?.data) {
                 if (res.data?.data.items?.length > 0) {
-                    let files = res.data.data.items.map((el) => (<div className={'downloadable-item-div'}>
+                    let files = res.data.data.items.map((el) => (<div key={el.object_id} className={'downloadable-item-div'}>
                         <div className={'download-icon-text'}>
                             <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{el.FILE_NAME}</button>
                         </div>
