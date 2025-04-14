@@ -184,7 +184,7 @@ const Attachments = (props, context) => {
         if (formData) {
             axios({
                 method: "post",
-                data: formData,
+                data: JSON.stringify(formData),
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {

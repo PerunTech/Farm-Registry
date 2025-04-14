@@ -206,7 +206,7 @@ const Search = (props, context) => {
           </button>
           {configuration && <SearchForm configuration={configuration} handleSearch={handleSearch} setShowRegistrationModal={setShowRegistrationModal} />}
         </div>
-        <div className='farm-registry-search-grid-container'>
+        <div className='farm-registry-search-grid-container farm-search-container-background'>
           {resultsData && generateGrid(resultsData)}
         </div>
         {showRegistrationModal && (
