@@ -4,6 +4,7 @@ import { updateIdScreen } from '../utils_tools/UtilFunctions'
 import { jsonToURI, flattenObject } from '../../utils'
 import SearchForm from './SearchForm'
 import CreateNewRecordForm from './CreateNewRecordForm'
+import { iconManager } from "../utils_tools/svgHolder";
 const { alertUserResponse, alertUserV2, ReactBootstrap } = elements
 const { Modal } = ReactBootstrap
 const { store, dataToRedux, removeAsyncReducer } = redux
@@ -17,6 +18,7 @@ const Search = (props, context) => {
   const [configuration, setConfiguration] = useState(undefined)
   const [resultsData, setResultsData] = useState(undefined)
   const [showRegistrationModal, setShowRegistrationModal] = useState(false)
+  const [toggleSearch, setToggleSearch] = useState(undefined)
 
   useEffect(() => {
     updateIdScreen(context)
@@ -202,29 +204,46 @@ const Search = (props, context) => {
     <>
       {loading && <Loading />}
       <div className='farm-registry-search-main-container'>
-        <div className='farm-registry-search-form-container hide-all-form-legends'>
-          <button className='btn back-btn' onClick={() => hashHistory.push('/main')}>
-            <i className='fas fa-chevron-left' />
-            <span className='back-btn-text'>{getMainLabel('back', context)}</span>
-          </button>
-          {configuration && <SearchForm configuration={configuration} handleSearch={handleSearch} setShowRegistrationModal={setShowRegistrationModal} />}
+        <div className='sidemenu-main-container farm-registry-sidemenu-main-container hide-all-form-legends'>
+          <div className='back-button-conainer'>
+            <button className='btn back-btn' onClick={() => hashHistory.push('/main')}>
+              <i className='fas fa-chevron-left' />
+              <span className='back-btn-text'>{getMainLabel('back', context)}</span>
+            </button>
+          </div>
+          <div className="farm-registry-sidemenu-buttons-container">
+
+            {(!configuration?.readOnly && configuration?.addForm) && <button id="add_vmp" onClick={() => setShowRegistrationModal(true)} className="sidemenu-btn_sub">
+              <span className="sidemenu-btn-title">
+                <span className="sidemenu-dynamic-comp-icon-holder">
+                  {iconManager.getIcon('ADD_FARM')}
+                </span><p>{getMainLabel('add', context)}</p></span></button>}
+
+            {configuration && <button id="search_vmp" onClick={() => setToggleSearch(!toggleSearch)} className={`sidemenu-btn_sub ${toggleSearch && 'sidemenu-active'}`}>
+              <span className="sidemenu-btn-title">
+                <span className="sidemenu-dynamic-comp-icon-holder">
+                  {iconManager.getIcon('SEARCH_FARM')}
+                </span><p>{getMainLabel('search', context)}</p></span></button>}
+          </div>
+
+          {configuration && toggleSearch && <SearchForm hideAdd={true} configuration={configuration} handleSearch={handleSearch} setShowRegistrationModal={setShowRegistrationModal} />}
         </div>
         <div className='farm-registry-search-grid-container farm-search-container-background'>
           {resultsData && generateGrid(resultsData)}
         </div>
         {showRegistrationModal && (
-          <Modal className={'farm-registry-modal'} show={showRegistrationModal} onHide={() => setShowRegistrationModal(false)}>
-            <Modal.Header className={'farm-registry-modal-header'} closeButton>
+          <Modal className='farm-registry-modal' show={showRegistrationModal} onHide={() => setShowRegistrationModal(false)}>
+            <Modal.Header className='farm-registry-modal-header' closeButton>
               <Modal.Title>{getMainLabel(`register_new_${businessObjectName?.toLowerCase()}`, context)}</Modal.Title>
             </Modal.Header>
-            <Modal.Body className={'farm-registry-modal-body'}>
+            <Modal.Body className='farm-registry-modal-body'>
               <CreateNewRecordForm
                 configuration={configuration}
                 setShowRegistrationModal={setShowRegistrationModal}
                 businessObjectName={businessObjectName}
               />
             </Modal.Body>
-            <Modal.Footer className={'farm-registry-modal-footer'} />
+            <Modal.Footer className='farm-registry-modal-footer' />
           </Modal>
         )}
       </div>
