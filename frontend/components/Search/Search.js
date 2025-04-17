@@ -18,7 +18,7 @@ const Search = (props, context) => {
   const [configuration, setConfiguration] = useState(undefined)
   const [resultsData, setResultsData] = useState(undefined)
   const [showRegistrationModal, setShowRegistrationModal] = useState(false)
-  const [toggleSearch, setToggleSearch] = useState(undefined)
+  const [toggleSearch, setToggleSearch] = useState(true)
 
   useEffect(() => {
     updateIdScreen(context)
