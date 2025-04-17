@@ -205,7 +205,7 @@ const Search = (props, context) => {
       {loading && <Loading />}
       <div className='farm-registry-search-main-container'>
         <div className='sidemenu-main-container farm-registry-sidemenu-main-container hide-all-form-legends'>
-          <div className='back-button-conainer'>
+          <div className='back-button-container'>
             <button className='btn back-btn' onClick={() => hashHistory.push('/main')}>
               <i className='fas fa-chevron-left' />
               <span className='back-btn-text'>{getMainLabel('back', context)}</span>
