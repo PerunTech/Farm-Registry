@@ -217,13 +217,13 @@ const Search = (props, context) => {
               <span className="sidemenu-btn-title">
                 <span className="sidemenu-dynamic-comp-icon-holder">
                   {iconManager.getIcon('ADD_FARM')}
-                </span><p>{getMainLabel('add', context)}</p></span></button>}
+                </span><p>{getMainLabel(`add_${businessObjectName?.toLowerCase()}`, context)}</p></span></button>}
 
             {configuration && <button id="search_vmp" onClick={() => setToggleSearch(!toggleSearch)} className={`sidemenu-btn_sub ${toggleSearch && 'sidemenu-active'}`}>
               <span className="sidemenu-btn-title">
                 <span className="sidemenu-dynamic-comp-icon-holder">
                   {iconManager.getIcon('SEARCH_FARM')}
-                </span><p>{getMainLabel('search', context)}</p></span></button>}
+                </span><p>{getMainLabel(`search_${businessObjectName?.toLowerCase()}`, context)}</p></span></button>}
           </div>
 
           {configuration && toggleSearch && <SearchForm hideAdd={true} configuration={configuration} handleSearch={handleSearch} setShowRegistrationModal={setShowRegistrationModal} />}
