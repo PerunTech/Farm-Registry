@@ -135,7 +135,7 @@ const Attachments = (props, context) => {
             if (res?.data) {
                 const resType = res.data?.type?.toLowerCase() || 'info'
                 alertUserResponse({ response: res.data })
-                if (resType === 'SUCCESS') {
+                if (resType === 'success') {
                     generateFileItem()
                 }
             }
