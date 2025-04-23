@@ -44,7 +44,7 @@ const SideMenu = (props) => {
                     res.data?.data?.map(item => {
                         if (item.data && isChild) {
                             item.data.map(child => {
-                                if (child?.ID?.includes(tableName)) {
+                                if (child?.ID === tableName) {
                                     onButtonClick(child, true)
                                     setActive(item)
                                 }
