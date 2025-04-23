@@ -44,13 +44,13 @@ const SideMenu = (props) => {
                     res.data?.data?.map(item => {
                         if (item.data && isChild) {
                             item.data.map(child => {
-                                if (child?.ID?.includes(tableName)) {
+                                if (child?.ID?.replace(/_\d+$/, "") === tableName) {
                                     onButtonClick(child, true)
                                     setActive(item)
                                 }
                             })
                         } else {
-                            if (item?.ID?.includes(tableName)) {
+                            if (item?.ID?.replace(/_\d+$/, "") === tableName) {
                                 onButtonClick(item)
                             }
                         }
