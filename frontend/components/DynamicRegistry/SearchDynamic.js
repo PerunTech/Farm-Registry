@@ -11,9 +11,6 @@ const SearchDynamic = (props, context) => {
     const gridId = `${props.tableName}_SEARCH`
     const [loading, setLoading] = useState(false)
     const [resultsData, setResultsData] = useState(undefined)
-    useEffect(() => {
-        performSearch({}, false)
-    }, [])
 
     const generateForm = () => {
         const searchConfig = props.configuration?.searchForm
