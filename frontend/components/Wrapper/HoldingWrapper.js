@@ -117,11 +117,11 @@ const HoldingWrapper = (props, context) => {
                 formData["holding.info"] = {}
             }
             formData["holding.info"]["NAME"] = objid[1];
-            firstInput.value = formData["holding.info_NAME"]
+            firstInput.value = formData["holding.info"]['NAME']
 
             //  skip the form validation bug
-            // ComponentManager.setStateForComponent(formid, "noValidate", true);
-            // props.formInstance.setState({ noValidate: true })
+            ComponentManager.setStateForComponent(formid, "noValidate", true);
+            props.formInstance.setState({ noValidate: true })
 
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
