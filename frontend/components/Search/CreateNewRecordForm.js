@@ -63,7 +63,7 @@ const CreateNewRecordForm = (props, context) => {
     } catch (err) {
       console.error(err);
       alertUserResponse({
-        response: err.response?.data,
+        response: err,
         onConfirm: resetFormSaveState
       });
 

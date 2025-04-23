@@ -89,7 +89,7 @@ const DoubleGrid = (props, context) => {
             }
         }).catch(err => {
             console.error(err)
-            alertUserResponse({ response: err.response?.data, onConfirm: resetFormSaveState })
+            alertUserResponse({ response: err, onConfirm: resetFormSaveState })
         })
     }
 

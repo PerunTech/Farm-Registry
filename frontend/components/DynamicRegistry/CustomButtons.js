@@ -68,7 +68,7 @@ const CustomButtons = (props, context) => {
                         }).catch(err => {
                             setLoading(false)
                             console.error(err)
-                            alertUserResponse({ response: err.response?.data })
+                            alertUserResponse({ response: err })
                         });
                     }
                     alertUserV2({
@@ -103,7 +103,7 @@ const CustomButtons = (props, context) => {
                         }).catch(err => {
                             setLoading(false)
                             console.error(err)
-                            alertUserResponse({ response: err.response?.data })
+                            alertUserResponse({ response: err })
                         });
                     }
                     alertUserV2({
@@ -141,7 +141,7 @@ const CustomButtons = (props, context) => {
                         }).catch(err => {
                             console.error(err)
                             setLoading(false)
-                            alertUserResponse({ response: err.response?.data })
+                            alertUserResponse({ response: err })
                         });
                     }
                     alertUserV2({
@@ -408,7 +408,7 @@ const CustomButtons = (props, context) => {
                 }
             }).catch(err => {
                 console.error(err)
-                alertUserResponse({ response: err.response?.data, onConfirm: resetFormSaveState })
+                alertUserResponse({ response: err, onConfirm: resetFormSaveState })
             });
         }
     };
@@ -432,7 +432,7 @@ const CustomButtons = (props, context) => {
             }
         }).catch(err => {
             console.error(err)
-            alertUserResponse({ response: err.response?.data, onConfirm: resetFormDeleteState })
+            alertUserResponse({ response: err, onConfirm: resetFormDeleteState })
         });
     };
 

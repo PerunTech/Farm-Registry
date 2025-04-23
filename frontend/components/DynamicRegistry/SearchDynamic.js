@@ -88,7 +88,7 @@ const SearchDynamic = (props, context) => {
             .catch(err => {
                 console.error(err);
                 setLoading(false)
-                alertUserResponse({ response: err.response?.data })
+                alertUserResponse({ response: err })
                 // Handle form-specific error logic
                 if (isForm) {
                     ComponentManager.setStateForComponent(`${gridId}_FORM`, null, {

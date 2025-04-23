@@ -83,7 +83,7 @@ const SearchComp = (props, context) => {
     }).catch(err => {
       console.error(err)
       setLoading(false)
-      alertUserResponse({ response: err.response?.data })
+      alertUserResponse({ response: err })
     })
   }
 
@@ -124,7 +124,7 @@ const SearchComp = (props, context) => {
         console.error(err)
         setLoading(false)
         alertUserResponse({
-          response: err.response?.data,
+          response: err,
           onConfirm: () => ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false })
         })
       })
