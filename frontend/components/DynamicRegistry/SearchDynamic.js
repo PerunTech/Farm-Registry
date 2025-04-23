@@ -37,6 +37,13 @@ const SearchDynamic = (props, context) => {
         const href = `/main/aims/${tableName}/${row[`${tableName}.OBJECT_ID`]}/summary`
         hashHistory.push(href)
     }
+    const customRowClick = (_id, _rowIdx, row) => {
+        store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
+        store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
+        const customRowClickConfig = props.configuration?.customRowClick
+        const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${tableName}.OBJECT_ID`]);
+        hashHistory.push(route)
+    }
 
     const generateGrid = () => {
         const buttonsArray = []
@@ -49,7 +56,7 @@ const SearchDynamic = (props, context) => {
                 heightRatio={0.6}
                 configTableName={configWs}
                 dataTableName={resultsData}
-                onRowClickFunct={onRowClick}
+                onRowClickFunct={props?.configuration?.disableRowClick ? () => { } : props?.configuration?.customRowClick ? customRowClick : onRowClick}
                 className='animals-search-grid'
                 buttonsArray={buttonsArray}
             />
