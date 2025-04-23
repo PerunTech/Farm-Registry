@@ -41,7 +41,7 @@ const SearchDynamic = (props, context) => {
         store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
         store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
         const customRowClickConfig = props.configuration?.customRowClick
-        const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${tableName}.OBJECT_ID`]);
+        const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${customRowClickConfig?.tableName}.OBJECT_ID`]);
         hashHistory.push(route)
     }
 
