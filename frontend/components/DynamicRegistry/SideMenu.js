@@ -122,11 +122,11 @@ const SideMenu = (props) => {
                                                 onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
                                             >
                                                 <span className="sidemenu-btn-title">
-                                                    {iconManager.getIcon(modifiedID) && (
+                                                    {/* {iconManager.getIcon(modifiedID) && (
                                                         <span className={'sidemenu-dynamic-comp-icon-holder'}>
                                                             {iconManager.getIcon(modifiedID)}
                                                         </span>
-                                                    )}
+                                                    )} */}
                                                     <p>{sub.label}</p>
                                                 </span>
                                             </button>
