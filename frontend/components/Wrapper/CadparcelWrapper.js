@@ -52,7 +52,7 @@ const CadparcelWrapper = (props, context) => {
             }).catch(err => {
                 console.error(err)
                 alertUserResponse({
-                    response: err.response?.data,
+                    response: err,
                     onConfirm: () => ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
                 })
             });
@@ -99,7 +99,7 @@ const CadparcelWrapper = (props, context) => {
             }
         }).catch(err => {
             console.error(err)
-            alertUserResponse({ response: err.response?.data })
+            alertUserResponse({ response: err })
         });
     }
     return (

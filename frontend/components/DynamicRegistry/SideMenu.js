@@ -60,7 +60,7 @@ const SideMenu = (props) => {
         }).catch(err => {
             console.error(err)
             setLoading(false)
-            alertUserResponse({ response: err.response?.data })
+            alertUserResponse({ response: err })
         })
     }
     const setActive = (el) => {

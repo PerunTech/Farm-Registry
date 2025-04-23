@@ -115,7 +115,7 @@ const ParentChildGrids = (props, context) => {
         }).catch(err => {
             console.error(err)
             alertUserResponse({
-                response: err.response?.data,
+                response: err,
                 onConfirm: () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { saveExecuted: false })
             })
         })
@@ -143,7 +143,7 @@ const ParentChildGrids = (props, context) => {
         }).catch(err => {
             console.error(err)
             alertUserResponse({
-                response: err.response?.data,
+                response: err,
                 onConfirm: () => ComponentManager.setStateForComponent(props.grids[1] + '_FORM', null, { deleteExecuted: false })
             })
         });
