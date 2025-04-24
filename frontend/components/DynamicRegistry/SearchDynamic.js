@@ -3,7 +3,7 @@ import { labelsManager } from '../utils_tools/LabelsExport';
 import { jsonToURI, flattenObject } from '../../utils';
 const { alertUserResponse } = elements
 const { store, dataToRedux, removeAsyncReducer } = redux
-const { useState, useEffect } = React
+const { useState } = React
 
 const SearchDynamic = (props, context) => {
     const hashHistory = createHashHistory()
