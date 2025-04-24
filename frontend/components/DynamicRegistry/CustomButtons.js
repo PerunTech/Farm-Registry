@@ -12,6 +12,7 @@ import CadparcelWrapper from '../Wrapper/CadparcelWrapper'
 import FarmWrapper from '../Wrapper/FarmWrapper'
 import HoldingWrapper from '../Wrapper/HoldingWrapper'
 import DocumentsWrapper from '../Wrapper/DocumentsWrapper';
+import FeesWrapper from '../Wrapper/FeesWrapper';
 const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -24,7 +25,7 @@ const CustomButtons = (props, context) => {
     const [dynamicFormId, setDynamicFormId] = useState(generateDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
-    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper }, { Holding: HoldingWrapper }, { Documents: DocumentsWrapper }])
+    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper }, { Holding: HoldingWrapper }, { Documents: DocumentsWrapper }, { Fees: FeesWrapper }])
     const [renderForm, setRender] = useState(true)
     const [rowCliked, setRowClicked] = useState(undefined)
     const [_cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
