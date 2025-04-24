@@ -125,6 +125,7 @@ const HoldingWrapper = (props, context) => {
 
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
+            props.formInstance.onInputChange(formData)
             setShow(false);
             setPerson(false)
         }
