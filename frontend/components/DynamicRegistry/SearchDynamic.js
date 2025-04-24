@@ -4,9 +4,9 @@ import { jsonToURI, flattenObject } from '../../utils';
 const { alertUserResponse } = elements
 const { store, dataToRedux, removeAsyncReducer } = redux
 const { useState, useEffect } = React
-const hashHistory = createHashHistory()
 
 const SearchDynamic = (props, context) => {
+    const hashHistory = createHashHistory()
     const tableName = props.tableName?.toUpperCase() || ''
     const gridId = `${props.tableName}_SEARCH`
     const [loading, setLoading] = useState(false)
