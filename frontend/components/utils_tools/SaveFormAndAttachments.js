@@ -41,6 +41,15 @@ const Attachments = (props, context) => {
         }
     }, [temp])
 
+    const reloadGrid = (appObjId) => {
+        let gridId = `${props.tableName}${appObjId}`
+        if (props.svarogFormName) {
+            gridId = `${props.svarogFormName}${appObjId}`
+        }
+        GridManager.reloadGridData(gridId);
+        ComponentManager.setStateForComponent(gridId, null, { rowClicked: undefined })
+    }
+
     const handleUploadedFiles = (e) => {
         const uploadedFiles = Array.from(e.target.files);
         setTemp(temp => [...uploadedFiles, ...temp]);
@@ -87,12 +96,14 @@ const Attachments = (props, context) => {
 
     const responseFunc = (errorArr) => {
         const { formid } = props
+        const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
+        const closeModal = ComponentManager.getStateForComponent(formid, "closeModalFunc");
+        const resetClickedRowObjectId = ComponentManager.getStateForComponent(formid, "resetClickedRowObjectId");
         const onConfirm = () => {
             closeModal()
-            GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+            resetClickedRowObjectId()
+            reloadGrid(appObjId)
         }
-        const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
-        const closeModal = ComponentManager.getStateForComponent(props.formid, "closeModalFunc");
         if (errorArr.length > 0) {
             let erroArrNames = []
             let nameString = " "
@@ -193,6 +204,7 @@ const Attachments = (props, context) => {
         const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
         const formData = ComponentManager.getStateForComponent(formid, "formTableData");
         const closeModal = ComponentManager.getStateForComponent(formid, "closeModalFunc");
+        const resetClickedRowObjectId = ComponentManager.getStateForComponent(formid, "resetClickedRowObjectId");
         const onSubmitWs = ComponentManager.getStateForComponent(formid, "onSubmitWs");
         let url = `${window.server}${onSubmitWs}`
 
@@ -210,7 +222,8 @@ const Attachments = (props, context) => {
                         alertUserResponse({
                             response: res.data, onConfirm: () => {
                                 closeModal()
-                                GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+                                resetClickedRowObjectId()
+                                reloadGrid(appObjId)
                             }
                         })
                     }
@@ -255,11 +268,12 @@ const Attachments = (props, context) => {
         const appObjId = ComponentManager.getStateForComponent(formid, "appObjId");
         const formData = ComponentManager.getStateForComponent(formid, "formTableData");
         const closeModal = ComponentManager.getStateForComponent(formid, "closeModalFunc");
+        const resetClickedRowObjectId = ComponentManager.getStateForComponent(formid, "resetClickedRowObjectId");
         const id = ComponentManager.getStateForComponent(formid, "id");
         const onConfirm = () => {
-            ComponentManager.setStateForComponent(id, null, { deleteExecuted: false })
             closeModal()
-            GridManager.reloadGridData(props.svarogFormName ? props.svarogFormName + appObjId : props.tableName + appObjId);
+            resetClickedRowObjectId()
+            reloadGrid(appObjId)
         }
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
@@ -273,7 +287,7 @@ const Attachments = (props, context) => {
             }
         }).catch(err => {
             console.error(err)
-            alertUserResponse({ response: err, onConfirm })
+            alertUserResponse({ response: err, onConfirm: () => ComponentManager.setStateForComponent(id, null, { deleteExecuted: false }) })
         });
     }
 
