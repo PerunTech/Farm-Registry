@@ -349,6 +349,7 @@ const CustomButtons = (props, context) => {
                 hideBtns={hideBtns}
                 inputWrapper={inputWrapper}
                 closeModalFunc={() => setShowModal(false)}
+                resetClickedRowObjectId={() => setClickedRowObjectId(0)}
                 objId={props.appObjId}
                 appObjId={props.appObjId}
                 onSubmitWs={onSubmitWs}
