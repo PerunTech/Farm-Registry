@@ -21,6 +21,7 @@ const HoldingWrapper = (props, context) => {
     const [showPerson, setPerson] = useState(false)
     const [showMap, setMap] = useState(false)
     const [isAddForm, setisAddForm] = useState(undefined)
+    const [personId, setPersonId] = useState(undefined)
     useEffect(() => {
         handlePersonInputs();
         handleMapInputs()
@@ -102,6 +103,7 @@ const HoldingWrapper = (props, context) => {
     }
 
     const handleRowClick = (_id, _rowIdx, row) => {
+        setPersonId(undefined)
         const { formid } = props;
         let objid = []
         objid.push(row[`PERSON.OBJECT_ID`], row[`PERSON.NAME`],)
@@ -113,6 +115,7 @@ const HoldingWrapper = (props, context) => {
             const inputs = document.querySelectorAll("#root_holding\\.info_NAME")
             let firstInput = inputs[1] ? inputs[1] : inputs[0]
             formData["PERSON_OBJECT_ID"] = objid[0];
+            setPersonId(objid[0])
             if (!formData["holding.info"]) {
                 formData["holding.info"] = {}
             }
@@ -194,14 +197,14 @@ const HoldingWrapper = (props, context) => {
         <>
             {props.children}
             {props.children && (handlePersonInputs(), handleMapInputs())}
-            {isAddForm && <GenericForm
+            {isAddForm && personId && <GenericForm
                 className={`form-test custom-farm-registry-form aims-forms holding-address`}
                 params={'READ_URL'}
-                key={`ADDRESS`}
-                id={`ADDRESS`}
+                key={`ADDRESS_${personId}`}
+                id={`ADDRESS_${personId}`}
                 method={`/ReactElements/getTableJSONSchema/${props.svSession}/ADDRESS`}
                 uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/ADDRESS`}
-                tableFormDataMethod={`/ReactElements/getTableFormData/${props.svSession}/0/ADDRESS`}
+                tableFormDataMethod={`/farm-registry/getPersonAddressFormData/${props.svSession}/${personId}`}
                 addSaveFunction={(e) => saveMultipleForms(e.formData)}
                 customSaveButtonName={labelsManager.importLabel('save', context, 'farm_registry')}
                 hideBtns={'closeAndDelete'}
