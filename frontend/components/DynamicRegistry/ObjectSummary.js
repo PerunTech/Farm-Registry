@@ -157,7 +157,7 @@ const ObjectSummary = (props, context) => {
         axios.get(`${window.server + url}`)
             .then(res => {
                 setLoading(false);
-                if (res?.data?.data) {
+                if (res?.data?.data && typeof res.data.data === 'object') {
                     const data = JSON.parse(res.data.data);
                     data?.['FIELDS'] ? generateCheckList(data) : () => { }
                 } else {
