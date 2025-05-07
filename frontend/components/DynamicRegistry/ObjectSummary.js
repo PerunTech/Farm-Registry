@@ -157,9 +157,13 @@ const ObjectSummary = (props, context) => {
         axios.get(`${window.server + url}`)
             .then(res => {
                 setLoading(false);
-                if (res?.data?.data && (typeof res.data.data === 'object' || typeof res.data.data === 'string')) {
+                if (res?.data?.data && typeof res.data.data === 'string') {
                     const data = JSON.parse(res.data.data);
-                    data?.['FIELDS'] ? generateCheckList(data) : () => { }
+                    if (Object.keys(data).length > 0) {
+                        data?.['FIELDS'] ? generateCheckList(data) : () => { }
+                    } else {
+                        alertUserResponse({ response: res })
+                    }
                 } else {
                     alertUserResponse({ response: res })
                     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
