@@ -211,7 +211,7 @@ const Attachments = (props, context) => {
         if (formData) {
             axios({
                 method: "post",
-                data: JSON.stringify(formData),
+                data: encodeURIComponent(JSON.stringify(formData)),
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
@@ -278,7 +278,7 @@ const Attachments = (props, context) => {
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
             method: "post",
-            data: JSON.stringify(formData),
+            data: encodeURIComponent(JSON.stringify(formData)),
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {

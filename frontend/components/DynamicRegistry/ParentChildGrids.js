@@ -125,7 +125,7 @@ const ParentChildGrids = (props, context) => {
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
             method: "post",
-            data: formData[4]["PARAM_VALUE"],
+            data: encodeURIComponent(formData[4]["PARAM_VALUE"]),
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {
