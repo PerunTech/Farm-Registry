@@ -262,7 +262,7 @@ export const svgIcons = {
       C11.684,8.925,12.36,8.04,12.36,7c0-1.301-1.059-2.36-2.36-2.36H7.64V13h0.72V9.36h1.491l2.64,2.64l-2.746,2.746l0.509,0.509
       L13,12.509l2.746,2.746l0.509-0.509L13.509,12L16.254,9.254z M8.36,8.64V5.36H10c0.904,0,1.64,0.736,1.64,1.64S10.904,8.64,10,8.64
       H8.36z"/>
-    <rect id="_Transparent_Rectangle" style="fill:none;" width="32" height="32" />
+    <rect id="_Transparent_Rectangle" style={{ fill: 'none' }} width="32" height="32" />
   </svg>,
   PRESCRIPTION_MEDICINE: <svg style={{ fill: 'currentColor', height: '100%', width: '100%' }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="M19,2H5A2,2,0,0,0,3,4V6A2,2,0,0,0,5,8V19a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V8a2,2,0,0,0,2-2V4A2,2,0,0,0,19,2ZM17,16H11V12h6Zm0-6H10a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h7v1a1,1,0,0,1-1,1H8a1,1,0,0,1-1-1V8H17ZM5,6V4H19V6Z" /></svg>
 }
