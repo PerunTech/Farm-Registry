@@ -165,6 +165,7 @@ public class DbInit implements IDbInit {
 		dbe.setIsRepoTable(false);
 		dbe.setLabel_code("master_repo.holding_type");
 		dbe.setUse_cache(false);
+		dbe.setConfigColumnName("NAME");
 		
 		DbDataField dbe1 = new DbDataField();
 		dbe1.setDbFieldName("PKID");
@@ -186,13 +187,13 @@ public class DbInit implements IDbInit {
 		dbe2.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
 		
 		DbDataField dbe3 = new DbDataField();
-		dbe3.setDbFieldName("MENU_OBJECT_ID");
-		dbe3.setDbFieldType(DbFieldType.NUMERIC);
-		dbe3.setDbFieldSize(18);
+		dbe3.setDbFieldName("MENU_CODE");
+		dbe3.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe3.setDbFieldSize(50);
 		dbe3.setDbFieldScale(0);
 		dbe3.setIsNull(true);
 		dbe3.setLabel_code("holding_type.menu_object_id");
-		dbe3.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true,\"idtable\":\"SVAROG_MENU\",\"idgetfield\":\"MENU_CODE\",\"idsetfield\":\"OBJECT_ID\",\"uischema\":{\"ui:readonly\":false}}}");
+		dbe3.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true,\"idtable\":\"SVAROG_MENU\",\"idgetfield\":\"MENU_CODE\",\"idsetfield\":\"MENU_CODE\",\"uischema\":{\"ui:readonly\":false}}}");
 		
 		DbDataField dbe4 = new DbDataField();
 		dbe4.setDbFieldName("WORKFLOW");
