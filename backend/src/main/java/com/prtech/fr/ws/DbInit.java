@@ -165,6 +165,7 @@ public class DbInit implements IDbInit {
 		dbe.setIsRepoTable(false);
 		dbe.setLabel_code("master_repo.holding_type");
 		dbe.setUse_cache(false);
+		dbe.setIsConfigTable(true);
 		dbe.setConfigColumnName("NAME");
 		
 		DbDataField dbe1 = new DbDataField();
