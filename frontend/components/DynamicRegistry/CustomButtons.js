@@ -390,7 +390,7 @@ const CustomButtons = (props, context) => {
             const url = `${window.server}${wsPath}`
             axios({
                 method: "post",
-                data: JSON.stringify(formData),
+                data: encodeURIComponent(JSON.stringify(formData)),
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
@@ -419,7 +419,7 @@ const CustomButtons = (props, context) => {
         let url = window.server + `/ReactElements/deleteObject/${svSession}`;
         axios({
             method: "post",
-            data: formData[4]["PARAM_VALUE"],
+            data: encodeURIComponent(formData[4]['PARAM_VALUE']),
             url: url,
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }).then((res) => {

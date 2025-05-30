@@ -30,7 +30,7 @@ const CadparcelWrapper = (props, context) => {
         if (formData['AREA']) {
             axios({
                 method: "post",
-                data: formData,
+                data: encodeURIComponent(formData),
                 url,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             }).then(res => {
