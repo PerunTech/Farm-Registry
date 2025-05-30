@@ -846,14 +846,23 @@ public class DbInit implements IDbInit {
 		dbe6.setIsNull(true);
 		dbe6.setLabel_code("farm_members.farm_holding_status");
 		// dbe10.setGui_metadata("");
+		
+		DbDataField dbe7 = new DbDataField();
+		dbe7.setDbFieldName("DIPLOMA_NUMBER");
+		dbe7.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe7.setDbFieldSize(18);
+		dbe7.setIsNull(true);
+		dbe7.setLabel_code("farm_member.diploma_number");
+		dbe7.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
 
-		DbDataField[] dbTableFields = new DbDataField[6];
+		DbDataField[] dbTableFields = new DbDataField[7];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
 		dbTableFields[2] = dbe3;
 		dbTableFields[3] = dbe4;
 		dbTableFields[4] = dbe5;
 		dbTableFields[5] = dbe6;
+		dbTableFields[6] = dbe7;
 
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
