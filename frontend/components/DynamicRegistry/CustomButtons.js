@@ -337,7 +337,7 @@ const CustomButtons = (props, context) => {
         }
         return (
             <GenericForm
-                className={`form-test aims-forms custom-farm-registry-form ${isModal && 'hide-legend-form'} ${props.tableName.toLowerCase()}-farm-registry-form ${props.configuration.objectConfiguration?.readOnly && 'read-only-form'} `}
+                className={`form-test aims-forms custom-farm-registry-form  ${props.tableName.toLowerCase()}-farm-registry-form ${props.configuration.objectConfiguration?.readOnly && 'read-only-form'} `}
                 params={'READ_URL'}
                 key={dynamicFormId}
                 id={dynamicFormId}
