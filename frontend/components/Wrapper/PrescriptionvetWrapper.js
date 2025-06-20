@@ -20,7 +20,7 @@ const PrescriptionvetWrapper = (props, context) => {
 
     useEffect(() => {
         handleInputs(['root_pr_vet_FULL_NAME', 'root_pr_vet_DIPLOMA_NO'], handleVet);
-        handleInputs(['root_pr_owner_OWNER_FULL_NAME', 'root_pr_owner_HOLDING_NO'], handleHolding);
+        handleInputs(['root_pr_owner_OWNER_FULL_NAME', 'root_pr_owner_HOLDING_NO', 'root_pr_owner_OWNER_ADDRESS'], handleHolding);
         handleInputs(['root_pr_rp_TRADE_NAME', 'root_pr_rp_PHARMACEUTICAL_FORM'], handleVmp);
     }, []);
 
@@ -90,7 +90,7 @@ const PrescriptionvetWrapper = (props, context) => {
             formData["pr_owner"] = formData["pr_owner"] || {};
             formData["pr_owner"]['OWNER_FULL_NAME'] = row['HOLDING.NAME'];
             formData["pr_owner"]['HOLDING_NO'] = row['HOLDING.PIC'] || 0;
-            formData["pr_owner"]['OWNER_ADDRESS'] = row['PHYSICAL_ADDRESS']
+            formData["pr_owner"]['OWNER_ADDRESS'] = row['HOLDING.PHYSICAL_ADDRESS']
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             props.formInstance.onInputChange(formData);
