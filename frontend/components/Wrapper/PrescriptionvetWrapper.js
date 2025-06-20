@@ -120,7 +120,7 @@ const PrescriptionvetWrapper = (props, context) => {
                 el.style.cursor = "pointer";
                 el.onclick = action;
                 el.placeholder = labelsManager.importLabel("click_to_choose", context, "farm_registry");
-                el.style.background = '#33628775';
+                el.style.background = '#b9cfba';
                 el.style.color = '#ffffff';
             }
         });
