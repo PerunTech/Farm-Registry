@@ -90,7 +90,7 @@ const PrescriptionvetWrapper = (props, context) => {
             formData["pr_owner"] = formData["pr_owner"] || {};
             formData["pr_owner"]['OWNER_FULL_NAME'] = row['HOLDING.NAME'];
             formData["pr_owner"]['HOLDING_NO'] = row['HOLDING.PIC'] || 0;
-
+            formData["pr_owner"]['OWNER_ADDRESS'] = row['PHYSICAL_ADDRESS']
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             props.formInstance.onInputChange(formData);
