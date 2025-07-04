@@ -247,7 +247,7 @@ const Search = (props, context) => {
         {showRegistrationModal && (
           <Modal className='farm-registry-modal' show={showRegistrationModal} onHide={() => setShowRegistrationModal(false)}>
             <Modal.Header className='farm-registry-modal-header' closeButton>
-              <Modal.Title>{labelsManager(`register_new_${businessObjectName?.toLowerCase()}`, context)}</Modal.Title>
+              <Modal.Title>{labelsManager(`register_new_${businessObjectName?.toLowerCase()}`, context, 'farm_registry')}</Modal.Title>
             </Modal.Header>
             <Modal.Body className='farm-registry-modal-body'>
               <CreateNewRecordForm
