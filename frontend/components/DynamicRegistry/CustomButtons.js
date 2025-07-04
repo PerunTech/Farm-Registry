@@ -1,5 +1,4 @@
 import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux, createHashHistory, utils } from 'perun-core'
-
 const { labelsManager, replaceFunc, getDynamicKey } = utils
 import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';

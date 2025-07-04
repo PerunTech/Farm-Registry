@@ -66,7 +66,7 @@ const Search = (props, context) => {
       setLoading(false)
       if (res?.data) {
         if (res.data.length === 0) {
-          alertUserV2({ type: 'info', title: labelsManager('no_farm_data', context, 'farm_registry', 'farm_registry') })
+          alertUserV2({ type: 'info', title: labelsManager('no_farm_data', context, 'farm_registry') })
         } else {
           const href = `/main/registry/${businessObjectName}/${res.data[0][`${businessObjectName}.OBJECT_ID`]}/summary`
           hashHistory.push(href)
