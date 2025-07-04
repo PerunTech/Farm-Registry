@@ -1,6 +1,5 @@
-import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory } from 'perun-core'
-import { labelsManager } from '../utils_tools/LabelsExport';
-import { jsonToURI, flattenObject } from '../../utils';
+import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory, utils } from 'perun-core'
+const { jsonToURI, flattenObject, labelsManager } = utils
 const { alertUserResponse } = elements
 const { store, dataToRedux, removeAsyncReducer } = redux
 const { useState } = React
@@ -28,7 +27,7 @@ const SearchDynamic = (props, context) => {
                 addSaveFunction={(e) => {
                     performSearch(e.formData, true)
                 }}
-                customSaveButtonName={labelsManager.importLabel('search', context, 'farm_registry')}
+                customSaveButtonName={labelsManager('search', context, 'farm_registry')}
             />
         )
     }

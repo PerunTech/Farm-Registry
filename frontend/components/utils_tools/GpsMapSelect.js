@@ -1,11 +1,13 @@
-import { React, redux, PropTypes, elements } from 'perun-core';
+import {
+    React, redux, PropTypes, elements, utils
+} from "perun-core";
+const { labelsManager } = utils
 const { alertUserV2 } = elements
 const { useEffect } = React;
 const { store } = redux;
 import { ui, core } from '../Map/Spatial';
 const { Map } = core;
 import { id, center, zoomLevel, layerList } from '../Map/config';
-import { labelsManager } from '../utils_tools/LabelsExport';
 
 const GpsMapSelect = (props, context) => {
 
@@ -23,11 +25,11 @@ const GpsMapSelect = (props, context) => {
 
         alertUserV2({
             type: 'info',
-            title: `${labelsManager.importLabel('confirm_selected_coords', context, 'farm_registry')}`,
-            message: `${labelsManager.importLabel('gps_north', context, 'farm_registry')} ${toDMS(Math.abs(lat))}\n,${labelsManager.importLabel('gps_east', context, 'farm_registry')} ${toDMS(Math.abs(lng))}`,
+            title: `${labelsManager('confirm_selected_coords', context, 'farm_registry')}`,
+            message: `${labelsManager('gps_north', context, 'farm_registry')} ${toDMS(Math.abs(lat))}\n,${labelsManager('gps_east', context, 'farm_registry')} ${toDMS(Math.abs(lng))}`,
             onConfirm: () => props.handleMapClick(toDMS(Math.abs(lat)), toDMS(Math.abs(lng))),
             showCancel: true,
-            cancelButtonText: `${labelsManager.importLabel('cancel', context, 'farm_registry')}`
+            cancelButtonText: `${labelsManager('cancel', context, 'farm_registry')}`
         })
     };
 

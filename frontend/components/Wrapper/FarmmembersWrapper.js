@@ -3,10 +3,10 @@ import {
     connect,
     elements,
     ComponentManager,
-    PropTypes,
+    PropTypes, utils
 } from "perun-core";
 import SearchComponent from '../SearchComp/SearchComponent';
-import { labelsManager } from '../utils_tools/LabelsExport';
+const { labelsManager } = utils
 const { useState, useEffect, useReducer } = React;
 const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
@@ -42,7 +42,7 @@ const FarmmembersWrapper = (props, context) => {
         if (firstInput) {
             firstInput.style.cursor = "pointer";
             firstInput.onclick = handleShow;
-            firstInput.placeholder = labelsManager.importLabel(
+            firstInput.placeholder = labelsManager(
                 "click_to_choose",
                 context,
                 "farm_registry"
@@ -52,7 +52,7 @@ const FarmmembersWrapper = (props, context) => {
         if (secondInput) {
             secondInput.style.cursor = "pointer";
             secondInput.onclick = handleShow;
-            secondInput.placeholder = labelsManager.importLabel(
+            secondInput.placeholder = labelsManager(
                 "click_to_choose",
                 context,
                 "farm_registry"
@@ -102,7 +102,7 @@ const FarmmembersWrapper = (props, context) => {
 
 
                     <Modal.Header className={"farm-registry-modal-header"} closeButton>
-                        <Modal.Title>{labelsManager.importLabel(
+                        <Modal.Title>{labelsManager(
                             "search_person",
                             context,
                             "farm_registry"

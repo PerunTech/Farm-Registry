@@ -4,10 +4,10 @@ import {
     elements,
     ComponentManager,
     PropTypes,
-    createHashHistory
+    createHashHistory, utils
 } from "perun-core";
 import SearchComponent from '../SearchComp/SearchComponent'
-import { labelsManager } from '../utils_tools/LabelsExport';
+const { labelsManager } = utils
 const { useState, useEffect, useReducer } = React;
 const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
@@ -42,7 +42,7 @@ const FarmWrapper = (props, context) => {
         if (firstInput) {
             firstInput.style.cursor = "pointer";
             firstInput.onclick = handleShow;
-            firstInput.placeholder = labelsManager.importLabel(
+            firstInput.placeholder = labelsManager(
                 "click_to_choose",
                 context,
                 "farm_registry"
@@ -52,7 +52,7 @@ const FarmWrapper = (props, context) => {
         if (secondInput) {
             secondInput.style.cursor = "pointer";
             secondInput.onclick = handleShow;
-            secondInput.placeholder = labelsManager.importLabel(
+            secondInput.placeholder = labelsManager(
                 "click_to_choose",
                 context,
                 "farm_registry"
@@ -98,7 +98,7 @@ const FarmWrapper = (props, context) => {
 
 
                     <Modal.Header className={"farm-registry-modal-header"} closeButton>
-                        <Modal.Title>{labelsManager.importLabel(
+                        <Modal.Title>{labelsManager(
                             "search_person",
                             context,
                             "farm_registry"
@@ -106,9 +106,9 @@ const FarmWrapper = (props, context) => {
                     </Modal.Header>
                     <Modal.Body className={"farm-registry-modal-body"}>
                         <SearchComponent person={true} onRowClick={handleRowClick} />
-                        <p className={'redirect-to-pr-initial'}>{labelsManager.importLabel('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
+                        <p className={'redirect-to-pr-initial'}>{labelsManager('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
                             hashHistory.push('/main/persons-registry')
-                        }}>{labelsManager.importLabel('redirect-person', context, 'farm_registry')}</span></p>
+                        }}>{labelsManager('redirect-person', context, 'farm_registry')}</span></p>
                     </Modal.Body >
                     <Modal.Footer className={"farm-registry-modal-footer"}></Modal.Footer>
                 </Modal >

@@ -1,12 +1,12 @@
-import { React, PropTypes, connect } from 'perun-core'
+import { React, PropTypes, connect, utils } from 'perun-core'
 import SideMenu from './SideMenu'
-import { updateIdScreen } from '../utils_tools/UtilFunctions'
+const { updateIdScreen } = utils
 const { useState, useEffect } = React
 
 const DynamicRegistry = (props, context) => {
     const [dynamicComponent, setDynamicComponent] = useState(undefined)
     useEffect(() => {
-        updateIdScreen(context)
+        updateIdScreen('farm_registry', context)
     }, [])
     const setDynamicComponentFunction = (comp) => {
         setDynamicComponent(comp)

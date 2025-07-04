@@ -4,15 +4,13 @@ import {
     elements,
     ComponentManager,
     PropTypes, axios, GenericForm, redux,
-    Loading, ExportableGrid, GridManager
+    Loading, ExportableGrid, GridManager, utils
 } from "perun-core";
-import { labelsManager } from '../utils_tools/LabelsExport';
+const { labelsManager, flattenObject, jsonToURI } = utils
 const { useState, useEffect } = React;
 const { alertUserResponse, ReactBootstrap } = elements
 const { Modal } = ReactBootstrap
-
 const { store, dataToRedux, removeAsyncReducer } = redux
-import { flattenObject, jsonToURI } from '../../utils';
 const WrapperSearch = (props, context) => {
     const gridId = `${props.tableName}`
     const [loading, setLoading] = useState(false)
@@ -106,7 +104,7 @@ const WrapperSearch = (props, context) => {
             {loading && <Loading />}
             {show && <Modal className='farm-registry-modal vmp-modal' show={show} onHide={() => props.handleShow()}>
                 <Modal.Header className='farm-registry-modal-header' closeButton>
-                    <Modal.Title>{labelsManager.importLabel('search', context, 'farm_registry')}</Modal.Title>
+                    <Modal.Title>{labelsManager('search', context, 'farm_registry')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='farm-registry-modal-body'>
                     {props.searchWs && <GenericForm
@@ -120,7 +118,7 @@ const WrapperSearch = (props, context) => {
                         addSaveFunction={(e) => {
                             performSearch(e.formData, true)
                         }}
-                        customSaveButtonName={labelsManager.importLabel('search', context, 'farm_registry')}
+                        customSaveButtonName={labelsManager('search', context, 'farm_registry')}
                         customSave
                         hideBtns={'closeAndDelete'}
                     />}

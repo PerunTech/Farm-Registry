@@ -5,9 +5,9 @@ import {
     ComponentManager,
     PropTypes,
     axios,
-    GridManager
+    GridManager, utils
 } from "perun-core";
-import { labelsManager } from '../utils_tools/LabelsExport'
+const { labelsManager } = utils
 const { useState, useEffect } = React;
 const { alertUserResponse, alertUserV2 } = elements;
 
@@ -58,8 +58,8 @@ const CadparcelWrapper = (props, context) => {
         } else {
             alertUserV2({
                 type: 'info',
-                title: labelsManager.importLabel("invalid_cad_parcel", context, "farm_registry"),
-                message: labelsManager.importLabel("invalid_cad_parcel_msg", context, "farm_registry"),
+                title: labelsManager("invalid_cad_parcel", context, "farm_registry"),
+                message: labelsManager("invalid_cad_parcel_msg", context, "farm_registry"),
                 onConfirm: () => ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
             })
         }

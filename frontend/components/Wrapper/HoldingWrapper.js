@@ -5,10 +5,10 @@ import {
     ComponentManager,
     PropTypes,
     createHashHistory,
-    GenericForm, axios
+    GenericForm, axios, utils
 } from "perun-core";
+const { labelsManager } = utils
 import SearchComponent from '../SearchComp/SearchComponent'
-import { labelsManager } from '../utils_tools/LabelsExport';
 import GpsMapSelect from '../utils_tools/GpsMapSelect';
 const { useState, useEffect } = React;
 const { ReactBootstrap } = elements;
@@ -54,7 +54,7 @@ const HoldingWrapper = (props, context) => {
         if (firstInput) {
             firstInput.style.cursor = "pointer";
             firstInput.onclick = handleShowPerson;
-            firstInput.placeholder = labelsManager.importLabel(
+            firstInput.placeholder = labelsManager(
                 "click_to_choose",
                 context,
                 "farm_registry"
@@ -69,7 +69,7 @@ const HoldingWrapper = (props, context) => {
         if (mapInputE) {
             mapInputE.style.cursor = "pointer";
             mapInputE.onclick = handleShowMap;
-            mapInputE.placeholder = labelsManager.importLabel(
+            mapInputE.placeholder = labelsManager(
                 "click_to_choose",
                 context,
                 "farm_registry"
@@ -80,7 +80,7 @@ const HoldingWrapper = (props, context) => {
         if (mapInputN) {
             mapInputN.style.cursor = "pointer";
             mapInputN.onclick = handleShowMap;
-            mapInputN.placeholder = labelsManager.importLabel(
+            mapInputN.placeholder = labelsManager(
                 "click_to_choose",
                 context,
                 "farm_registry"
@@ -206,7 +206,7 @@ const HoldingWrapper = (props, context) => {
                 uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/ADDRESS`}
                 tableFormDataMethod={`/farm-registry/getPersonAddressFormData/${props.svSession}/${personId}`}
                 addSaveFunction={(e) => saveMultipleForms(e.formData)}
-                customSaveButtonName={labelsManager.importLabel('save', context, 'farm_registry')}
+                customSaveButtonName={labelsManager('save', context, 'farm_registry')}
                 hideBtns={'closeAndDelete'}
                 customSave={true}
             />}
@@ -217,9 +217,9 @@ const HoldingWrapper = (props, context) => {
                     <Modal.Body className={"farm-registry-modal-body"}>
                         {showPerson && <>
                             <SearchComponent person={true} onRowClick={handleRowClick} />
-                            <p className={'redirect-to-pr-initial'}>{labelsManager.importLabel('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
+                            <p className={'redirect-to-pr-initial'}>{labelsManager('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
                                 hashHistory.push('/main/persons-registry')
-                            }}>{labelsManager.importLabel('redirect-person', context, 'farm_registry')}</span></p></>}
+                            }}>{labelsManager('redirect-person', context, 'farm_registry')}</span></p></>}
                         {showMap && <GpsMapSelect handleMapClick={handleMapClick} />}
                     </Modal.Body >
                     <Modal.Footer className={"farm-registry-modal-footer"}></Modal.Footer>

@@ -1,8 +1,8 @@
 
-import { React, connect, elements, PropTypes, axios, Loading } from "perun-core";
+import { React, connect, elements, PropTypes, axios, Loading, utils } from "perun-core";
 const { useState, useEffect } = React;
+const { labelsManager } = utils
 const { alertUserResponse, alertUserV2 } = elements;
-import { labelsManager } from '../utils_tools/LabelsExport';
 import { iconManager } from "../utils_tools/svgHolder"
 const Documents = (props, context) => {
     const [fileItems, setFileItems] = useState(undefined)
@@ -51,12 +51,12 @@ const Documents = (props, context) => {
         const onDeleteBtnClick = (el, e) => {
             alertUserV2({
                 type: 'warning',
-                title: labelsManager.importLabel('delete_uploaded_file', context, 'farm_registry'),
-                confirmButtonText: labelsManager.importLabel('yes', context, 'farm_registry'),
+                title: labelsManager('delete_uploaded_file', context, 'farm_registry'),
+                confirmButtonText: labelsManager('yes', context, 'farm_registry'),
                 confirmButtonColor: '#8d230f',
                 onConfirm: () => deleteDownload(el, e),
                 showCancel: true,
-                cancelButtonText: labelsManager.importLabel('no', context, 'farm_registry')
+                cancelButtonText: labelsManager('no', context, 'farm_registry')
             })
         }
 
@@ -125,7 +125,7 @@ const Documents = (props, context) => {
                     responseFunc(errorArr)
                 })
         } else {
-            alertUserV2({ type: 'info', title: labelsManager.importLabel('no_file_selected', context, 'farm_registry') })
+            alertUserV2({ type: 'info', title: labelsManager('no_file_selected', context, 'farm_registry') })
             setLoading(false)
         }
 
@@ -142,11 +142,11 @@ const Documents = (props, context) => {
             nameString = erroArrNames.join(',')
             alertUserV2({
                 type: 'warning',
-                title: `${labelsManager.importLabel('desc_error_upload', context, 'farm_registry')} :`,
+                title: `${labelsManager('desc_error_upload', context, 'farm_registry')} :`,
                 message: ` ${nameString}`
             })
         } else {
-            alertUserV2({ type: 'success', title: labelsManager.importLabel('desc_success_upload_title', context, 'farm_registry') })
+            alertUserV2({ type: 'success', title: labelsManager('desc_success_upload_title', context, 'farm_registry') })
         }
         generateFileItem()
     }
@@ -156,8 +156,8 @@ const Documents = (props, context) => {
             {loading && <Loading />}
             <div className={'farm-registry-documents-container'}>
                 <div className={'farm-registry-upload'}>
-                    <p>{labelsManager.importLabel('attachment_title', context, 'farm_registry')}</p>
-                    <label title={labelsManager.importLabel('upload_file_btn', context, 'farm_registry')} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
+                    <p>{labelsManager('attachment_title', context, 'farm_registry')}</p>
+                    <label title={labelsManager('upload_file_btn', context, 'farm_registry')} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
                     <input className={'farm-registry-upload-input'} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
                 </div>
                 <div className={'farm-registry-files'}>

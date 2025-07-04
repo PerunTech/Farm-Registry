@@ -1,5 +1,5 @@
-import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM } from "perun-core";
-import { getMainLabel } from '../utils_tools/LabelsExport';
+import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM, utils } from "perun-core";
+const { labelsManager } = utils
 const { useEffect, useState } = React;
 const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
@@ -27,6 +27,7 @@ const ObjectSummary = (props, context) => {
                 if (el.ID.toUpperCase().includes('SUMMARY')) {
                     getObjectSummary(el.url);
                     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
+                    store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: true } })
                 }
             })
         }
@@ -69,8 +70,8 @@ const ObjectSummary = (props, context) => {
             <>
                 {menuData.map(({ label, value }) => (
                     <div className="farm-registry-object-summary-row" key={label}>
-                        <p>{label}</p>
-                        <p>: {value}</p>
+                        <p>{label} :</p>
+                        <p>{value}</p>
                     </div>
                 ))}
             </>
@@ -104,12 +105,12 @@ const ObjectSummary = (props, context) => {
         }
         alertUserV2({
             type: 'info',
-            title: getMainLabel('confirm_update_action', context),
-            message: getMainLabel('confirm_update_action_msg', context),
-            confirmButtonText: getMainLabel('yes', context),
+            title: labelsManager('confirm_update_action', context, 'farm_registry'),
+            message: labelsManager('confirm_update_action_msg', context, 'farm_registry'),
+            confirmButtonText: labelsManager('yes', context, 'farm_registry'),
             onConfirm,
             showCancel: true,
-            cancelButtonText: getMainLabel('no', context)
+            cancelButtonText: labelsManager('no', context, 'farm_registry')
         })
     }
 
@@ -129,14 +130,12 @@ const ObjectSummary = (props, context) => {
         const customElement = document.createElement('div');
         ReactDOM.render(
             <div className='farm-registry-alert'>
-                <div className='farm-registry-alert-title'><p>{getMainLabel('alert-title', context)}</p></div>
+                <div className='farm-registry-alert-title'><p>{labelsManager('alert-title', context, 'farm_registry')}</p></div>
                 <div className='farm-registry-alert-fields'>
                     {data['FIELDS'].map((el, index) => (
                         <div className='farm-registry-alert-field' key={index}>
-                            <>
-                                <div className='farm-registry-alert-field-icon'>{!el.value ? iconManager.getIcon('Xmark') : iconManager.getIcon('Cmark')}</div>
-                                <p>{el.label}</p>
-                            </>
+                            <>                         <div className='farm-registry-alert-field-icon'>{!el.value ? iconManager.getIcon('Xmark') : iconManager.getIcon('Cmark')}</div>
+                                <p>{el.label}</p></>
                         </div>
                     ))}
                 </div>
@@ -157,13 +156,9 @@ const ObjectSummary = (props, context) => {
         axios.get(`${window.server + url}`)
             .then(res => {
                 setLoading(false);
-                if (res?.data?.data && typeof res.data.data === 'string') {
+                if (res?.data?.data) {
                     const data = JSON.parse(res.data.data);
-                    if (Object.keys(data).length > 0) {
-                        data?.['FIELDS'] ? generateCheckList(data) : () => { }
-                    } else {
-                        alertUserResponse({ response: res })
-                    }
+                    data?.['FIELDS'] ? generateCheckList(data) : () => { }
                 } else {
                     alertUserResponse({ response: res })
                     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
@@ -184,7 +179,7 @@ const ObjectSummary = (props, context) => {
             <div className="farm-registry-object-summary">
                 <button className='farm-registry-summary-back-btn' onClick={() => backButtonFunction()}>
                     <i className='fas fa-chevron-left' />
-                    <span className='back-btn-text'>{getMainLabel('back', context)}</span>
+                    <span className='back-btn-text'>{labelsManager('back', context, 'farm_registry')}</span>
                 </button>
                 {menuData.length > 0 && (
                     <>
@@ -197,10 +192,10 @@ const ObjectSummary = (props, context) => {
                                     className="farm-registry-object-summary-show-more"
                                     onClick={() => setShow(true)}
                                 >
-                                    {getMainLabel('show_more', context)}
+                                    {labelsManager('show_more', context, 'farm_registry')}
                                 </button>
                             )}
-                            {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{getMainLabel("update_data_btn", context)} <span className={`update-farm-btn-icon`}>{iconManager.getIcon('reloadData')}</span></span></button>}
+                            {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{labelsManager("update_data_btn", context, 'farm_registry')} <span className={`update-farm-btn-icon`}>{iconManager.getIcon('reloadData')}</span></span></button>}
                             {actions && generateSummaryActions()}
                         </div>
                     </>

@@ -1,7 +1,9 @@
-import { React, connect, PropTypes, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements, Loading } from 'perun-core'
+import {
+  React, connect, PropTypes, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements, Loading, utils
+} from "perun-core";
+const { labelsManager } = utils
 const { alertUserResponse, alertUserV2 } = elements
 const { useState, useEffect } = React
-import { labelsManager } from '../utils_tools/LabelsExport';
 import SearchFormWrapper from './SearchFormWrapper';
 let searchGridId;
 const SearchComp = (props, context) => {
@@ -53,7 +55,7 @@ const SearchComp = (props, context) => {
           uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/${tableName}`}
           tableFormDataMethod={`/ReactElements/getTableFormData/${props.svSession}/0/${tableName}`}
           addSaveFunction={(e) => assignSearchResultGrid(e.formData)}
-          customSaveButtonName={labelsManager.importLabel('search', context, 'farm_registry')}
+          customSaveButtonName={labelsManager('search', context, 'farm_registry')}
           hideBtns={'closeAndDelete'}
           customSave={true}
           inputWrapper={SearchFormWrapper}
@@ -74,7 +76,7 @@ const SearchComp = (props, context) => {
       setLoading(false)
       if (res?.data) {
         if (res.data.length === 0) {
-          alertUserV2({ type: 'info', title: labelsManager.importLabel('no_farm_data', context, 'farm_registry') })
+          alertUserV2({ type: 'info', title: labelsManager('no_farm_data', context, 'farm_registry') })
         } else {
           props.onRowClick(null, null, res.data[0])
         }
@@ -131,7 +133,7 @@ const SearchComp = (props, context) => {
     } else {
       alertUserV2({
         type: 'info',
-        title: labelsManager.importLabel('enter_valid_criteria', context, 'farm_registry'),
+        title: labelsManager('enter_valid_criteria', context, 'farm_registry'),
         onConfirm: () => ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false })
       })
     }
