@@ -1,7 +1,6 @@
-import { React, PropTypes, GenericForm, ComponentManager, axios, elements, createHashHistory } from 'perun-core'
+import { React, PropTypes, GenericForm, ComponentManager, axios, elements, createHashHistory, utils } from 'perun-core'
 const { alertUserResponse } = elements
-import { jsonToURI, flattenObject } from '../../utils'
-import { getMainLabel } from '../utils_tools/LabelsExport'
+const { labelsManager, jsonToURI, flattenObject } = utils
 const { useState, useEffect } = React
 import FarmWrapper from '../Wrapper/FarmWrapper';
 import HoldingWrapper from '../Wrapper/HoldingWrapper';
@@ -94,7 +93,7 @@ const CreateNewRecordForm = (props, context) => {
         uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
         tableFormDataMethod={addFormConfig?.data?.onSubmit}
         addSaveFunction={(e) => onSubmit(e)}
-        customSaveButtonName={getMainLabel('save', context)}
+        customSaveButtonName={labelsManager('save', context, 'farm_registry')}
         hideBtns={'closeAndDelete'}
         isAddForm={true}
         inputWrapper={inputWrapper}

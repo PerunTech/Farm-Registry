@@ -1,5 +1,5 @@
-import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory } from 'perun-core'
-import { getMainLabel } from '../utils_tools/LabelsExport';
+import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, utils } from 'perun-core'
+const { labelsManager } = utils
 const { ReactBootstrap, alertUserResponse } = elements;
 const { store } = redux;
 const { Modal } = ReactBootstrap;
@@ -45,7 +45,7 @@ const DoubleGrid = (props, context) => {
                 buttonsArray={buttonsArray}
                 toggleCustomButton={grid.additionalBtns ? true : false}
                 customButton={() => { setShow(true) }}
-                customButtonLabel={getMainLabel('add', context)}
+                customButtonLabel={labelsManager('add', context, 'farm_registry')}
             />
         )
     }
@@ -62,7 +62,7 @@ const DoubleGrid = (props, context) => {
                 uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
                 tableFormDataMethod={addFormConfig?.data?.onSubmit}
                 addSaveFunction={(e) => onSubmit(e)}
-                customSaveButtonName={getMainLabel('save', context)}
+                customSaveButtonName={labelsManager('save', context, 'farm_registry')}
                 hideBtns={'closeAndDelete'}
             />
         )

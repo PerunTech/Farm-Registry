@@ -1,5 +1,8 @@
-import { React, ComponentManager } from 'perun-core'
-import { setInputFilter } from '../../utils'
+import {
+  React, ComponentManager, utils
+} from "perun-core";
+const { setInputFilter } = utils
+
 
 const { useState, useEffect } = React
 

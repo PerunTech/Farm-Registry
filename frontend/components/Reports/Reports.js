@@ -4,9 +4,9 @@ import {
     PropTypes,
     axios,
     elements,
-    Loading
+    Loading, utils
 } from "perun-core";
-import { labelsManager } from '../utils_tools/LabelsExport';
+const { labelsManager } = utils
 import { iconManager } from "../utils_tools/svgHolder";
 const { useState, useEffect } = React;
 const { alertUserResponse } = elements;
@@ -51,7 +51,7 @@ const Reports = (props, context) => {
                 </>
             ));
         } else {
-            return <><p className={'no-reports'}>   {labelsManager.importLabel(
+            return <><p className={'no-reports'}>   {labelsManager(
                 "no-reports",
                 context,
                 "farm_registry"
@@ -74,7 +74,7 @@ const Reports = (props, context) => {
                 }}
             >
                 <span className={'reports-svg-holder'}>{iconManager.getIcon("PRINT_FARM")}</span>
-                {labelsManager.importLabel(
+                {labelsManager(
                     "reports",
                     context,
                     "farm_registry"

@@ -7,12 +7,12 @@ import {
     axios,
     Loading,
     ComponentManager,
-    GridManager
+    GridManager, utils
 } from "perun-core";
 const { useState, useEffect } = React;
 const { alertUserV2, alertUserResponse } = elements;
 import { formatDateAndTime } from './fortDateAndTime';
-import { getMainLabel } from './LabelsExport';
+const { labelsManager } = utils
 import { iconManager } from './svgHolder';
 
 const Attachments = (props, context) => {
@@ -113,14 +113,14 @@ const Attachments = (props, context) => {
             nameString = erroArrNames.join(',')
             alertUserV2({
                 type: 'warning',
-                title: `${getMainLabel('desc_error_upload', context)} :`,
+                title: `${labelsManager('desc_error_upload', context, 'farm-registry')} :`,
                 message: ` ${nameString}`,
                 onConfirm
             })
         } else {
             alertUserV2({
                 type: 'success',
-                title: getMainLabel('desc_success_upload_title', context),
+                title: labelsManager('desc_success_upload_title', context, 'farm-registry'),
                 onConfirm
             })
         }
@@ -159,11 +159,11 @@ const Attachments = (props, context) => {
     const deletePrompt = (el, e) => {
         alertUserV2({
             type: 'warning',
-            title: getMainLabel('delete_uploaded_file', context),
-            confirmButtonText: getMainLabel('yes', context),
+            title: labelsManager('delete_uploaded_file', context, 'farm-registry'),
+            confirmButtonText: labelsManager('yes', context, 'farm-registry'),
             onConfirm: () => deleteDownload(el, e),
             showCancel: true,
-            cancelButtonText: getMainLabel('no', context)
+            cancelButtonText: labelsManager('no', context, 'farm-registry')
         })
     }
 
@@ -298,8 +298,8 @@ const Attachments = (props, context) => {
                 {/* attachl left-live */}
                 {!readOnly && <div className={'applications-attachments-selected applications-attachments-container'}>
                     <div className={'applications-upload'}>
-                        <p>{getMainLabel('attachment_title-temp', context)}</p>
-                        <label title={getMainLabel('upload_file_btn', context)} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
+                        <p>{labelsManager('attachment_title-temp', context, 'farm-registry')}</p>
+                        <label title={labelsManager('upload_file_btn', context, 'farm-registry')} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
                         <input className={'applications-upload-input'} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
                     </div>
                     <div className={'applications-files'}>
@@ -309,7 +309,7 @@ const Attachments = (props, context) => {
                 {/* attach right offline */}
                 <div className={'applications-attachments-uploaded applications-attachments-container'}>
                     <div className={'applications-upload'}>
-                        <p>{getMainLabel('attachment_title', context)}</p>
+                        <p>{labelsManager('attachment_title', context, 'farm-registry')}</p>
                     </div>
                     <div className={'applications-files'}>
                         {fileItems}
@@ -319,8 +319,8 @@ const Attachments = (props, context) => {
 
             {/* save and delete section */}
             {<div id="btnSeparator" className={"attachment-btns"}>
-                {showSave && <button onClick={() => { handleSubmit() }} type="submit" id="save_form_btn" className={'wrapper-btn-save btn-success btn_save_form'}>{getMainLabel('save', context)}</button>}
-                {(props.objId !== 0 && props.objId) && showDelete && <button onClick={() => { deleteFunc() }} type="button" id="save_form_btn" className={'wrapper-btn-save btn-danger btn_delete_form'}>{getMainLabel('delete', context)}</button>}
+                {showSave && <button onClick={() => { handleSubmit() }} type="submit" id="save_form_btn" className={'wrapper-btn-save btn-success btn_save_form'}>{labelsManager('save', context, 'farm-registry')}</button>}
+                {(props.objId !== 0 && props.objId) && showDelete && <button onClick={() => { deleteFunc() }} type="button" id="save_form_btn" className={'wrapper-btn-save btn-danger btn_delete_form'}>{labelsManager('delete', context, 'farm-registry')}</button>}
             </div>}
         </>
     );

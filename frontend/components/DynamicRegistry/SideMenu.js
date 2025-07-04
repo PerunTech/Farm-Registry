@@ -19,11 +19,11 @@ const SideMenu = (props) => {
     }, []);
 
     useEffect(() => {
-        if (props.refreshSideMenu) {
+        if (props?.refreshSideMenu) {
             getConfiguration();
             store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: false } })
         }
-    }, [props.refreshSideMenu]);
+    }, [props?.refreshSideMenu]);
 
 
     const getConfiguration = () => {
@@ -44,13 +44,13 @@ const SideMenu = (props) => {
                     res.data?.data?.map(item => {
                         if (item.data && isChild) {
                             item.data.map(child => {
-                                if (child?.ID?.replace(/_\d+$/, "") === tableName) {
+                                if (child?.ID?.includes(tableName)) {
                                     onButtonClick(child, true)
                                     setActive(item)
                                 }
                             })
                         } else {
-                            if (item?.ID?.replace(/_\d+$/, "") === tableName) {
+                            if (item?.ID?.includes(tableName)) {
                                 onButtonClick(item)
                             }
                         }

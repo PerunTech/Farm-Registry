@@ -1,6 +1,6 @@
-import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux, createHashHistory } from 'perun-core'
-import { getMainLabel } from '../utils_tools/LabelsExport';
-import { replaceFunc, generateDynamicKey } from '../utils_tools/UtilFunctions';
+import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux, createHashHistory, utils } from 'perun-core'
+
+const { labelsManager, replaceFunc, generateDynamicKey } = utils
 import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
 import { iconManager } from '../utils_tools/svgHolder';
@@ -52,9 +52,9 @@ const CustomButtons = (props, context) => {
         const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
 
         const executeAction = () => {
-            let promptLabel = getMainLabel('confirm_submit_action', context)
+            let promptLabel = labelsManager('confirm_submit_action', context, 'farm_registry')
             if (el.useMulti) {
-                promptLabel = getMainLabel('confirm_action_execution', context)
+                promptLabel = labelsManager('confirm_action_execution', context, 'farm_registry')
             }
             let saveUrl = `${window.server}${el?.['onSave']}`
             let data
@@ -77,10 +77,10 @@ const CustomButtons = (props, context) => {
                     alertUserV2({
                         type: 'info',
                         title: promptLabel,
-                        confirmButtonText: getMainLabel('yes', context),
+                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
                         onConfirm: executeGetAction,
                         showCancel: true,
-                        cancelButtonText: getMainLabel('no', context)
+                        cancelButtonText: labelsManager('no', context, 'farm_registry')
                     })
                     break;
                 }
@@ -112,10 +112,10 @@ const CustomButtons = (props, context) => {
                     alertUserV2({
                         type: 'info',
                         title: promptLabel,
-                        confirmButtonText: getMainLabel('yes', context),
+                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
                         onConfirm: executePostAction,
                         showCancel: true,
-                        cancelButtonText: getMainLabel('no', context)
+                        cancelButtonText: labelsManager('no', context, 'farm_registry')
                     })
                     break;
                 }
@@ -150,10 +150,10 @@ const CustomButtons = (props, context) => {
                     alertUserV2({
                         type: 'info',
                         title: promptLabel,
-                        confirmButtonText: getMainLabel('yes', context),
+                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
                         onConfirm: action,
                         showCancel: true,
-                        cancelButtonText: getMainLabel('no', context)
+                        cancelButtonText: labelsManager('no', context, 'farm_registry')
                     })
                     break;
                 }
@@ -179,7 +179,7 @@ const CustomButtons = (props, context) => {
             if (selectedGridRows.length > 0) {
                 executeAction()
             } else {
-                alertUserV2({ type: 'info', title: getMainLabel('select_multi', context) })
+                alertUserV2({ type: 'info', title: labelsManager('select_multi', context, 'farm_registry') })
             }
         } else {
             executeAction()
@@ -246,7 +246,7 @@ const CustomButtons = (props, context) => {
                 refreshData={() => reloadGrid(props.tableName + props.appObjId, multiSelect)}
                 toggleCustomButton={!props.configuration.objectConfiguration.configuration.readOnly}
                 customButton={() => setShowModal(true)}
-                customButtonLabel={getMainLabel('add', context)}
+                customButtonLabel={labelsManager('add', context, 'farm_registry')}
                 enableMultiSelect={multiSelect}
                 onSelectChangeFunct={customRowSelection}
                 buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : undefined}
@@ -386,7 +386,7 @@ const CustomButtons = (props, context) => {
         // // Check if the filtered form data object has only four keys and they are only system fields
         const onlyHasSystemFields = Object.keys(nonNullishFormData).length === 4 && Object.keys(nonNullishFormData).every(k => k === 'OBJECT_ID' || k === 'OBJECT_TYPE' || k === 'PKID' || k === 'PARENT_ID')
         if (isEmpty || onlyHasSystemFields) {
-            const label = getMainLabel('enter_some_values', context)
+            const label = labelsManager('enter_some_values', context, 'farm_registry')
             alertUserV2({ type: 'info', title: label, onConfirm: resetFormSaveState })
         } else {
             const url = `${window.server}${wsPath}`

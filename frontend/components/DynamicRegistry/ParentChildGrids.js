@@ -1,10 +1,8 @@
-import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, redux } from 'perun-core'
+import { React, PropTypes, ExportableGrid, connect, elements, axios, GenericForm, ComponentManager, GridManager, redux, utils } from 'perun-core'
 const { useState, useEffect } = React
-import { getMainLabel, labelsManager } from '../utils_tools/LabelsExport';
-import { getDynamicKey } from '../../utils';
+const { labelsManager, getDynamicKey, replaceFunc } = utils
 const { ReactBootstrap, alertUserResponse } = elements;
 const { Modal } = ReactBootstrap;
-import { replaceFunc } from '../utils_tools/UtilFunctions';
 const { store } = redux
 let prev
 const ParentChildGrids = (props, context) => {
@@ -66,7 +64,7 @@ const ParentChildGrids = (props, context) => {
                     customButton={() => {
                         setShow(true)
                     }}
-                    customButtonLabel={labelsManager.importLabel('add', context, 'farm_registry')}
+                    customButtonLabel={labelsManager('add', context, 'farm_registry')}
                 />
 
             </div>
@@ -88,7 +86,7 @@ const ParentChildGrids = (props, context) => {
                 uiSchemaConfigMethod={form.uischema?.onSubmit}
                 tableFormDataMethod={formData}
                 addSaveFunction={(e) => onSubmit(e)}
-                customSaveButtonName={getMainLabel('save', context)}
+                customSaveButtonName={labelsManager('save', context, 'farm_registry')}
                 addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData)}
                 hideBtns={rowChild === 0 ? 'closeAndDelete' : 'close'}
             />

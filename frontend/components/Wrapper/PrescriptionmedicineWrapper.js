@@ -3,9 +3,9 @@ import {
     connect,
     ComponentManager,
     PropTypes,
-    GenericForm
+    GenericForm, utils
 } from "perun-core";
-import { labelsManager } from '../utils_tools/LabelsExport';
+const { labelsManager } = utils
 import WrapperSearch from '../utils_tools/WrapperSearch'
 
 const { useState, useEffect } = React;
@@ -78,7 +78,7 @@ const PrescriptionmedicineWrapper = (props, context) => {
             if (el) {
                 el.style.cursor = "pointer";
                 el.onclick = action;
-                el.placeholder = labelsManager.importLabel("click_to_choose", context, "farm_registry");
+                el.placeholder = labelsManager("click_to_choose", context, "farm_registry");
                 el.style.background = '#b9cfba';
                 el.style.color = '#ffffff';
             }
