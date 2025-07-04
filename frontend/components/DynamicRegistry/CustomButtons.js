@@ -1,6 +1,6 @@
 import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux, createHashHistory, utils } from 'perun-core'
 
-const { labelsManager, replaceFunc, generateDynamicKey } = utils
+const { labelsManager, replaceFunc, getDynamicKey } = utils
 import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
 import { iconManager } from '../utils_tools/svgHolder';
@@ -24,7 +24,7 @@ const CustomButtons = (props, context) => {
     const hashHistory = createHashHistory();
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
-    const [dynamicFormId, setDynamicFormId] = useState(generateDynamicKey())
+    const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
     const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper }, { Holding: HoldingWrapper }, { Documents: DocumentsWrapper }, { Fees: FeesWrapper }, { Prescriptionvet: PrescriptionvetWrapper }, { Prescriptionmedicine: PrescriptionmedicineWrapper }])
@@ -291,7 +291,7 @@ const CustomButtons = (props, context) => {
         }
         // Set a new ID for the form, so we get a re-render
         if (resetTheId) {
-            setDynamicFormId(generateDynamicKey())
+            setDynamicFormId(getDynamicKey())
         }
         // Get the WS paths from the configuration object
         let jsonSchemaConfig = props.configuration.objectConfiguration?.configuration?.onSubmit
