@@ -20,7 +20,6 @@ const Search = (props, context) => {
   useEffect(() => {
     updateIdScreen('farm_registry', context, 'farm_registry')
     getBusinessObjectName()
-    ssOLogin()
     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: false } })
     store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: '' } })
@@ -30,6 +29,7 @@ const Search = (props, context) => {
   useEffect(() => {
     if (businessObjectName) {
       getConfiguration()
+      ssOLogin()
     }
   }, [businessObjectName])
 
@@ -47,13 +47,13 @@ const Search = (props, context) => {
             }
             searchCurrentUser(data)
           }
-
         }
       }).catch(err => {
         console.error(err)
       })
     }
   }
+
   const searchCurrentUser = (data) => {
     let url = `${window.server}/WsFarmUtils/search-farm-person/sid/${props.svSession}`
     setLoading(true)
