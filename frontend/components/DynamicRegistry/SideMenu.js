@@ -144,7 +144,7 @@ const SideMenu = (props) => {
     };
     const onButtonClick = (element, childEl) => {
         const id = element.ID;
-        const splitID = id.replace(/\d/g, '').replace(/_$/, '');
+        const splitID = id.replace(/_[^_]*\d+$/, '');
         if (childEl) {
             displayComponent('DYNAMIC', splitID, element, true);
             setActiveChild(id)
@@ -155,7 +155,6 @@ const SideMenu = (props) => {
             setActiveElement(id)
             setLoading(false)
             setActiveChild('')
-
         }
     }
     const printFunc = (sub) => {
