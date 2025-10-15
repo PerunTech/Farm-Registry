@@ -48,7 +48,7 @@ const GmpauditproductWrapper = (props, context) => {
         if (formData) {
             formData['VMP_OBJECT_ID'] = row['VMP.OBJECT_ID'];
             formData['PRODUCT_NAME'] = row['VMP.PRODUCT_NAME'];
-            formData['LICENCE_NUMBER'] = row['VMP.PRODUCT_NUMBER'];
+            formData['LICENSE_NUMBER'] = row['VMP.PRODUCT_NUMBER'];
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             props.formInstance.onInputChange(formData);
