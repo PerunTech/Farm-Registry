@@ -15,7 +15,7 @@ const GmpauditproductWrapper = (props, context) => {
     const [rowClick, setRowClick] = useState(undefined);
 
     useEffect(() => {
-        handleInputs(['root_LICENCE_NUMBER', 'root_PRODUCT_NAME'], handleVmp);
+        handleInputs(['root_LICENSE_NUMBER', 'root_PRODUCT_NAME'], handleVmp);
     }, []);
 
     const triggerSearch = ({ table, searchWs, dataWs, onRowClick }) => {
