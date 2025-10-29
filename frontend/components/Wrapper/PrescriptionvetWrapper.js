@@ -6,6 +6,7 @@ import {
 } from "perun-core";
 const { labelsManager } = utils
 import WrapperSearch from '../utils_tools/WrapperSearch'
+import { iconManager } from '../utils_tools/svgHolder';
 const { useState, useEffect } = React;
 const PrescriptionvetWrapper = (props, context) => {
     const [show, setShow] = useState(false);
@@ -13,8 +14,12 @@ const PrescriptionvetWrapper = (props, context) => {
     const [searchWs, setSearchWs] = useState(undefined);
     const [dataWs, setDataWs] = useState(undefined);
     const [rowClick, setRowClick] = useState(undefined);
+    const [objectId, setObjId] = useState(undefined)
 
     useEffect(() => {
+        const { formid } = props;
+        const formData = ComponentManager.getStateForComponent(formid, "formTableData");
+        setObjId(formData['OBJECT_ID'])
         handleInputs(['root_pr_vet_FULL_NAME', 'root_pr_vet_DIPLOMA_NO'], handleVet);
         handleInputs(['root_pr_owner_OWNER_FULL_NAME', 'root_pr_owner_HOLDING_NO', 'root_pr_owner_OWNER_ADDRESS'], handleHolding);
         handleInputs(['root_pr_rp_TRADE_NAME', 'root_pr_rp_PHARMACEUTICAL_FORM'], handleVmp);
@@ -122,8 +127,22 @@ const PrescriptionvetWrapper = (props, context) => {
         });
     };
 
+    const downloadPDF = () => {
+        let url = window.server + `/farm-registry/generate/report/session-id/${props.svSession}/object-id/${objectId}/report-name/veterinarian_prescription_print/file-type/PDF/param/en_US`;
+        window.open(url, '_blank');
+    }
+
     return (
         <>
+
+            {objectId && (
+                <div className='perun-menu-buttons-container'>
+                    <button className='btn-success btn_save_form download-menu-btn' onClick={downloadPDF}>
+                        {labelsManager("download_prescription", context, "farm_registry")}
+                        <span className='download-span'>{iconManager.getIcon('PRINT_HOLDING')}</span>
+                    </button>
+                </div>
+            )}
             {props.children}
             {show &&
                 <WrapperSearch
