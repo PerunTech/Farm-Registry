@@ -83,7 +83,10 @@ const SideMenu = (props) => {
             }, 100);
         }
     };
-
+    const activeChildFunc = (el) => {
+        setActive(el)
+        props.toggleSideMenu(true)
+    }
     // Function to generate the buttons (you can keep the one you provided)
     const generateSideMenuButtons = () => {
         if (configuration && Array.isArray(configuration.data)) {
@@ -95,7 +98,7 @@ const SideMenu = (props) => {
                             <button
                                 id={el.ID}
                                 className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
-                                onClick={() => (el.data ? setActive(el) : onButtonClick(el))}
+                                onClick={() => (el.data ? activeChildFunc(el) : onButtonClick(el))}
                             >
                                 <span className='sidemenu-btn-title'>
                                     {iconManager.getIcon(modifiedID) && (
@@ -187,11 +190,12 @@ const SideMenu = (props) => {
         }
         props.setDynamicComponentFunction(dynamicComponent)
     };
+
     return (
         <>
             {loading && <Loading />}
-            <div className={`sidemenu-main-container farm-registry-sidemenu-main-container`} id="sidemenu-main-container">
-                {configuration && <ObjectSummary configuration={configuration} tableName={props.tableName} objectId={props.objectId} />}
+            <div className={`sidemenu-main-container farm-registry-sidemenu-main-container ${props.toggledMenu && 'toggled-sidemenu'}`} id="sidemenu-main-container">
+                {configuration && <ObjectSummary toggleSideMenu={props.toggleSideMenu} configuration={configuration} tableName={props.tableName} objectId={props.objectId} />}
                 <div
                     ref={sideMenuRef}
                     className='farm-registry-sidemenu-buttons-container'
