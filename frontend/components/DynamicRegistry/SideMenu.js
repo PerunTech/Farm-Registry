@@ -1,4 +1,4 @@
-import { React, connect, PropTypes, Loading, axios, createHashHistory, elements, redux } from "perun-core";
+import { React, connect, PropTypes, Loading, axios, createHashHistory, elements, redux, Tooltip } from "perun-core";
 const { useEffect, useState, useRef } = React
 const { alertUserResponse } = elements
 const { store } = redux;
@@ -99,6 +99,7 @@ const SideMenu = (props) => {
                                 id={el.ID}
                                 className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
                                 onClick={() => (el.data ? activeChildFunc(el) : onButtonClick(el))}
+                                data-tooltip-id="aims-tooltip" data-tooltip-content={el.label}
                             >
                                 <span className='sidemenu-btn-title'>
                                     {iconManager.getIcon(modifiedID) && (
@@ -123,6 +124,7 @@ const SideMenu = (props) => {
                                                 key={sub.ID}
                                                 className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`}
                                                 onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
+                                                data-tooltip-id="aims-tooltip" data-tooltip-content={sub.label}
                                             >
                                                 <span className="sidemenu-btn-title">
                                                     {/* {iconManager.getIcon(modifiedID) && (
@@ -203,6 +205,7 @@ const SideMenu = (props) => {
                     {generateSideMenuButtons()}
                 </div>
             </div>
+            {props.toggledMenu && <Tooltip className="aims-tooltip" id="aims-tooltip" place="right" />}
         </>
     );
 }
