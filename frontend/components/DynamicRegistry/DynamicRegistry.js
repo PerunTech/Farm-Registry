@@ -1,4 +1,4 @@
-import { React, PropTypes, connect, utils } from 'perun-core'
+import { React, PropTypes, connect, utils, GridManager } from 'perun-core'
 import SideMenu from './SideMenu'
 const { updateIdScreen } = utils
 const { useState, useEffect } = React
@@ -12,13 +12,19 @@ const DynamicRegistry = (props, context) => {
     const setDynamicComponentFunction = (comp) => {
         setDynamicComponent(comp)
     }
+    useEffect(() => {
+        const name = props.match.params.component;
+        const table = name.startsWith("SUB-") ? name.slice(4) : name;
+        const id = props.match.params.objectId;
+        GridManager.reloadGridData(`${table}${id}`);
+    }, [toggledMenu]);
     const toggleSideMenu = (toggleOn) => {
         if (toggleOn) {
-            setToggledMenu(false)
+            setToggledMenu(false);
         } else {
-            setToggledMenu(!toggledMenu)
+            setToggledMenu(!toggledMenu);
         }
-    }
+    };
     return (
         <div className="farm-registry-main-container">
             <SideMenu
