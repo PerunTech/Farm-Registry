@@ -100,7 +100,7 @@ const SideMenu = (props) => {
                             className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
                             onClick={() => (el.data ? activeChildFunc(el) : onButtonClick(el))}
                             data-tooltip-id={props.toggledMenu && el.data?.length ? "aims-tooltip" : "simple-tooltip"}
-                            data-tooltip-content={props.toggledMenu && el.data?.length ? JSON.stringify(el.data) : el.label}
+                            data-tooltip-content={props.toggledMenu && el.data?.length ? JSON.stringify(el.data) : JSON.stringify(el)}
                             data-tooltip-place="right"
                         >
                             <span className='sidemenu-btn-title'>
@@ -219,7 +219,24 @@ const SideMenu = (props) => {
                         );
                     }}
                 />}
-            {props.toggledMenu && <Tooltip className="aims-tooltip" id="simple-tooltip" place="right" />}
+            {props.toggledMenu && <Tooltip className="aims-tooltip" id="simple-tooltip" place="right" clickable
+                render={({ content }) => {
+                    if (!content) return null;
+                    let el;
+                    try {
+                        el = JSON.parse(content);
+                    } catch (e) {
+                        return null;
+                    }
+                    return (
+                        <div className="tooltip-submenu-wrapper">
+                            <button className="sidemenu-btn_sub" onClick={() => onButtonClick(el)} >
+                                {el.label}</button>
+                        </div>
+                    );
+                }}
+            />}
+
         </>
     );
 }
