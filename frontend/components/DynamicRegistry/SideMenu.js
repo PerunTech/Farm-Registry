@@ -25,7 +25,6 @@ const SideMenu = (props) => {
         }
     }, [props?.refreshSideMenu]);
 
-
     const getConfiguration = () => {
         const menuName = `${props.tableName.toLowerCase()}-registry-menu`
         setLoading(true)
@@ -84,68 +83,62 @@ const SideMenu = (props) => {
         }
     };
     const activeChildFunc = (el) => {
-        setActive(el)
-        props.toggleSideMenu(true)
+        if (!props.toggledMenu) {
+            setActive(el)
+        }
     }
     // Function to generate the buttons (you can keep the one you provided)
     const generateSideMenuButtons = () => {
-        if (configuration && Array.isArray(configuration.data)) {
-            return configuration.data.map(el => {
-                let modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
-                if (!el.ID.toUpperCase().includes('SUMMARY')) {
-                    return (
-                        <>
-                            <button
-                                id={el.ID}
-                                className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
-                                onClick={() => (el.data ? activeChildFunc(el) : onButtonClick(el))}
-                                data-tooltip-id="aims-tooltip" data-tooltip-content={el.label}
-                            >
-                                <span className='sidemenu-btn-title'>
-                                    {iconManager.getIcon(modifiedID) && (
-                                        <span className={'sidemenu-dynamic-comp-icon-holder'}>
-                                            {iconManager.getIcon(modifiedID)}
-                                        </span>
-                                    )}
-                                    <p>{el.label}</p>
-                                </span>
-                                {el.data && (
-                                    <span className={`expand-arrow ${el.ID === activeParent && 'rotate-expand'}`}>
-                                        {iconManager.getIcon('EXPAND')}
+        if (!configuration || !Array.isArray(configuration.data)) return <></>;
+        return configuration.data.map(el => {
+            let modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
+            if (!el.ID.toUpperCase().includes('SUMMARY')) {
+                return (
+                    <React.Fragment key={el.ID}>
+                        <button
+                            id={el.ID}
+                            className={`sidemenu-btn_sub ${activeElement === el.ID && !el.data && 'sidemenu-active'}`}
+                            onClick={() => (el.data ? activeChildFunc(el) : onButtonClick(el))}
+                            data-tooltip-id={props.toggledMenu && el.data?.length ? "aims-tooltip" : "simple-tooltip"}
+                            data-tooltip-content={props.toggledMenu && el.data?.length ? JSON.stringify(el.data) : el.label}
+                            data-tooltip-place="right"
+                        >
+                            <span className='sidemenu-btn-title'>
+                                {iconManager.getIcon(modifiedID) && (
+                                    <span className={'sidemenu-dynamic-comp-icon-holder'}>
+                                        {iconManager.getIcon(modifiedID)}
                                     </span>
                                 )}
-                            </button>
+                                <p>{el.label}</p>
+                            </span>
                             {el.data && (
-                                <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
-                                    {el.data.map(sub => {
-                                        modifiedID = sub.ID.replace(/\d/g, '').replace(/_$/, '');
-                                        return (
-                                            <button
-                                                key={sub.ID}
-                                                className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`}
-                                                onClick={() => (sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true))}
-                                                data-tooltip-id="aims-tooltip" data-tooltip-content={sub.label}
-                                            >
-                                                <span className="sidemenu-btn-title">
-                                                    {/* {iconManager.getIcon(modifiedID) && (
-                                                        <span className={'sidemenu-dynamic-comp-icon-holder'}>
-                                                            {iconManager.getIcon(modifiedID)}
-                                                        </span>
-                                                    )} */}
-                                                    <p>{sub.label}</p>
-                                                </span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
+                                <span className={`expand-arrow ${el.ID === activeParent && !props.toggledMenu ? "rotate-expand" : ""}`}>
+                                    {iconManager.getIcon('EXPAND')}
+                                </span>
                             )}
-                        </>
-                    );
-                }
-            });
-        } else {
-            return <></>;
-        }
+                        </button>
+                        {!props.toggledMenu && el.data && (
+                            <div className={el.ID === activeParent ? 'sidemenu-sub-item-active' : 'sidemenu-sub-item-hidden'}>
+                                {el.data.map(sub => (
+                                    <button
+                                        key={sub.ID}
+                                        className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`}
+                                        onClick={() =>
+                                            sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true)
+                                        }
+                                    >
+                                        <span className="sidemenu-btn-title">
+                                            <p>{sub.label}</p>
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </React.Fragment>
+                );
+            }
+            return null;
+        });
     };
     const onButtonClick = (element, childEl) => {
         const id = element.ID;
@@ -205,7 +198,28 @@ const SideMenu = (props) => {
                     {generateSideMenuButtons()}
                 </div>
             </div>
-            {props.toggledMenu && <Tooltip className="aims-tooltip" id="aims-tooltip" place="right" />}
+            {props.toggledMenu &&
+                <Tooltip id="aims-tooltip" place="right" clickable className="aims-tooltip"
+                    render={({ content }) => {
+                        let submenu = [];
+                        try {
+                            submenu = JSON.parse(content || "[]");
+                        } catch (e) {
+                            submenu = [];
+                        }
+
+                        if (!submenu.length) return null;
+                        return (
+                            <div className="tooltip-submenu-wrapper">
+                                {submenu.map(sub => (
+                                    <button key={sub.ID} className={`sidemenu-btn_sub ${activeChild === sub.ID && 'sidemenu-active'}`}
+                                        onClick={() => sub.ID.includes('PRINT') ? printFunc(sub) : onButtonClick(sub, true)}>{sub.label} </button>
+                                ))}
+                            </div>
+                        );
+                    }}
+                />}
+            {props.toggledMenu && <Tooltip className="aims-tooltip" id="simple-tooltip" place="right" />}
         </>
     );
 }
