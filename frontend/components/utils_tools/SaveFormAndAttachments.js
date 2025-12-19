@@ -11,8 +11,7 @@ import {
 } from "perun-core";
 const { useState, useEffect } = React;
 const { alertUserV2, alertUserResponse } = elements;
-import { formatDateAndTime } from './fortDateAndTime';
-const { labelsManager } = utils
+const { labelsManager, formatDateAndTime } = utils
 import { iconManager } from './svgHolder';
 
 const Attachments = (props, context) => {
