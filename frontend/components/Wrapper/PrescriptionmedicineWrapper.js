@@ -2,12 +2,12 @@ import {
     React,
     connect,
     ComponentManager,
-    PropTypes,
-    GenericForm, utils
+    PropTypes, utils,
+    GenericForm
 } from "perun-core";
 const { labelsManager } = utils
 import WrapperSearch from '../utils_tools/WrapperSearch'
-
+import { iconManager } from '../utils_tools/svgHolder';
 const { useState, useEffect } = React;
 
 const PrescriptionmedicineWrapper = (props, context) => {
@@ -93,9 +93,21 @@ const PrescriptionmedicineWrapper = (props, context) => {
         }
 
     }
+    const downloadPDF = () => {
+        let url = window.server + `/farm-registry/generate/report/session-id/${props.svSession}/object-id/${precsId}/report-name/veterinarian_prescription_print/file-type/PDF/param/en_US`;
+        window.open(url, '_blank');
+    }
 
     return (
         <>
+            {precsId && (
+                <div className='perun-menu-buttons-container'>
+                    <button className='btn-success btn_save_form download-menu-btn' onClick={downloadPDF}>
+                        {labelsManager("download_prescription", context, "farm_registry")}
+                        <span className='download-span'>{iconManager.getIcon('PRINT_HOLDING')}</span>
+                    </button>
+                </div>
+            )}
             {props.children}
             {show &&
                 <WrapperSearch

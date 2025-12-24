@@ -177,10 +177,15 @@ const ObjectSummary = (props, context) => {
         <>
             {loading && <Loading />}
             <div className="farm-registry-object-summary">
-                <button className='farm-registry-summary-back-btn' onClick={() => backButtonFunction()}>
-                    <i className='fas fa-chevron-left' />
-                    <span className='back-btn-text'>{labelsManager('back', context, 'farm_registry')}</span>
-                </button>
+                <div className="summary-buttons">
+                    <button className='farm-registry-summary-back-btn' onClick={() => backButtonFunction()}>
+                        <i className='fas fa-chevron-left' />
+                        <span className='back-btn-text'>{labelsManager('back', context, 'farm_registry')}</span>
+                    </button>
+                    <button title={labelsManager('collapse', context, 'general')} className='farm-registry-summary-back-btn aims-registry-collapse' onClick={() => props.toggleSideMenu()}>
+                        <div>{iconManager.getIcon("COLLAPSE_MENU")}</div>
+                    </button>
+                </div>
                 {menuData.length > 0 && (
                     <>
                         <div className='farm-registry-object-summary-rows-container'>

@@ -211,12 +211,22 @@ public class DbInit implements IDbInit {
 		dbe5.setLabel_code("holding_type.services");
 		dbe5.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true,\"format\":false}}");
 		
-		DbDataField[] dbTableFields = new DbDataField[5];
+		DbDataField dbe6 = new DbDataField();
+		dbe6.setDbFieldName("SORT_ORDER");
+		dbe6.setDbFieldType(DbFieldType.NUMERIC);
+		dbe6.setDbFieldSize(2);
+		dbe6.setDbFieldScale(0);
+		dbe6.setIsNull(true);
+		dbe6.setLabel_code("holding_type.sort_order");
+		dbe6.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
+		
+		DbDataField[] dbTableFields = new DbDataField[6];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
 		dbTableFields[2] = dbe3;
 		dbTableFields[3] = dbe4;
 		dbTableFields[4] = dbe5;
+		dbTableFields[5] = dbe6;
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
