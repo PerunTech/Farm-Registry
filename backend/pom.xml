@@ -5,7 +5,7 @@
 
 	<groupId>org.peruntech</groupId>
 	<artifactId>farm-registry</artifactId>
-	<version>4.0.2-SNAPSHOT</version>
+	<version>4.0.3-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<name>farm-registry</name>
