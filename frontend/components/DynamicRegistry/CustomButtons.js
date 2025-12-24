@@ -1,5 +1,5 @@
 import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux, createHashHistory, utils } from 'perun-core'
-const { labelsManager, replaceFunc, getDynamicKey } = utils
+const { labelsManager, replaceFunc, getDynamicKey, flattenObject } = utils
 import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
 import { iconManager } from '../utils_tools/svgHolder';
@@ -16,6 +16,7 @@ import PrescriptionvetWrapper from '../Wrapper/PrescriptionvetWrapper';
 import PrescriptionmedicineWrapper from '../Wrapper/PrescriptionmedicineWrapper'
 import GmpauditproductWrapper from '../Wrapper/GmpauditproductWrapper'
 import ControlDocumentsWrapper from '../Wrapper/ControlDocumentsWrapper';
+import RecordSelectWrapper from '../Wrapper/RecordSelectWrapper';
 const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -36,7 +37,7 @@ const CustomButtons = (props, context) => {
     const [_cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
     const [actionToggle, setActionToggle] = useState(undefined)
     useEffect(() => {
-        let wrapper = props.tableName.replace(/\d/g, '').replace(/_$/, '').replace(/(\w)(\w*)/g, function (g0, g1, g2) {
+        let wrapper = props.tableName.replace(/\d/g, '').replace(/_$/, '').replace(/(\w)(\w*)/g, function(g0, g1, g2) {
             return g1.toUpperCase() + g2.toLowerCase();
         }).replace(/_/g, '').replaceAll(' ', '');
         wrapper = wrapper.charAt(0).toUpperCase() + wrapper.slice(1).toLowerCase();
@@ -283,15 +284,6 @@ const CustomButtons = (props, context) => {
         setShowModal(true)
     }
     const generateForm = (isModal, resetTheId) => {
-        let inputWrapper
-        if (props.configuration.objectConfiguration.wrapper) {
-            wrappers.forEach(wrap => {
-                const keys = Object.keys(wrap);
-                if (wrapperName === keys[0]) {
-                    inputWrapper = wrap[wrapperName];
-                }
-            });
-        }
         // Set a new ID for the form, so we get a re-render
         if (resetTheId) {
             setDynamicFormId(getDynamicKey())
@@ -301,8 +293,11 @@ const CustomButtons = (props, context) => {
         let uiSchemaConfig = props.configuration.objectConfiguration?.uischema?.onSubmit
         let formDataWs = props.configuration.objectConfiguration?.data?.onSubmit
         let onSubmitWs = props.configuration.objectConfiguration?.save?.onSave
-        // If we're rendering a modal, the configuration services are a bit nested
+        let contentType = props.configuration.objectConfiguration?.save?.contentType
+        let params = props.configuration.objectConfiguration?.save?.params
         let refreshSummary = props.configuration.objectConfiguration?.refreshSummary
+        let wrapperConfig = props.configuration.objectConfiguration?.wrapper
+        // If we're rendering a modal, the configuration services are a bit nested
         if (isModal) {
             // #revise_me
             // We need to find a smarter way to get the WS paths, instead of duplicating the nested properties all over again
@@ -312,7 +307,27 @@ const CustomButtons = (props, context) => {
             // If the form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
             formDataWs = replaceFunc(formDataWs, props.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
+            contentType = props.configuration.objectConfiguration?.form?.save?.contentType
+            params = props.configuration.objectConfiguration?.form?.save?.params
+            // Some configuration items don't nest the wrapper key, so we need to find the nested one only if the first-level doesn't exist
+            if (!wrapperConfig) {
+                wrapperConfig = props.configuration.objectConfiguration?.form?.wrapper
+            }
         }
+        let inputWrapper
+        if (wrapperConfig) {
+            if (Object.keys(wrapperConfig).length > 0) {
+                inputWrapper = RecordSelectWrapper
+            } else {
+                wrappers.forEach(wrap => {
+                    const keys = Object.keys(wrap);
+                    if (wrapperName === keys[0]) {
+                        inputWrapper = wrap[wrapperName];
+                    }
+                });
+            }
+        }
+
         let hideBtns = 'close'
 
         let readOnlyConfig
@@ -349,10 +364,11 @@ const CustomButtons = (props, context) => {
                 method={jsonSchemaConfig}
                 uiSchemaConfigMethod={uiSchemaConfig}
                 tableFormDataMethod={formDataWs}
-                addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal, refreshSummary)}
+                addSaveFunction={(e) => saveForm(e, onSubmitWs, contentType, params, isModal, refreshSummary)}
                 addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData, refreshSummary)}
                 hideBtns={hideBtns}
                 inputWrapper={inputWrapper}
+                wrapperConfig={wrapperConfig}
                 closeModalFunc={() => setShowModal(false)}
                 resetClickedRowObjectId={() => setClickedRowObjectId(0)}
                 objId={props.appObjId}
@@ -380,8 +396,9 @@ const CustomButtons = (props, context) => {
         ComponentManager.setStateForComponent(dynamicFormId, null, { saveExecuted: false })
         setRender(true)
     }
-    const saveForm = (e, wsPath, isModal, refreshSummary) => {
+    const saveForm = (e, wsPath, contentType, params, isModal, refreshSummary) => {
         let formData = e.formData
+        const flatFormData = flattenObject(formData)
         // // Check if every value in the form data object is nullish
         const isEmpty = Object.values(formData).every(v => v === null || v === undefined)
         // // Filter out every nullish value from the form data object
@@ -392,12 +409,21 @@ const CustomButtons = (props, context) => {
             const label = labelsManager('enter_some_values', context, 'farm_registry')
             alertUserV2({ type: 'info', title: label, onConfirm: resetFormSaveState })
         } else {
+            if (params && Object.keys(params).length > 0) {
+                const additionalParams = Object.assign({}, params)
+                Object.entries(additionalParams).forEach(([key, value]) => {
+                    if (value === '{rowObjectId}') {
+                        Object.assign(additionalParams, { [key]: flatFormData.OBJECT_ID || 0 })
+                    }
+                })
+                Object.assign(formData, additionalParams)
+            }
             const url = `${window.server}${wsPath}`
             axios({
                 method: "post",
-                data: encodeURIComponent(JSON.stringify(formData)),
+                data: !contentType ? encodeURIComponent(JSON.stringify(formData)) : formData,
                 url,
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                headers: { "Content-Type": contentType || 'application/x-www-form-urlencoded' },
             }).then(res => {
                 if (res?.data) {
                     const resType = res.data?.type?.toLowerCase() || 'info'
