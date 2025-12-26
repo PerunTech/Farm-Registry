@@ -2,12 +2,13 @@ import {
     React,
     connect,
     ComponentManager,
-    PropTypes, utils
+    PropTypes, utils,
+    elements
 } from "perun-core";
 const { labelsManager } = utils
 import WrapperSearch from '../utils_tools/WrapperSearch'
-import { iconManager } from '../utils_tools/svgHolder';
 const { useState, useEffect } = React;
+const { Icon } = elements
 const PrescriptionvetWrapper = (props, context) => {
     const [show, setShow] = useState(false);
     const [tableName, setTableName] = useState(false);
@@ -139,7 +140,7 @@ const PrescriptionvetWrapper = (props, context) => {
                 <div className='perun-menu-buttons-container'>
                     <button className='btn-success btn_save_form download-menu-btn' onClick={downloadPDF}>
                         {labelsManager("download_prescription", context, "farm_registry")}
-                        <span className='download-span'>{iconManager.getIcon('PRINT_HOLDING')}</span>
+                        <span className='download-span'>{<Icon name="IconPrinter" />}</span>
                     </button>
                 </div>
             )}
