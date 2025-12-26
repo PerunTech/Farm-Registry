@@ -2,7 +2,6 @@ import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, Gr
 const { labelsManager, replaceFunc, getDynamicKey, flattenObject } = utils
 import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
-import { iconManager } from '../utils_tools/svgHolder';
 import ParentChildGrids from './ParentChildGrids'
 import Documents from './Documents'
 //WRAPPERS
@@ -220,7 +219,7 @@ const CustomButtons = (props, context) => {
                                     onClick={() => customBtnAction(el, multiSelect)}
                                     className={`${togglableChild ? 'farm-registry-outer-btn-togglableChild' : 'farm-registry-outer-btn'} ${el.ID.toLowerCase()}-farm-registry-btn`}
                                     id={el.ID}>
-                                    {!togglableChild && <span className={iconManager.getIcon(el.icon) ? "farm-registry-outer-btn-img" : ''}>{el.icon && iconManager.getIcon(el.icon)}</span>} {el.label}</button>
+                                    {el.label}</button>
                                 {el.childBtnArray && actionToggle === el.ID && generateOuterBtns(el.childBtnArray, multiSelect, true)}
                             </div>
                         );

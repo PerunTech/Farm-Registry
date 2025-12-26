@@ -1,8 +1,7 @@
 import { React, connect, PropTypes, Loading, axios, createHashHistory, elements, redux, Tooltip } from "perun-core";
 const { useEffect, useState, useRef } = React
-const { alertUserResponse } = elements
+const { alertUserResponse, Icon } = elements
 const { store } = redux;
-import { iconManager } from "../utils_tools/svgHolder";
 import CustomButtons from "./CustomButtons";
 import ObjectSummary from './ObjectSummary';
 
@@ -26,9 +25,8 @@ const SideMenu = (props) => {
     }, [props?.refreshSideMenu]);
 
     const getConfiguration = () => {
-        const menuName = `${props.tableName.toLowerCase()}-registry-menu`
         setLoading(true)
-        let url = window.server + `/custom-menu/get-configuration/sid/${props.svSession}/component-name/${menuName}/object-id/${props.objectId}/object-type/${props.tableName}`
+        let url = window.server + `/Menu/getMenu/${props.svSession}/${props.objectId}/${props.tableName}`
         axios.get(url).then(res => {
             setLoading(false)
             if (res?.data) {
@@ -36,11 +34,11 @@ const SideMenu = (props) => {
                 if (resType && resType === 'error') {
                     alertUserResponse({ response: res.data })
                 } else {
-                    setConfiguration(res.data)
+                    setConfiguration(res.data.data.buttonArray)
                     const component = props.routeParams?.component
                     const isChild = component.includes('SUB-')
                     const tableName = component.replace(/^SUB-/, '')
-                    res.data?.data?.map(item => {
+                    res.data?.data?.buttonArray.map(item => {
                         if (item.data && isChild) {
                             item.data.map(child => {
                                 if (child?.ID?.includes(tableName)) {
@@ -89,8 +87,8 @@ const SideMenu = (props) => {
     }
     // Function to generate the buttons (you can keep the one you provided)
     const generateSideMenuButtons = () => {
-        if (!configuration || !Array.isArray(configuration.data)) return <></>;
-        return configuration.data.map(el => {
+        if (!configuration || !Array.isArray(configuration)) return <></>;
+        return configuration.map(el => {
             let modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
             if (!el.ID.toUpperCase().includes('SUMMARY')) {
                 return (
@@ -104,16 +102,16 @@ const SideMenu = (props) => {
                             data-tooltip-place="right"
                         >
                             <span className='sidemenu-btn-title'>
-                                {iconManager.getIcon(modifiedID) && (
-                                    <span className={'sidemenu-dynamic-comp-icon-holder'}>
-                                        {iconManager.getIcon(modifiedID)}
+                                {el.iconName && el.iconName !== '%ICON_NAME%' && (
+                                    <span className='sidemenu-dynamic-comp-icon-holder'>
+                                        <Icon name={el.iconName} />
                                     </span>
                                 )}
                                 <p>{el.label}</p>
                             </span>
                             {el.data && (
                                 <span className={`expand-arrow ${el.ID === activeParent && !props.toggledMenu ? "rotate-expand" : ""}`}>
-                                    {iconManager.getIcon('EXPAND')}
+                                    <Icon name='IconChevronDown' />
                                 </span>
                             )}
                         </button>

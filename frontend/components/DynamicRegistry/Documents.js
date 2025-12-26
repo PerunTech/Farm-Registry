@@ -2,8 +2,7 @@
 import { React, connect, elements, PropTypes, axios, Loading, utils } from "perun-core";
 const { useState, useEffect } = React;
 const { labelsManager } = utils
-const { alertUserResponse, alertUserV2 } = elements;
-import { iconManager } from "../utils_tools/svgHolder"
+const { alertUserResponse, alertUserV2, Icon } = elements;
 const Documents = (props, context) => {
     const [fileItems, setFileItems] = useState(undefined)
     const [loading, setLoading] = useState(false)
@@ -66,14 +65,14 @@ const Documents = (props, context) => {
                 if (res.data?.data.items?.length > 0) {
                     let files = res.data.data.items.map((el) => (<div key={el.object_id} className={'downloadable-item-div'}>
                         <div className={'download-icon-text'}>
-                            <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{el.FILE_NAME}</button>
+                            <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}><Icon name="IconFile" size="40" stroke="1" />{el.FILE_NAME}</button>
                         </div>
                         <div>
                             <button type='button' id='deleteBtn' className={`delete-file-btn`}
-                                onClick={(e) => onDeleteBtnClick(el, e)}>{iconManager.getIcon('delete')}
+                                onClick={(e) => onDeleteBtnClick(el, e)}>{<Icon name="IconX" />}
                             </button>
-                            <button type='button' id='downloadBtn' className={`download-file-btn upload-to-download-btn`}
-                                onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('upload')}
+                            <button type='button' id='downloadBtn' className={`download-file-btn`}
+                                onClick={(e) => downloadFile(el, e)}>{<Icon name="IconDownload" />}
                             </button>
                         </div>
                     </div>))
@@ -157,7 +156,7 @@ const Documents = (props, context) => {
             <div className={'farm-registry-documents-container'}>
                 <div className={'farm-registry-upload'}>
                     <p>{labelsManager('attachment_title', context, 'farm_registry')}</p>
-                    <label title={labelsManager('upload_file_btn', context, 'farm_registry')} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
+                    <label title={labelsManager('upload_file_btn', context, 'farm_registry')} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'><Icon name="IconPlus" size="35" /></label>
                     <input className={'farm-registry-upload-input'} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
                 </div>
                 <div className={'farm-registry-files'}>

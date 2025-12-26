@@ -1,10 +1,9 @@
 import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM, utils } from "perun-core";
 const { labelsManager } = utils
 const { useEffect, useState } = React;
-const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
+const { ReactBootstrap, alertUserResponse, alertUserV2, Icon } = elements;
 const { Modal } = ReactBootstrap;
 const { store } = redux
-import { iconManager } from '../utils_tools/svgHolder';
 const hashHistory = createHashHistory();
 const ObjectSummary = (props, context) => {
     const [loading, setLoading] = useState(false);
@@ -14,7 +13,7 @@ const ObjectSummary = (props, context) => {
     const [actions, setActions] = useState([])
     const [importUrl, setImportUrl] = useState(undefined)
     useEffect(() => {
-        props?.configuration?.data?.map(el => {
+        props?.configuration.map(el => {
             if (el.ID.toUpperCase().includes('SUMMARY')) {
                 getObjectSummary(el.url);
             }
@@ -23,7 +22,7 @@ const ObjectSummary = (props, context) => {
 
     useEffect(() => {
         if (props.refreshSummary) {
-            props?.configuration?.data?.map(el => {
+            props?.configuration.map(el => {
                 if (el.ID.toUpperCase().includes('SUMMARY')) {
                     getObjectSummary(el.url);
                     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
@@ -134,7 +133,7 @@ const ObjectSummary = (props, context) => {
                 <div className='farm-registry-alert-fields'>
                     {data['FIELDS'].map((el, index) => (
                         <div className='farm-registry-alert-field' key={index}>
-                            <>                         <div className='farm-registry-alert-field-icon'>{!el.value ? iconManager.getIcon('Xmark') : iconManager.getIcon('Cmark')}</div>
+                            <>                         <div className='farm-registry-alert-field-icon'>{!el.value ? <Icon name="IconX" /> : <Icon name="IconCheck" />}</div>
                                 <p>{el.label}</p></>
                         </div>
                     ))}
@@ -183,7 +182,9 @@ const ObjectSummary = (props, context) => {
                         <span className='back-btn-text'>{labelsManager('back', context, 'farm_registry')}</span>
                     </button>
                     <button title={labelsManager('collapse', context, 'general')} className='farm-registry-summary-back-btn aims-registry-collapse' onClick={() => props.toggleSideMenu()}>
-                        <div>{iconManager.getIcon("COLLAPSE_MENU")}</div>
+                        <div className='aims-collapse-icon-holder epi-module-icon-holder'>
+                            <Icon name='IconChevronsLeft' />
+                        </div>
                     </button>
                 </div>
                 {menuData.length > 0 && (
@@ -200,7 +201,7 @@ const ObjectSummary = (props, context) => {
                                     {labelsManager('show_more', context, 'farm_registry')}
                                 </button>
                             )}
-                            {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{labelsManager("update_data_btn", context, 'farm_registry')} <span className={`update-farm-btn-icon`}>{iconManager.getIcon('reloadData')}</span></span></button>}
+                            {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{labelsManager("update_data_btn", context, 'farm_registry')} <span className={`update-farm-btn-icon`}>{<Icon name="IconReload" />}</span></span></button>}
                             {actions && generateSummaryActions()}
                         </div>
                     </>

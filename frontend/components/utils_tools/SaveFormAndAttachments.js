@@ -10,9 +10,8 @@ import {
     GridManager, utils
 } from "perun-core";
 const { useState, useEffect } = React;
-const { alertUserV2, alertUserResponse } = elements;
+const { alertUserV2, alertUserResponse, Icon } = elements;
 const { labelsManager, formatDateAndTime } = utils
-import { iconManager } from './svgHolder';
 
 const Attachments = (props, context) => {
     const [fileItems, setFileItems] = useState(undefined)
@@ -173,14 +172,14 @@ const Attachments = (props, context) => {
                 if (res.data.data.items?.length > 0) {
                     let files = res.data.data.items.map((el) => (<div key={el.object_id} className={'downloadable-item-div'}>
                         <div className={'download-icon-text'}>
-                            <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('downloadFile')}{`${el.FILE_NAME} / ${formatDateAndTime(el.dt_insert)}`}</button>
+                            <button id='file-name-upload' className={'file-name-upload'} onClick={(e) => downloadFile(el, e)}>{<Icon name="IconFile" size="40" stroke="1" />}{`${el.FILE_NAME} / ${formatDateAndTime(el.dt_insert)}`}</button>
                         </div>
                         <div>
                             <button type='button' id='deleteBtn' className={'delete-file-btn'} onClick={(e) => deletePrompt(el, e)}>
-                                {iconManager.getIcon('delete')}
+                                {<Icon name="IconTrashX" />}
                             </button>
-                            <button type='button' id='downloadBtn' className={'download-file-btn upload-to-download-btn'}
-                                onClick={(e) => downloadFile(el, e)}>{iconManager.getIcon('upload')}
+                            <button type='button' id='downloadBtn' className={'download-file-btn'}
+                                onClick={(e) => downloadFile(el, e)}>{<Icon name="IconDownload" />}
                             </button>
                         </div>
                     </div>))
@@ -245,12 +244,12 @@ const Attachments = (props, context) => {
             files = arr.map((el, index) => (
                 <div key={index} className={'downloadable-item-div'}>
                     <div className={'download-icon-text'}>
-                        <span>{iconManager.getIcon('docs')}</span>  <button id='file-name-upload' className={'file-name-upload'}>{`${el.name}`}</button>
+                        <span><Icon name="IconFile" size="40" stroke="1" /></span>  <button id='file-name-upload' className={'file-name-upload'}>{`${el.name}`}</button>
                     </div>
                     <div>
                         <button type='button' id='deleteBtn' onClick={() => {
                             deleteSelectedFile(index, arr)
-                        }} className={'delete-file-btn-temp'}>{iconManager.getIcon('addAttachment')}
+                        }} className={'delete-file-btn'}>{<Icon name="IconX" />}
                         </button>
                     </div>
                 </div>
@@ -298,7 +297,7 @@ const Attachments = (props, context) => {
                 {!readOnly && <div className={'applications-attachments-selected applications-attachments-container'}>
                     <div className={'applications-upload'}>
                         <p>{labelsManager('attachment_title-temp', context, 'farm_registry')}</p>
-                        <label title={labelsManager('upload_file_btn', context, 'farm_registry')} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'>{iconManager.getIcon('addAttachment')}</label>
+                        <label title={labelsManager('upload_file_btn', context, 'farm_registry')} htmlFor={'upload-file'} className={'upload-file-btn'} id='uploadBtn'><Icon name="IconPlus" size="35" /></label>
                         <input className={'applications-upload-input'} type="file" id='upload-file' onChange={handleUploadedFiles} multiple={true} />
                     </div>
                     <div className={'applications-files'}>
