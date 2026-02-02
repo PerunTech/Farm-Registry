@@ -188,7 +188,7 @@ const SideMenu = (props) => {
         <>
             {loading && <Loading />}
             <div className={`sidemenu-main-container farm-registry-sidemenu-main-container ${props.toggledMenu && 'toggled-sidemenu'}`} id="sidemenu-main-container">
-                {configuration && <ObjectSummary toggleSideMenu={props.toggleSideMenu} configuration={configuration} tableName={props.tableName} objectId={props.objectId} />}
+                {configuration && <ObjectSummary toggleSideMenu={props.toggleSideMenu} toggledMenu={props.toggledMenu} configuration={configuration} tableName={props.tableName} objectId={props.objectId} />}
                 <div
                     ref={sideMenuRef}
                     className='farm-registry-sidemenu-buttons-container'
