@@ -102,13 +102,19 @@ const PrescriptionvetWrapper = (props, context) => {
     const handleVmpClick = (row) => {
         const { formid } = props;
         const formData = ComponentManager.getStateForComponent(formid, "formTableData");
-
+        const formDatat = ComponentManager.getStateForComponent(formid, "formData");
+        console.log(formDatat);
+        console.log(row);
         if (formData) {
             formData['VMP_OBJECT_ID'] = row['VMP.OBJECT_ID'];
             formData["pr_rp"] = formData["pr_rp"] || {};
+            formData["pr_meat"] = formData["pr_meat"] || {}
             formData["pr_rp"]['TRADE_NAME'] = row['VMP.PRODUCT_NAME'];
             formData["pr_rp"]['PHARMACEUTICAL_FORM'] = row['VMP.PHARMACEUTICAL_FORM'] || 0;
-
+            formData["pr_meat"]['MEAT'] = row['VMP.MEAT'] || 0;
+            formData["pr_meat"]['MILK'] = row['VMP.MILK'] || 0;
+            formData["pr_meat"]['EGGS'] = row['VMP.EGGS'] || 0;
+            formData["pr_meat"]['HONEY'] = row['VMP.HONEY'] || 0;
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             props.formInstance.onInputChange(formData);
