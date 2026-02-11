@@ -222,7 +222,7 @@ public class DbInit implements IDbInit {
 		
 		DbDataField dbe7 = new DbDataField();
 		dbe7.setDbFieldName("HTYPE_LONG_LBL");
-		dbe7.setDbFieldType(DbFieldType.TEXT);
+		dbe7.setDbFieldType(DbFieldType.NVARCHAR);
 		dbe7.setDbFieldSize(50);
 		dbe7.setDbFieldScale(0);
 		dbe7.setIsNull(true);
@@ -231,8 +231,8 @@ public class DbInit implements IDbInit {
 		
 		DbDataField dbe8 = new DbDataField();
 		dbe8.setDbFieldName("HTYPE_SHORT_LBL");
-		dbe8.setDbFieldType(DbFieldType.TEXT);
-		dbe8.setDbFieldSize(3);
+		dbe8.setDbFieldType(DbFieldType.NVARCHAR);
+		dbe8.setDbFieldSize(50);
 		dbe8.setDbFieldScale(0);
 		dbe8.setIsNull(true);
 		dbe8.setLabel_code("holding_type.htype_long_lbl");
