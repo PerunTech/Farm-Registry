@@ -250,7 +250,6 @@ public class DbInit implements IDbInit {
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
-	}
 
 	// EEDBAR2016
 	// Farmer
