@@ -220,15 +220,36 @@ public class DbInit implements IDbInit {
 		dbe6.setLabel_code("holding_type.sort_order");
 		dbe6.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
 		
-		DbDataField[] dbTableFields = new DbDataField[6];
+		DbDataField dbe7 = new DbDataField();
+		dbe7.setDbFieldName("HTYPE_LONG_LBL");
+		dbe7.setDbFieldType(DbFieldType.TEXT);
+		dbe7.setDbFieldSize(50);
+		dbe7.setDbFieldScale(0);
+		dbe7.setIsNull(true);
+		dbe7.setLabel_code("holding_type.htype_long_lbl");
+		dbe7.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
+		
+		DbDataField dbe8 = new DbDataField();
+		dbe8.setDbFieldName("HTYPE_SHORT_LBL");
+		dbe8.setDbFieldType(DbFieldType.TEXT);
+		dbe8.setDbFieldSize(3);
+		dbe8.setDbFieldScale(0);
+		dbe8.setIsNull(true);
+		dbe8.setLabel_code("holding_type.htype_long_lbl");
+		dbe8.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
+		
+		DbDataField[] dbTableFields = new DbDataField[8];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
 		dbTableFields[2] = dbe3;
 		dbTableFields[3] = dbe4;
 		dbTableFields[4] = dbe5;
 		dbTableFields[5] = dbe6;
+		dbTableFields[6] = dbe7;
+		dbTableFields[7] = dbe8;
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
+	}
 	}
 
 	// EEDBAR2016
