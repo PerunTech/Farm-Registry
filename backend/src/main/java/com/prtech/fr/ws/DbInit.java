@@ -154,8 +154,8 @@ public class DbInit implements IDbInit {
 		objR.addProperty("width", uiWidth);
 		return objR;
 	}
-	
-	//HOLDING_TYPE
+
+	// HOLDING_TYPE
 	private static DbDataTable createHoldingType() {
 		DbDataTable dbe = new DbDataTable();
 		dbe.setDbTableName("HOLDING_TYPE");
@@ -167,7 +167,7 @@ public class DbInit implements IDbInit {
 		dbe.setUse_cache(false);
 		dbe.setIsConfigTable(true);
 		dbe.setConfigColumnName("NAME");
-		
+
 		DbDataField dbe1 = new DbDataField();
 		dbe1.setDbFieldName("PKID");
 		dbe1.setIsPrimaryKey(true);
@@ -177,7 +177,7 @@ public class DbInit implements IDbInit {
 		dbe1.setIsNull(false);
 		dbe1.setLabel_code("holding_type.pkid");
 		dbe1.setGui_metadata(CONST_GUI_FIL_HIDE);
-		
+
 		DbDataField dbe2 = new DbDataField();
 		dbe2.setDbFieldName("NAME");
 		dbe2.setDbFieldType(DbFieldType.NVARCHAR);
@@ -186,7 +186,7 @@ public class DbInit implements IDbInit {
 		dbe2.setIsNull(false);
 		dbe2.setLabel_code("holding_type.name");
 		dbe2.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
-		
+
 		DbDataField dbe3 = new DbDataField();
 		dbe3.setDbFieldName("MENU_CODE");
 		dbe3.setDbFieldType(DbFieldType.NVARCHAR);
@@ -194,8 +194,9 @@ public class DbInit implements IDbInit {
 		dbe3.setDbFieldScale(0);
 		dbe3.setIsNull(true);
 		dbe3.setLabel_code("holding_type.menu_object_id");
-		dbe3.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true,\"idtable\":\"SVAROG_MENU\",\"idgetfield\":\"MENU_CODE\",\"idsetfield\":\"MENU_CODE\",\"uischema\":{\"ui:readonly\":false}}}");
-		
+		dbe3.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true,\"idtable\":\"SVAROG_MENU\",\"idgetfield\":\"MENU_CODE\",\"idsetfield\":\"MENU_CODE\",\"uischema\":{\"ui:readonly\":false}}}");
+
 		DbDataField dbe4 = new DbDataField();
 		dbe4.setDbFieldName("WORKFLOW");
 		dbe4.setDbFieldType(DbFieldType.NUMERIC);
@@ -203,14 +204,15 @@ public class DbInit implements IDbInit {
 		dbe4.setDbFieldScale(0);
 		dbe4.setIsNull(true);
 		dbe4.setLabel_code("holding_type.workflow");
-		
-		DbDataField dbe5= new DbDataField();
+
+		DbDataField dbe5 = new DbDataField();
 		dbe5.setDbFieldName("SERVICES");
 		dbe5.setDbFieldType(DbFieldType.TEXT);
 		dbe5.setIsNull(true);
 		dbe5.setLabel_code("holding_type.services");
-		dbe5.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true,\"format\":false}}");
-		
+		dbe5.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true,\"format\":false}}");
+
 		DbDataField dbe6 = new DbDataField();
 		dbe6.setDbFieldName("SORT_ORDER");
 		dbe6.setDbFieldType(DbFieldType.NUMERIC);
@@ -218,26 +220,31 @@ public class DbInit implements IDbInit {
 		dbe6.setDbFieldScale(0);
 		dbe6.setIsNull(true);
 		dbe6.setLabel_code("holding_type.sort_order");
-		dbe6.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
-		
+		dbe6.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
+
 		DbDataField dbe7 = new DbDataField();
-		dbe7.setDbFieldName("HTYPE_LONG_LBL");
+		dbe7.setDbFieldName("LABEL_CODE");
 		dbe7.setDbFieldType(DbFieldType.NVARCHAR);
 		dbe7.setDbFieldSize(50);
 		dbe7.setDbFieldScale(0);
 		dbe7.setIsNull(true);
-		dbe7.setLabel_code("holding_type.htype_long_lbl");
-		dbe7.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
-		
+		dbe7.setIsUnique(true);
+		dbe7.setLabel_code("holding_type.label_code");
+		dbe7.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
+
 		DbDataField dbe8 = new DbDataField();
-		dbe8.setDbFieldName("HTYPE_SHORT_LBL");
+		dbe8.setDbFieldName("CODE");
 		dbe8.setDbFieldType(DbFieldType.NVARCHAR);
-		dbe8.setDbFieldSize(50);
+		dbe8.setDbFieldSize(3);
 		dbe8.setDbFieldScale(0);
 		dbe8.setIsNull(true);
-		dbe8.setLabel_code("holding_type.htype_long_lbl");
-		dbe8.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
-		
+		dbe8.setIsUnique(true);
+		dbe8.setLabel_code("holding_type.code");
+		dbe8.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
+
 		DbDataField[] dbTableFields = new DbDataField[8];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
@@ -373,7 +380,7 @@ public class DbInit implements IDbInit {
 		dbe12.setDbFieldName("FTYPE");
 		dbe12.setDbFieldType(DbFieldType.NVARCHAR);
 		dbe12.setDbFieldSize(20);
-		//dbe12.setCode_list_user_code("FTYPE");
+		// dbe12.setCode_list_user_code("FTYPE");
 		dbe12.setGui_metadata(addReactGuiMeta(getUiWidth(getDefaultUiMeta(false, false, true, false), 133),
 				CONST_FARMER, dbe12.getDbFieldName()).toString());
 		dbe12.setLabel_code("farmer.ftype");
@@ -479,7 +486,6 @@ public class DbInit implements IDbInit {
 		dbe23.setGui_metadata(addReactGuiMeta(getUiForm(getDefaultUiMeta(false, true, true, false), 16, 2),
 				CONST_FARMER, dbe23.getDbFieldName()).toString());
 		dbe23.setLabel_code("farmer.address");
-		
 
 		DbDataField[] dbTableFields = new DbDataField[23];
 		dbTableFields[0] = dbe1;
@@ -745,7 +751,7 @@ public class DbInit implements IDbInit {
 		dbe11.setDbFieldScale(0);
 		dbe11.setLabel_code("farm.official_contact_obj_id");
 		dbe11.setGui_metadata(CONST_GUI_FIL_HIDE);
-		
+
 		// Column 25
 		DbDataField dbe25 = new DbDataField();
 		dbe25.setDbFieldName("NOTE");
@@ -876,7 +882,7 @@ public class DbInit implements IDbInit {
 		dbe6.setIsNull(true);
 		dbe6.setLabel_code("farm_members.farm_holding_status");
 		// dbe10.setGui_metadata("");
-		
+
 		DbDataField dbe7 = new DbDataField();
 		dbe7.setDbFieldName("DIPLOMA_NUMBER");
 		dbe7.setDbFieldType(DbFieldType.NVARCHAR);
@@ -940,11 +946,10 @@ public class DbInit implements IDbInit {
 		return dbe;
 	}
 
-
 	// TO DO ANIMAL FR
-	
 
-	// ANIMAL_TYPE taken from  iacs.edbar_executors /  com.prtech.svarog_custom_afsard_dp;
+	// ANIMAL_TYPE taken from iacs.edbar_executors /
+	// com.prtech.svarog_custom_afsard_dp;
 	private static DbDataTable createAnimalType() {
 		DbDataTable dbe = new DbDataTable();
 		dbe.setDbTableName("ANIMAL_TYPE");
@@ -1048,7 +1053,7 @@ public class DbInit implements IDbInit {
 		dbe9.setSort_order(900);
 		dbe9.setLabel_code("mnemonic.label_code");
 		dbe9.setGui_metadata(CONST_GUI_FIL_VIS_RES_RW);
-		
+
 		DbDataField[] dbTableFields = new DbDataField[9];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
@@ -1062,7 +1067,6 @@ public class DbInit implements IDbInit {
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
-
 
 	// ANIMAL
 	private static DbDataTable createAhvSingleAnimal() {
@@ -1201,7 +1205,6 @@ public class DbInit implements IDbInit {
 		return dbe;
 	}
 
-	
 	// ANIMAL
 	private static DbDataTable createAhvSingleAnimalAutochton() {
 		DbDataTable dbe = new DbDataTable();
@@ -1338,7 +1341,7 @@ public class DbInit implements IDbInit {
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
-	
+
 	private static DbDataTable createAhvAnimalGroup() {
 		DbDataTable dbe = new DbDataTable();
 		dbe.setDbTableName("AHV_ANIMAL_GROUP");
@@ -1629,7 +1632,6 @@ public class DbInit implements IDbInit {
 		return dbe;
 	}
 
-
 	private static DbDataTable createAhvHoldingAutochton() {
 		DbDataTable dbe = new DbDataTable();
 		dbe.setDbTableName("AHV_HOLDING_AUTO");
@@ -1823,8 +1825,7 @@ public class DbInit implements IDbInit {
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
-	
-	
+
 	private static DbDataTable createAhvLocation() {
 		DbDataTable dbe = new DbDataTable();
 		dbe.setDbTableName("ahv_location");
@@ -1892,112 +1893,119 @@ public class DbInit implements IDbInit {
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
-	
+
 	// TABLE RECEIPT_MILK
-		private static DbDataTable createReceiptMilk() {
+	private static DbDataTable createReceiptMilk() {
 
-			DbDataTable dbe = new DbDataTable();
-			dbe.setDbTableName("RECEIPT_MILK");
-			dbe.setDbRepoName("{MASTER_REPO}");
-			dbe.setDbSchema("{DEFAULT_SCHEMA}");
-			dbe.setIsSystemTable(false);
-			dbe.setIsRepoTable(false);
-			dbe.setLabel_code("master_repo.receipt_milk");
-			dbe.setUse_cache(false);
-			dbe.setIsConfigTable(false);
-			dbe.setParentName("APPLICATION");
+		DbDataTable dbe = new DbDataTable();
+		dbe.setDbTableName("RECEIPT_MILK");
+		dbe.setDbRepoName("{MASTER_REPO}");
+		dbe.setDbSchema("{DEFAULT_SCHEMA}");
+		dbe.setIsSystemTable(false);
+		dbe.setIsRepoTable(false);
+		dbe.setLabel_code("master_repo.receipt_milk");
+		dbe.setUse_cache(false);
+		dbe.setIsConfigTable(false);
+		dbe.setParentName("APPLICATION");
 
-			// Column 1
-			DbDataField dbf1 = new DbDataField();
-			dbf1.setDbFieldName("PKID");
-			dbf1.setIsPrimaryKey(true);
-			dbf1.setDbFieldType(DbFieldType.NUMERIC);
-			dbf1.setDbFieldSize(18);
-			dbf1.setIsNull(false);
-			dbf1.setLabel_code("master_repo.table_meta_pkid");
-			
-			// Column 2
-			DbDataField dbf2 = new DbDataField();
-			dbf2.setDbFieldName("CONFIRMATION");
-			dbf2.setDbFieldType(DbFieldType.NVARCHAR);
-			dbf2.setDbFieldSize(1);
-			dbf2.setIsNull(false);
-			dbf2.setLabel_code("receipt_milk.confirmation");	
-			dbf2.setCode_list_user_code("CONFIRMATION");
-			dbf2.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
+		// Column 1
+		DbDataField dbf1 = new DbDataField();
+		dbf1.setDbFieldName("PKID");
+		dbf1.setIsPrimaryKey(true);
+		dbf1.setDbFieldType(DbFieldType.NUMERIC);
+		dbf1.setDbFieldSize(18);
+		dbf1.setIsNull(false);
+		dbf1.setLabel_code("master_repo.table_meta_pkid");
 
-			// Column 5
-			DbDataField dbf5 = new DbDataField();
-			dbf5.setDbFieldName("ID_NO");
-			dbf5.setDbFieldType(DbFieldType.NVARCHAR);
-			dbf5.setDbFieldSize(16);
-			dbf5.setIsNull(true);
-			dbf5.setLabel_code("receipt_milk.id_no");	
-			dbf5.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
+		// Column 2
+		DbDataField dbf2 = new DbDataField();
+		dbf2.setDbFieldName("CONFIRMATION");
+		dbf2.setDbFieldType(DbFieldType.NVARCHAR);
+		dbf2.setDbFieldSize(1);
+		dbf2.setIsNull(false);
+		dbf2.setLabel_code("receipt_milk.confirmation");
+		dbf2.setCode_list_user_code("CONFIRMATION");
+		dbf2.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
 
-			// Column 8
-			DbDataField dbf8 = new DbDataField();
-			dbf8.setDbFieldName("LITERS");
-			dbf8.setDbFieldType(DbFieldType.NUMERIC);
-			dbf8.setDbFieldSize(18);
-			dbf8.setDbFieldScale(0);
-			dbf8.setIsNull(false);
-			dbf8.setLabel_code("receipt_milk.liters");
-			dbf8.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
-			
-			// Column 11
-			DbDataField dbf11 = new DbDataField();
-			dbf11.setDbFieldName("MILK_TYPE");
-			dbf11.setDbFieldType(DbFieldType.NVARCHAR);
-			dbf11.setDbFieldSize(2);
-			dbf11.setIsNull(false);
-			dbf11.setLabel_code("receipt_milk.milk_type");	
-			dbf11.setCode_list_user_code("MILK_TYPE");
-			dbf11.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
+		// Column 5
+		DbDataField dbf5 = new DbDataField();
+		dbf5.setDbFieldName("ID_NO");
+		dbf5.setDbFieldType(DbFieldType.NVARCHAR);
+		dbf5.setDbFieldSize(16);
+		dbf5.setIsNull(true);
+		dbf5.setLabel_code("receipt_milk.id_no");
+		dbf5.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
 
-			// Column 14
-			DbDataField dbf14 = new DbDataField();
-			dbf14.setDbFieldName("DAIRY_FARM");
-			dbf14.setDbFieldType(DbFieldType.NVARCHAR);
-			dbf14.setDbFieldSize(5);
-			dbf14.setIsNull(false);
-			dbf14.setLabel_code("receipt_milk.dairy_farm");	
-			dbf14.setCode_list_user_code("MILK_DAIRY");
-			dbf14.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
+		// Column 8
+		DbDataField dbf8 = new DbDataField();
+		dbf8.setDbFieldName("LITERS");
+		dbf8.setDbFieldType(DbFieldType.NUMERIC);
+		dbf8.setDbFieldSize(18);
+		dbf8.setDbFieldScale(0);
+		dbf8.setIsNull(false);
+		dbf8.setLabel_code("receipt_milk.liters");
+		dbf8.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
 
-			// Column 17
-			DbDataField dbf17 = new DbDataField();
-			dbf17.setDbFieldName("MONTH");
-			dbf17.setDbFieldType(DbFieldType.NVARCHAR);
-			dbf17.setDbFieldSize(2);
-			dbf17.setIsNull(false);
-			dbf17.setLabel_code("receipt_milk.month");	
-			dbf17.setCode_list_user_code("MONTHS");
-			dbf17.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
+		// Column 11
+		DbDataField dbf11 = new DbDataField();
+		dbf11.setDbFieldName("MILK_TYPE");
+		dbf11.setDbFieldType(DbFieldType.NVARCHAR);
+		dbf11.setDbFieldSize(2);
+		dbf11.setIsNull(false);
+		dbf11.setLabel_code("receipt_milk.milk_type");
+		dbf11.setCode_list_user_code("MILK_TYPE");
+		dbf11.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
 
-			// Column 18
-			DbDataField dbf18 = new DbDataField();
-			dbf18.setDbFieldName("MODULE_YEAR");
-			dbf18.setDbFieldType(DbFieldType.NUMERIC);
-			dbf18.setDbFieldSize(18);
-			dbf18.setDbFieldScale(0);
-			dbf18.setIsNull(true);
-			dbf18.setLabel_code("receipt_milk.module_year");
-			dbf18.setGui_metadata("{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
-			
-			DbDataField[] dbTableFields = new DbDataField[8];
-			dbTableFields[0] = dbf1;
-			dbTableFields[1] = dbf2;
-			dbTableFields[2] = dbf5;	
-			dbTableFields[3] = dbf8;	
-			dbTableFields[4] = dbf11;
-			dbTableFields[5] = dbf14;
-			dbTableFields[6] = dbf17;	
-			dbTableFields[7] = dbf18;	
-			dbe.setDbTableFields(dbTableFields);
-			return dbe;
-			
-		}
+		// Column 14
+		DbDataField dbf14 = new DbDataField();
+		dbf14.setDbFieldName("DAIRY_FARM");
+		dbf14.setDbFieldType(DbFieldType.NVARCHAR);
+		dbf14.setDbFieldSize(5);
+		dbf14.setIsNull(false);
+		dbf14.setLabel_code("receipt_milk.dairy_farm");
+		dbf14.setCode_list_user_code("MILK_DAIRY");
+		dbf14.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
+
+		// Column 17
+		DbDataField dbf17 = new DbDataField();
+		dbf17.setDbFieldName("MONTH");
+		dbf17.setDbFieldType(DbFieldType.NVARCHAR);
+		dbf17.setDbFieldSize(2);
+		dbf17.setIsNull(false);
+		dbf17.setLabel_code("receipt_milk.month");
+		dbf17.setCode_list_user_code("MONTHS");
+		dbf17.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
+
+		// Column 18
+		DbDataField dbf18 = new DbDataField();
+		dbf18.setDbFieldName("MODULE_YEAR");
+		dbf18.setDbFieldType(DbFieldType.NUMERIC);
+		dbf18.setDbFieldSize(18);
+		dbf18.setDbFieldScale(0);
+		dbf18.setIsNull(true);
+		dbf18.setLabel_code("receipt_milk.module_year");
+		dbf18.setGui_metadata(
+				"{\"react\":{\"filterable\":true,\"sortable\":true,\"visible\":true,\"resizable\":true,\"editable\":false}}");
+
+		DbDataField[] dbTableFields = new DbDataField[8];
+		dbTableFields[0] = dbf1;
+		dbTableFields[1] = dbf2;
+		dbTableFields[2] = dbf5;
+		dbTableFields[3] = dbf8;
+		dbTableFields[4] = dbf11;
+		dbTableFields[5] = dbf14;
+		dbTableFields[6] = dbf17;
+		dbTableFields[7] = dbf18;
+		dbe.setDbTableFields(dbTableFields);
+		return dbe;
+
+	}
 
 	// CAD_PARCEL
 	private static DbDataTable createCadParcel() {
@@ -2230,41 +2238,38 @@ public class DbInit implements IDbInit {
 		return dbLink;
 	}
 
-
-	
 	// LINK_POA_ORG_UNIT_USER_GROUP
 	private static DbDataObject createLinkOrgUnitGroup() {
-			DbDataObject dbLink = new DbDataObject();
-			dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
-			dbLink.setVal("LINK_TYPE", "POA");
-			dbLink.setVal("DEFER_SECURITY", true);
-			dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between ORG_UNITS and GROUP");
-			dbLink.setVal("LINK_OBJ_TYPE_1", ("ORG_UNITS"));
-			dbLink.setVal("LINK_OBJ_TYPE_2", ("SVAROG_USER_GROUPS"));
-			return dbLink;
+		DbDataObject dbLink = new DbDataObject();
+		dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
+		dbLink.setVal("LINK_TYPE", "POA");
+		dbLink.setVal("DEFER_SECURITY", true);
+		dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between ORG_UNITS and GROUP");
+		dbLink.setVal("LINK_OBJ_TYPE_1", ("ORG_UNITS"));
+		dbLink.setVal("LINK_OBJ_TYPE_2", ("SVAROG_USER_GROUPS"));
+		return dbLink;
 	}
 
-	
 	// LINK_FILE
 	private static DbDataObject createFarmFilesLink() {
-			DbDataObject dbLink = new DbDataObject();
-			dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
-			dbLink.setVal("LINK_TYPE", "LINK_FILE");
-			dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between FARM and FILE");
-			dbLink.setVal("LINK_OBJ_TYPE_1", "FARM");
-			dbLink.setVal("LINK_OBJ_TYPE_2", svCONST.OBJECT_TYPE_FILE);
-			return dbLink;
+		DbDataObject dbLink = new DbDataObject();
+		dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
+		dbLink.setVal("LINK_TYPE", "LINK_FILE");
+		dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between FARM and FILE");
+		dbLink.setVal("LINK_OBJ_TYPE_1", "FARM");
+		dbLink.setVal("LINK_OBJ_TYPE_2", svCONST.OBJECT_TYPE_FILE);
+		return dbLink;
 	}
-	
+
 	private static DbDataObject createUserFilesLink() {
-			DbDataObject dbLink = new DbDataObject();
-			dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
-			dbLink.setVal("LINK_TYPE", "LINK_FILE");
-			dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between USER and FILE");
-			dbLink.setVal("LINK_OBJ_TYPE_1", svCONST.OBJECT_TYPE_USER);
-			dbLink.setVal("LINK_OBJ_TYPE_2", svCONST.OBJECT_TYPE_FILE);
-			return dbLink;
-}
+		DbDataObject dbLink = new DbDataObject();
+		dbLink.setObjectType(svCONST.OBJECT_TYPE_LINK_TYPE);
+		dbLink.setVal("LINK_TYPE", "LINK_FILE");
+		dbLink.setVal("LINK_TYPE_DESCRIPTION", "link between USER and FILE");
+		dbLink.setVal("LINK_OBJ_TYPE_1", svCONST.OBJECT_TYPE_USER);
+		dbLink.setVal("LINK_OBJ_TYPE_2", svCONST.OBJECT_TYPE_FILE);
+		return dbLink;
+	}
 
 	@Override
 	public ArrayList<DbDataTable> getCustomObjectTypes() {
@@ -2308,7 +2313,6 @@ public class DbInit implements IDbInit {
 		dbtt = DbInit.createEquipment();
 		dbtList.add(addSortOrder(dbtt));
 
-
 		return dbtList;
 	}
 
@@ -2319,7 +2323,7 @@ public class DbInit implements IDbInit {
 		dbtList.add(createLinkOrgUnitGroup());
 		dbtList.add(createFarmFilesLink());
 		dbtList.add(createUserFilesLink());
-		//dbtList.add(createLinkSupportClaimWithReceiptMilk());
+		// dbtList.add(createLinkSupportClaimWithReceiptMilk());
 		return dbtList;
 	}
 
@@ -2460,8 +2464,6 @@ public class DbInit implements IDbInit {
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
-	
-	
 
 	private static DbDataTable createEquipment() {
 		DbDataTable dbe = new DbDataTable();
