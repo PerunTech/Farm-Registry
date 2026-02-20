@@ -237,6 +237,10 @@ const CustomButtons = (props, context) => {
         const btnArray = props.configuration.objectConfiguration.additionalBtns
         const outerBtnArray = props.configuration.objectConfiguration.outerBtnArray
         const _maxLength = props.configuration.objectConfiguration.maxLength || 9999
+        const additionalTopBtns = props.configuration.objectConfiguration.additionalTopButtons
+        if (additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0) {
+            store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: additionalTopBtns } })
+        }
         const grid = <div className={`${`custom-grid-container-${props.tableName.toLowerCase()}`} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
             {outerBtnArray && generateOuterBtns(outerBtnArray, multiSelect)}
             <ExportableGrid
