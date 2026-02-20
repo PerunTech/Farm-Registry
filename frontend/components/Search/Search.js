@@ -121,6 +121,7 @@ const Search = (props, context) => {
   }
 
   const onRowClick = (_id, _idx, row) => {
+    store.dispatch({ type: 'SAVE', payload: { key: `farm-registry-module-row-${businessObjectName}`, value: row } })
     const href = `/main/registry/${businessObjectName}/${row[`${businessObjectName}.OBJECT_ID`]}/summary`
     hashHistory.push(href)
   }

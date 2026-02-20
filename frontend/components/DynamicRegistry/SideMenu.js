@@ -25,33 +25,44 @@ const SideMenu = (props) => {
     }, [props?.refreshSideMenu]);
 
     const getConfiguration = () => {
+        props.setTopButtons(undefined)
         setLoading(true)
         let url = window.server + `/Menu/getMenu/${props.svSession}/${props.objectId}/${props.tableName}`
         axios.get(url).then(res => {
             setLoading(false)
             if (res?.data) {
+                const buttonArray = []
+                const topButtons = []
                 const resType = res.data?.type?.toLowerCase()
                 if (resType && resType === 'error') {
                     alertUserResponse({ response: res.data })
                 } else {
-                    setConfiguration(res.data.data.buttonArray)
-                    const component = props.routeParams?.component
-                    const isChild = component.includes('SUB-')
-                    const tableName = component.replace(/^SUB-/, '')
-                    res.data?.data?.buttonArray.map(item => {
-                        if (item.data && isChild) {
-                            item.data.map(child => {
-                                if (child?.ID?.includes(tableName)) {
-                                    onButtonClick(child, true)
-                                    setActive(item)
+                    if (res.data?.data?.buttonArray && Array.isArray(res.data.data.buttonArray)) {
+                        const component = props.routeParams?.component
+                        const isChild = component.includes('SUB-')
+                        const tableName = component.replace(/^SUB-/, '')
+                        res.data?.data?.buttonArray?.map(item => {
+                            if (item.position === 'top') {
+                                topButtons.push(item)
+                            } else {
+                                buttonArray.push(item)
+                                if (item.data && isChild) {
+                                    item.data.map(child => {
+                                        if (child?.ID?.includes(tableName)) {
+                                            onButtonClick(child, true)
+                                            setActive(item)
+                                        }
+                                    })
+                                } else {
+                                    if (item?.ID?.includes(tableName)) {
+                                        onButtonClick(item)
+                                    }
                                 }
-                            })
-                        } else {
-                            if (item?.ID?.includes(tableName)) {
-                                onButtonClick(item)
                             }
-                        }
-                    })
+                        })
+                        setConfiguration(buttonArray)
+                        props.setTopButtons(topButtons)
+                    }
                 }
             }
         }).catch(err => {
@@ -139,6 +150,7 @@ const SideMenu = (props) => {
         });
     };
     const onButtonClick = (element, childEl) => {
+        store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: undefined } })
         const id = element.ID;
         const splitID = id.replace(/_[^_]*\d+$/, '');
         if (childEl) {

@@ -1,7 +1,7 @@
 import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, utils } from 'perun-core'
 const { labelsManager } = utils
 const { ReactBootstrap, alertUserResponse } = elements;
-const { store } = redux;
+const { store, updateSelectedRows } = redux;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
 
@@ -30,14 +30,22 @@ const DoubleGrid = (props, context) => {
             }
         }
     }
+    const customRowSelection = (selectedRows, gridId) => {
+        store.dispatch(updateSelectedRows(selectedRows, gridId))
+    }
     const generateGrid = (grid) => {
+        const multiSelect = props.configuration?.multiSelect || false
+        const additionalTopBtns = props.configuration?.additionalTopButtons
+        if (additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0) {
+            store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: additionalTopBtns } })
+        }
         const buttonsArray = []
         return (
             <ExportableGrid
                 gridType={"READ_URL"}
                 key={grid.ID}
                 id={grid.ID}
-                heightRatio={0.8}
+                heightRatio={0.7}
                 configTableName={grid.configuration.onSubmit}
                 dataTableName={grid.data.onSubmit}
                 onRowClickFunct={(id, rowIdx, row) => handleRowClick(id, rowIdx, row, grid)}
@@ -46,6 +54,8 @@ const DoubleGrid = (props, context) => {
                 toggleCustomButton={grid.additionalBtns ? true : false}
                 customButton={() => { setShow(true) }}
                 customButtonLabel={labelsManager('add', context, 'farm_registry')}
+                enableMultiSelect={multiSelect}
+                onSelectChangeFunct={customRowSelection}
             />
         )
     }
