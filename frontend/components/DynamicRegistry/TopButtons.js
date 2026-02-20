@@ -200,7 +200,11 @@ const TopButtons = (props, context) => {
             const reqConfig = { method: reqType, url: `${window.server}${url}` }
             if (reqType === 'POST') {
               reqConfig.headers = { 'Content-Type': contentType }
-              reqConfig.data = { ...(selectedGridRows && Array.isArray(selectedGridRows) && selectedGridRows.length > 0 && { objArray: selectedGridRows }), ...(el.additionalData && { ...el.additionalData }) }
+              reqConfig.data = {
+                ...(selectedGridRows && Array.isArray(selectedGridRows) && selectedGridRows.length > 0 && { objArray: selectedGridRows }),
+                ...(el.additionalData && { ...el.additionalData }),
+                ...(action.params && Object.keys(action.params).length > 0 && { ...action.params })
+              }
             }
             setLoading(true)
             axios(reqConfig).then(res => {
