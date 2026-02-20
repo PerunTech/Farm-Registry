@@ -186,93 +186,95 @@ const TopButtons = (props, context) => {
         break;
       }
       case 'action': {
-        const useMulti = el?.useMulti
-        const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
-        const executeAction = () => {
-          const action = el?.action
-          const reqType = action?.type || 'GET'
-          const contentType = action?.contentType || 'application/x-www-form-urlencoded'
-          let url = action?.onSubmit
-          if (url && el?.OBJECT_ID) {
-            url = url.replace('{customObjectId}', el.OBJECT_ID)
-          }
-          const reqConfig = { method: reqType, url: `${window.server}${url}` }
-          if (reqType === 'POST') {
-            reqConfig.headers = { 'Content-Type': contentType }
-            reqConfig.data = { ...(selectedGridRows && Array.isArray(selectedGridRows) && selectedGridRows.length > 0 && { objArray: selectedGridRows }), ...(el.additionalData && { ...el.additionalData }) }
-          }
-          setLoading(true)
-          axios(reqConfig).then(res => {
-            setLoading(false)
-            if (res?.data) {
-              const resType = res.data?.type?.toLowerCase() || 'info'
-              alertUserResponse({ response: res })
-              if (resType === 'success') {
-                reloadGrid()
-              }
+        if (!hasChildren) {
+          const useMulti = el?.useMulti
+          const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
+          const executeAction = () => {
+            const action = el?.action
+            const reqType = action?.type || 'GET'
+            const contentType = action?.contentType || 'application/x-www-form-urlencoded'
+            let url = action?.onSubmit
+            if (url && el?.OBJECT_ID) {
+              url = url.replace('{customObjectId}', el.OBJECT_ID)
             }
-          }).catch(err => {
-            console.error(err)
-            setLoading(false)
-            alertUserResponse({ response: err })
-          })
-        }
-        const actionPrompt = () => {
-          const { promptTitle, promptMessage } = el
-          alertUserV2({
-            type: 'info',
-            title: promptTitle || '',
-            message: promptMessage || '',
-            confirmButtonText: labelsManager('yes', context, 'farm_registry'),
-            onConfirm: executeAction,
-            showCancel: true,
-            cancelButtonText: labelsManager('no', context, 'farm_registry'),
-          })
-        }
-        if (!useMulti || useMulti === false) {
-          actionPrompt()
-        } else {
-          if (selectedGridRows.length > 0) {
-            if (el.form) {
-              setShowFormModal(true)
-              setFormConfig(el)
-            } else if (el.preview) {
-              const previewConfig = el.preview
-              if (previewConfig?.onSubmit) {
-                const reqType = previewConfig?.type || 'GET'
-                const contentType = previewConfig?.contentType || 'application/x-www-form-urlencoded'
-                const url = previewConfig?.onSubmit
-                const reqConfig = { method: reqType, url: `${window.server}${url}` }
-                if (reqType === 'POST') {
-                  reqConfig.headers = { 'Content-Type': contentType }
-                  reqConfig.data = { objArray: selectedGridRows }
+            const reqConfig = { method: reqType, url: `${window.server}${url}` }
+            if (reqType === 'POST') {
+              reqConfig.headers = { 'Content-Type': contentType }
+              reqConfig.data = { ...(selectedGridRows && Array.isArray(selectedGridRows) && selectedGridRows.length > 0 && { objArray: selectedGridRows }), ...(el.additionalData && { ...el.additionalData }) }
+            }
+            setLoading(true)
+            axios(reqConfig).then(res => {
+              setLoading(false)
+              if (res?.data) {
+                const resType = res.data?.type?.toLowerCase() || 'info'
+                alertUserResponse({ response: res })
+                if (resType === 'success') {
+                  reloadGrid()
                 }
-                setLoading(true)
-                axios(reqConfig).then(res => {
-                  setLoading(false)
-                  if (res?.data) {
-                    alertUserV2({
-                      type: res.data?.type?.toLowerCase() || '',
-                      title: res.data?.title || '',
-                      message: res.data?.message || '',
-                      ...res.data?.message && { html: res.data?.message?.replace(/\n/g, '<br>') },
-                      confirmButtonText: labelsManager('proceed', context, 'farm_registry'),
-                      onConfirm: executeAction,
-                      showCancel: true,
-                      cancelButtonText: labelsManager('cancel', context, 'farm_registry')
-                    })
+              }
+            }).catch(err => {
+              console.error(err)
+              setLoading(false)
+              alertUserResponse({ response: err })
+            })
+          }
+          const actionPrompt = () => {
+            const { promptTitle, promptMessage } = el
+            alertUserV2({
+              type: 'info',
+              title: promptTitle || '',
+              message: promptMessage || '',
+              confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+              onConfirm: executeAction,
+              showCancel: true,
+              cancelButtonText: labelsManager('no', context, 'farm_registry'),
+            })
+          }
+          if (!useMulti || useMulti === false) {
+            actionPrompt()
+          } else {
+            if (selectedGridRows.length > 0) {
+              if (el.form) {
+                setShowFormModal(true)
+                setFormConfig(el)
+              } else if (el.preview) {
+                const previewConfig = el.preview
+                if (previewConfig?.onSubmit) {
+                  const reqType = previewConfig?.type || 'GET'
+                  const contentType = previewConfig?.contentType || 'application/x-www-form-urlencoded'
+                  const url = previewConfig?.onSubmit
+                  const reqConfig = { method: reqType, url: `${window.server}${url}` }
+                  if (reqType === 'POST') {
+                    reqConfig.headers = { 'Content-Type': contentType }
+                    reqConfig.data = { objArray: selectedGridRows }
                   }
-                }).catch(err => {
-                  console.error(err)
-                  setLoading(false)
-                  alertUserResponse({ response: err })
-                })
+                  setLoading(true)
+                  axios(reqConfig).then(res => {
+                    setLoading(false)
+                    if (res?.data) {
+                      alertUserV2({
+                        type: res.data?.type?.toLowerCase() || '',
+                        title: res.data?.title || '',
+                        message: res.data?.message || '',
+                        ...res.data?.message && { html: res.data?.message?.replace(/\n/g, '<br>') },
+                        confirmButtonText: labelsManager('proceed', context, 'farm_registry'),
+                        onConfirm: executeAction,
+                        showCancel: true,
+                        cancelButtonText: labelsManager('cancel', context, 'farm_registry')
+                      })
+                    }
+                  }).catch(err => {
+                    console.error(err)
+                    setLoading(false)
+                    alertUserResponse({ response: err })
+                  })
+                }
+              } else {
+                actionPrompt()
               }
             } else {
-              actionPrompt()
+              alertUserV2({ type: 'info', title: labelsManager('no_rows_selected', context, 'farm_registry') })
             }
-          } else {
-            alertUserV2({ type: 'info', title: labelsManager('no_rows_selected', context, 'farm_registry') })
           }
         }
         break;
