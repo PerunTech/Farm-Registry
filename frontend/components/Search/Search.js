@@ -19,6 +19,7 @@ const Search = (props, context) => {
   useEffect(() => {
     updateIdScreen('farm_registry', context, 'farm_registry')
     getBusinessObjectName()
+    store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: undefined } })
     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: false } })
     store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: '' } })
