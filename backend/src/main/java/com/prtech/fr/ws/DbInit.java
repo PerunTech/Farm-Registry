@@ -232,7 +232,7 @@ public class DbInit implements IDbInit {
 		dbe7.setIsUnique(true);
 		dbe7.setLabel_code("holding_type.label_code");
 		dbe7.setGui_metadata(
-				"{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
+				"{\"react\":{\"filterable\":true,\"visible\":true,\"sortable\":true,\"resizable\":true,\"editable\":true}}");
 
 		DbDataField dbe8 = new DbDataField();
 		dbe8.setDbFieldName("CODE");
