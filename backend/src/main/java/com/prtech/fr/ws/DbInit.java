@@ -224,28 +224,16 @@ public class DbInit implements IDbInit {
 				"{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
 
 		DbDataField dbe7 = new DbDataField();
-		dbe7.setDbFieldName("LABEL_CODE");
+		dbe7.setDbFieldName("CODE");
 		dbe7.setDbFieldType(DbFieldType.NVARCHAR);
-		dbe7.setDbFieldSize(50);
+		dbe7.setDbFieldSize(3);
 		dbe7.setDbFieldScale(0);
 		dbe7.setIsNull(true);
 		dbe7.setIsUnique(true);
-		dbe7.setLabel_code("holding_type.label_code");
-		dbe7.setGui_metadata(
-				"{\"react\":{\"filterable\":true,\"visible\":true,\"sortable\":true,\"resizable\":true,\"editable\":true}}");
+		dbe7.setLabel_code("holding_type.code");
+		dbe7.setGui_metadata("{\"react\":{\"filterable\":true,\"visible\":true,\"resizable\":true,\"editable\":true}}");
 
-		DbDataField dbe8 = new DbDataField();
-		dbe8.setDbFieldName("CODE");
-		dbe8.setDbFieldType(DbFieldType.NVARCHAR);
-		dbe8.setDbFieldSize(3);
-		dbe8.setDbFieldScale(0);
-		dbe8.setIsNull(true);
-		dbe8.setIsUnique(true);
-		dbe8.setLabel_code("holding_type.code");
-		dbe8.setGui_metadata(
-				"{\"react\":{\"filterable\":true,\"visible\":false,\"resizable\":true,\"editable\":true}}");
-
-		DbDataField[] dbTableFields = new DbDataField[8];
+		DbDataField[] dbTableFields = new DbDataField[7];
 		dbTableFields[0] = dbe1;
 		dbTableFields[1] = dbe2;
 		dbTableFields[2] = dbe3;
@@ -253,7 +241,6 @@ public class DbInit implements IDbInit {
 		dbTableFields[4] = dbe5;
 		dbTableFields[5] = dbe6;
 		dbTableFields[6] = dbe7;
-		dbTableFields[7] = dbe8;
 		dbe.setDbTableFields(dbTableFields);
 		return dbe;
 	}
