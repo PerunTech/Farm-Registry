@@ -94,7 +94,7 @@ const SearchComp = (props, context) => {
     let url = `${window.server}/WsFarmUtils/search-farm-person/sid/${props.svSession}`
     if (props.person) {
       tableName = "PERSON"
-      url = `${window.server}/ReactElements/searchTable/${props.svSession}/${tableName}/1000`
+      url = `${window.server}/SvPersonRegistry/getPersonsByCriteria/${props.svSession}/PERSON`
     }
     ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
       saveExecuted: false,
@@ -113,13 +113,17 @@ const SearchComp = (props, context) => {
       setLoading(true)
       axios({
         method: 'post',
-        data: encodeURIComponent(JSON.stringify(formData)),
+        data: props.person ? formData : encodeURIComponent(JSON.stringify(formData)),
         url,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then(res => {
         setLoading(false)
         if (res?.data) {
-          searchResult(res.data, data)
+          if (props.person) {
+            searchResult(res?.data?.data, data)
+          } else {
+            searchResult(res?.data, data)
+          }
           ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false });
         }
       }).catch(err => {
