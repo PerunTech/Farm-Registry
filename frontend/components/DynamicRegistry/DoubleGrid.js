@@ -1,4 +1,5 @@
 import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, utils } from 'perun-core'
+import AnimalWrapper from '../Wrapper/AnimalWrapper';
 const { labelsManager } = utils
 const { ReactBootstrap, alertUserResponse } = elements;
 const { store, updateSelectedRows } = redux;
@@ -74,6 +75,9 @@ const DoubleGrid = (props, context) => {
                 addSaveFunction={(e) => onSubmit(e)}
                 customSaveButtonName={labelsManager('save', context, 'farm_registry')}
                 hideBtns={'closeAndDelete'}
+                objectId={props.farmObjId}
+                closeModal={closeModal}
+                inputWrapper={AnimalWrapper}
             />
         )
     }
@@ -102,6 +106,11 @@ const DoubleGrid = (props, context) => {
             alertUserResponse({ response: err, onConfirm: resetFormSaveState })
         })
     }
+    const closeModal = () => {
+        setShow(false)
+        GridManager.reloadGridData(props.configuration.leftGrid.ID)
+        GridManager.reloadGridData(props.configuration.rightGrid.ID)
+    }
 
     return (
         <>
@@ -114,7 +123,7 @@ const DoubleGrid = (props, context) => {
                 </div>
             </div>
             {show && (
-                <Modal className={"farm-registry-modal"} show={show} onHide={() => setShow(false)}>
+                <Modal className={"farm-registry-modal"} show={show} onHide={() => closeModal()}>
                     <Modal.Header className={"farm-registry-modal-header"} closeButton>
                         <Modal.Title>{props.configuration.label}</Modal.Title>
                     </Modal.Header>
