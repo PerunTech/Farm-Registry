@@ -26,4 +26,7 @@ public class CC {
 	public static final String FARM = "FARM";
 	public static final String FULL_NAME = "FULL_NAME";
 	public static final String SV_ISLABEL = "SV_ISLABEL";
+	public static final String NAME = "NAME";
+	public static final String HOLDING_TYPE = "HOLDING_TYPE";
+	public static final String EXTENDED_PARAMS = "EXTENDED_PARAMS";
 }
