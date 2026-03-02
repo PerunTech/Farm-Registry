@@ -60,8 +60,12 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 
 	@Override
 	public String beforeAclUpdate(Connection conn, ISvCore core, String schema) throws Exception {
-
-		return null;
+		JsonObject extParams = new JsonObject();
+        extParams.addProperty(CC.SV_ISLABEL, true);
+        try (SvReader svr = (SvReader) core; SvWriter svw = new SvWriter(svr)) {
+            updateFieldExtendedParams(CC.NAME, CC.HOLDING_TYPE, extParams.toString(), svw);
+        }
+        return null;
 	}
 
 	@Override
@@ -83,13 +87,26 @@ public class FarmRegistryConfigurator implements ISvConfigurationMulti {
 
 	@Override
 	public int getVersion(int currentVersion) {
-		return 3;
+		return 4;
 	}
+	
+	public void updateFieldExtendedParams(String fieldName, String tableName, String extendedParams, SvWriter svw)
+            throws SvException {
+        DbDataObject fieldDbo = SvReader.getFieldByName(tableName, fieldName);
+        if (fieldDbo == null) {
+            return;
+        }
+        fieldDbo.setVal(CC.EXTENDED_PARAMS, extendedParams);
+        if (fieldDbo.getIsDirty()) {
+            svw.saveObject(fieldDbo);
+        }
+    }
 
 	@Override
 	public List<UpdateType> getUpdateTypes() {
 		List<UpdateType> types = new ArrayList<UpdateType>();
 		types.add(UpdateType.FINAL);
+		types.add(UpdateType.ACL);
 		return types;
 	}
 
