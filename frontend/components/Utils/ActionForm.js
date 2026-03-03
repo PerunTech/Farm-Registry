@@ -1,7 +1,7 @@
 import { React, Loading, GenericForm, axios, elements } from 'perun-core'
 const { useEffect, useState } = React
 const { alertUserResponse } = elements
-
+import RecordSelectWrapper from '../Wrapper/RecordSelectWrapper';
 const ActionForm = (props) => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState(undefined)
@@ -12,7 +12,7 @@ const ActionForm = (props) => {
 
   const getConfig = (key, name) => {
     const { formConfig } = props
-    const config = formConfig?.form?.[key]
+    const config = formConfig?.objectConfiguration?.[key]
     return {
       name,
       url: config.onSubmit,
@@ -69,6 +69,18 @@ const ActionForm = (props) => {
   }
 
   const generateForm = () => {
+    const { formConfig } = props
+    let wrapperConfig = formConfig?.objectConfiguration?.wrapper
+    if (!wrapperConfig) {
+      wrapperConfig = formConfig?.objectConfiguration.form?.wrapper
+    }
+    let inputWrapper
+    if (wrapperConfig) {
+      if (Object.keys(wrapperConfig).length > 0) {
+        inputWrapper = RecordSelectWrapper
+      }
+    }
+
     return (
       <GenericForm
         className='form-test custom-farm-registry-form aims-forms hide-initial-form-legend'
@@ -80,6 +92,8 @@ const ActionForm = (props) => {
         tableFormDataMethod={data.formData}
         addSaveFunction={(e) => props.executeAction(e)}
         hideBtns='closeAndDelete'
+        inputWrapper={inputWrapper}
+        wrapperConfig={wrapperConfig}
       />
     )
   }

@@ -238,7 +238,7 @@ const TopButtons = (props, context) => {
             actionPrompt()
           } else {
             if (selectedGridRows.length > 0) {
-              if (el.form) {
+              if (el?.objectConfiguration?.type === 'form') {
                 setShowFormModal(true)
                 setFormConfig(el)
               } else if (el.preview) {
