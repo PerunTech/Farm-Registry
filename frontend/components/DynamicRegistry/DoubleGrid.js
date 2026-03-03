@@ -22,7 +22,7 @@ const DoubleGrid = (props, context) => {
                 case "route": {
                     store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
                     store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
-                    let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${props?.configuration?.tableName}.OBJECT_ID`]);
+                    let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${props?.tableName}.OBJECT_ID`]);
                     hashHistory.push(route)
                     break;
                 }
