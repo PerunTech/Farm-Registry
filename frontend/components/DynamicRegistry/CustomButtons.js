@@ -36,7 +36,7 @@ const CustomButtons = (props, context) => {
     const [_cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
     const [actionToggle, setActionToggle] = useState(undefined)
     useEffect(() => {
-        let wrapper = props.tableName.replace(/\d/g, '').replace(/_$/, '').replace(/(\w)(\w*)/g, function(g0, g1, g2) {
+        let wrapper = props.tableName.replace(/\d/g, '').replace(/_$/, '').replace(/(\w)(\w*)/g, function (g0, g1, g2) {
             return g1.toUpperCase() + g2.toLowerCase();
         }).replace(/_/g, '').replaceAll(' ', '');
         wrapper = wrapper.charAt(0).toUpperCase() + wrapper.slice(1).toLowerCase();
@@ -192,7 +192,7 @@ const CustomButtons = (props, context) => {
         store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
         store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
         const customRowClickConfig = props.configuration?.objectConfiguration?.customRowClick
-        const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
+        const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${props?.configuration?.tableName}.OBJECT_ID`]);
         hashHistory.push(route)
     }
     const btnArrCreate = (btnArray, multiSelect) => {
