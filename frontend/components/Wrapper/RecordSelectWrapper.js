@@ -227,6 +227,7 @@ const RecordSelectWrapper = (props, context) => {
               />
             )}
           </Modal.Body>
+          <Modal.Footer className='farm-registry-modal-footer' />
         </Modal>
       )}
       {showArrayGridModal && (
@@ -256,6 +257,7 @@ const RecordSelectWrapper = (props, context) => {
               />
             )}
           </Modal.Body>
+          <Modal.Footer className='farm-registry-modal-footer' />
         </Modal>
       )}
     </>
