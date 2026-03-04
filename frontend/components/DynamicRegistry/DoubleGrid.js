@@ -35,7 +35,7 @@ const DoubleGrid = (props, context) => {
         store.dispatch(updateSelectedRows(selectedRows, gridId))
     }
     const generateGrid = (grid) => {
-        const multiSelect = props.configuration?.multiSelect || false
+        const multiSelect = grid?.multiSelect || false
         const additionalTopBtns = props.configuration?.additionalTopButtons
         if (additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0) {
             store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: additionalTopBtns } })
