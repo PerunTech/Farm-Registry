@@ -68,14 +68,6 @@ const TopButtons = (props, context) => {
     resetState()
   }, [props.activeComponent])
 
-  const reloadGrid = () => {
-    const gridId = props.activeComponent + props.objectId
-    GridManager.reloadGridData(gridId)
-    store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], gridId] })
-    ComponentManager.setStateForComponent(gridId, 'selectedIndexes', [])
-    ComponentManager.setStateForComponent(gridId, 'selectedIndexesBeforeFilters', [])
-    ComponentManager.setStateForComponent(gridId, 'selectedRowsBeforeFilters', [])
-  }
 
   const resetState = () => {
     setFormConfig(undefined)
@@ -92,7 +84,7 @@ const TopButtons = (props, context) => {
         const rowData = Object.assign({}, selectedRow)
         const mergedRowData = { ...rowData, ...res.data[0] }
         store.dispatch({ type: 'SAVE', payload: { key: `farm-registry-module-row-${tableName}`, value: mergedRowData } })
-        GridManager.reloadGridData(activeComponent + objectId)
+        GridManager.reloadAllGrids()
       }
     }).catch(err => {
       console.error(err)
@@ -213,7 +205,7 @@ const TopButtons = (props, context) => {
                 const resType = res.data?.type?.toLowerCase() || 'info'
                 alertUserResponse({ response: res })
                 if (resType === 'success') {
-                  reloadGrid()
+                  GridManager.reloadAllGrids()
                 }
               }
             }).catch(err => {
@@ -311,7 +303,7 @@ const TopButtons = (props, context) => {
                 const resType = res.data?.type?.toLowerCase() || 'info'
                 alertUserResponse({ response: res })
                 if (resType === 'success') {
-                  GridManager.reloadGridData(props.activeComponent + props.objectId)
+                  GridManager.reloadAllGrids()
                 }
               }
             }).catch(err => {
@@ -328,7 +320,6 @@ const TopButtons = (props, context) => {
 
   const closeGridModal = () => {
     setShowGridModal(false)
-    ComponentManager.cleanComponentReducerState(gridConfig?.ID)
   }
 
   const onActionGridRowClick = (_id, _idx, row) => {
@@ -344,7 +335,7 @@ const TopButtons = (props, context) => {
           const resType = res.data?.type?.toLowerCase() || 'info'
           alertUserResponse({ response: res })
           if (resType === 'success') {
-            GridManager.reloadGridData(props.activeComponent + props.objectId)
+            GridManager.reloadAllGrids()
             closeGridModal()
           }
         }
@@ -403,7 +394,10 @@ const TopButtons = (props, context) => {
           const resType = res.data?.type?.toLowerCase() || 'info'
           alertUserResponse({ response: res, onConfirm: resetFormSaveState })
           if (resType === 'success') {
-            reloadGrid()
+            if (res?.data?.action) {
+              window.open(window.server + res?.data?.action, '_blank');
+            }
+            GridManager.reloadAllGrids()
             setShowFormModal(false)
           }
         }
@@ -437,7 +431,7 @@ const TopButtons = (props, context) => {
                 id={el.ID}
                 onClick={() => onClick(el, el.data?.length > 0)}
                 className={`btn top-btn top-btn-parent ${el.ID.toLowerCase()}-aims-btn`}
-                data-tooltip-id={el.data?.length > 0 ? 'top-buttons-tooltip' : 'top-buttons-simple-tooltip'}
+                data-tooltip-id={el.data?.length > 0 ? `top-buttons-tooltip_${el.ID.toLowerCase()}` : `top-buttons-simple-tooltip_${el.ID.toLowerCase()}`}
                 data-tooltip-content={el.data?.length > 0 ? JSON.stringify(el.data) : el.label}
                 data-tooltip-place='bottom'
               >
@@ -448,7 +442,7 @@ const TopButtons = (props, context) => {
                 )}
                 <span className='top-button-label'>{el.label}</span>
               </button>
-              <Tooltip id='top-buttons-tooltip' place='bottom' clickable className='aims-tooltip'
+              <Tooltip id={`top-buttons-tooltip_${el.ID.toLowerCase()}`} place='bottom' clickable className='aims-tooltip'
                 render={({ content }) => {
                   const submenu = JSON.parse(content || '[]')
                   if (!submenu.length) return null
@@ -473,7 +467,7 @@ const TopButtons = (props, context) => {
                   )
                 }}
               />
-              <Tooltip className='aims-tooltip' id='top-buttons-simple-tooltip' place='bottom' />
+              <Tooltip className='aims-tooltip' id={`top-buttons-simple-tooltip__${el.ID.toLowerCase()}`} place='bottom' />
             </div>
           )
         })}

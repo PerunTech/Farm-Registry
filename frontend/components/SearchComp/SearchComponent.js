@@ -9,11 +9,6 @@ let searchGridId;
 const SearchComp = (props, context) => {
   const [gridResult, setGridResults] = useState(undefined)
   const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    return () => {
-      ComponentManager.cleanComponentReducerState(searchGridId);
-    }
-  }, [])
 
   useEffect(() => {
     if (props?.samlFlag) {
@@ -151,7 +146,6 @@ const SearchComp = (props, context) => {
       tableName = "PERSON"
       configWs = `/ReactElements/getTableFieldList/${props.svSession}/PERSON`
     }
-    ComponentManager.cleanComponentReducerState(searchGridId);
     let dynamic_key = Math.floor(Math.random() * 999999).toString(36)
     searchGridId = tableName + dynamic_key
     let grid = (<div>
@@ -171,7 +165,7 @@ const SearchComp = (props, context) => {
     ComponentManager.setStateForComponent(tableName + dynamic_key, null, {
       onRowClickFunct: props.onRowClick
     })
-    GridManager.reloadGridData(tableName + dynamic_key)
+    GridManager.reloadAllGrids()
 
     setGridResults(grid)
   }

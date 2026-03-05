@@ -44,7 +44,7 @@ const Attachments = (props, context) => {
         if (props.svarogFormName) {
             gridId = `${props.svarogFormName}${appObjId}`
         }
-        GridManager.reloadGridData(gridId);
+        GridManager.reloadAllGrids();
         ComponentManager.setStateForComponent(gridId, null, { rowClicked: undefined })
     }
 

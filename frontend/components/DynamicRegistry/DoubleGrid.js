@@ -4,18 +4,11 @@ const { labelsManager } = utils
 const { ReactBootstrap, alertUserResponse } = elements;
 const { store, updateSelectedRows } = redux;
 const { Modal } = ReactBootstrap;
-const { useState, useEffect } = React
+const { useState } = React
 
 const DoubleGrid = (props, context) => {
     let hashHistory = createHashHistory();
     const [show, setShow] = useState(false)
-    useEffect(() => {
-        return () => {
-            ComponentManager.cleanComponentReducerState(props.configuration.leftGrid.ID);
-            ComponentManager.cleanComponentReducerState(props.configuration.rightGrid.ID);
-        }
-    }, []);
-
     const handleRowClick = (_id, _rowIdx, row, grid) => {
         if (grid.customRowClick) {
             switch (grid.customRowClick?.type) {
@@ -95,7 +88,7 @@ const DoubleGrid = (props, context) => {
                     response: res, onConfirm: () => {
                         if (resType === 'success') {
                             setShow(false)
-                            GridManager.reloadGridData(props.configuration.leftGrid.ID)
+                            GridManager.reloadAllGrids()
                         }
                         resetFormSaveState()
                     }
@@ -111,8 +104,7 @@ const DoubleGrid = (props, context) => {
     }
     const closeModal = () => {
         setShow(false)
-        GridManager.reloadGridData(props.configuration.leftGrid.ID)
-        GridManager.reloadGridData(props.configuration.rightGrid.ID)
+        GridManager.reloadAllGrids()
     }
 
     return (

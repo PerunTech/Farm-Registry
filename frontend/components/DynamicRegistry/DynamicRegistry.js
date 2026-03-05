@@ -18,7 +18,7 @@ const DynamicRegistry = (props, context) => {
         const name = props.match.params.component;
         const table = name.startsWith("SUB-") ? name.slice(4) : name;
         const id = props.match.params.objectId;
-        GridManager.reloadGridData(`${table}${id}`);
+        GridManager.reloadAllGrids();
     }, [toggledMenu]);
     const toggleSideMenu = (toggleOn) => {
         if (toggleOn) {

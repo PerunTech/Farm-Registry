@@ -33,12 +33,6 @@ const FarmmembersWrapper = (props, context) => {
         hanldePrints()
     }, []);
 
-    useEffect(() => {
-        return () => {
-            ComponentManager.cleanComponentReducerState(gridId);
-        };
-    }, []);
-
     const handleInputs = () => {
         const firstInput = document.getElementById(firstInputId);
         const secondInput = document.getElementById(secondInputId)
