@@ -392,14 +392,22 @@ const TopButtons = (props, context) => {
         setLoading(false)
         if (res?.data) {
           const resType = res.data?.type?.toLowerCase() || 'info'
-          alertUserResponse({ response: res, onConfirm: resetFormSaveState })
           if (resType === 'success') {
-            if (res?.data?.action) {
-              window.open(window.server + res?.data?.action, '_blank');
-            }
             GridManager.reloadAllGrids()
             setShowFormModal(false)
           }
+          if (res?.data?.action) {
+            alertUserV2({
+              type: resType,
+              title: res.data?.title,
+              message: res.data?.message,
+              confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+              onConfirm: () => { window.open(window.server + res.data?.action, '_blank'); resetFormSaveState() },
+              onCancel: resetFormSaveState,
+              showCancel: true,
+              cancelButtonText: labelsManager('no', context, 'farm_registry')
+            })
+          } else { alertUserResponse({ response: res, onConfirm: resetFormSaveState }) }
         }
       }).catch(err => {
         console.error(err)
