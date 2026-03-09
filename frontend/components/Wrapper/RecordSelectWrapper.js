@@ -1,11 +1,12 @@
 import { React, PropTypes, ComponentManager, ExportableGrid, elements, utils } from 'perun-core'
 import WrapperSearchForm from './WrapperSearchForm'
-const { useEffect, useState } = React
+const { useEffect, useRef, useState } = React
 const { getDynamicKey } = utils
 const { ReactBootstrap } = elements
 const { Modal } = ReactBootstrap
 
 const RecordSelectWrapper = (props, context) => {
+  const mounted = useRef()
   const [gridId, setGridId] = useState('')
   const [showGridModal, setShowGridModal] = useState(false)
   const [searchResult, setSearchResult] = useState(undefined)
@@ -17,6 +18,14 @@ const RecordSelectWrapper = (props, context) => {
   useEffect(() => {
     checkConfig()
   }, [])
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true
+    } else {
+      transformArrayInputs()
+    }
+  })
 
   useEffect(() => {
     transformArrayInputs()
