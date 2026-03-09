@@ -1,30 +1,26 @@
 import { React, PropTypes, ComponentManager, ExportableGrid, elements, utils } from 'perun-core'
 import WrapperSearchForm from './WrapperSearchForm'
-const { useEffect, useRef, useState } = React
+const { useEffect, useState } = React
 const { getDynamicKey } = utils
 const { ReactBootstrap } = elements
 const { Modal } = ReactBootstrap
 
 const RecordSelectWrapper = (props, context) => {
-  const mounted = useRef()
   const [gridId, setGridId] = useState('')
   const [showGridModal, setShowGridModal] = useState(false)
   const [searchResult, setSearchResult] = useState(undefined)
   const [showArrayGridModal, setShowArrayGridModal] = useState(false)
   const [singleInputConfig, setSingleInputConfig] = useState(undefined)
-  const [arrayInputsConfig, setArrayInputsConfig] = useState(undefined)
+  const [arrayInputConfig, setArrayInputConfig] = useState(undefined)
+  const [arrayInputsConfig, setArrayInputsConfig] = useState([])
 
   useEffect(() => {
     checkConfig()
   }, [])
 
   useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true
-    } else {
-      transformArrayInputs()
-    }
-  })
+    transformArrayInputs()
+  }, [arrayInputsConfig])
 
   useEffect(() => {
     if (searchResult) {
@@ -36,12 +32,14 @@ const RecordSelectWrapper = (props, context) => {
     setShowArrayGridModal(false)
   }
 
-  const onArrayInputClick = () => {
+  const onArrayInputClick = (inputConfig) => {
+    setArrayInputConfig(inputConfig)
+    setSearchResult(undefined)
     setShowArrayGridModal(true)
   }
 
-  const handleInputTransformation = (input, placeholderLabelCode, isArrayInput) => {
-    input.onclick = () => isArrayInput ? onArrayInputClick() : onInputClick()
+  const handleInputTransformation = (input, placeholderLabelCode, clickAction) => {
+    input.onclick = clickAction
     input.style.cursor = 'pointer'
     input.setAttribute('readonly', 'readonly')
     input.addEventListener('keydown', e => e.preventDefault())
@@ -53,21 +51,24 @@ const RecordSelectWrapper = (props, context) => {
   }
 
   const transformArrayInputs = () => {
-    if (arrayInputsConfig) {
-      const { firstSectionName, secondSectionName, displayFieldName, placeholderLabelCode } = arrayInputsConfig
+    if (!arrayInputsConfig || arrayInputsConfig.length === 0) return
+    arrayInputsConfig.forEach((inputConfig) => {
+      const { firstSectionName, secondSectionName, displayFieldName, placeholderLabelCode } = inputConfig
       const regex = new RegExp('^root_' + firstSectionName + '_\\d+_' + secondSectionName + `_${displayFieldName}` + '$')
       const inputs = Array.from(document.querySelectorAll('input')).filter((input) => regex.test(input.id))
       if (inputs && inputs.length > 0) {
-        inputs.forEach(input => handleInputTransformation(input, placeholderLabelCode, true))
+        inputs.forEach(input => handleInputTransformation(input, placeholderLabelCode, () => onArrayInputClick(inputConfig)))
       }
-    }
+    })
   }
 
   const closeGridModal = () => {
     setShowGridModal(false)
   }
 
-  const onInputClick = () => {
+  const onInputClick = (inputConfig) => {
+    setSingleInputConfig(inputConfig)
+    setSearchResult(undefined)
     setShowGridModal(true)
   }
 
@@ -75,7 +76,7 @@ const RecordSelectWrapper = (props, context) => {
     const { inputId, placeholderLabelCode } = inputConfig
     const input = document.getElementById(inputId)
     if (input) {
-      handleInputTransformation(input, placeholderLabelCode)
+      handleInputTransformation(input, placeholderLabelCode, () => onInputClick(inputConfig))
     }
   }
 
@@ -85,19 +86,20 @@ const RecordSelectWrapper = (props, context) => {
     if (wrapperConfig) {
       const inputs = wrapperConfig.inputs
       if (inputs && Array.isArray(inputs) && inputs.length > 0) {
+        const arrayInputItems = []
         inputs.forEach(input => {
           const inputId = input.inputId
           if (inputId) {
             // Inputs containing {index} will be a part of  a `type: 'array'` configuration, ie. there can be multiple inputs dynamically added to the form
             if (inputId?.includes('{index}')) {
-              setArrayInputsConfig(input)
+              arrayInputItems.push(input)
             } else {
               // Single inputs
-              setSingleInputConfig(input)
               transformSingleInput(input)
             }
           }
         })
+        setArrayInputsConfig(arrayInputItems)
       }
     }
   }
@@ -106,9 +108,9 @@ const RecordSelectWrapper = (props, context) => {
     const { formid } = props
     const formData = ComponentManager.getStateForComponent(formid, 'formTableData')
     if (isArrayInput) {
-      const { tableName, denormalizedField, denormalizedFieldName, displayFieldName, displayValue, firstSectionName, secondSectionName } = arrayInputsConfig
-      const denormalizedFieldValue = row[`${tableName}.${denormalizedField}`]
-      const valueToDisplay = row[`${tableName}.${displayValue}`]
+      const { tableName, denormalizedField, denormalizedFieldName, displayFieldName, displayValue, firstSectionName, secondSectionName } = arrayInputConfig || {}
+      const denormalizedFieldValue = denormalizedField ? row[`${tableName}.${denormalizedField}`] : undefined
+      const valueToDisplay = displayValue ? row[`${tableName}.${displayValue}`] : undefined
       if (formData) {
         if (firstSectionName) {
           if (!formData[firstSectionName]) {
@@ -118,8 +120,8 @@ const RecordSelectWrapper = (props, context) => {
             formData[firstSectionName][formData[firstSectionName].length - 1] = {
               [secondSectionName]: {
                 ...formData[firstSectionName][formData[firstSectionName].length - 1]?.[secondSectionName] && { ...formData[firstSectionName][formData[firstSectionName].length - 1]?.[secondSectionName] },
-                [denormalizedFieldName]: denormalizedFieldValue,
-                [displayFieldName]: valueToDisplay
+                ...denormalizedFieldName && denormalizedFieldValue !== undefined && { [denormalizedFieldName]: denormalizedFieldValue },
+                ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay }
               }
             }
             // This will remove any empty objects from the array
@@ -132,16 +134,20 @@ const RecordSelectWrapper = (props, context) => {
         }
       }
     } else {
-      const { tableName, denormalizedField, denormalizedFieldName, displayFieldName, displayValue, sectionName, additionalFieldsToMap } = singleInputConfig
-      const denormalizedFieldValue = row[`${tableName}.${denormalizedField}`]
-      const valueToDisplay = row[`${tableName}.${displayValue}`]
+      const { tableName, denormalizedField, denormalizedFieldName, displayFieldName, displayValue, sectionName, additionalFieldsToMap } = singleInputConfig || {}
+      const denormalizedFieldValue = denormalizedField ? row[`${tableName}.${denormalizedField}`] : undefined
+      const valueToDisplay = displayValue ? row[`${tableName}.${displayValue}`] : undefined
       if (formData) {
         if (sectionName) {
           if (!formData[sectionName]) {
             formData[sectionName] = {}
           }
-          formData[sectionName][denormalizedFieldName] = denormalizedFieldValue
-          formData[sectionName][displayFieldName] = valueToDisplay
+          if (denormalizedFieldName && denormalizedFieldValue !== undefined) {
+            formData[sectionName][denormalizedFieldName] = denormalizedFieldValue
+          }
+          if (displayFieldName && valueToDisplay !== undefined) {
+            formData[sectionName][displayFieldName] = valueToDisplay
+          }
           // Check if there are any additional fields that need to be mapped/populated
           // This will be an array of objects like this: { fieldName: '', fieldToMap: '' }
           // Where the fieldName key is the name of the field in the form and the fieldToMap key is the value from the clicked row
@@ -151,8 +157,12 @@ const RecordSelectWrapper = (props, context) => {
             })
           }
         } else {
-          formData[denormalizedFieldName] = denormalizedFieldValue
-          formData[displayFieldName] = valueToDisplay
+          if (denormalizedFieldName && denormalizedFieldValue !== undefined) {
+            formData[denormalizedFieldName] = denormalizedFieldValue
+          }
+          if (displayFieldName && valueToDisplay !== undefined) {
+            formData[displayFieldName] = valueToDisplay
+          }
           // Check if there are any additional fields that need to be mapped/populated
           // This will be an array of objects like this: { fieldName: '', fieldToMap: '' }
           // Where the fieldName key is the name of the field in the form and the fieldToMap key is the value from the clicked row
@@ -225,25 +235,25 @@ const RecordSelectWrapper = (props, context) => {
         <Modal className='farm-registry-modal vmp-modal' show={showArrayGridModal} onHide={() => closeArrayGridModal()}>
           <Modal.Header className='farm-registry-modal-header' closeButton />
           <Modal.Body className='farm-registry-modal-body'>
-            {arrayInputsConfig?.search && Object.keys(arrayInputsConfig.search).length > 0 && (
+            {arrayInputConfig?.search && Object.keys(arrayInputConfig.search).length > 0 && (
               <WrapperSearchForm
-                formConfig={arrayInputsConfig.search}
+                formConfig={arrayInputConfig.search}
                 setSearchResult={setSearchResult}
               />
             )}
             {searchResult && (
               <ExportableGrid
                 {...getCommonGridProps()}
-                configTableName={arrayInputsConfig?.search?.grid?.configuration}
+                configTableName={arrayInputConfig?.search?.grid?.configuration}
                 dataTableName={searchResult}
                 onRowClickFunct={(id, idx, row) => onRowClick(id, idx, row, true)}
               />
             )}
-            {!arrayInputsConfig?.search && !searchResult && (
+            {!arrayInputConfig?.search && !searchResult && (
               <ExportableGrid
                 {...getCommonSimpleGridProps()}
-                configTableName={arrayInputsConfig.configuration}
-                dataTableName={arrayInputsConfig.data}
+                configTableName={arrayInputConfig?.configuration}
+                dataTableName={arrayInputConfig?.data}
                 onRowClickFunct={(id, idx, row) => onRowClick(id, idx, row, true)}
               />
             )}

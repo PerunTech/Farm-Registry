@@ -227,7 +227,12 @@ const TopButtons = (props, context) => {
             })
           }
           if (!useMulti || useMulti === false) {
-            actionPrompt()
+            if (el?.objectConfiguration?.type === 'form') {
+              setShowFormModal(true)
+              setFormConfig(el)
+            } else {
+              actionPrompt()
+            }
           } else {
             if (selectedGridRows.length > 0) {
               if (el?.objectConfiguration?.type === 'form') {
