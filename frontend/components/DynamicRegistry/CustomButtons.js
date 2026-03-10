@@ -280,7 +280,7 @@ const CustomButtons = (props, context) => {
         if (props.configuration.objectConfiguration?.isSvarogForm) {
             setClickedRowObjectId(row[`SVAROG_FORM.OBJECT_ID`] || 0)
         } else {
-            setClickedRowObjectId(row[`${props.tableName}.OBJECT_ID`] || 0)
+            setClickedRowObjectId(row[`${props?.configuration?.tableName}.OBJECT_ID`] || 0)
             setRowClicked(row)
         }
         setShowModal(true)
@@ -307,7 +307,7 @@ const CustomButtons = (props, context) => {
             uiSchemaConfig = props.configuration.objectConfiguration?.form?.uischema?.onSubmit
             formDataWs = props.configuration.objectConfiguration?.form?.data?.onSubmit
             // If the form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
-            formDataWs = replaceFunc(formDataWs, props.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
+            formDataWs = replaceFunc(formDataWs, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
             contentType = props.configuration.objectConfiguration?.form?.save?.contentType
             params = props.configuration.objectConfiguration?.form?.save?.params
