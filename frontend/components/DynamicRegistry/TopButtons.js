@@ -43,7 +43,7 @@ const TopButtons = (props, context) => {
               promptMessage: btn.promptMessage,
             }))
             setButtons(prev => [...(prev || []), { ...btn, data: submenu }])
-          } else {
+          } else if (!Array.isArray(res.data)) {
             setButtons(prev => [...(prev || []), btn])
           }
         }
@@ -435,8 +435,12 @@ const TopButtons = (props, context) => {
     })
   }
 
+  if (!loading && (!buttons || buttons.length === 0)) {
+    return null
+  }
+
   return (
-    <>
+    <div className='top-buttons-container'>
       {loading && <Loading />}
       <div className='top-button-container'>
         {buttons?.map(el => {
@@ -507,7 +511,7 @@ const TopButtons = (props, context) => {
           <Modal.Footer className='farm-registry-modal-footer' />
         </Modal>
       )}
-    </>
+    </div>
   )
 }
 
