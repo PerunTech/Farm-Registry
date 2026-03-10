@@ -39,7 +39,7 @@ const DynamicRegistry = (props, context) => {
                 routeParams={props.match.params}
             />
             <div className={`farm-registry-content ${toggledMenu && 'aims-registry-content-toggled'}`}>
-                {(topButtons && Array.isArray(topButtons) && topButtons.length > 0) || (props.additionalTopBtns && Array.isArray(props.additionalTopBtns) && props.additionalTopBtns.length > 0) && (
+                {((topButtons && Array.isArray(topButtons) && topButtons.length > 0) || (props.additionalTopBtns && Array.isArray(props.additionalTopBtns) && props.additionalTopBtns.length > 0)) && (
                     <div className='top-buttons-container'>
                         <TopButtons
                             configuration={topButtons}

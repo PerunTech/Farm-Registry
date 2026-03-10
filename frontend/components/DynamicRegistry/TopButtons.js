@@ -43,6 +43,8 @@ const TopButtons = (props, context) => {
               promptMessage: btn.promptMessage,
             }))
             setButtons(prev => [...(prev || []), { ...btn, data: submenu }])
+          } else {
+            setButtons(prev => [...(prev || []), btn])
           }
         }
       }).catch(err => {
@@ -480,7 +482,7 @@ const TopButtons = (props, context) => {
                   )
                 }}
               />
-              <Tooltip className='aims-tooltip' id={`top-buttons-simple-tooltip__${el.ID.toLowerCase()}`} place='bottom' />
+              <Tooltip className='aims-tooltip' id={`top-buttons-simple-tooltip_${el.ID.toLowerCase()}`} place='bottom' />
             </div>
           )
         })}
