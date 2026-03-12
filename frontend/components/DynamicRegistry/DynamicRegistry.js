@@ -39,15 +39,13 @@ const DynamicRegistry = (props, context) => {
                 routeParams={props.match.params}
             />
             <div className={`farm-registry-content ${toggledMenu && 'aims-registry-content-toggled'}`}>
-                {(topButtons && Array.isArray(topButtons) && topButtons.length > 0) || (props.additionalTopBtns && Array.isArray(props.additionalTopBtns) && props.additionalTopBtns.length > 0) && (
-                    <div className='top-buttons-container'>
-                        <TopButtons
-                            configuration={topButtons}
-                            objectId={props?.match?.params?.objectId}
-                            tableName={props?.match?.params?.tableName}
-                            activeComponent={props?.match?.params?.component}
-                        />
-                    </div>
+                {((topButtons && Array.isArray(topButtons) && topButtons.length > 0) || (props.additionalTopBtns && Array.isArray(props.additionalTopBtns) && props.additionalTopBtns.length > 0)) && (
+                    <TopButtons
+                        configuration={topButtons}
+                        objectId={props?.match?.params?.objectId}
+                        tableName={props?.match?.params?.tableName}
+                        activeComponent={props?.match?.params?.component}
+                    />
                 )}
                 <div className='dynamic-component-container'>
                     {dynamicComponent}
