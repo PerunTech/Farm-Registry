@@ -486,7 +486,7 @@ const TopButtons = (props, context) => {
                   )
                 }}
               />
-              <Tooltip className='aims-tooltip aims-tooltip-simple' id={`top-buttons-simple-tooltip__${el.ID.toLowerCase()}`} place='bottom' />
+              <Tooltip className='aims-tooltip aims-tooltip-simple' id={`top-buttons-simple-tooltip_${el.ID.toLowerCase()}`} place='bottom' />
             </div>
           )
         })}
