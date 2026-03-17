@@ -1,4 +1,4 @@
-import { React, PropTypes, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils } from 'perun-core'
+import { React, PropTypes, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM } from 'perun-core'
 import { ActionForm } from '../Utils'
 const { useEffect, useState } = React
 const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
@@ -133,6 +133,60 @@ const TopButtons = (props, context) => {
         break;
       }
     }
+  }
+
+  const onCustomInputsChange = (e) => {
+    const customInputsData = store.getState()?.businessLogicReducer?.['farm-registry-module-custom-inputs-data'] || {}
+    store.dispatch({
+      type: 'SAVE',
+      payload: {
+        key: 'farm-registry-module-custom-inputs-data',
+        value: { ...customInputsData, [e.target.name]: e.target.value }
+      }
+    })
+  }
+
+  const executeGeneralAction = (el) => {
+    const formData = {}
+    const reqType = el?.type || 'GET'
+    const contentType = el?.contentType || 'application/x-www-form-urlencoded'
+    const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
+    const customInputsData = store.getState()?.businessLogicReducer?.['farm-registry-module-custom-inputs-data']
+    const params = el?.params
+    const url = el?.onSubmit
+    const reqConfig = { method: reqType, url: `${window.server}${url}` }
+    if (reqType === 'POST') {
+      const data = { objArray: selectedGridRows }
+      if (params && Object.keys(params).length > 0) {
+        Object.assign(data, params)
+      }
+      if (customInputsData && Object.keys(customInputsData).length > 0) {
+        Object.assign(data, customInputsData)
+      }
+      if (formData && Object.keys(formData).length > 0) {
+        Object.assign(data, { formData })
+      }
+      reqConfig.headers = { 'Content-Type': contentType }
+      reqConfig.data = data
+    }
+
+    setLoading(true)
+    axios(reqConfig).then(res => {
+      setLoading(false)
+      if (res?.data) {
+        const resType = res.data?.type?.toLowerCase() || 'info'
+        alertUserResponse({ response: res })
+        if (resType === 'success') {
+          GridManager.reloadAllGrids()
+        }
+      }
+      store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-custom-inputs-data', value: {} } })
+    }).catch(err => {
+      console.error(err)
+      setLoading(false)
+      alertUserResponse({ response: err })
+      store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-custom-inputs-data', value: {} } })
+    })
   }
 
   const onClick = (el, hasChildren) => {
@@ -290,34 +344,48 @@ const TopButtons = (props, context) => {
       default: {
         if (!hasChildren) {
           if (el.onSubmit) {
-            const formData = {}
-            const reqType = el?.type || 'GET'
-            const contentType = el?.contentType || 'application/x-www-form-urlencoded'
-            const params = el?.params
-            if (params) {
-              Object.assign(formData, { ...params })
-            }
-            const url = el?.onSubmit
-            const reqConfig = { method: reqType, url: `${window.server}${url}` }
-            if (reqType === 'POST') {
-              reqConfig.headers = { 'Content-Type': contentType }
-              reqConfig.data = formData
-            }
-            setLoading(true)
-            axios(reqConfig).then(res => {
-              setLoading(false)
-              if (res?.data) {
-                const resType = res.data?.type?.toLowerCase() || 'info'
-                alertUserResponse({ response: res })
-                if (resType === 'success') {
-                  GridManager.reloadAllGrids()
+            const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
+            if (selectedGridRows.length > 0) {
+              if (el.promptTitle || el.promptMessage) {
+                const customInputsContainer = document.createElement('div')
+                customInputsContainer.className = 'custom-alert-inputs'
+                let customInputs = undefined
+                const promptInputs = el?.promptInput
+                if (promptInputs && Array.isArray(promptInputs) && promptInputs.length > 0) {
+                  customInputs = (
+                    <>
+                      {promptInputs.map(input => {
+                        const inputKey = input.key
+                        return (
+                          <form key={`${inputKey}_FORM`} onChange={onCustomInputsChange} onSubmit={(e) => e.preventDefault()}>
+                            <div key={inputKey} className='form-group'>
+                              <label key={`${inputKey}_LABEL`} htmlFor={inputKey} className='control-label'>{input.label}</label>
+                              <input key={`${inputKey}_INPUT`} id={inputKey} name={inputKey} type={input.type} className='form-control' />
+                            </div>
+                          </form>
+                        )
+                      })}
+                    </>
+                  )
+                  ReactDOM.render(customInputs, customInputsContainer)
                 }
+                alertUserV2({
+                  type: 'info',
+                  title: el?.promptTitle || '',
+                  message: el?.promptMessage || '',
+                  confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+                  onConfirm: () => executeGeneralAction(el),
+                  showCancel: true,
+                  cancelButtonText: labelsManager('no', context, 'farm_registry'),
+                  onCancel: () => store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-custom-inputs-data', value: {} } }),
+                  ...customInputs && { html: customInputsContainer }
+                })
+              } else {
+                executeGeneralAction(el)
               }
-            }).catch(err => {
-              console.error(err)
-              setLoading(false)
-              alertUserResponse({ response: err })
-            })
+            } else {
+              alertUserV2({ type: 'info', title: labelsManager('no_rows_selected', context, 'lims_sar') })
+            }
           }
         }
         break;
