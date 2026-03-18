@@ -68,6 +68,11 @@ const SearchDynamic = (props, context) => {
         const url = searchConfig?.save?.onSave;
         const reqConfig = { method: searchType, url: `${window.server}${url}` };
         const shouldEncode = props.configuration?.searchForm.save.encode;
+        const params = props.configuration?.searchForm.params
+        if (params) {
+            Object.assign(formData, { ...params })
+        }
+
         if (searchType === 'POST') {
             reqConfig.data = shouldEncode ? jsonToURI(flattenObject(formData)) : JSON.stringify(formData)
         }
