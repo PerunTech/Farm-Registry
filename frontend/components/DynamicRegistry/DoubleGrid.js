@@ -77,10 +77,18 @@ const DoubleGrid = (props, context) => {
             />
         )
     }
+
     const onSubmit = (e) => {
+        let formData = e.formData
         const resetFormSaveState = () => ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false })
         const url = props.configuration?.addForm?.save?.onSave
-        const reqConfig = { method: 'post', url: `${window.server}${url}`, data: encodeURIComponent(JSON.stringify(e.formData)) }
+        const contentType = props.configuration?.addForm?.save?.contentType
+        let params = props.configuration?.addForm?.save?.params
+        if (params) {
+            Object.assign(formData, { ...params })
+        }
+        const data = contentType ? formData : encodeURIComponent(JSON.stringify(formData))
+        const reqConfig = { method: 'post', url: `${window.server}${url}`, data: data, headers: { "Content-Type": contentType || 'application/x-www-form-urlencoded' }, }
         axios(reqConfig).then(res => {
             if (res?.data) {
                 const resType = res?.data?.type?.toLowerCase() || 'info'
