@@ -16,6 +16,7 @@ import PrescriptionmedicineWrapper from '../Wrapper/PrescriptionmedicineWrapper'
 import GmpauditproductWrapper from '../Wrapper/GmpauditproductWrapper'
 import ControlDocumentsWrapper from '../Wrapper/ControlDocumentsWrapper';
 import RecordSelectWrapper from '../Wrapper/RecordSelectWrapper';
+import VmpPrescriptionWrapper from '../Wrapper/VmpPrescriptionWrapper';
 const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -30,7 +31,7 @@ const CustomButtons = (props, context) => {
     const [wrapperName, setWrapper] = useState(undefined)
     const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper },
     { Holding: HoldingWrapper }, { Documents: DocumentsWrapper }, { Fees: FeesWrapper }, { Prescriptionvet: PrescriptionvetWrapper },
-    { Prescriptionmedicine: PrescriptionmedicineWrapper }, { Gmpauditproduct: GmpauditproductWrapper }, { Controldocuments: ControlDocumentsWrapper }])
+    { Prescriptionmedicine: PrescriptionmedicineWrapper }, { Gmpauditproduct: GmpauditproductWrapper }, { Controldocuments: ControlDocumentsWrapper }, { Vmpprescription: VmpPrescriptionWrapper }])
     const [renderForm, setRender] = useState(true)
     const [rowCliked, setRowClicked] = useState(undefined)
     const [_cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
