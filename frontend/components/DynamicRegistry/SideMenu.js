@@ -27,7 +27,7 @@ const SideMenu = (props) => {
     const getConfiguration = () => {
         props.setTopButtons(undefined)
         setLoading(true)
-        let url = window.server + `/Menu/getMenu/${props.svSession}/${props.objectId}/${props.tableName}`
+        let url = window.server + `/Menu/getMenu/${props.svSession}/${props.objectId}/${props.tableName}/-`
         axios.get(url).then(res => {
             setLoading(false)
             if (res?.data) {
