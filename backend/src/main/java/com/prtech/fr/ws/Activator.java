@@ -122,7 +122,7 @@ public class Activator implements BundleActivator {
 		for (Class<?> c : jaxServiceClasses) {
 			try {
 				log4j.info("Registering service class: " + c.getName());
-				svc = context.registerService(c.getName(), c.newInstance(), null);
+				svc = context.registerService(httpContextPath+"/"+c.getName(), c.newInstance(), null);
 			} catch (Exception e) {
 				log4j.error("Can't register service class:" + c.getName(), e);
 			}
