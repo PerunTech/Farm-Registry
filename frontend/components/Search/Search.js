@@ -99,18 +99,14 @@ const Search = (props, context) => {
   const getConfiguration = () => {
     setLoading(true)
     const { svSession } = props
-    const url = `${window.server}/Menu/getMenu/${svSession}/farm_registry-${businessObjectName?.toLowerCase()}-search-main`
-
-    axios.post(url, {}).then(res => {
+    const url = `${window.server}/Menu/getMenu/${svSession}/0/0/farm_registry-${businessObjectName?.toLowerCase()}-search-main`
+    axios.get(url).then(res => {
       setLoading(false)
-
       if (res?.data?.type?.toLowerCase() === 'error') {
         alertUserResponse({ response: res.data })
         return
       }
-
       const buttonArray = res?.data?.data?.buttonArray
-
       if (Array.isArray(buttonArray) && buttonArray.length > 0) {
         setConfiguration(buttonArray[0].objectConfiguration)
       }
