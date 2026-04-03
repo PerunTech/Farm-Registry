@@ -424,7 +424,7 @@ const CustomButtons = (props, context) => {
             const url = `${window.server}${wsPath}`
             axios({
                 method: "post",
-                data: !contentType ? encodeURIComponent(JSON.stringify(formData)) : formData,
+                data: contentType && contentType.includes('application/json') ? formData : encodeURIComponent(JSON.stringify(formData)),
                 url,
                 headers: { "Content-Type": contentType || 'application/x-www-form-urlencoded' },
             }).then(res => {
