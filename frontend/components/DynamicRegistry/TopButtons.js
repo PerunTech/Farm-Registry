@@ -398,27 +398,32 @@ const TopButtons = (props, context) => {
   }
 
   const onActionGridRowClick = (_id, _idx, row) => {
-    const actionWs = gridConfig?.objectConfiguration?.action?.onSubmit
+    let actionWs = gridConfig?.objectConfiguration?.action?.onSubmit
     const tableName = gridConfig?.objectConfiguration?.action?.tableName
+    const reqType = gridConfig?.objectConfiguration?.action?.type || 'GET'
     if (actionWs && tableName) {
-      let url = `${window.server}${actionWs}`
-      url = url.replace('{rowObjectId}', row[`${tableName}.OBJECT_ID`])
-      setLoading(true)
-      axios.get(url).then(res => {
-        setLoading(false)
-        if (res?.data) {
-          const resType = res.data?.type?.toLowerCase() || 'info'
-          alertUserResponse({ response: res })
-          if (resType === 'success') {
-            GridManager.reloadAllGrids()
-            closeGridModal()
+      actionWs = actionWs.replace('{rowObjectId}', row[`${tableName}.OBJECT_ID`])
+      if (reqType === 'POST') {
+        gridConfig.objectConfiguration.action.onSubmit = actionWs
+        handleFormAction(gridConfig.objectConfiguration)
+      } else {
+        setLoading(true)
+        axios.get(window.server + actionWs).then(res => {
+          setLoading(false)
+          if (res?.data) {
+            const resType = res.data?.type?.toLowerCase() || 'info'
+            alertUserResponse({ response: res })
+            if (resType === 'success') {
+              GridManager.reloadAllGrids()
+              closeGridModal()
+            }
           }
-        }
-      }).catch(err => {
-        console.error(err)
-        setLoading(false)
-        alertUserResponse({ response: err })
-      })
+        }).catch(err => {
+          console.error(err)
+          setLoading(false)
+          alertUserResponse({ response: err })
+        })
+      }
     }
   }
 
@@ -443,11 +448,15 @@ const TopButtons = (props, context) => {
     ComponentManager.setStateForComponent('FARM_REGISTRY_ACTION_FORM', null, { saveExecuted: false })
   }
 
-  const handleFormAction = () => {
-    const { action, promptTitle, promptMessage } = formConfig
+  const handleFormAction = (gridActionConfig) => {
+    const sourceConfig = gridActionConfig || formConfig || {}
+    const { action, promptTitle, promptMessage } = sourceConfig
 
     const executeAction = () => {
-      const formData = ComponentManager.getStateForComponent('FARM_REGISTRY_ACTION_FORM', 'formTableData')
+      let formData
+      if (!gridActionConfig) {
+        formData = ComponentManager.getStateForComponent('FARM_REGISTRY_ACTION_FORM', 'formTableData')
+      }
       const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
       const params = action?.params || {}
       const reqType = action?.type || 'GET'
@@ -455,7 +464,7 @@ const TopButtons = (props, context) => {
       const url = action?.onSubmit
       const reqConfig = { method: reqType, url: `${window.server}${url}` }
       if (reqType === 'POST') {
-        const data = { formData, objArray: selectedGridRows }
+        const data = formData ? { formData, objArray: selectedGridRows } : { objArray: selectedGridRows }
         if (params && Object.keys(params).length > 0) {
           Object.assign(data, params)
         }
