@@ -90,7 +90,7 @@ const ActionForm = (props) => {
         method={data.jsonSchema}
         uiSchemaConfigMethod={data.uiSchema}
         tableFormDataMethod={data.formData}
-        addSaveFunction={(e) => props.executeAction(e)}
+        addSaveFunction={() => props.executeAction()}
         hideBtns='closeAndDelete'
         inputWrapper={inputWrapper}
         wrapperConfig={wrapperConfig}
