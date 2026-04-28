@@ -73,7 +73,6 @@ const GpsMapSelect = (props, context) => {
                         Reflect.set(basemap[layerGroup], labelCode, tileLayer)
                         // Set the overlays
                     } else if (layerType === '2') {
-                        externalLayers.push(geoTypeLayer)
                         if (!overlays[layerGroup]) {
                             overlays[layerGroup] = {}
                         }
