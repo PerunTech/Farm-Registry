@@ -63,7 +63,8 @@ const RecordSelectWrapper = (props, context) => {
     if (!arrayInputsConfig || arrayInputsConfig.length === 0) return
     arrayInputsConfig.forEach((inputConfig) => {
       const { firstSectionName, secondSectionName, displayFieldName, placeholderLabelCode } = inputConfig
-      const regex = new RegExp('^root_' + firstSectionName + '_\\d+_' + secondSectionName + `_${displayFieldName}` + '$')
+      const middlePart = secondSectionName ? `_${secondSectionName}_${displayFieldName}` : `_${displayFieldName}`
+      const regex = new RegExp('^root_' + firstSectionName + '_\\d+' + middlePart + '$')
       const inputs = Array.from(document.querySelectorAll('input')).filter((input) => regex.test(input.id))
       if (inputs && inputs.length > 0) {
         inputs.forEach(input => handleInputTransformation(input, placeholderLabelCode, () => onArrayInputClick(inputConfig)))
