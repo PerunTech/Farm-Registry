@@ -127,9 +127,18 @@ const RecordSelectWrapper = (props, context) => {
             formData[firstSectionName] = []
           }
           if (formData[firstSectionName] && Array.isArray(formData[firstSectionName])) {
-            formData[firstSectionName][formData[firstSectionName].length - 1] = {
-              [secondSectionName]: {
-                ...formData[firstSectionName][formData[firstSectionName].length - 1]?.[secondSectionName] && { ...formData[firstSectionName][formData[firstSectionName].length - 1]?.[secondSectionName] },
+            const lastIdx = formData[firstSectionName].length - 1
+            if (secondSectionName) {
+              formData[firstSectionName][lastIdx] = {
+                [secondSectionName]: {
+                  ...formData[firstSectionName][lastIdx]?.[secondSectionName] && { ...formData[firstSectionName][lastIdx]?.[secondSectionName] },
+                  ...denormalizedFieldName && denormalizedFieldValue !== undefined && { [denormalizedFieldName]: denormalizedFieldValue },
+                  ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay }
+                }
+              }
+            } else {
+              formData[firstSectionName][lastIdx] = {
+                ...formData[firstSectionName][lastIdx],
                 ...denormalizedFieldName && denormalizedFieldValue !== undefined && { [denormalizedFieldName]: denormalizedFieldValue },
                 ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay }
               }
