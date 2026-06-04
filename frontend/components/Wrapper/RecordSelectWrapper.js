@@ -94,8 +94,11 @@ const RecordSelectWrapper = (props, context) => {
   const checkConfig = () => {
     const { formid } = props
     const wrapperConfig = ComponentManager.getStateForComponent(formid, 'wrapperConfig')
+    const formData = ComponentManager.getStateForComponent(props.formid, 'formTableData')
     if (wrapperConfig) {
-      wrapperConfig?.printout && setShowPrintButton(true)
+      if (formData?.['OBJECT_ID'] && wrapperConfig?.printout) {
+        setShowPrintButton(true)
+      }
       const inputs = wrapperConfig.inputs
       if (inputs && Array.isArray(inputs) && inputs.length > 0) {
         const arrayInputItems = []
@@ -221,7 +224,8 @@ const RecordSelectWrapper = (props, context) => {
   const printDoc = () => {
     const { formid } = props
     const wrapperConfig = ComponentManager.getStateForComponent(formid, 'wrapperConfig')
-    let objId = ComponentManager.getStateForComponent(formid, 'objId')
+    const formData = ComponentManager.getStateForComponent(formid, 'formTableData')
+    let objId = formData?.['OBJECT_ID']
     const route = wrapperConfig?.['printout']?.replace("{rowObjectId}", objId);
     let url = window.server + route;
     window.open(url, '_blank');
