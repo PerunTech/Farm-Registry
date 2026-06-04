@@ -1,8 +1,8 @@
 import { React, PropTypes, ComponentManager, ExportableGrid, elements, utils } from 'perun-core'
 import WrapperSearchForm from './WrapperSearchForm'
 const { useEffect, useRef, useState } = React
-const { getDynamicKey } = utils
-const { ReactBootstrap } = elements
+const { getDynamicKey, labelsManager } = utils
+const { ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap
 
 const RecordSelectWrapper = (props, context) => {
@@ -14,6 +14,7 @@ const RecordSelectWrapper = (props, context) => {
   const [singleInputConfig, setSingleInputConfig] = useState(undefined)
   const [arrayInputConfig, setArrayInputConfig] = useState(undefined)
   const [arrayInputsConfig, setArrayInputsConfig] = useState([])
+  const [showPrintButton, setShowPrintButton] = useState(false)
 
   useEffect(() => {
     checkConfig()
@@ -94,6 +95,7 @@ const RecordSelectWrapper = (props, context) => {
     const { formid } = props
     const wrapperConfig = ComponentManager.getStateForComponent(formid, 'wrapperConfig')
     if (wrapperConfig) {
+      wrapperConfig?.printout && setShowPrintButton(true)
       const inputs = wrapperConfig.inputs
       if (inputs && Array.isArray(inputs) && inputs.length > 0) {
         const arrayInputItems = []
@@ -216,9 +218,25 @@ const RecordSelectWrapper = (props, context) => {
       heightRatio: 0.7,
     }
   }
+  const printDoc = () => {
+    const { formid } = props
+    const wrapperConfig = ComponentManager.getStateForComponent(formid, 'wrapperConfig')
+    let objId = ComponentManager.getStateForComponent(formid, 'objId')
+    const route = wrapperConfig?.['printout']?.replace("{rowObjectId}", objId);
+    let url = window.server + route;
+    window.open(url, '_blank');
+  }
 
   return (
     <>
+      {showPrintButton && (
+        <div className='perun-menu-buttons-container'>
+          <button className='btn-success btn_save_form download-menu-btn' onClick={printDoc}>
+            {labelsManager("printout", context, "farm_registry")}
+            <span className='download-span'>{<Icon name="IconPrinter" />}</span>
+          </button>
+        </div>
+      )}
       {props.children}
       {showGridModal && (
         <Modal className='farm-registry-modal vmp-modal' show={showGridModal} onHide={() => closeGridModal()}>
