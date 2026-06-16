@@ -262,6 +262,7 @@ const TopButtons = (props, context) => {
                 alertUserResponse({ response: res })
                 if (resType === 'success') {
                   GridManager.reloadAllGrids()
+                  if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                 }
               }
             }).catch(err => {
