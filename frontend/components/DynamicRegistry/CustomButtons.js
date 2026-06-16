@@ -257,7 +257,7 @@ const CustomButtons = (props, context) => {
                 enableMultiSelect={multiSelect}
                 onSelectChangeFunct={customRowSelection}
                 buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : undefined}
-                heightRatio={outerBtnArray ? 0.7 : 0.8}
+                heightRatio={0.72}
             />
 
         </div >
