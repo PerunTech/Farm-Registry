@@ -174,10 +174,34 @@ const TopButtons = (props, context) => {
     axios(reqConfig).then(res => {
       setLoading(false)
       if (res?.data) {
-        const resType = res.data?.type?.toLowerCase() || 'info'
-        alertUserResponse({ response: res })
-        if (resType === 'success') {
+        if (res.data?.action) {
           GridManager.reloadAllGrids()
+          alertUserV2({
+            type: 'question',
+            title: res.data?.title || '',
+            showCancel: true,
+            showDeny: true,
+            confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+            cancelButtonText: labelsManager('cancel', context, 'farm_registry'),
+            denyButtonText: labelsManager('no', context, 'farm_registry'),
+            denyButtonColor: '#87adbd',
+            onConfirm: () => {
+              window.open(window.server + res.data.action, '_blank')
+            },
+            onCancel: () => {
+              Swal.close()
+            },
+            onDeny: () => {
+              Swal.close()
+            },
+          })
+        }
+        else {
+          const resType = res.data?.type?.toLowerCase() || 'info'
+          alertUserResponse({ response: res })
+          if (resType === 'success') {
+            GridManager.reloadAllGrids()
+          }
         }
       }
       store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-custom-inputs-data', value: {} } })
