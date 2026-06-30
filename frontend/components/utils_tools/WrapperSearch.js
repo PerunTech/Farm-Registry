@@ -29,7 +29,6 @@ const WrapperSearch = (props, context) => {
         return () => {
             props.handleShow()
             setResultsData(undefined)
-            ComponentManager.cleanComponentReducerState(`${gridId}_GRID`)
         };
     })
 
@@ -53,10 +52,10 @@ const WrapperSearch = (props, context) => {
                 setLoading(false)
                 if (res?.data?.data && Array.isArray(res.data.data) && res.data.data?.length > 0) {
                     setResultsData(res.data.data)
-                    GridManager.reloadGridData(gridId + '_GRID');
+                    GridManager.reloadAllGrids();
                 } else if (res?.data && Array.isArray(res?.data) && res.data?.length > 0) {
                     setResultsData(res.data)
-                    GridManager.reloadGridData(gridId + '_GRID');
+                    GridManager.reloadAllGrids();
                 } else {
                     alertUserResponse({ response: res })
                 }

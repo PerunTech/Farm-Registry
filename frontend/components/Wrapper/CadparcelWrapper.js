@@ -39,7 +39,7 @@ const CadparcelWrapper = (props, context) => {
                         response: res.data,
                         onConfirm: () => {
                             ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
-                            GridManager.reloadGridData(`CAD_PARCEL${props.farmObjId}`)
+                            GridManager.reloadAllGrids()
                             ComponentManager.setStateForComponent(`CAD_PARCEL${props.farmObjId}`, null, { rowClicked: undefined })
                             const closeModalFunc = ComponentManager.getStateForComponent(formid, "closeModalFunc");
                             const resetClickedRowObjectId = ComponentManager.getStateForComponent(formid, 'resetClickedRowObjectId')

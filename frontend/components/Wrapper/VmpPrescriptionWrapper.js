@@ -9,7 +9,7 @@ const { labelsManager } = utils
 import WrapperSearch from '../utils_tools/WrapperSearch'
 const { useState, useEffect } = React;
 const { Icon } = elements
-const PrescriptionvetWrapper = (props, context) => {
+const VmpPrescriptionWrapper = (props, context) => {
     const [show, setShow] = useState(false);
     const [tableName, setTableName] = useState(false);
     const [searchWs, setSearchWs] = useState(undefined);
@@ -21,9 +21,8 @@ const PrescriptionvetWrapper = (props, context) => {
         const { formid } = props;
         const formData = ComponentManager.getStateForComponent(formid, "formTableData");
         setObjId(formData['OBJECT_ID'])
-        handleInputs(['root_pr_vet_FULL_NAME', 'root_pr_vet_DIPLOMA_NO'], handleVet);
-        handleInputs(['root_pr_owner_OWNER_FULL_NAME', 'root_pr_owner_HOLDING_NO', 'root_pr_owner_OWNER_ADDRESS'], handleHolding);
-        handleInputs(['root_pr_rp_TRADE_NAME', 'root_pr_rp_PHARMACEUTICAL_FORM'], handleVmp);
+        handleInputs(['root_prescription_group_vet_VET_FULL_NAME', 'root_prescription_group_vet_VET_REGISTRATION_NO'], handleVet);
+        handleInputs(['root_prescription_group_vmp_MEDICINE_NAME'], handleVmp);
     }, []);
 
     const triggerSearch = ({ table, searchWs, dataWs, onRowClick }) => {
@@ -45,19 +44,10 @@ const PrescriptionvetWrapper = (props, context) => {
         });
     };
 
-    const handleHolding = () => {
-        triggerSearch({
-            table: 'HOLDING',
-            searchWs: `WsAims/getHoldingsByCriteria/${props.svSession}`,
-            dataWs: false,
-            onRowClick: handleHoldingClick
-        });
-    };
-
     const handleVmp = () => {
         triggerSearch({
-            table: 'VMP',
-            searchWs: `WsVmp/vmp/getByCriteria/${props.svSession}/VMP`,
+            table: 'VMP_REGISTRATION',
+            searchWs: `WsVmp/vmp/getByCriteria/${props.svSession}/VMP_REGISTRATION`,
             dataWs: false,
             onRowClick: handleVmpClick
         });
@@ -72,27 +62,11 @@ const PrescriptionvetWrapper = (props, context) => {
         const formData = ComponentManager.getStateForComponent(formid, "formTableData");
 
         if (formData) {
-            formData['FARM_MEMBER_OBJECT_ID'] = row['FARM_MEMBERS.OBJECT_ID'];
-            formData["pr_vet"] = formData["pr_vet"] || {};
-            formData["pr_vet"]['FULL_NAME'] = row['FARM_MEMBERS.FULL_NAME'];
-            formData["pr_vet"]['DIPLOMA_NO'] = row['FARM_MEMBERS.DIPLOMA_NUMBER'] || 0;
+            formData['VET_OBJECT_ID'] = row['FARM_MEMBERS.OBJECT_ID'];
+            formData["prescription_group_vet"] = formData["prescription_group_vet"] || {};
+            formData["prescription_group_vet"]['VET_FULL_NAME'] = row['FARM_MEMBERS.FULL_NAME'];
+            formData["prescription_group_vet"]['VET_REGISTRATION_NO'] = row['FARM_MEMBERS.DIPLOMA_NUMBER'] || 0;
 
-            ComponentManager.setStateForComponent(formid, "formTableData", formData);
-            props.formInstance.setState({ formTableData: formData });
-            props.formInstance.onInputChange(formData);
-        }
-    };
-
-    const handleHoldingClick = (row) => {
-        const { formid } = props;
-        const formData = ComponentManager.getStateForComponent(formid, "formTableData");
-
-        if (formData) {
-            formData['HOLDING_OBJECT_ID'] = row['HOLDING.OBJECT_ID'];
-            formData["pr_owner"] = formData["pr_owner"] || {};
-            formData["pr_owner"]['OWNER_FULL_NAME'] = row['HOLDING.NAME'];
-            formData["pr_owner"]['HOLDING_NO'] = row['HOLDING.PIC'] || 0;
-            formData["pr_owner"]['OWNER_ADDRESS'] = row['HOLDING.PHYSICAL_ADDRESS']
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             props.formInstance.onInputChange(formData);
@@ -106,15 +80,9 @@ const PrescriptionvetWrapper = (props, context) => {
         console.log(formDatat);
         console.log(row);
         if (formData) {
-            formData['VMP_OBJECT_ID'] = row['VMP.OBJECT_ID'];
-            formData["pr_rp"] = formData["pr_rp"] || {};
-            formData["pr_meat"] = formData["pr_meat"] || {}
-            formData["pr_rp"]['TRADE_NAME'] = row['VMP.PRODUCT_NAME'];
-            formData["pr_rp"]['PHARMACEUTICAL_FORM'] = row['VMP.PHARMACEUTICAL_FORM'] || 0;
-            formData["pr_meat"]['MEAT'] = row['VMP.MEAT'] || 0;
-            formData["pr_meat"]['MILK'] = row['VMP.MILK'] || 0;
-            formData["pr_meat"]['EGGS'] = row['VMP.EGGS'] || 0;
-            formData["pr_meat"]['HONEY'] = row['VMP.HONEY'] || 0;
+            formData['VMP_OBJECT_ID'] = row['VMP_REGISTRATION.OBJECT_ID'];
+            formData["prescription_group_vmp"] = formData["prescription_group_vmp"] || {};
+            formData["prescription_group_vmp"]['MEDICINE_NAME'] = row['VMP_REGISTRATION.TRADE_NAME'];
             ComponentManager.setStateForComponent(formid, "formTableData", formData);
             props.formInstance.setState({ formTableData: formData });
             props.formInstance.onInputChange(formData);
@@ -129,13 +97,13 @@ const PrescriptionvetWrapper = (props, context) => {
                 el.onclick = action;
                 el.placeholder = labelsManager("click_to_choose", context, "farm_registry");
                 el.style.background = '#b9cfba';
-                el.style.color = '#ffffff';
+                el.style.color = '#333';
             }
         });
     };
 
     const downloadPDF = () => {
-        let url = window.server + `/farm-registry/generate/report/session-id/${props.svSession}/object-id/${objectId}/report-name/veterinarian_prescription_print/file-type/PDF/param/en_US`;
+        let url = window.server + `/farm-registry/generate/report/session-id/${props.svSession}/object-id/${objectId}/report-name/vmp_e-prescription/file-type/PDF/param/en_US`;
         window.open(url, '_blank');
     }
 
@@ -167,8 +135,8 @@ const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 });
 
-PrescriptionvetWrapper.contextTypes = {
+VmpPrescriptionWrapper.contextTypes = {
     intl: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps)(PrescriptionvetWrapper);
+export default connect(mapStateToProps)(VmpPrescriptionWrapper);

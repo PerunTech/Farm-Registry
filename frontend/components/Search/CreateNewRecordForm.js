@@ -1,25 +1,25 @@
 import { React, PropTypes, GenericForm, ComponentManager, axios, elements, createHashHistory, utils } from 'perun-core'
 const { alertUserResponse } = elements
-const { labelsManager, jsonToURI, flattenObject } = utils
-const { useState, useEffect } = React
+const { labelsManager } = utils
 import FarmWrapper from '../Wrapper/FarmWrapper';
 import HoldingWrapper from '../Wrapper/HoldingWrapper';
+
+const WRAPPERS = {
+  Farm: FarmWrapper,
+  Holding: HoldingWrapper
+};
+
+const formatWrapperName = (businessObjectName = '') =>
+  businessObjectName
+    .replace(/\d/g, '')
+    .replace(/_$/, '')
+    .replace(/(\w)(\w*)/g, (g0, g1, g2) => g1.toUpperCase() + g2.toLowerCase())
+    .replace(/_/g, '')
+    .trim();
+
 const CreateNewRecordForm = (props, context) => {
   const hashHistory = createHashHistory()
-  const [wrappers] = useState([{ Farm: FarmWrapper }, { Holding: HoldingWrapper }]);
-  const [wrapperName, setWrapperName] = useState(undefined);
-  useEffect(() => {
-    if (props.configuration?.wrapper) {
-      const formattedWrapper = props.businessObjectName
-        .replace(/\d/g, '')
-        .replace(/_$/, '')
-        .replace(/(\w)(\w*)/g, (g0, g1, g2) => g1.toUpperCase() + g2.toLowerCase())
-        .replace(/_/g, '')
-        .trim();
 
-      setWrapperName(formattedWrapper);
-    }
-  }, []);
   const resetFormSaveState = () => {
     ComponentManager.setStateForComponent('REGISTRATION_FORM', null, { saveExecuted: false })
   }
@@ -28,11 +28,15 @@ const CreateNewRecordForm = (props, context) => {
     const addFormConfig = props.configuration?.addForm;
     const url = addFormConfig?.save?.onSave;
     const contentType = addFormConfig?.save?.contentType || 'application/x-www-form-urlencoded';
-    const shouldEncode = addFormConfig?.save?.encode;
     const formData = e.formData || e;
-    const data = shouldEncode ? jsonToURI(flattenObject(formData)) : encodeURIComponent(JSON.stringify(formData));
-    const reqConfig = { method: 'post', url: `${window.server}${url}`, data, headers: { 'Content-Type': contentType } };
+    let data = formData
+    const params = addFormConfig?.save?.params || undefined
 
+    if (params) {
+      data = Object.assign(formData, params)
+    }
+
+    const reqConfig = { method: 'post', url: `${window.server}${url}`, data, headers: { 'Content-Type': contentType } };
     try {
       const res = await axios(reqConfig);
 
@@ -70,41 +74,25 @@ const CreateNewRecordForm = (props, context) => {
     }
   };
 
-  const generateForm = () => {
-    let inputWrapper = undefined;
-
-    const addFormConfig = props.configuration?.addForm
-    if (props.configuration?.wrapper) {
-      wrappers.forEach(wrap => {
-        const [key] = Object.keys(wrap);
-        if (wrapperName === key) {
-          inputWrapper = wrap[key];
-        }
-      });
-    }
-
-    return (
-      <GenericForm
-        className={`form-test custom-farm-registry-form aims-forms hide-initial-form-legend initial-holding`}
-        params={'FORM_DATA'}
-        key={`REGISTRATION_FORM`}
-        id={`REGISTRATION_FORM`}
-        method={addFormConfig?.configuration?.onSubmit}
-        uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
-        tableFormDataMethod={addFormConfig?.data?.onSubmit}
-        addSaveFunction={(e) => onSubmit(e)}
-        customSaveButtonName={labelsManager('save', context, 'farm_registry')}
-        hideBtns={'closeAndDelete'}
-        isAddForm={true}
-        inputWrapper={inputWrapper}
-      />
-    )
-  }
+  const addFormConfig = props.configuration?.addForm
+  const wrapperName = props.configuration?.wrapper ? formatWrapperName(props.businessObjectName) : undefined;
+  const inputWrapper = wrapperName ? WRAPPERS[wrapperName] : undefined;
 
   return (
-    <>
-      {generateForm()}
-    </>
+    <GenericForm
+      className={`form-test custom-farm-registry-form aims-forms hide-initial-form-legend initial-holding`}
+      params={'FORM_DATA'}
+      key={`REGISTRATION_FORM`}
+      id={`REGISTRATION_FORM`}
+      method={addFormConfig?.configuration?.onSubmit}
+      uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
+      tableFormDataMethod={addFormConfig?.data?.onSubmit}
+      addSaveFunction={(e) => onSubmit(e)}
+      customSaveButtonName={labelsManager('save', context, 'farm_registry')}
+      hideBtns={'closeAndDelete'}
+      isAddForm={true}
+      inputWrapper={inputWrapper}
+    />
   )
 }
 

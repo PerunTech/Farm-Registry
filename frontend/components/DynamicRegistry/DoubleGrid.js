@@ -1,27 +1,21 @@
 import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, utils } from 'perun-core'
+import * as Wrappers from '../Wrapper'
 const { labelsManager } = utils
 const { ReactBootstrap, alertUserResponse } = elements;
-const { store } = redux;
+const { store, updateSelectedRows } = redux;
 const { Modal } = ReactBootstrap;
-const { useState, useEffect } = React
+const { useState } = React
 
 const DoubleGrid = (props, context) => {
     let hashHistory = createHashHistory();
     const [show, setShow] = useState(false)
-    useEffect(() => {
-        return () => {
-            ComponentManager.cleanComponentReducerState(props.configuration.leftGrid.ID);
-            ComponentManager.cleanComponentReducerState(props.configuration.rightGrid.ID);
-        }
-    }, []);
-
     const handleRowClick = (_id, _rowIdx, row, grid) => {
         if (grid.customRowClick) {
             switch (grid.customRowClick?.type) {
                 case "route": {
                     store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
                     store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
-                    let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
+                    let route = grid.customRowClick?.route?.replace("{rowObjectId}", row[`${props?.tableName}.OBJECT_ID`]);
                     hashHistory.push(route)
                     break;
                 }
@@ -30,14 +24,22 @@ const DoubleGrid = (props, context) => {
             }
         }
     }
+    const customRowSelection = (selectedRows, gridId) => {
+        store.dispatch(updateSelectedRows(selectedRows, gridId))
+    }
     const generateGrid = (grid) => {
+        const multiSelect = grid?.multiSelect || false
+        const additionalTopBtns = props.configuration?.additionalTopButtons
+        if (additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0) {
+            store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: additionalTopBtns } })
+        }
         const buttonsArray = []
         return (
             <ExportableGrid
                 gridType={"READ_URL"}
                 key={grid.ID}
                 id={grid.ID}
-                heightRatio={0.8}
+                heightRatio={0.7}
                 configTableName={grid.configuration.onSubmit}
                 dataTableName={grid.data.onSubmit}
                 onRowClickFunct={(id, rowIdx, row) => handleRowClick(id, rowIdx, row, grid)}
@@ -46,12 +48,17 @@ const DoubleGrid = (props, context) => {
                 toggleCustomButton={grid.additionalBtns ? true : false}
                 customButton={() => { setShow(true) }}
                 customButtonLabel={labelsManager('add', context, 'farm_registry')}
+                enableMultiSelect={multiSelect}
+                onSelectChangeFunct={customRowSelection}
             />
         )
     }
     const generateForm = () => {
         const addFormConfig = props.configuration?.addForm
-
+        let Wrapper = undefined
+        if (typeof props.configuration?.wrapper === 'string' && Wrappers[props.configuration?.wrapper]) {
+            Wrapper = Wrappers[props.configuration?.wrapper]
+        }
         return (
             <GenericForm
                 className={`form-test custom-farm-registry-form`}
@@ -64,13 +71,24 @@ const DoubleGrid = (props, context) => {
                 addSaveFunction={(e) => onSubmit(e)}
                 customSaveButtonName={labelsManager('save', context, 'farm_registry')}
                 hideBtns={'closeAndDelete'}
+                objectId={props.farmObjId}
+                closeModal={closeModal}
+                inputWrapper={Wrapper}
             />
         )
     }
+
     const onSubmit = (e) => {
+        let formData = e.formData
         const resetFormSaveState = () => ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false })
         const url = props.configuration?.addForm?.save?.onSave
-        const reqConfig = { method: 'post', url: `${window.server}${url}`, data: encodeURIComponent(JSON.stringify(e.formData)) }
+        const contentType = props.configuration?.addForm?.save?.contentType
+        let params = props.configuration?.addForm?.save?.params
+        if (params) {
+            Object.assign(formData, { ...params })
+        }
+        const data = contentType ? formData : encodeURIComponent(JSON.stringify(formData))
+        const reqConfig = { method: 'post', url: `${window.server}${url}`, data: data, headers: { "Content-Type": contentType || 'application/x-www-form-urlencoded' }, }
         axios(reqConfig).then(res => {
             if (res?.data) {
                 const resType = res?.data?.type?.toLowerCase() || 'info'
@@ -78,7 +96,7 @@ const DoubleGrid = (props, context) => {
                     response: res, onConfirm: () => {
                         if (resType === 'success') {
                             setShow(false)
-                            GridManager.reloadGridData(props.configuration.leftGrid.ID)
+                            GridManager.reloadAllGrids()
                         }
                         resetFormSaveState()
                     }
@@ -92,6 +110,10 @@ const DoubleGrid = (props, context) => {
             alertUserResponse({ response: err, onConfirm: resetFormSaveState })
         })
     }
+    const closeModal = () => {
+        setShow(false)
+        GridManager.reloadAllGrids()
+    }
 
     return (
         <>
@@ -104,7 +126,7 @@ const DoubleGrid = (props, context) => {
                 </div>
             </div>
             {show && (
-                <Modal className={"farm-registry-modal"} show={show} onHide={() => setShow(false)}>
+                <Modal className={"farm-registry-modal"} show={show} onHide={() => closeModal()}>
                     <Modal.Header className={"farm-registry-modal-header"} closeButton>
                         <Modal.Title>{props.configuration.label}</Modal.Title>
                     </Modal.Header>

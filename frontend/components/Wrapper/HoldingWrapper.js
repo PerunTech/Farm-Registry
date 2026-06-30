@@ -35,7 +35,6 @@ const HoldingWrapper = (props, context) => {
     useEffect(() => {
         return () => {
             cleanInput()
-            ComponentManager.cleanComponentReducerState(gridId);
         };
     }, []);
     const cleanInput = () => {

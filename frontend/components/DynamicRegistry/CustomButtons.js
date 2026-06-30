@@ -1,8 +1,7 @@
 import { React, connect, axios, PropTypes, Loading, elements, ExportableGrid, GridManager, ComponentManager, GenericForm, redux, createHashHistory, utils } from 'perun-core'
-const { labelsManager, replaceFunc, getDynamicKey } = utils
+const { labelsManager, replaceFunc, getDynamicKey, flattenObject } = utils
 import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
-import { iconManager } from '../utils_tools/svgHolder';
 import ParentChildGrids from './ParentChildGrids'
 import Documents from './Documents'
 //WRAPPERS
@@ -16,6 +15,8 @@ import PrescriptionvetWrapper from '../Wrapper/PrescriptionvetWrapper';
 import PrescriptionmedicineWrapper from '../Wrapper/PrescriptionmedicineWrapper'
 import GmpauditproductWrapper from '../Wrapper/GmpauditproductWrapper'
 import ControlDocumentsWrapper from '../Wrapper/ControlDocumentsWrapper';
+import RecordSelectWrapper from '../Wrapper/RecordSelectWrapper';
+import VmpPrescriptionWrapper from '../Wrapper/VmpPrescriptionWrapper';
 const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -30,7 +31,7 @@ const CustomButtons = (props, context) => {
     const [wrapperName, setWrapper] = useState(undefined)
     const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper },
     { Holding: HoldingWrapper }, { Documents: DocumentsWrapper }, { Fees: FeesWrapper }, { Prescriptionvet: PrescriptionvetWrapper },
-    { Prescriptionmedicine: PrescriptionmedicineWrapper }, { Gmpauditproduct: GmpauditproductWrapper }, { Controldocuments: ControlDocumentsWrapper }])
+    { Prescriptionmedicine: PrescriptionmedicineWrapper }, { Gmpauditproduct: GmpauditproductWrapper }, { Controldocuments: ControlDocumentsWrapper }, { Vmpprescription: VmpPrescriptionWrapper }])
     const [renderForm, setRender] = useState(true)
     const [rowCliked, setRowClicked] = useState(undefined)
     const [_cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
@@ -43,7 +44,6 @@ const CustomButtons = (props, context) => {
         wrapper = wrapper.replace(/[0-9]/g, '');
         setWrapper(wrapper)
         return () => {
-            ComponentManager.cleanComponentReducerState(props.tableName + props.appObjId);
             store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], props.tableName + props.appObjId] })
             ComponentManager.setStateForComponent(props.tableName + props.appObjId, 'selectedIndexes', [])
             ComponentManager.setStateForComponent(props.tableName + props.appObjId, 'selectedIndexesBeforeFilters', [])
@@ -192,7 +192,7 @@ const CustomButtons = (props, context) => {
         store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
         store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
         const customRowClickConfig = props.configuration?.objectConfiguration?.customRowClick
-        const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${props.tableName}.OBJECT_ID`]);
+        const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${props?.configuration?.tableName}.OBJECT_ID`]);
         hashHistory.push(route)
     }
     const btnArrCreate = (btnArray, multiSelect) => {
@@ -219,7 +219,7 @@ const CustomButtons = (props, context) => {
                                     onClick={() => customBtnAction(el, multiSelect)}
                                     className={`${togglableChild ? 'farm-registry-outer-btn-togglableChild' : 'farm-registry-outer-btn'} ${el.ID.toLowerCase()}-farm-registry-btn`}
                                     id={el.ID}>
-                                    {!togglableChild && <span className={iconManager.getIcon(el.icon) ? "farm-registry-outer-btn-img" : ''}>{el.icon && iconManager.getIcon(el.icon)}</span>} {el.label}</button>
+                                    {el.label}</button>
                                 {el.childBtnArray && actionToggle === el.ID && generateOuterBtns(el.childBtnArray, multiSelect, true)}
                             </div>
                         );
@@ -237,6 +237,10 @@ const CustomButtons = (props, context) => {
         const btnArray = props.configuration.objectConfiguration.additionalBtns
         const outerBtnArray = props.configuration.objectConfiguration.outerBtnArray
         const _maxLength = props.configuration.objectConfiguration.maxLength || 9999
+        const additionalTopBtns = props.configuration.objectConfiguration.additionalTopButtons
+        if (additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0) {
+            store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: additionalTopBtns } })
+        }
         const grid = <div className={`${`custom-grid-container-${props.tableName.toLowerCase()}`} ${props.configuration.objectConfiguration.readOnly && 'read-only-grid'}`}>
             {outerBtnArray && generateOuterBtns(outerBtnArray, multiSelect)}
             <ExportableGrid
@@ -253,7 +257,7 @@ const CustomButtons = (props, context) => {
                 enableMultiSelect={multiSelect}
                 onSelectChangeFunct={customRowSelection}
                 buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : undefined}
-                heightRatio={outerBtnArray ? 0.7 : 0.8}
+                heightRatio={0.72}
             />
 
         </div >
@@ -265,7 +269,7 @@ const CustomButtons = (props, context) => {
         store.dispatch(updateSelectedRows(selectedRows, gridId));
     };
     const reloadGrid = (gridId, multiSelect) => {
-        GridManager.reloadGridData(gridId)
+        GridManager.reloadAllGrids()
         if (multiSelect) {
             store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], gridId] })
             ComponentManager.setStateForComponent(gridId, 'selectedIndexes', [])
@@ -277,21 +281,12 @@ const CustomButtons = (props, context) => {
         if (props.configuration.objectConfiguration?.isSvarogForm) {
             setClickedRowObjectId(row[`SVAROG_FORM.OBJECT_ID`] || 0)
         } else {
-            setClickedRowObjectId(row[`${props.tableName}.OBJECT_ID`] || 0)
+            setClickedRowObjectId(row[`${props?.configuration?.tableName}.OBJECT_ID`] || 0)
             setRowClicked(row)
         }
         setShowModal(true)
     }
     const generateForm = (isModal, resetTheId) => {
-        let inputWrapper
-        if (props.configuration.objectConfiguration.wrapper) {
-            wrappers.forEach(wrap => {
-                const keys = Object.keys(wrap);
-                if (wrapperName === keys[0]) {
-                    inputWrapper = wrap[wrapperName];
-                }
-            });
-        }
         // Set a new ID for the form, so we get a re-render
         if (resetTheId) {
             setDynamicFormId(getDynamicKey())
@@ -301,18 +296,42 @@ const CustomButtons = (props, context) => {
         let uiSchemaConfig = props.configuration.objectConfiguration?.uischema?.onSubmit
         let formDataWs = props.configuration.objectConfiguration?.data?.onSubmit
         let onSubmitWs = props.configuration.objectConfiguration?.save?.onSave
-        // If we're rendering a modal, the configuration services are a bit nested
+        let contentType = props.configuration.objectConfiguration?.save?.contentType
+        let params = props.configuration.objectConfiguration?.save?.params
         let refreshSummary = props.configuration.objectConfiguration?.refreshSummary
+        let wrapperConfig = props.configuration.objectConfiguration?.wrapper
+        // If we're rendering a modal, the configuration services are a bit nested
         if (isModal) {
             // #revise_me
             // We need to find a smarter way to get the WS paths, instead of duplicating the nested properties all over again
             jsonSchemaConfig = props.configuration.objectConfiguration?.form?.configuration?.onSubmit
             uiSchemaConfig = props.configuration.objectConfiguration?.form?.uischema?.onSubmit
             formDataWs = props.configuration.objectConfiguration?.form?.data?.onSubmit
-            // If the form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
-            formDataWs = replaceFunc(formDataWs, props.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
+            // If the JSON schema or form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
+            jsonSchemaConfig = replaceFunc(jsonSchemaConfig, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
+            formDataWs = replaceFunc(formDataWs, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
+            contentType = props.configuration.objectConfiguration?.form?.save?.contentType
+            params = props.configuration.objectConfiguration?.form?.save?.params
+            // Some configuration items don't nest the wrapper key, so we need to find the nested one only if the first-level doesn't exist
+            if (!wrapperConfig) {
+                wrapperConfig = props.configuration.objectConfiguration?.form?.wrapper
+            }
         }
+        let inputWrapper
+        if (wrapperConfig) {
+            if (Object.keys(wrapperConfig).length > 0) {
+                inputWrapper = RecordSelectWrapper
+            } else {
+                wrappers.forEach(wrap => {
+                    const keys = Object.keys(wrap);
+                    if (wrapperName === keys[0]) {
+                        inputWrapper = wrap[wrapperName];
+                    }
+                });
+            }
+        }
+
         let hideBtns = 'close'
 
         let readOnlyConfig
@@ -349,10 +368,11 @@ const CustomButtons = (props, context) => {
                 method={jsonSchemaConfig}
                 uiSchemaConfigMethod={uiSchemaConfig}
                 tableFormDataMethod={formDataWs}
-                addSaveFunction={(e) => saveForm(e, onSubmitWs, isModal, refreshSummary)}
+                addSaveFunction={(e) => saveForm(e, onSubmitWs, contentType, params, isModal, refreshSummary)}
                 addDeleteFunction={(_id, _action, _session, formData) => deleteFunc(_id, _action, _session, formData, refreshSummary)}
                 hideBtns={hideBtns}
                 inputWrapper={inputWrapper}
+                wrapperConfig={wrapperConfig}
                 closeModalFunc={() => setShowModal(false)}
                 resetClickedRowObjectId={() => setClickedRowObjectId(0)}
                 objId={props.appObjId}
@@ -380,8 +400,9 @@ const CustomButtons = (props, context) => {
         ComponentManager.setStateForComponent(dynamicFormId, null, { saveExecuted: false })
         setRender(true)
     }
-    const saveForm = (e, wsPath, isModal, refreshSummary) => {
+    const saveForm = (e, wsPath, contentType, params, isModal, refreshSummary) => {
         let formData = e.formData
+        const flatFormData = flattenObject(formData)
         // // Check if every value in the form data object is nullish
         const isEmpty = Object.values(formData).every(v => v === null || v === undefined)
         // // Filter out every nullish value from the form data object
@@ -392,12 +413,21 @@ const CustomButtons = (props, context) => {
             const label = labelsManager('enter_some_values', context, 'farm_registry')
             alertUserV2({ type: 'info', title: label, onConfirm: resetFormSaveState })
         } else {
+            if (params && Object.keys(params).length > 0) {
+                const additionalParams = Object.assign({}, params)
+                Object.entries(additionalParams).forEach(([key, value]) => {
+                    if (value === '{rowObjectId}') {
+                        Object.assign(additionalParams, { [key]: flatFormData.OBJECT_ID || 0 })
+                    }
+                })
+                Object.assign(formData, additionalParams)
+            }
             const url = `${window.server}${wsPath}`
             axios({
                 method: "post",
-                data: encodeURIComponent(JSON.stringify(formData)),
+                data: contentType && contentType.includes('application/json') ? formData : encodeURIComponent(JSON.stringify(formData)),
                 url,
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                headers: { "Content-Type": contentType || 'application/x-www-form-urlencoded' },
             }).then(res => {
                 if (res?.data) {
                     const resType = res.data?.type?.toLowerCase() || 'info'
@@ -407,7 +437,7 @@ const CustomButtons = (props, context) => {
                         setRender(false)
                         alertUserResponse({ response: res.data, onConfirm: resetFormSaveState })
                         if (isModal) {
-                            GridManager.reloadGridData(props.tableName + props.appObjId)
+                            GridManager.reloadAllGrids()
                             closeFormModal()
                         }
                         if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
@@ -433,7 +463,7 @@ const CustomButtons = (props, context) => {
                 alertUserResponse({ response: res.data, onConfirm: resetFormDeleteState })
                 if (resType === 'success') {
                     closeFormModal()
-                    GridManager.reloadGridData(props.tableName + props.appObjId);
+                    GridManager.reloadAllGrids();
                     if (refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                 }
             }

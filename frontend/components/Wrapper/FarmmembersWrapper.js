@@ -3,18 +3,20 @@ import {
     connect,
     elements,
     ComponentManager,
-    PropTypes, utils
+    PropTypes, utils, Loading, axios
 } from "perun-core";
 import SearchComponent from '../SearchComp/SearchComponent';
 const { labelsManager } = utils
 const { useState, useEffect, useReducer } = React;
-const { ReactBootstrap } = elements;
+const { ReactBootstrap, alertUserResponse, Icon } = elements;
 const { Modal } = ReactBootstrap;
 
 let gridId;
 let _inputholder = "";
 const FarmmembersWrapper = (props, context) => {
     const [show, setShow] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [printBtn, setPrintBtn] = useState(false)
     const initialState = {
         firstInputId: "root_ID_NO",
         secondInputId: "root_FULL_NAME"
@@ -28,12 +30,7 @@ const FarmmembersWrapper = (props, context) => {
 
     useEffect(() => {
         handleInputs();
-    }, []);
-
-    useEffect(() => {
-        return () => {
-            ComponentManager.cleanComponentReducerState(gridId);
-        };
+        hanldePrints()
     }, []);
 
     const handleInputs = () => {
@@ -94,8 +91,49 @@ const FarmmembersWrapper = (props, context) => {
         }
     };
 
+    const hanldePrints = () => {
+        const { formid } = props;
+        const formTableData = ComponentManager.getStateForComponent(
+            formid,
+            "formTableData"
+        );
+        const isEmpty = Object?.keys(formTableData || {})?.length === 0;
+        if (isEmpty) {
+            setPrintBtn(!isEmpty)
+        } else {
+            setLoading(true)
+            const url = `${window.server}/farm-registry/availableAssociatedPersonPrint/${props.svSession}/${formTableData?.['OBJECT_ID'] || 0}`
+            axios.get(url).then(res => {
+                setLoading(false)
+                if (res?.data) {
+                    setPrintBtn(res?.data?.data?.availablePrint)
+                }
+            }).catch(err => {
+                setLoading(false)
+                console.error(err)
+                alertUserResponse({ response: err })
+            });
+        }
+    }
+
+    const downloadPDF = () => {
+        const { formid } = props;
+        const formTableData = ComponentManager.getStateForComponent(
+            formid,
+            "formTableData"
+        );
+        let url = window.server + `/farm-registry/generate/report/session-id/${props.svSession}/object-id/${formTableData?.['OBJECT_ID'] || 0}/report-name/associated_person_certificate/file-type/PDF/param/en_US`;
+        window.open(url, '_blank');
+    }
     return (
         <>
+            {loading && <Loading />}
+            {printBtn && <div className='perun-menu-buttons-container'>
+                <button className='btn-success btn_save_form download-menu-btn' onClick={downloadPDF}>
+                    {labelsManager("download_pro_cert", context, "farm_registry")}
+                    <span className='download-span'>{<Icon name="IconPrinter" />}</span>
+                </button>
+            </div>}
             {props.children}
             {show && (
                 <Modal className={"farm-registry-modal"} show={show} onHide={() => { setShow(false) }}>

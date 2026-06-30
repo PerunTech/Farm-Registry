@@ -1,8 +1,7 @@
 import { React, PropTypes, ExportableGrid, Loading, ComponentManager, connect, redux, elements, axios, GenericForm, createHashHistory, utils } from 'perun-core'
 const { labelsManager, jsonToURI, flattenObject, updateIdScreen } = utils
 import CreateNewRecordForm from './CreateNewRecordForm'
-import { iconManager } from "../utils_tools/svgHolder";
-const { alertUserResponse, alertUserV2, ReactBootstrap } = elements
+const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap
 const { store, dataToRedux, removeAsyncReducer } = redux
 const { useState, useEffect } = React
@@ -20,6 +19,7 @@ const Search = (props, context) => {
   useEffect(() => {
     updateIdScreen('farm_registry', context, 'farm_registry')
     getBusinessObjectName()
+    store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: undefined } })
     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSideMenu', value: false } })
     store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: '' } })
@@ -99,25 +99,17 @@ const Search = (props, context) => {
   const getConfiguration = () => {
     setLoading(true)
     const { svSession } = props
-    const url = `${window.server}/custom-menu/get-configuration/sid/${svSession}/component-name/main-registry-search-menu/object-id/0/object-type/${businessObjectName}`
+    const url = `${window.server}/Menu/getMenu/${svSession}/0/0/farm_registry-${businessObjectName?.toLowerCase()}-search-main`
     axios.get(url).then(res => {
       setLoading(false)
-      if (res?.data) {
-        const resType = res.data?.type?.toLowerCase()
-        if (resType && resType === 'error') {
-          alertUserResponse({ response: res.data })
-        } else {
-          if (res.data?.data && Array.isArray(res.data?.data) && res.data?.data?.length > 0) {
-            res.data.data.forEach(item => {
-              // Match the appropriate configuration item according to the selected table
-              if (item.ID === businessObjectName) {
-                setConfiguration(item.objectConfiguration)
-              }
-            })
-          }
-        }
+      if (res?.data?.type?.toLowerCase() === 'error') {
+        alertUserResponse({ response: res.data })
+        return
       }
-
+      const buttonArray = res?.data?.data?.buttonArray
+      if (Array.isArray(buttonArray) && buttonArray.length > 0) {
+        setConfiguration(buttonArray[0].objectConfiguration)
+      }
     }).catch(err => {
       setLoading(false)
       console.error(err)
@@ -126,6 +118,7 @@ const Search = (props, context) => {
   }
 
   const onRowClick = (_id, _idx, row) => {
+    store.dispatch({ type: 'SAVE', payload: { key: `farm-registry-module-row-${businessObjectName}`, value: row } })
     const href = `/main/registry/${businessObjectName}/${row[`${businessObjectName}.OBJECT_ID`]}/summary`
     hashHistory.push(href)
   }
@@ -230,13 +223,13 @@ const Search = (props, context) => {
             {(!configuration?.readOnly) && <button id="add_vmp" onClick={() => setShowRegistrationModal(true)} className="sidemenu-btn_sub">
               <span className="sidemenu-btn-title">
                 <span className="sidemenu-dynamic-comp-icon-holder">
-                  {iconManager.getIcon('ADD_FARM')}
+                  {<Icon size="25" name="IconHomePlus" />}
                 </span><p>{labelsManager(`add_${businessObjectName?.toLowerCase()}`, context, 'farm_registry')}</p></span></button>}
 
             {configuration && <button id="search_vmp" onClick={() => setToggleSearch(!toggleSearch)} className={`sidemenu-btn_sub ${toggleSearch && 'sidemenu-active'}`}>
               <span className="sidemenu-btn-title">
                 <span className="sidemenu-dynamic-comp-icon-holder">
-                  {iconManager.getIcon('SEARCH_FARM')}
+                  {<Icon size="25" name="IconHomeSearch" />}
                 </span><p>{labelsManager(`search_${businessObjectName?.toLowerCase()}`, context, 'farm_registry')}</p></span></button>}
           </div>
           {configuration && toggleSearch && generateForm()}

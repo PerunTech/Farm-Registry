@@ -68,6 +68,11 @@ const SearchDynamic = (props, context) => {
         const url = searchConfig?.save?.onSave;
         const reqConfig = { method: searchType, url: `${window.server}${url}` };
         const shouldEncode = props.configuration?.searchForm.save.encode;
+        const params = props.configuration?.searchForm.params
+        if (params) {
+            Object.assign(formData, { ...params })
+        }
+
         if (searchType === 'POST') {
             reqConfig.data = shouldEncode ? jsonToURI(flattenObject(formData)) : JSON.stringify(formData)
         }
@@ -83,10 +88,10 @@ const SearchDynamic = (props, context) => {
                 setLoading(false)
                 if (res?.data?.data && Array.isArray(res.data.data) && res.data.data?.length > 0) {
                     setResultsData(res.data.data)
-                    GridManager.reloadGridData(gridId + '_GRID');
+                    GridManager.reloadAllGrids();
                 } else if (res?.data && Array.isArray(res?.data) && res.data?.length > 0) {
                     setResultsData(res.data)
-                    GridManager.reloadGridData(gridId + '_GRID');
+                    GridManager.reloadAllGrids();
                 } else {
                     alertUserResponse({ response: res })
                 }

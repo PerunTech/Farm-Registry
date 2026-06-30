@@ -30,11 +30,6 @@ const FarmWrapper = (props, context) => {
     useEffect(() => {
         handleInputs();
     }, []);
-    useEffect(() => {
-        return () => {
-            ComponentManager.cleanComponentReducerState(gridId);
-        };
-    }, []);
 
     const handleInputs = () => {
         const firstInput = document.getElementById(firstInputId);
