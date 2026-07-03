@@ -1,5 +1,4 @@
 import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, utils } from 'perun-core'
-import * as Wrappers from '../Wrapper'
 const { labelsManager } = utils
 const { ReactBootstrap, alertUserResponse } = elements;
 const { store, updateSelectedRows } = redux;
@@ -55,10 +54,9 @@ const DoubleGrid = (props, context) => {
     }
     const generateForm = () => {
         const addFormConfig = props.configuration?.addForm
-        let Wrapper = undefined
-        if (typeof props.configuration?.wrapper === 'string' && Wrappers[props.configuration?.wrapper]) {
-            Wrapper = Wrappers[props.configuration?.wrapper]
-        }
+        const Wrapper = typeof props.configuration?.wrapper === 'string'
+            ? window.__farmRegistryWrappers.getWrapper(props.configuration.wrapper)
+            : undefined
         return (
             <GenericForm
                 className={`form-test custom-farm-registry-form`}

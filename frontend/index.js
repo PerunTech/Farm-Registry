@@ -2,6 +2,7 @@ import { Search } from './components/Search'
 import { DynamicRegistry } from './components/DynamicRegistry'
 import mapDataReducer from './reducers/reducerMap'
 import { redux, persistBundleReducers } from 'perun-core'
+import './wrappers'
 const { store, injectAsyncReducer } = redux;
 injectAsyncReducer(store, 'farm_registry.mapData', mapDataReducer)
 persistBundleReducers(['farm_registry.mapData'])
