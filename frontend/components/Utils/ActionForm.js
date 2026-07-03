@@ -1,7 +1,7 @@
 import { React, Loading, GenericForm, axios, elements } from 'perun-core'
 const { useEffect, useState } = React
 const { alertUserResponse } = elements
-import RecordSelectWrapper from '../Wrapper/RecordSelectWrapper';
+
 const ActionForm = (props) => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState(undefined)
@@ -77,7 +77,7 @@ const ActionForm = (props) => {
     let inputWrapper
     if (wrapperConfig) {
       if (Object.keys(wrapperConfig).length > 0) {
-        inputWrapper = RecordSelectWrapper
+        inputWrapper = window.__farmRegistryWrappers.getWrapper('RecordSelectWrapper')
       }
     }
 
