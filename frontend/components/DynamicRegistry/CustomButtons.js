@@ -4,19 +4,6 @@ import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
 import ParentChildGrids from './ParentChildGrids'
 import Documents from './Documents'
-//WRAPPERS
-import FarmmembersWrapper from '../Wrapper/FarmmembersWrapper';
-import CadparcelWrapper from '../Wrapper/CadparcelWrapper'
-import FarmWrapper from '../Wrapper/FarmWrapper'
-import HoldingWrapper from '../Wrapper/HoldingWrapper'
-import DocumentsWrapper from '../Wrapper/DocumentsWrapper';
-import FeesWrapper from '../Wrapper/FeesWrapper';
-import PrescriptionvetWrapper from '../Wrapper/PrescriptionvetWrapper';
-import PrescriptionmedicineWrapper from '../Wrapper/PrescriptionmedicineWrapper'
-import GmpauditproductWrapper from '../Wrapper/GmpauditproductWrapper'
-import ControlDocumentsWrapper from '../Wrapper/ControlDocumentsWrapper';
-import RecordSelectWrapper from '../Wrapper/RecordSelectWrapper';
-import VmpPrescriptionWrapper from '../Wrapper/VmpPrescriptionWrapper';
 const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -29,15 +16,12 @@ const CustomButtons = (props, context) => {
     const [dynamicFormId, setDynamicFormId] = useState(getDynamicKey())
     const [clickedRowObjectId, setClickedRowObjectId] = useState(0)
     const [wrapperName, setWrapper] = useState(undefined)
-    const [wrappers, _setWrappers] = useState([{ Farmmembers: FarmmembersWrapper }, { Cadparcel: CadparcelWrapper }, { Farm: FarmWrapper },
-    { Holding: HoldingWrapper }, { Documents: DocumentsWrapper }, { Fees: FeesWrapper }, { Prescriptionvet: PrescriptionvetWrapper },
-    { Prescriptionmedicine: PrescriptionmedicineWrapper }, { Gmpauditproduct: GmpauditproductWrapper }, { Controldocuments: ControlDocumentsWrapper }, { Vmpprescription: VmpPrescriptionWrapper }])
     const [renderForm, setRender] = useState(true)
     const [rowCliked, setRowClicked] = useState(undefined)
     const [_cssTableName, _setT] = useState(props.tableName.replace(/\d/g, '').replace(/_$/, ''))
     const [actionToggle, setActionToggle] = useState(undefined)
     useEffect(() => {
-        let wrapper = props.tableName.replace(/\d/g, '').replace(/_$/, '').replace(/(\w)(\w*)/g, function (g0, g1, g2) {
+        let wrapper = props.tableName.replace(/\d/g, '').replace(/_$/, '').replace(/(\w)(\w*)/g, function(g0, g1, g2) {
             return g1.toUpperCase() + g2.toLowerCase();
         }).replace(/_/g, '').replaceAll(' ', '');
         wrapper = wrapper.charAt(0).toUpperCase() + wrapper.slice(1).toLowerCase();
@@ -320,15 +304,11 @@ const CustomButtons = (props, context) => {
         }
         let inputWrapper
         if (wrapperConfig) {
+            const { getWrapper } = window.__farmRegistryWrappers
             if (Object.keys(wrapperConfig).length > 0) {
-                inputWrapper = RecordSelectWrapper
+                inputWrapper = getWrapper('RecordSelectWrapper')
             } else {
-                wrappers.forEach(wrap => {
-                    const keys = Object.keys(wrap);
-                    if (wrapperName === keys[0]) {
-                        inputWrapper = wrap[wrapperName];
-                    }
-                });
+                inputWrapper = getWrapper(wrapperName)
             }
         }
 

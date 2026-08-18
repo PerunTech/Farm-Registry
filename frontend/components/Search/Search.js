@@ -193,7 +193,7 @@ const Search = (props, context) => {
     const searchConfig = configuration?.searchForm
     return (
       <GenericForm
-        className='farm-registry-search-form'
+        className='form-test person-registry-forms admin-console-search-from person-registry-search-form'
         params='FORM_DATA'
         key='AR_SEARCH_FORM'
         id='AR_SEARCH_FORM'
@@ -232,9 +232,9 @@ const Search = (props, context) => {
                   {<Icon size="25" name="IconHomeSearch" />}
                 </span><p>{labelsManager(`search_${businessObjectName?.toLowerCase()}`, context, 'farm_registry')}</p></span></button>}
           </div>
-          {configuration && toggleSearch && generateForm()}
         </div>
-        <div className='farm-registry-search-grid-container farm-search-container-background'>
+        <div className='farm-registry-search-grid-container farm-search-container-background phc-search-grid-container person-registry-search-grid-container'>
+          {configuration && toggleSearch && generateForm()}
           {resultsData && generateGrid(resultsData)}
         </div>
         {showRegistrationModal && (

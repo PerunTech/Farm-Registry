@@ -1,13 +1,6 @@
 import { React, PropTypes, GenericForm, ComponentManager, axios, elements, createHashHistory, utils } from 'perun-core'
 const { alertUserResponse } = elements
 const { labelsManager } = utils
-import FarmWrapper from '../Wrapper/FarmWrapper';
-import HoldingWrapper from '../Wrapper/HoldingWrapper';
-
-const WRAPPERS = {
-  Farm: FarmWrapper,
-  Holding: HoldingWrapper
-};
 
 const formatWrapperName = (businessObjectName = '') =>
   businessObjectName
@@ -76,7 +69,7 @@ const CreateNewRecordForm = (props, context) => {
 
   const addFormConfig = props.configuration?.addForm
   const wrapperName = props.configuration?.wrapper ? formatWrapperName(props.businessObjectName) : undefined;
-  const inputWrapper = wrapperName ? WRAPPERS[wrapperName] : undefined;
+  const inputWrapper = wrapperName ? window.__farmRegistryWrappers.getWrapper(wrapperName) : undefined;
 
   return (
     <GenericForm
