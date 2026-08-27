@@ -212,7 +212,7 @@ const Search = (props, context) => {
         onRowClickFunct={onRowClick}
         className='animals-search-grid'
         buttonsArray={buttonsArray}
-        heightRatio={0.8}
+        heightRatio={0.6}
       />
     )
   }
