@@ -33,6 +33,12 @@ const Search = (props, context) => {
     }
   }, [businessObjectName])
 
+  useEffect(() => {
+    if (configuration) {
+      prefillPoaHoldings()
+    }
+  }, [configuration, props.svSession])
+
   const ssOLogin = () => {
     if (props?.samlFlag) {
       let url = window.server + `/SvSecurity/getPersonalUserInfo/${props.svSession}/user_info`
@@ -77,6 +83,66 @@ const Search = (props, context) => {
       setLoading(false)
       alertUserResponse({ response: err })
     })
+  }
+
+  /**
+   * Resolves the user behind the current session. The user id kept in the store is
+   * deliberately not reused: it is only cleared on an explicit logout, so after a
+   * session expiry it still holds the previous user, and it is repopulated
+   * asynchronously on login, so it can be empty when this screen mounts.
+   */
+  const resolveUserObjectId = async () => {
+    const url = `${window.server}/SvSecurity/getPersonalUserInfo/${props.svSession}/user_info`
+    const res = await axios.get(url)
+    return res?.data?.data?.['com.prtech.svarog_common.DbDataObject']?.object_id
+  }
+
+  /**
+   * Reads the objects of a table the logged in user is empowered over through a
+   * POA link. The web service answers with a plain 'LINK NOT FOUND IN DATABASE'
+   * string (on an HTTP 200) when it cannot resolve exactly one POA link type for
+   * the requested table, so anything that is not an array counts as no data.
+   */
+  const getPoaObjects = async (userObjectId, tableName) => {
+    const url = `${window.server}/ReactElements/getObjectByLink/${props.svSession}/${userObjectId}/${tableName}/POA/0`
+    const res = await axios.get(url)
+    return Array.isArray(res?.data) ? res.data : []
+  }
+
+  /**
+   * Users that are empowered (POA link) over an organisational unit work over the
+   * whole register, so no records are pre-loaded for them. Users without such a
+   * link work only over the holdings they are empowered over, so those records are
+   * shown as the initial result set of the search screen. A user empowered over a
+   * single holding has nothing to pick from, so that holding is opened right away,
+   * and one empowered over none is left with just the search form.
+   */
+  const prefillPoaHoldings = async () => {
+    setLoading(true)
+    let singleHolding = undefined
+    try {
+      const userObjectId = await resolveUserObjectId()
+      if (userObjectId) {
+        const orgUnits = await getPoaObjects(userObjectId, 'SVAROG_ORG_UNITS')
+        if (orgUnits.length === 0) {
+          const holdings = await getPoaObjects(userObjectId, businessObjectName)
+          if (holdings.length === 1) {
+            singleHolding = holdings[0]
+          } else if (holdings.length > 1) {
+            setResultsData(holdings)
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err)
+      alertUserResponse({ response: err })
+    } finally {
+      setLoading(false)
+    }
+    // navigate only once the screen is done loading, since it unmounts on redirect
+    if (singleHolding) {
+      onRowClick(null, null, singleHolding)
+    }
   }
 
   const getBusinessObjectName = () => {
