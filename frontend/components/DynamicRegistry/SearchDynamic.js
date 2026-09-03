@@ -1,7 +1,7 @@
 import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory, utils } from 'perun-core'
 const { jsonToURI, flattenObject, labelsManager } = utils
-const { alertUserResponse } = elements
-const { store, dataToRedux, removeAsyncReducer } = redux
+const { alertUserResponse, alertUserV2 } = elements
+const { store, dataToRedux, removeAsyncReducer, updateSelectedRows } = redux
 const { useState } = React
 
 const SearchDynamic = (props, context) => {
@@ -44,9 +44,168 @@ const SearchDynamic = (props, context) => {
         hashHistory.push(route)
     }
 
+    const customRowSelection = (selectedRows, selectedGridId) => {
+        store.dispatch(updateSelectedRows(selectedRows, selectedGridId));
+    };
+
+    const reloadGrid = (reloadGridId, multiSelect) => {
+        GridManager.reloadAllGrids()
+        if (multiSelect) {
+            store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], reloadGridId] })
+            ComponentManager.setStateForComponent(reloadGridId, 'selectedIndexes', [])
+            ComponentManager.setStateForComponent(reloadGridId, 'selectedIndexesBeforeFilters', [])
+            ComponentManager.setStateForComponent(reloadGridId, 'selectedRowsBeforeFilters', [])
+        }
+    }
+
+    const customBtnAction = (el, multiSelect) => {
+        const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
+
+        const executeAction = () => {
+            let promptLabel = labelsManager('confirm_submit_action', context, 'farm_registry')
+            if (el.useMulti) {
+                promptLabel = labelsManager('confirm_action_execution', context, 'farm_registry')
+            }
+            let saveUrl = `${window.server}${el?.['onSave']}`
+            let data
+            switch (el['type']) {
+                case 'GET': {
+                    const executeGetAction = () => {
+                        setLoading(true)
+                        axios.get(saveUrl).then(res => {
+                            setLoading(false)
+                            if (res?.data) {
+                                alertUserResponse({ response: res.data })
+                            }
+                        }).catch(err => {
+                            setLoading(false)
+                            console.error(err)
+                            alertUserResponse({ response: err })
+                        });
+                    }
+                    alertUserV2({
+                        type: 'info',
+                        title: promptLabel,
+                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+                        onConfirm: executeGetAction,
+                        showCancel: true,
+                        cancelButtonText: labelsManager('no', context, 'farm_registry')
+                    })
+                    break;
+                }
+                case 'POST': {
+                    const executePostAction = () => {
+                        setLoading(true)
+                        data = JSON.stringify(selectedGridRows)
+                        axios({
+                            method: "post",
+                            data,
+                            url: saveUrl,
+                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        }).then(res => {
+                            if (res?.data) {
+                                alertUserResponse({
+                                    response: res.data, onConfirm: () => {
+                                        reloadGrid(gridId + '_GRID', multiSelect)
+                                        setLoading(false)
+                                    }
+                                })
+                            }
+                        }).catch(err => {
+                            setLoading(false)
+                            console.error(err)
+                            alertUserResponse({ response: err })
+                        });
+                    }
+                    alertUserV2({
+                        type: 'info',
+                        title: promptLabel,
+                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+                        onConfirm: executePostAction,
+                        showCancel: true,
+                        cancelButtonText: labelsManager('no', context, 'farm_registry')
+                    })
+                    break;
+                }
+                case 'action': {
+                    const action = () => {
+                        setLoading(true)
+                        data = {
+                            "objectArray": selectedGridRows,
+                            "objectParams": [{}]
+                        }
+                        axios({
+                            method: el.method,
+                            data: JSON.stringify(data),
+                            url: `${window.server}${el.url}`,
+                            headers: { "Content-Type": el.contentType },
+                        }).then(res => {
+                            if (res?.data) {
+                                alertUserResponse({
+                                    response: res.data, onConfirm: () => {
+                                        reloadGrid(gridId + '_GRID', multiSelect)
+                                        setLoading(false)
+                                    }
+                                })
+                            }
+                        }).catch(err => {
+                            console.error(err)
+                            setLoading(false)
+                            alertUserResponse({ response: err })
+                        });
+                    }
+                    alertUserV2({
+                        type: 'info',
+                        title: promptLabel,
+                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+                        onConfirm: action,
+                        showCancel: true,
+                        cancelButtonText: labelsManager('no', context, 'farm_registry')
+                    })
+                    break;
+                }
+                case 'link': {
+                    let href = el['route']
+                    hashHistory.push(href)
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        if (el.useMulti) {
+            if (selectedGridRows.length > 0) {
+                executeAction()
+            } else {
+                alertUserV2({ type: 'info', title: labelsManager('select_multi', context, 'farm_registry') })
+            }
+        } else {
+            executeAction()
+        }
+    }
+
+    const btnArrCreate = (btnArray, multiSelect) => {
+        let btnTest = []
+        btnArray.map((el, i) => {
+            btnTest.push({
+                name: el['label'],
+                action: () => customBtnAction(el, multiSelect),
+                id: `btn-${i}-${el['ID'].replace('.', '-')}`,
+                class: 'test'
+            })
+        })
+        return btnTest
+    }
+
     const generateGrid = () => {
-        const buttonsArray = []
+        const multiSelect = props.configuration?.multiSelect || false
+        const btnArray = props.configuration?.additionalBtns
         const configWs = props.configuration?.configuration?.onSubmit
+        const additionalTopBtns = props.configuration?.additionalTopButtons
+        if (additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0) {
+            store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: additionalTopBtns } })
+        }
         return (
             <ExportableGrid
                 gridType='SEARCH_GRID_DATA'
@@ -57,7 +216,10 @@ const SearchDynamic = (props, context) => {
                 dataTableName={resultsData}
                 onRowClickFunct={props?.configuration?.disableRowClick ? () => { } : props?.configuration?.customRowClick ? customRowClick : onRowClick}
                 className='animals-search-grid'
-                buttonsArray={buttonsArray}
+                refreshData={() => reloadGrid(gridId + '_GRID', multiSelect)}
+                enableMultiSelect={multiSelect}
+                onSelectChangeFunct={customRowSelection}
+                buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : []}
             />
         )
     }

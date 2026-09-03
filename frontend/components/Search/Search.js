@@ -190,9 +190,13 @@ const Search = (props, context) => {
   }
 
   const generateGrid = (data) => {
+    let heightRatio = 0.8
     const buttonsArray = []
     const configWs = configuration?.configuration?.onSubmit
     const readOnly = configuration?.readOnly
+    if (data) {
+      heightRatio = 0.6
+    }
     if (!readOnly) {
       const addButton = {
         type: 'button',
@@ -212,7 +216,7 @@ const Search = (props, context) => {
         onRowClickFunct={onRowClick}
         className='animals-search-grid'
         buttonsArray={buttonsArray}
-        minHeight={600}
+        heightRatio={heightRatio}
       />
     )
   }
@@ -299,7 +303,7 @@ const Search = (props, context) => {
                 </span><p>{labelsManager(`search_${businessObjectName?.toLowerCase()}`, context, 'farm_registry')}</p></span></button>}
           </div>
         </div>
-        <div className='farm-registry-search-grid-container farm-search-container-background phc-search-grid-container person-registry-search-grid-container'>
+        <div className='farm-registry-search-grid-container farm-search-container-background'>
           {configuration && toggleSearch && generateForm()}
           {resultsData && generateGrid(resultsData)}
         </div>
