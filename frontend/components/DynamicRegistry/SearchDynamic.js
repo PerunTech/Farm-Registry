@@ -1,4 +1,5 @@
 import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory, utils } from 'perun-core'
+import TopButtons from './TopButtons'
 const { jsonToURI, flattenObject, labelsManager } = utils
 const { alertUserResponse, alertUserV2 } = elements
 const { store, dataToRedux, removeAsyncReducer, updateSelectedRows } = redux
@@ -203,24 +204,26 @@ const SearchDynamic = (props, context) => {
         const btnArray = props.configuration?.additionalBtns
         const configWs = props.configuration?.configuration?.onSubmit
         const additionalTopBtns = props.configuration?.additionalTopButtons
-        if (additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0) {
-            store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: additionalTopBtns } })
-        }
         return (
-            <ExportableGrid
-                gridType='SEARCH_GRID_DATA'
-                key={gridId + '_GRID'}
-                id={gridId + '_GRID'}
-                heightRatio={0.6}
-                configTableName={configWs}
-                dataTableName={resultsData}
-                onRowClickFunct={props?.configuration?.disableRowClick ? () => { } : props?.configuration?.customRowClick ? customRowClick : onRowClick}
-                className='animals-search-grid'
-                refreshData={() => reloadGrid(gridId + '_GRID', multiSelect)}
-                enableMultiSelect={multiSelect}
-                onSelectChangeFunct={customRowSelection}
-                buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : []}
-            />
+            <>
+                {additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0 && (
+                    <TopButtons configuration={additionalTopBtns} tableName={props.tableName} />
+                )}
+                <ExportableGrid
+                    gridType='SEARCH_GRID_DATA'
+                    key={gridId + '_GRID'}
+                    id={gridId + '_GRID'}
+                    heightRatio={0.6}
+                    configTableName={configWs}
+                    dataTableName={resultsData}
+                    onRowClickFunct={props?.configuration?.disableRowClick ? () => { } : props?.configuration?.customRowClick ? customRowClick : onRowClick}
+                    className='animals-search-grid'
+                    refreshData={() => reloadGrid(gridId + '_GRID', multiSelect)}
+                    enableMultiSelect={multiSelect}
+                    onSelectChangeFunct={customRowSelection}
+                    buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : []}
+                />
+            </>
         )
     }
 
