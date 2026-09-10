@@ -6,7 +6,6 @@ const { store } = redux;
 import { ui, core } from '../Map/Spatial';
 const { Map, factory } = core;
 import { id, center, zoomLevel } from '../Map/config';
-import './GpsMapSelect.css';
 
 // The pin dropped on the clicked location. Drawn as an inline svg inside a divIcon so it
 // carries no image path - the default leaflet marker resolves its png through the spatial
