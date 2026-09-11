@@ -19,10 +19,17 @@ before_script:
   # the token perun-atlas already uses for pushing; CI_JOB_TOKEN is the fallback
   # and needs the dependency projects to allow job-token access.
   - GIT_DEP_TOKEN="${K8S_SECRET_GITLABCI_TOKEN:-$CI_JOB_TOKEN}"
-  # --add on both: insteadOf is multi-valued and a plain `git config` replaces
-  # rather than appends, which would leave only the last rule registered.
-  - git config --global --add url."https://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://git@gitlab.prtech.mk/"
-  - git config --global --add url."https://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://gitlab.prtech.mk/"
+  # Clear our own rules before adding them. ~/.gitconfig survives between jobs
+  # and --add appends, so these accumulated a pair per pipeline -- and since
+  # CI_JOB_TOKEN is issued per job, the older entries carry tokens that have
+  # since expired. Several rules match the same URL and git picks one of them,
+  # so leaving the stale ones in place makes the result depend on which.
+  - git config --global --get-regexp '^url\..*\.insteadof$' | cut -d' ' -f1 | sort -u | while read -r k; do git config --global --unset-all "$k" || true; done
+  # http, not https: the scheme the runner itself is authenticated over. Its own
+  # origin is http://gitlab-ci-token:<token>@gitlab.prtech.mk/..., so that is the
+  # combination this server is known to accept.
+  - git config --global --add url."http://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://git@gitlab.prtech.mk/"
+  - git config --global --add url."http://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://gitlab.prtech.mk/"
   # Say which credential was used and that the rules registered, so a failure to
   # clone a dependency is diagnosable from the log alone. The value is redacted;
   # only its source and presence are printed.
