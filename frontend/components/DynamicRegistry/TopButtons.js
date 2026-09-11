@@ -1,6 +1,6 @@
 import { React, PropTypes, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM } from 'perun-core'
 import { ActionForm } from '../Utils'
-import MovementsMap from './MovementsMap'
+import { MovementsMap } from './Map'
 const { useEffect, useState } = React
 const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap

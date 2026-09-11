@@ -9,7 +9,7 @@ import {
 } from "perun-core";
 const { labelsManager } = utils
 import SearchComponent from '../SearchComp/SearchComponent'
-import GpsMapSelect from '../utils_tools/GpsMapSelect';
+import { GpsMapSelect } from '../DynamicRegistry/Map';
 const { useState, useEffect } = React;
 const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
