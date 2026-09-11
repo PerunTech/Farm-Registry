@@ -1,0 +1,68 @@
+/*
+ * The holding marker.
+ *
+ * perun-atlas ships a neutral `atlas-marker`; this overrides it for this screen
+ * only, in the green the legacy GIS module used for holdings. Same shape, so
+ * only the colour is restated.
+ */
+.movement-holding-marker {
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: #00360e;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+/*
+ * The accent for the holding whose record is open.
+ *
+ * Declared once because it has to agree across the marker and the label, and in
+ * one line so a deployment that wants another colour changes one thing.
+ *
+ * Not green: green is what "holding" means on this map, so the one holding that
+ * is not just another holding should not be wearing it. Not red, amber, blue or
+ * grey either -- the legacy GIS module spends those on quarantine state, stray
+ * movements and administrative areas, and borrowing one would say something
+ * about this holding that is not true.
+ *
+ * Purple is unclaimed, and it is the choice that does not depend on which
+ * basemap is selected: a near-black is lost on imagery and a white fill is lost
+ * on the pale street tiles, while this holds its own against both.
+ */
+:root {
+  --movement-current-accent: #6a1b9a;
+}
+
+/*
+ * The holding the record is open on.
+ *
+ * Three things at once, because any one of them alone is ambiguous: a colour
+ * nothing else uses, a marker half again as wide, and a ring inside and outside
+ * the fill. Size alone reads as a bigger holding; colour alone is easy to miss
+ * among the lines converging on it.
+ */
+.movement-holding-current {
+  background: var(--movement-current-accent);
+  border-width: 4px;
+  box-shadow: 0 0 0 3px var(--movement-current-accent), 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Its label carries the same accent, so the two read as one thing rather than as
+ * a marker with someone else's label beside it. */
+.leaflet-tooltip.atlas-label.movement-holding-current-label {
+  background: var(--movement-current-accent);
+  color: #fff;
+}
+
+/*
+ * The map panel.
+ *
+ * A fixed height rather than a share of the viewport. The modal carries the date
+ * range above the map, so a viewport-relative map changed the shape of the whole
+ * dialog with the window -- too tall to fit on a short screen, oddly stretched on
+ * a large one. AtlasMap fills whatever box it is given, so the height belongs
+ * here, in one line a deployment's own stylesheet can override.
+ */
+.farm-registry-movements-map {
+  height: 500px;
+}

@@ -1,5 +1,6 @@
 import { React, PropTypes, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM } from 'perun-core'
 import { ActionForm } from '../Utils'
+import MovementsMap from './MovementsMap'
 const { useEffect, useState } = React
 const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap
@@ -13,6 +14,8 @@ const TopButtons = (props, context) => {
   const [showFormModal, setShowFormModal] = useState(false)
   const [gridConfig, setGridConfig] = useState(undefined)
   const [showGridModal, setShowGridModal] = useState(false)
+  const [mapConfig, setMapConfig] = useState(undefined)
+  const [showMapModal, setShowMapModal] = useState(false)
 
   const checkAdditionalData = (btns) => {
     btns.forEach(btn => {
@@ -366,6 +369,11 @@ const TopButtons = (props, context) => {
         setGridConfig(el)
         break;
       }
+      case 'map': {
+        setMapConfig(el)
+        setShowMapModal(true)
+        break;
+      }
       default: {
         if (!hasChildren) {
           if (el.onSubmit) {
@@ -599,6 +607,18 @@ const TopButtons = (props, context) => {
           </Modal.Header>
           <Modal.Body className='farm-registry-modal-body'>
             <ActionForm formConfig={formConfig} setShowFormModal={setShowFormModal} executeAction={handleFormAction} />
+          </Modal.Body>
+          <Modal.Footer className='farm-registry-modal-footer' />
+        </Modal>
+      )}
+      {showMapModal && mapConfig && (
+        <Modal className='farm-registry-modal' show={showMapModal} onHide={() => setShowMapModal(false)} size='xl'>
+          <Modal.Header className='farm-registry-modal-header' closeButton>
+          </Modal.Header>
+          <Modal.Body className='farm-registry-modal-body'>
+            {/* Unmounting on close releases perun-atlas's single-map claim, which
+                spatial allows only one of until createMap lands. */}
+            <MovementsMap objConfig={mapConfig?.objectConfiguration} objectId={props.objectId} />
           </Modal.Body>
           <Modal.Footer className='farm-registry-modal-footer' />
         </Modal>

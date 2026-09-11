@@ -1,0 +1,14 @@
+# pnpm settings for this project (pnpm 10+ reads its own settings from here
+# rather than from .npmrc).
+#
+# pnpm 9 reads this file as a workspace definition alone and refuses it without
+# a packages list. Empty is accurate: there are no sub-packages.
+packages: []
+
+# perun-core, spatial and perun-atlas are internal git dependencies, and both
+# spatial and perun-atlas declare git dependencies of their own. pnpm 11 blocks
+# git-resolved packages in transitive position by default, which stops the
+# dependency graph from resolving. Every repository in this graph is first-party
+# on gitlab.prtech.mk, so that layering is the house architecture rather than
+# something to work around.
+blockExoticSubdeps: false
