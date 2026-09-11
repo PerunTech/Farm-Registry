@@ -10,7 +10,7 @@ importers:
     dependencies:
       perun-atlas:
         specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#main
-        version: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#eaf3b2f51bdfc6790030a52d9988c4b099c7d169(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1)
+        version: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#7be15b10d5fad3a01244207f7d882a2eabfc5551(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1)
       perun-core:
         specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-core#dev
         version: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1)
@@ -2513,8 +2513,8 @@ packages:
     resolution: {integrity: sha512-Uc49J9hUMyuqJk+U+PxlpBpPr96A4HOOfesGx609EPr2ue82+5/Smq/KTAkEqh0/jUGSi1fumvqZ5yAWijJTJg==}
     engines: {node: '>=20'}
 
-  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#eaf3b2f51bdfc6790030a52d9988c4b099c7d169:
-    resolution: {commit: eaf3b2f51bdfc6790030a52d9988c4b099c7d169, repo: https://git@gitlab.prtech.mk/svarog4/perun-atlas, type: git}
+  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#7be15b10d5fad3a01244207f7d882a2eabfc5551:
+    resolution: {commit: 7be15b10d5fad3a01244207f7d882a2eabfc5551, repo: https://git@gitlab.prtech.mk/svarog4/perun-atlas, type: git}
     version: 1.0.0
 
   perun-core@git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f:
@@ -3072,9 +3072,9 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
-  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#492ab5a5bfce738558f5e5adb00688a1c9eaa240:
-    resolution: {commit: 492ab5a5bfce738558f5e5adb00688a1c9eaa240, repo: https://git@gitlab.prtech.mk/svarog4/svarog-spatial, type: git}
-    version: 1.0.1
+  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#3f73c549e1e3b7019a76611ef0a10b9d722b1352:
+    resolution: {commit: 3f73c549e1e3b7019a76611ef0a10b9d722b1352, repo: https://git@gitlab.prtech.mk/svarog4/svarog-spatial, type: git}
+    version: 4.2.1
 
   spdy-transport@3.0.0:
     resolution: {integrity: sha512-hsLVFE5SjA6TCisWeJXFKniGGOpBgMLmerfO2aCyCU5s7nJ/rpAepqmFifv/GCbSbueEeAJJnmSQ2rKC/g8Fcw==}
@@ -6378,10 +6378,10 @@ snapshots:
       pdfkit: 0.19.1
       xmldoc: 2.0.3
 
-  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#eaf3b2f51bdfc6790030a52d9988c4b099c7d169(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1):
+  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#7be15b10d5fad3a01244207f7d882a2eabfc5551(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1):
     dependencies:
       perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1)
-      spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#492ab5a5bfce738558f5e5adb00688a1c9eaa240(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1)
+      spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#3f73c549e1e3b7019a76611ef0a10b9d722b1352(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1)
     transitivePeerDependencies:
       - '@babel/runtime'
       - '@types/react'
@@ -7103,7 +7103,7 @@ snapshots:
 
   source-map@0.6.1: {}
 
-  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#492ab5a5bfce738558f5e5adb00688a1c9eaa240(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1):
+  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#3f73c549e1e3b7019a76611ef0a10b9d722b1352(@babel/runtime@7.26.0)(@types/react@18.3.31)(debug@4.4.0(supports-color@8.1.1))(monaco-editor@0.56.0)(supports-color@8.1.1):
     dependencies:
       leaflet: 1.5.1
       leaflet-polylinedecorator: 1.6.0
