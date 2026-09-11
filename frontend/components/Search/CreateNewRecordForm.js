@@ -29,7 +29,7 @@ const CreateNewRecordForm = (props, context) => {
       data = Object.assign(formData, params)
     }
 
-    const reqConfig = { method: 'post', url: `${window.server}${url}`, data, headers: { 'Content-Type': contentType } };
+    const reqConfig = { method: 'post', url: `${window.server}${url}`, data: contentType && contentType.includes('application/json') ? formData : encodeURIComponent(JSON.stringify(formData)), headers: { 'Content-Type': contentType } };
     try {
       const res = await axios(reqConfig);
 

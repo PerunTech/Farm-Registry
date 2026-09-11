@@ -1,6 +1,7 @@
-import { React, Loading, GenericForm, axios, elements } from 'perun-core'
+import { React, Loading, GenericForm, axios, elements, redux } from 'perun-core'
 const { useEffect, useState } = React
 const { alertUserResponse } = elements
+const { store } = redux
 
 const ActionForm = (props) => {
   const [loading, setLoading] = useState(false)
@@ -13,11 +14,17 @@ const ActionForm = (props) => {
   const getConfig = (key, name) => {
     const { formConfig } = props
     const config = formConfig?.objectConfiguration?.[key]
+    const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
     return {
       name,
       url: config.onSubmit,
       method: config.type,
-      ...config.type === 'POST' && { data: config.params },
+      ...config.type === 'POST' && {
+        data: {
+          ...(selectedGridRows.length > 0 && { objArray: selectedGridRows }),
+          ...config.params,
+        }
+      },
       ...config.type === 'POST' && { contentType: config.contentType },
     }
   }
