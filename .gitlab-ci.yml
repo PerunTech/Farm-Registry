@@ -42,11 +42,18 @@ before_script:
   # EACCES. The shim goes in the runner's own home and ahead of the system pnpm
   # on PATH. corepack works out the relative path back to itself, so the depth of
   # this directory does not matter. The fallback covers an image without corepack.
-  # Corepack asks before downloading a package manager unless it detects CI.
-  # Answer it up front rather than depend on that detection.
-  - export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+  # Installed into the runner's home, not system-wide: this is a shell runner
+  # executing as an unprivileged user, so anything touching /usr/bin or
+  # /usr/lib/node_modules fails with EACCES.
+  #
+  # Deliberately not corepack. The corepack bundled with this runner's Node
+  # carries npm's old registry signing keys and dies with "Cannot find matching
+  # keyid" before it can hand over to pnpm. It is also unnecessary: pnpm reads
+  # packageManager itself and switches to the pinned version, so this install is
+  # only a bootstrap and its version does not have to track package.json.
   - mkdir -p "$HOME/.local/bin"
-  - corepack enable --install-directory "$HOME/.local/bin" pnpm || { npm config set prefix "$HOME/.local" && npm install -g pnpm@10.15.0; }
+  - npm config set prefix "$HOME/.local"
+  - npm install -g pnpm@10.15.0
   - export PATH="$HOME/.local/bin:$PATH"
   - pnpm --version
 
