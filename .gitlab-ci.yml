@@ -51,7 +51,13 @@ before_script:
   # keyid" before it can hand over to pnpm. It is also unnecessary: pnpm reads
   # packageManager itself and switches to the pinned version, so this install is
   # only a bootstrap and its version does not have to track package.json.
+  # The runner's home survives between jobs, so whatever a previous revision of
+  # this file put here is still present -- a corepack shim, in this case, which
+  # npm will not overwrite ("EEXIST: file already exists") because it did not
+  # create it. Clear the two names this bootstrap owns before installing, so the
+  # step does not depend on what the last pipeline happened to leave behind.
   - mkdir -p "$HOME/.local/bin"
+  - rm -f "$HOME/.local/bin/pnpm" "$HOME/.local/bin/pnpx"
   - npm config set prefix "$HOME/.local"
   - npm install -g pnpm@10.15.0
   - export PATH="$HOME/.local/bin:$PATH"
