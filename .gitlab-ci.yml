@@ -26,6 +26,18 @@ before_script:
   - git reset --hard HEAD
   - git stash
   - git pull origin $CI_BUILD_REF_NAME
+  # The runner's global pnpm predates lockfileVersion 9.0, so it was discarding
+  # the lockfile -- "Ignoring not compatible lockfile" -- and resolving #main and
+  # #dev afresh on every run. That builds whatever those branches point at rather
+  # than the commits this repository pinned, and it is what forces the remote
+  # resolution in the first place. With a pnpm that reads the lockfile, the
+  # resolution step is skipped entirely.
+  #
+  # The version comes from packageManager in package.json, so it is reviewed with
+  # the code and identical here and on a developer's machine. The fallback covers
+  # a runner image without corepack.
+  - corepack enable || npm i -g pnpm@10.15.0
+  - pnpm --version
 
 after_script:
   - git reset --hard HEAD

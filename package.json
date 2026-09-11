@@ -2,6 +2,7 @@
     "name": "farm-registry",
     "version": "1.0.0",
     "description": "Farm registry",
+    "packageManager": "pnpm@10.15.0",
     "main": "backend/www/farm-registry.js",
     "scripts": {
         "build": "webpack --mode=production --env=production",
