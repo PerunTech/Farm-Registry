@@ -13,6 +13,8 @@
   <div id="app"></div>
   <script src="config.js"></script>
   <script>
+    window.sysCrs = 'EPSG:3857'
+    window.sysCenter = { "lat": 35.126411, "lng": 33.429859 }
     const assetsUrl = `${window.server}/WsConf/params/get/sys/FRONTEND_ASSETS_LOCATION`
     fetch(assetsUrl).then(response => response.json()).then(res => {
       if (res.VALUE) {
@@ -44,23 +46,38 @@
         const stylesheets = [
           'datagrid',
           'forms',
-          'logon',
-          'homepage',
           'style',
-          'batch',
+          'logon',
           'footer',
+          'homepage',
           'loading',
           'topnavmenu',
-          'sidelistmenu',
-          'adminconsole',
           'buttonactions',
-          'reportengine',
+          'adminconsole',
           'modal',
           'userguide',
           'modulemenu',
-          'persons-registry',
           'not-found-page',
-          'farm-registry'
+          'svarog-notifications',
+          'persons-registry',
+          'aims-sidemenu',
+          'farm-registry',
+          'aims-ar',
+          'aims-modal',
+          'systemcolors',
+          'vmp',
+          'inspections',
+          'epi-management',
+          'lims-sar',
+          'lims',
+          'phc',
+          'ps',
+          'applications',
+          'batch',
+          'reportengine',
+          'task-management',
+          'control-programs',
+          'wms',
         ];
         setStylesheets(stylesheets);
 
