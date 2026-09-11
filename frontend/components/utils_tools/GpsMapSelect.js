@@ -1,17 +1,17 @@
 import { React, PropTypes, connect, utils } from "perun-core";
+import * as atlas from 'perun-atlas';
+import { AtlasMap, PointPicker } from 'perun-atlas';
 import './GpsMapSelect.css';
 const { labelsManager } = utils
 const { useState } = React;
 
 /**
- * perun-atlas, read when the map is drawn rather than when this bundle loads.
- *
- * Same reasoning as the movements map: a static import binds through the UMD
- * wrapper as this bundle evaluates, and the shell decides when the sibling
- * plugin runs. Swap both for static imports once a jar declaring perun-atlas in
- * dependencies() is deployed everywhere.
+ * The map layer, as ordinary imports. See MovementsMap for why the namespace is
+ * imported next to the components: perun-atlas is a UMD external, so a named
+ * binding is a property read on a value captured at evaluation and testing one
+ * throws when it is absent, while the namespace is simply `undefined`. A crash
+ * here would take the holding form with it, so it is worth the extra import.
  */
-const atlas = () => (typeof window === 'undefined' ? null : window['perun-atlas'] || null)
 
 // The zoom this screen has always opened at, kept as an override because it is
 // tighter than the deployment's default: a coordinate is picked on a yard, not
@@ -36,14 +36,11 @@ const GpsMapSelect = (props, context) => {
         props.handleMapClick(toDMS(Math.abs(selected.lat)), toDMS(Math.abs(selected.lng)))
     }
 
-    const mapLayer = atlas()
-    if (!mapLayer) {
+    if (!atlas) {
         return (
             <div className={'farm-registry-map-unavailable'}>{getLabel('map_layer_unavailable')}</div>
         )
     }
-
-    const { AtlasMap, PointPicker } = mapLayer
 
     return (
         <>

@@ -1,25 +1,29 @@
 import { React, PropTypes, connect, utils } from 'perun-core'
+import * as atlas from 'perun-atlas'
+import { AtlasMap, DateRange, FeatureSet, data } from 'perun-atlas'
 import { MOVEMENT_DESCRIPTORS, MOVEMENT_HOLDING_CURRENT } from './movementDescriptors'
 const { labelsManager } = utils
 const { useMemo, useState } = React
 
 /**
- * perun-atlas, read when the map is drawn rather than when this bundle loads.
+ * The map layer, as ordinary imports now that a jar declaring perun-atlas in
+ * dependencies() ships beside this module.
  *
- * It is a sibling plugin script and the shell decides when to evaluate it. A
- * static `import` binds through the UMD wrapper the instant this bundle
- * evaluates, so if perun-atlas has not run yet the binding is `undefined` and
- * stays that way for the life of the page — every later property read throws
- * from inside a render, far from the cause. Nothing here needs the map that
- * early: it is needed on a click, long after every bundle has loaded.
+ * The namespace comes in alongside the components because it is the only safe
+ * way to ask whether the layer arrived. perun-atlas is a UMD external: this
+ * bundle captures `window['perun-atlas']` once, as it evaluates, and a named
+ * binding is a property read on that captured value -- so testing `AtlasMap`
+ * throws in exactly the case worth testing for. The namespace binding is that
+ * value, and is plainly `undefined` when it was absent.
  *
- * This is temporary. Once a jar whose PerunPluginInfo.dependencies() names
- * perun-atlas is deployed everywhere this module runs, the shell guarantees the
- * order and a static import is better — it gives build-time resolution, so a
- * renamed export fails the build instead of the click. Swap it then, and put
- * `AtlasMap`, `DateRange` and `FeatureSet` back at the top.
+ * Checking what was captured rather than what is on `window` also covers the
+ * case `window` cannot: perun-atlas evaluating *after* this bundle leaves the
+ * global set and every binding here undefined for the life of the page.
+ *
+ * Note that webpack cannot verify these names. An external's exports are
+ * unknown to it, and a fabricated one compiles without so much as a warning --
+ * measured, not assumed. What this buys is readable imports, not checking.
  */
-const atlas = () => (typeof window === 'undefined' ? null : window['perun-atlas'] || null)
 
 /** ISO yyyy-mm-dd, which is both what <input type="date"> speaks and what LocalDate.parse expects. */
 const iso = (date) => date.toISOString().slice(0, 10)
@@ -62,14 +66,12 @@ const MovementsMap = (props, context) => {
     to: range.to
   }), [session, objectId, objConfig, range.from, range.to])
 
-  const mapLayer = atlas()
-  if (!mapLayer) {
+  if (!atlas) {
     return (
       <div className='farm-registry-movements-unavailable'>{getLabel('map_layer_unavailable')}</div>
     )
   }
 
-  const { AtlasMap, DateRange, FeatureSet, data } = mapLayer
   const service = objConfig?.service
 
   /**
