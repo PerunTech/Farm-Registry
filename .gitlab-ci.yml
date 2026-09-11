@@ -8,6 +8,21 @@ before_script:
   - pwd
   - echo $CI_BUILD_REF_NAME
   - git remote -v
+  # Credentials for the first-party git dependencies. package.json names them as
+  # git+https://git@gitlab.prtech.mk/..., and pnpm hands that URL straight to
+  # git, which has no credentials for it and fails with "could not read
+  # Username". The runner's own clone is authenticated, but that applies to this
+  # repository only, not to the ones pnpm fetches.
+  #
+  # Rewriting the host mapping rather than the specifier keeps the URL recorded
+  # in the lockfile working on every other machine. K8S_SECRET_GITLABCI_TOKEN is
+  # the token perun-atlas already uses for pushing; CI_JOB_TOKEN is the fallback
+  # and needs the dependency projects to allow job-token access.
+  - GIT_DEP_TOKEN="${K8S_SECRET_GITLABCI_TOKEN:-$CI_JOB_TOKEN}"
+  # --add on both: insteadOf is multi-valued and a plain `git config` replaces
+  # rather than appends, which would leave only the last rule registered.
+  - git config --global --add url."https://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://git@gitlab.prtech.mk/"
+  - git config --global --add url."https://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://gitlab.prtech.mk/"
   - git reset --hard HEAD
   - git stash
   - git pull origin $CI_BUILD_REF_NAME
