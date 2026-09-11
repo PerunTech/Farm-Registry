@@ -23,6 +23,11 @@ before_script:
   # rather than appends, which would leave only the last rule registered.
   - git config --global --add url."https://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://git@gitlab.prtech.mk/"
   - git config --global --add url."https://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://gitlab.prtech.mk/"
+  # Say which credential was used and that the rules registered, so a failure to
+  # clone a dependency is diagnosable from the log alone. The value is redacted;
+  # only its source and presence are printed.
+  - if [ -n "$K8S_SECRET_GITLABCI_TOKEN" ]; then echo "git dep credential - K8S_SECRET_GITLABCI_TOKEN"; elif [ -n "$CI_JOB_TOKEN" ]; then echo "git dep credential - CI_JOB_TOKEN (requires job-token allowlisting in perun-atlas and perun-core)"; else echo "git dep credential - NONE SET, dependency clones will fail"; fi
+  - git config --global --get-regexp 'url\..*insteadOf' | sed 's#//[^@]*@#//***@#' || echo "no insteadOf rules registered"
   - git reset --hard HEAD
   - git stash
   - git pull origin $CI_BUILD_REF_NAME
