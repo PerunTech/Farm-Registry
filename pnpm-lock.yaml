@@ -32,7 +32,7 @@ importers:
   .:
     dependencies:
       perun-atlas:
-        specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#main
+        specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#82466a90dd4e32c2ee3626326f507337c25b7cb0
         version: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#82466a90dd4e32c2ee3626326f507337c25b7cb0(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
       perun-core:
         specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f

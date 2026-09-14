@@ -50,20 +50,30 @@ blockExoticSubdeps: false
 # and websocket-driver are the two that were rated critical.
 overrides:
   # --- the first-party git dependencies -------------------------------------
-  # Held at the commits this repository was already resolving, so that this
-  # change is about the audit and nothing else.
+  # spatial is pinned here because it is the one this module never names: it
+  # arrives under perun-atlas, so there is no specifier of ours to carry the
+  # commit. perun-atlas and perun-core are pinned in package.json's
+  # `dependencies` instead, which is where a version belongs when the
+  # repository declares the package itself.
   #
-  # These are pinned because their specifiers name branches (#main, #dev) and
-  # the lockfile records a commit. Any edit to package.json re-resolves them to
-  # whatever the branch points at that day: adding the overrides below, on its
-  # own, moved spatial 3f73c54 -> bc8b30f and gave perun-atlas a second copy of
-  # perun-core at 412c4e1 while this module kept 7846f83. Both bundles happened
-  # to be byte-identical, so nothing broke, but nothing said so at the time --
-  # which is the problem.
+  # All three are pinned for the same reason. Their branch names resolve to
+  # whatever the branch points at on the day of a resolve, and every edit to
+  # package.json causes one -- the overrides below, added on their own, moved
+  # spatial 3f73c54 -> bc8b30f and left perun-core installed twice. Nothing
+  # warns, and the lockfile is the only record of what was actually built.
   #
-  # To move one deliberately, edit the commit here rather than running
-  # `pnpm update`: an update re-resolves the whole tree and drags the others
-  # along with it.
+  # perun-core is named twice on purpose, and both are load-bearing. The
+  # specifier in `dependencies` fixes what this module builds against; the
+  # override below is what stops a second copy appearing, because perun-atlas
+  # and spatial each declare perun-core#dev of their own and a pinned
+  # specifier does not reach a dependency of a dependency. Resolved cold, with
+  # no lockfile, the specifier alone installs 7846f83 for this module and
+  # 412c4e1 for those two. perun-atlas needs no override for the same reason
+  # inverted: nothing but this repository depends on it.
+  #
+  # To move one deliberately, edit its commit: here for spatial, in
+  # `dependencies` for the other two. Not `pnpm update`, which re-resolves the
+  # whole tree and drags the others along with it.
   spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#3f73c549e1e3b7019a76611ef0a10b9d722b1352
   perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
 
