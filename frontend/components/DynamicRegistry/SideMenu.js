@@ -214,7 +214,7 @@ const SideMenu = (props) => {
                         let submenu = [];
                         try {
                             submenu = JSON.parse(content || "[]");
-                        } catch (e) {
+                        } catch (_e) {
                             submenu = [];
                         }
 
@@ -235,7 +235,7 @@ const SideMenu = (props) => {
                     let el;
                     try {
                         el = JSON.parse(content);
-                    } catch (e) {
+                    } catch (_e) {
                         return null;
                     }
                     return (

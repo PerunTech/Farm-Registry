@@ -35,6 +35,14 @@ blockExoticSubdeps: false
 # so it cannot reach any of these: the 36 advisories it did clear were direct
 # devDependencies the lockfile had frozen below their own declared ranges.
 #
+# Several would resolve to a patched version today without being named here --
+# js-yaml, minimatch, brace-expansion, flatted and ajv@^6 all do, now that
+# eslint 9 asks for newer ranges than eslint 8 did. They stay anyway. A range
+# permitting a patched version is not the same as a lockfile recording one:
+# browserslist sat at 4.24.3 under a `^4.24.0` dependent until it was named
+# here. The list is a floor for every package that has carried an advisory, so
+# the audit does not depend on what a re-resolution happens to pick.
+#
 # None of what follows reaches backend/www/farm-registry.js. The bundle
 # externalises perun-core and perun-atlas and has no other runtime dependency,
 # so it carries this module's own source and nothing else. The advisories still
@@ -71,7 +79,7 @@ overrides:
   fast-uri: ^3.1.7
   nanoid: ^3.3.18
   browserslist: ^4.28.7
-  # Two majors of ajv are in the tree and they patch separately: eslint 8 and
+  # Two majors of ajv are in the tree and they patch separately: eslint and
   # schema-utils 3 ask for ^6, schema-utils 4 and @rjsf/validator-ajv8 for ^8.
   # A single override would force one major on both and break whichever lost.
   ajv@^6: ^6.14.0
