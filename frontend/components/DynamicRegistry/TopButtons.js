@@ -14,6 +14,14 @@ const TopButtons = (props, context) => {
   const [gridConfig, setGridConfig] = useState(undefined)
   const [showGridModal, setShowGridModal] = useState(false)
 
+  const refreshGrid = () => {
+    if (props.refreshResults) {
+      props.refreshResults()
+    } else {
+      GridManager.reloadAllGrids()
+    }
+  }
+
   const checkAdditionalData = (btns) => {
     btns.forEach(btn => {
       const { onSubmit, type = 'GET', contentType = 'application/x-www-form-urlencoded', params } = btn.additionalData
@@ -86,7 +94,7 @@ const TopButtons = (props, context) => {
         const rowData = Object.assign({}, selectedRow)
         const mergedRowData = { ...rowData, ...res.data[0] }
         store.dispatch({ type: 'SAVE', payload: { key: `farm-registry-module-row-${tableName}`, value: mergedRowData } })
-        GridManager.reloadAllGrids()
+        refreshGrid()
       }
     }).catch(err => {
       console.error(err)
@@ -175,7 +183,7 @@ const TopButtons = (props, context) => {
       setLoading(false)
       if (res?.data) {
         if (res.data?.action) {
-          GridManager.reloadAllGrids()
+          refreshGrid()
           alertUserV2({
             type: 'question',
             title: res.data?.title || '',
@@ -200,7 +208,7 @@ const TopButtons = (props, context) => {
           const resType = res.data?.type?.toLowerCase() || 'info'
           alertUserResponse({ response: res })
           if (resType === 'success') {
-            GridManager.reloadAllGrids()
+            refreshGrid()
           }
         }
       }
@@ -285,7 +293,7 @@ const TopButtons = (props, context) => {
                 const resType = res.data?.type?.toLowerCase() || 'info'
                 alertUserResponse({ response: res })
                 if (resType === 'success') {
-                  GridManager.reloadAllGrids()
+                  refreshGrid()
                   if (el.refreshSummary) store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: true } })
                 }
               }
@@ -502,7 +510,7 @@ const TopButtons = (props, context) => {
         if (res?.data) {
           const resType = res.data?.type?.toLowerCase() || 'info'
           if (resType === 'success') {
-            GridManager.reloadAllGrids()
+            refreshGrid()
             setShowFormModal(false)
           }
           if (res?.data?.action) {

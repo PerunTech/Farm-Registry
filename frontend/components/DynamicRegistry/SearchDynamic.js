@@ -1,7 +1,8 @@
 import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory, utils } from 'perun-core'
 import TopButtons from './TopButtons'
 const { jsonToURI, flattenObject, labelsManager } = utils
-const { alertUserResponse, alertUserV2 } = elements
+const { alertUserResponse, alertUserV2, ReactBootstrap } = elements
+const { Modal } = ReactBootstrap
 const { store, dataToRedux, removeAsyncReducer, updateSelectedRows } = redux
 const { useState } = React
 
@@ -11,6 +12,9 @@ const SearchDynamic = (props, context) => {
     const gridId = `${props.tableName}_SEARCH`
     const [loading, setLoading] = useState(false)
     const [resultsData, setResultsData] = useState(undefined)
+    const [lastSearchData, setLastSearchData] = useState(undefined)
+    const [showRowFormModal, setShowRowFormModal] = useState(false)
+    const [clickedRow, setClickedRow] = useState(undefined)
 
     const generateForm = () => {
         const searchConfig = props.configuration?.searchForm
@@ -44,13 +48,93 @@ const SearchDynamic = (props, context) => {
         const route = customRowClickConfig?.route?.replace("{rowObjectId}", row[`${customRowClickConfig?.tableName}.OBJECT_ID`]);
         hashHistory.push(route)
     }
+    const formRowClick = (_id, _idx, row) => {
+        setClickedRow(row)
+        setShowRowFormModal(true)
+    }
+
+    const closeRowFormModal = () => {
+        setShowRowFormModal(false)
+        setClickedRow(undefined)
+    }
+
+    const saveRowForm = (e, saveWs, contentType, params) => {
+        let formData = e.formData
+        if (params && Object.keys(params).length > 0) {
+            Object.assign(formData, { ...params })
+        }
+        setLoading(true)
+        axios({
+            method: 'post',
+            data: contentType && contentType.includes('application/json') ? formData : encodeURIComponent(JSON.stringify(formData)),
+            url: `${window.server}${saveWs}`,
+            headers: { 'Content-Type': contentType || 'application/x-www-form-urlencoded' },
+        }).then(res => {
+            setLoading(false)
+            if (res?.data) {
+                const resType = res.data?.type?.toLowerCase() || 'info'
+                alertUserResponse({
+                    response: res.data, onConfirm: () => {
+                        if (resType !== 'error') {
+                            closeRowFormModal()
+                            reloadGrid(gridId + '_GRID', props.configuration?.multiSelect)
+                        }
+                    }
+                })
+            }
+        }).catch(err => {
+            setLoading(false)
+            console.error(err)
+            alertUserResponse({ response: err })
+        })
+    }
+
+    const generateRowFormModal = () => {
+        const formConfig = props.configuration?.form
+        if (!formConfig) return null
+        const rowTableName = props.configuration?.tableName?.toUpperCase() || tableName
+        const rowObjectId = clickedRow?.[`${rowTableName}.OBJECT_ID`]
+        const jsonSchemaWs = formConfig?.configuration?.onSubmit
+        const uiSchemaWs = formConfig?.uischema?.onSubmit
+        const formDataWs = formConfig?.data?.onSubmit?.replace('{rowObjectId}', rowObjectId)
+        const saveWs = formConfig?.save?.onSave
+        const saveContentType = formConfig?.save?.contentType
+        const saveParams = formConfig?.save?.params
+        const readOnly = !saveWs
+
+        return (
+            <Modal className='farm-registry-modal' show={showRowFormModal} onHide={closeRowFormModal}>
+                <Modal.Header className='farm-registry-modal-header' closeButton />
+                <Modal.Body className='farm-registry-modal-body'>
+                    <GenericForm
+                        className='form-test aims-forms custom-farm-registry-form'
+                        params='FORM_DATA'
+                        key={gridId + '_ROW_FORM'}
+                        id={gridId + '_ROW_FORM'}
+                        method={jsonSchemaWs}
+                        uiSchemaConfigMethod={uiSchemaWs}
+                        tableFormDataMethod={formDataWs}
+                        hideBtns={readOnly ? 'all' : 'closeAndDelete'}
+                        disabled={readOnly}
+                        customSave={!readOnly}
+                        addSaveFunction={(e) => saveRowForm(e, saveWs, saveContentType, saveParams)}
+                    />
+                </Modal.Body>
+                <Modal.Footer className='farm-registry-modal-footer' />
+            </Modal>
+        )
+    }
 
     const customRowSelection = (selectedRows, selectedGridId) => {
         store.dispatch(updateSelectedRows(selectedRows, selectedGridId));
     };
 
     const reloadGrid = (reloadGridId, multiSelect) => {
-        GridManager.reloadAllGrids()
+        if (lastSearchData) {
+            performSearch(lastSearchData, true)
+        } else {
+            GridManager.reloadAllGrids()
+        }
         if (multiSelect) {
             store.dispatch({ type: 'UPDATE_SELECTED_GRID_ROWS', payload: [[], reloadGridId] })
             ComponentManager.setStateForComponent(reloadGridId, 'selectedIndexes', [])
@@ -207,7 +291,7 @@ const SearchDynamic = (props, context) => {
         return (
             <>
                 {additionalTopBtns && Array.isArray(additionalTopBtns) && additionalTopBtns.length > 0 && (
-                    <TopButtons configuration={additionalTopBtns} tableName={props.tableName} />
+                    <TopButtons configuration={additionalTopBtns} tableName={props.tableName} refreshResults={() => reloadGrid(gridId + '_GRID', multiSelect)} />
                 )}
                 <ExportableGrid
                     gridType='SEARCH_GRID_DATA'
@@ -216,7 +300,7 @@ const SearchDynamic = (props, context) => {
                     heightRatio={0.6}
                     configTableName={configWs}
                     dataTableName={resultsData}
-                    onRowClickFunct={props?.configuration?.disableRowClick ? () => { } : props?.configuration?.customRowClick ? customRowClick : onRowClick}
+                    onRowClickFunct={props?.configuration?.form ? formRowClick : props?.configuration?.disableRowClick ? () => { } : props?.configuration?.customRowClick ? customRowClick : onRowClick}
                     className='animals-search-grid'
                     refreshData={() => reloadGrid(gridId + '_GRID', multiSelect)}
                     enableMultiSelect={multiSelect}
@@ -228,6 +312,7 @@ const SearchDynamic = (props, context) => {
     }
 
     const performSearch = (formData, isForm) => {
+        setLastSearchData(formData)
         const searchConfig = props.configuration?.searchForm;
         const searchType = searchConfig?.save?.type || 'GET';
         const url = searchConfig?.save?.onSave;
@@ -253,10 +338,8 @@ const SearchDynamic = (props, context) => {
                 setLoading(false)
                 if (res?.data?.data && Array.isArray(res.data.data) && res.data.data?.length > 0) {
                     setResultsData(res.data.data)
-                    GridManager.reloadAllGrids();
                 } else if (res?.data && Array.isArray(res?.data) && res.data?.length > 0) {
                     setResultsData(res.data)
-                    GridManager.reloadAllGrids();
                 } else {
                     alertUserResponse({ response: res })
                 }
@@ -285,6 +368,7 @@ const SearchDynamic = (props, context) => {
                     {resultsData && generateGrid()}
                 </div>
             </div>
+            {showRowFormModal && generateRowFormModal()}
         </>
     )
 }
