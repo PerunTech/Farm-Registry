@@ -12,3 +12,89 @@ packages: []
 # on gitlab.prtech.mk, so that layering is the house architecture rather than
 # something to work around.
 blockExoticSubdeps: false
+
+# Dependency overrides, lifting transitive packages that carry advisories.
+#
+# Where each pnpm major reads these differs, so they are declared twice, here
+# and under `pnpm.overrides` in package.json. pnpm 9 reads overrides from
+# package.json only; pnpm 11 reads them from this file only; pnpm 10, pinned in
+# packageManager and installed by CI, reads both. The two blocks must be kept in
+# step. npm's plain top-level `overrides` key is not a third option -- pnpm
+# ignores that one silently, at every version.
+#
+# pnpm 10 prints "the pnpm field in package.json is no longer read ...
+# pnpm.overrides ignored" on every command. Do not believe it. Not only is that
+# field still read, it *wins*: set uuid to 8.3.2 there and 11.1.1 here under
+# 10.15.0 and the lockfile resolves 8.3.2. Editing this file alone is a silent
+# no-op on pnpm 10 -- the change never reaches the lockfile and the install
+# reports success. So the two blocks are not decoration to keep tidy; whichever
+# one a given pnpm reads is the one in force, and they have to say the same
+# thing. The warning is announcing pnpm 11, where only this file is read.
+#
+# Everything below is transitive. `pnpm update` moves direct dependencies only,
+# so it cannot reach any of these: the 36 advisories it did clear were direct
+# devDependencies the lockfile had frozen below their own declared ranges.
+#
+# None of what follows reaches backend/www/farm-registry.js. The bundle
+# externalises perun-core and perun-atlas and has no other runtime dependency,
+# so it carries this module's own source and nothing else. The advisories still
+# mattered, because webpack-dev-server runs on developer machines -- shell-quote
+# and websocket-driver are the two that were rated critical.
+overrides:
+  # --- the first-party git dependencies -------------------------------------
+  # Held at the commits this repository was already resolving, so that this
+  # change is about the audit and nothing else.
+  #
+  # These are pinned because their specifiers name branches (#main, #dev) and
+  # the lockfile records a commit. Any edit to package.json re-resolves them to
+  # whatever the branch points at that day: adding the overrides below, on its
+  # own, moved spatial 3f73c54 -> bc8b30f and gave perun-atlas a second copy of
+  # perun-core at 412c4e1 while this module kept 7846f83. Both bundles happened
+  # to be byte-identical, so nothing broke, but nothing said so at the time --
+  # which is the problem.
+  #
+  # To move one deliberately, edit the commit here rather than running
+  # `pnpm update`: an update re-resolves the whole tree and drags the others
+  # along with it.
+  spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#3f73c549e1e3b7019a76611ef0a10b9d722b1352
+  perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
+
+  # --- the build and dev-server toolchain -----------------------------------
+  websocket-driver: ^0.7.5
+  brace-expansion: ^1.1.18
+  js-yaml: ^4.3.2
+  minimatch: ^3.1.4
+  flatted: ^3.4.2
+  picomatch: ^2.3.2
+  postcss: ^8.5.23
+  ws: ^8.21.0
+  fast-uri: ^3.1.7
+  nanoid: ^3.3.18
+  browserslist: ^4.28.7
+  # Two majors of ajv are in the tree and they patch separately: eslint 8 and
+  # schema-utils 3 ask for ^6, schema-utils 4 and @rjsf/validator-ajv8 for ^8.
+  # A single override would force one major on both and break whichever lost.
+  ajv@^6: ^6.14.0
+  ajv@^8: ^8.20.0
+  # sockjs asks for ^8.3.2 and the advisory is only answered in 11, so this is
+  # a major lift rather than a patch. It uses one symbol -- `require('uuid').v4`
+  # in lib/transport.js -- which uuid 11 still exports from its CJS entry.
+  uuid: ^11.1.1
+
+  # --- vendored bundles: audit-only ----------------------------------------
+  # These five reach the audit through perun-core, and lifting them here does
+  # not make the running code any safer. perun-core's package entry is a
+  # committed, prebuilt bundle (www/perun-core.js), so these libraries are
+  # already compiled into the file the shell serves. Overriding them changes
+  # what pnpm installs into node_modules, where nothing reads them; the bytes
+  # the browser executes are unchanged.
+  #
+  # They are declared anyway so that `pnpm audit` reports only findings this
+  # repository can act on -- a permanently non-zero audit is one nobody reads.
+  # The real fix is to bump and rebuild perun-core, and that is its own change
+  # in its own repository.
+  dompurify: ^3.4.15
+  lodash: ^4.18.1
+  lodash-es: ^4.18.1
+  sweetalert2: ^11.26.25
+  '@babel/runtime': ^7.26.10
