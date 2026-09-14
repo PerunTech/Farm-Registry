@@ -1,12 +1,14 @@
 import { React, PropTypes, connect, utils } from "perun-core";
 import * as atlas from 'perun-atlas';
 import { AtlasMap, PointPicker } from 'perun-atlas';
-import './GpsMapSelect.css';
 const { labelsManager } = utils
 const { useState } = React;
 
 /**
- * The map layer, as ordinary imports. See MovementsMap for why the namespace is
+ * Its stylesheet is `atlas-panel.css`, a deployment asset served from
+ * aims-assets rather than bundled here.
+ *
+ * The map layer, as ordinary imports. See MapPanel for why the namespace is
  * imported next to the components: perun-atlas is a UMD external, so a named
  * binding is a property read on a value captured at evaluation and testing one
  * throws when it is absent, while the namespace is simply `undefined`. A crash
