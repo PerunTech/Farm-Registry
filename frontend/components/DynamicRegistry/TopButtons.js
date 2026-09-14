@@ -1,5 +1,6 @@
 import { React, PropTypes, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM } from 'perun-core'
 import { ActionForm } from '../Utils'
+import { MapPanel } from './Map'
 const { useEffect, useState } = React
 const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap
@@ -13,6 +14,8 @@ const TopButtons = (props, context) => {
   const [showFormModal, setShowFormModal] = useState(false)
   const [gridConfig, setGridConfig] = useState(undefined)
   const [showGridModal, setShowGridModal] = useState(false)
+  const [mapConfig, setMapConfig] = useState(undefined)
+  const [showMapModal, setShowMapModal] = useState(false)
 
   const refreshGrid = () => {
     if (props.refreshResults) {
@@ -374,6 +377,11 @@ const TopButtons = (props, context) => {
         setGridConfig(el)
         break;
       }
+      case 'map': {
+        setMapConfig(el)
+        setShowMapModal(true)
+        break;
+      }
       default: {
         if (!hasChildren) {
           if (el.onSubmit) {
@@ -609,6 +617,18 @@ const TopButtons = (props, context) => {
             <ActionForm formConfig={formConfig} setShowFormModal={setShowFormModal} executeAction={handleFormAction} />
           </Modal.Body>
           <Modal.Footer className='farm-registry-modal-footer' />
+        </Modal>
+      )}
+      {showMapModal && mapConfig && (
+        <Modal className='farm-registry-modal farm-registry-modal--map' show={showMapModal} onHide={() => setShowMapModal(false)} size='xl'>
+          <Modal.Body className='farm-registry-modal-body'>
+            <MapPanel
+              objConfig={mapConfig?.objectConfiguration}
+              objectId={props.objectId}
+              title={mapConfig?.label}
+              onClose={() => setShowMapModal(false)}
+            />
+          </Modal.Body>
         </Modal>
       )}
       {showGridModal && gridConfig && (

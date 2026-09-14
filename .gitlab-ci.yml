@@ -8,9 +8,72 @@ before_script:
   - pwd
   - echo $CI_BUILD_REF_NAME
   - git remote -v
+  # Credentials for the first-party git dependencies. package.json names them as
+  # git+https://git@gitlab.prtech.mk/..., and pnpm hands that URL straight to
+  # git, which has no credentials for it and fails with "could not read
+  # Username". The runner's own clone is authenticated, but that applies to this
+  # repository only, not to the ones pnpm fetches.
+  #
+  # Rewriting the host mapping rather than the specifier keeps the URL recorded
+  # in the lockfile working on every other machine. K8S_SECRET_GITLABCI_TOKEN is
+  # the token perun-atlas already uses for pushing; CI_JOB_TOKEN is the fallback
+  # and needs the dependency projects to allow job-token access.
+  - GIT_DEP_TOKEN="${K8S_SECRET_GITLABCI_TOKEN:-$CI_JOB_TOKEN}"
+  # Clear our own rules before adding them. ~/.gitconfig survives between jobs
+  # and --add appends, so these accumulated a pair per pipeline -- and since
+  # CI_JOB_TOKEN is issued per job, the older entries carry tokens that have
+  # since expired. Several rules match the same URL and git picks one of them,
+  # so leaving the stale ones in place makes the result depend on which.
+  - git config --global --get-regexp '^url\..*\.insteadof$' | cut -d' ' -f1 | sort -u | while read -r k; do git config --global --unset-all "$k" || true; done
+  # http, not https: the scheme the runner itself is authenticated over. Its own
+  # origin is http://gitlab-ci-token:<token>@gitlab.prtech.mk/..., so that is the
+  # combination this server is known to accept.
+  - git config --global --add url."http://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://git@gitlab.prtech.mk/"
+  - git config --global --add url."http://gitlab-ci-token:${GIT_DEP_TOKEN}@gitlab.prtech.mk/".insteadOf "https://gitlab.prtech.mk/"
+  # Say which credential was used and that the rules registered, so a failure to
+  # clone a dependency is diagnosable from the log alone. The value is redacted;
+  # only its source and presence are printed.
+  - if [ -n "$K8S_SECRET_GITLABCI_TOKEN" ]; then echo "git dep credential - K8S_SECRET_GITLABCI_TOKEN"; elif [ -n "$CI_JOB_TOKEN" ]; then echo "git dep credential - CI_JOB_TOKEN (requires job-token allowlisting in perun-atlas and perun-core)"; else echo "git dep credential - NONE SET, dependency clones will fail"; fi
+  - git config --global --get-regexp 'url\..*insteadOf' | sed 's#//[^@]*@#//***@#' || echo "no insteadOf rules registered"
   - git reset --hard HEAD
   - git stash
   - git pull origin $CI_BUILD_REF_NAME
+  # The runner's global pnpm predates lockfileVersion 9.0, so it was discarding
+  # the lockfile -- "Ignoring not compatible lockfile" -- and resolving #main and
+  # #dev afresh on every run. That builds whatever those branches point at rather
+  # than the commits this repository pinned, and it is what forces the remote
+  # resolution in the first place. With a pnpm that reads the lockfile, the
+  # resolution step is skipped entirely.
+  #
+  # The version comes from packageManager in package.json, so it is reviewed with
+  # the code and identical here and on a developer's machine.
+  #
+  # Installed somewhere writable rather than system-wide: this is a shell runner
+  # running as an unprivileged user, so `corepack enable` cannot symlink into
+  # /usr/bin and `npm i -g` cannot write /usr/lib/node_modules -- both fail with
+  # EACCES. The shim goes in the runner's own home and ahead of the system pnpm
+  # on PATH. corepack works out the relative path back to itself, so the depth of
+  # this directory does not matter. The fallback covers an image without corepack.
+  # Installed into the runner's home, not system-wide: this is a shell runner
+  # executing as an unprivileged user, so anything touching /usr/bin or
+  # /usr/lib/node_modules fails with EACCES.
+  #
+  # Deliberately not corepack. The corepack bundled with this runner's Node
+  # carries npm's old registry signing keys and dies with "Cannot find matching
+  # keyid" before it can hand over to pnpm. It is also unnecessary: pnpm reads
+  # packageManager itself and switches to the pinned version, so this install is
+  # only a bootstrap and its version does not have to track package.json.
+  # The runner's home survives between jobs, so whatever a previous revision of
+  # this file put here is still present -- a corepack shim, in this case, which
+  # npm will not overwrite ("EEXIST: file already exists") because it did not
+  # create it. Clear the two names this bootstrap owns before installing, so the
+  # step does not depend on what the last pipeline happened to leave behind.
+  - mkdir -p "$HOME/.local/bin"
+  - rm -f "$HOME/.local/bin/pnpm" "$HOME/.local/bin/pnpx"
+  - npm config set prefix "$HOME/.local"
+  - npm install -g pnpm@10.15.0
+  - export PATH="$HOME/.local/bin:$PATH"
+  - pnpm --version
 
 after_script:
   - git reset --hard HEAD

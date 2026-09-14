@@ -25,7 +25,7 @@ public class PerunPluginInfo implements IPerunPlugin {
 	@Override
 	public int getVersion() {
 		// TODO Auto-generated method stub
-		return 56;
+		return 57;
 	}
 
 	@Override
@@ -131,9 +131,15 @@ public class PerunPluginInfo implements IPerunPlugin {
 	}
 
 	@Override
+	/**
+	 * Declares the bundles the shell must load before this one. perun-atlas
+	 * publishes window['perun-atlas'], which both maps in this module read at
+	 * render time; it declares spatial itself, so the engine is loaded ahead of
+	 * it without this module naming an engine it no longer talks to.
+	 */
 	public List<String> dependencies() {
 		List<String> deps = new ArrayList<String>();
-		deps.add("spatial");
+		deps.add("perun-atlas");
 		return deps;
 	}
 

@@ -2,6 +2,7 @@
     "name": "farm-registry",
     "version": "1.0.0",
     "description": "Farm registry",
+    "packageManager": "pnpm@10.15.0",
     "main": "backend/www/farm-registry.js",
     "scripts": {
         "build": "webpack --mode=production --env=production",
@@ -14,8 +15,8 @@
         "url": "https://gitlab.prtech.mk/svarog4/farm-registry.git"
     },
     "dependencies": {
-        "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#dev",
-        "spatial": "git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#dev"
+        "perun-atlas": "git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#main",
+        "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#dev"
     },
     "devDependencies": {
         "@babel/core": "^7.23.9",

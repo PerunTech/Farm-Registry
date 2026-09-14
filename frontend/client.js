@@ -1,9 +1,13 @@
 import pkg from '../package.json'
-import { pluginManager } from 'perun-core';
-import * as perunCore from 'perun-core';
-import * as plugin from './index';
+import { pluginManager } from 'perun-core'
+import * as plugin from './index'
 
-// In production, perun-core is exposed as a window global by its bundle.
-// Locally it's bundled internally, so we expose it manually here.
-window['perun-core'] = perunCore;
-pluginManager.registerPlugin(pkg.name, plugin);
+// The shell reaches a plugin two different ways and this file has to satisfy
+// both. ModuleMenu asks pluginManager, which skips anything already registered,
+// so registering here is what keeps it from fetching a second copy. Router
+// instead reads `window[<context>]` off the script it loaded, so the bundle has
+// to expose the same routes as a value -- production's entry (index.js) does
+// that by being the plugin, and this entry does it by re-exporting one.
+export * from './index'
+
+pluginManager.registerPlugin(pkg.name, plugin)
