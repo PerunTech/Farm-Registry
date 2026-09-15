@@ -15,7 +15,7 @@
         "url": "https://gitlab.prtech.mk/svarog4/farm-registry.git"
     },
     "dependencies": {
-        "perun-atlas": "git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#0cab39027aaa7596d1feee46bcc76c1e9cc63f1f",
+        "perun-atlas": "git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#2626c59aea4e36c5db1e10366a1008e2be2477c5",
         "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f"
     },
     "devDependencies": {
