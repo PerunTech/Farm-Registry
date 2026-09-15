@@ -33,6 +33,11 @@ const { useMemo, useState } = React
  * @param {Object} [labels]     - Every other piece of copy on the panel. Any key
  *                                left out falls back to neutral English, so an
  *                                unregistered label code is never shown.
+ * @param {Function} [labelResolver] - Resolves a label code carried by a
+ *                                descriptor, for the popup field names. Passed
+ *                                straight to FeatureSet; descriptors are the one
+ *                                part of the configuration this panel does not
+ *                                resolve itself, because it never reads them.
  * @param {Object} [tokens]     - CSS custom properties for the panel's root:
  *                                '--ap-accent' and friends. This is how a screen
  *                                described entirely in configuration carries its
@@ -55,6 +60,7 @@ export const FeaturePanel = ({
   servicePath,
   context,
   descriptors,
+  labelResolver,
   subject,
   presets = [],
   defaultMonths,
@@ -171,12 +177,13 @@ export const FeaturePanel = ({
 
       <div className='atlas-panel__mapwrap'>
         <div className='atlas-panel__map'>
-          <AtlasMap session={session}>
+          <AtlasMap session={session} layerSwitcher>
             <FeatureSet
               servicePath={servicePath}
               context={bindings}
               descriptors={descriptors}
               descriptorFor={descriptorFor}
+              labelResolver={labelResolver}
               onLoad={(collection) => setSet(collection ?? { features: [] })}
               onError={() => setSet({ features: [] })}
             />

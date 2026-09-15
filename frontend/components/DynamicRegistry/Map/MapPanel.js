@@ -94,6 +94,9 @@ const MapPanel = (props, context) => {
       servicePath={service}
       context={bindings}
       descriptors={objConfig?.descriptors || {}}
+      // Descriptors are handed over as configured, so their popup label codes
+      // are resolved where every other code on this panel is.
+      labelResolver={getLabel}
       subject={objConfig?.subject ? { ...objConfig.subject, id: objectId } : undefined}
       title={title}
       presets={presets}
