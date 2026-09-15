@@ -176,9 +176,11 @@ module.exports = (_, { mode }) => {
         // would be a second evaluation of the same bundle. Hand the page the
         // shell and let it do the loading, exactly as a deployment does.
         //
-        // It is also where spatial's settings are declared (window.sysCrs and
-        // friends), and those have to survive or the map is built with the wrong
-        // projection here and the right one in a deployment.
+        // The page declares no map settings of its own. spatial 5.0 reads none
+        // from the page, and perun-atlas resolves them from the deployment's
+        // SPATIAL_* parameters -- so dev and production get their projection,
+        // centre and bounds from the same place, which is the whole point of
+        // serving the shell's own page here.
         const serveIndex = (_req, res) => {
           const html = fs.readFileSync(path.join(__dirname, 'backend/www/index.html'), 'utf8');
           res.type('html').send(html.replace(

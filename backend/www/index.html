@@ -13,8 +13,6 @@
   <div id="app"></div>
   <script src="config.js"></script>
   <script>
-    window.sysCrs = 'EPSG:3857'
-    window.sysCenter = { "lat": 35.126411, "lng": 33.429859 }
     const assetsUrl = `${window.server}/WsConf/params/get/sys/FRONTEND_ASSETS_LOCATION`
     fetch(assetsUrl).then(response => response.json()).then(res => {
       if (res.VALUE) {
