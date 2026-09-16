@@ -101,10 +101,27 @@ const devOwned = [...vendors, self].map(v => `/${v.name}/`);
  * The browser refuses a cross-origin request from localhost to that host, so in
  * dev we proxy the same path instead and hand the page a relative URL.
  */
+/**
+ * The `window.server` assignments a browser would actually run.
+ *
+ * Anchored to the start of a line, so a commented-out host is skipped rather
+ * than read -- and global, so where several are live every one is found. Built
+ * fresh per call because a `g` regex carries `lastIndex` between uses.
+ *
+ * This was `source.match(...)` with no anchor and no flag, which takes the first
+ * occurrence anywhere in the file, comments included. A config.js that keeps its
+ * previous host on a `//` line above the live one therefore pointed the proxy at
+ * that old host while rewriting the same commented line for the page -- leaving
+ * the page on the real host, loading spatial and perun-atlas from the deployment
+ * and silently ignoring every locally built bundle.
+ */
+const serverLine = () => /^([ \t]*)window\.server\s*=\s*['"]([^'"]+)['"]/gm;
+
+/** The last live assignment, which is the one JavaScript would leave standing. */
 const readApiUrl = () => {
   const source = fs.readFileSync(path.join(__dirname, 'backend/www/config.js'), 'utf8');
-  const found = source.match(/window\.server\s*=\s*['"]([^'"]+)['"]/);
-  return found ? new URL(found[1]) : null;
+  const found = [...source.matchAll(serverLine())];
+  return found.length ? new URL(found[found.length - 1][2]) : null;
 };
 
 module.exports = (_, { mode }) => {
@@ -164,7 +181,9 @@ module.exports = (_, { mode }) => {
         server.app.get('/config.js', (_req, res) => {
           const source = fs.readFileSync(path.join(__dirname, 'backend/www/config.js'), 'utf8');
           res.type('application/javascript').send(
-            source.replace(/window\.server\s*=\s*['"][^'"]+['"]/, `window.server = '${api.pathname}'`)
+            // Every live assignment, indentation kept; commented-out hosts are
+            // left exactly as written so the file still documents them.
+            source.replace(serverLine(), (_match, indent) => `${indent}window.server = '${api.pathname}'`)
           );
         });
 
