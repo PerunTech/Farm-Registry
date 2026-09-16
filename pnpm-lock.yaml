@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#e53f20a63c92e651296add639ee352e357181663
+  spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#f69f909e8b2f257a4a145348cffd40343c450fdb
   perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
   websocket-driver: ^0.7.5
   brace-expansion: ^1.1.18
@@ -3265,8 +3265,8 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
-  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#e53f20a63c92e651296add639ee352e357181663:
-    resolution: {commit: e53f20a63c92e651296add639ee352e357181663, repo: https://git@gitlab.prtech.mk/svarog4/svarog-spatial, type: git}
+  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#f69f909e8b2f257a4a145348cffd40343c450fdb:
+    resolution: {commit: f69f909e8b2f257a4a145348cffd40343c450fdb, repo: https://git@gitlab.prtech.mk/svarog4/svarog-spatial, type: git}
     version: 5.0.0
 
   spdy-transport@3.0.0:
@@ -6718,7 +6718,7 @@ snapshots:
   perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#08d16cfbdf84d562a3e45ebe1b7dc30c6a6ba066(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
     dependencies:
       perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
-      spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#e53f20a63c92e651296add639ee352e357181663(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
+      spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#f69f909e8b2f257a4a145348cffd40343c450fdb(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
     transitivePeerDependencies:
       - '@babel/runtime'
       - '@types/react'
@@ -7470,7 +7470,7 @@ snapshots:
 
   source-map@0.6.1: {}
 
-  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#e53f20a63c92e651296add639ee352e357181663(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
+  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#f69f909e8b2f257a4a145348cffd40343c450fdb(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
     dependencies:
       leaflet: 1.5.1
       leaflet-polylinedecorator: 1.6.0

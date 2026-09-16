@@ -40,7 +40,7 @@
     "license": "ISC",
     "pnpm": {
         "overrides": {
-            "spatial": "git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#e53f20a63c92e651296add639ee352e357181663",
+            "spatial": "git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#f69f909e8b2f257a4a145348cffd40343c450fdb",
             "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f",
             "websocket-driver": "^0.7.5",
             "brace-expansion": "^1.1.18",
