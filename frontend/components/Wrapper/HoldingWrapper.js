@@ -210,7 +210,7 @@ const HoldingWrapper = (props, context) => {
                 customSave={true}
             />}
             {show && (
-                <Modal className={"farm-registry-modal"} show={show} onHide={() => { setShow(false), setPerson(false), setMap(false) }}>
+                <Modal className={`farm-registry-modal${showMap ? " farm-registry-modal--map" : ""}`} size={showMap ? "xl" : undefined} show={show} onHide={() => { setShow(false), setPerson(false), setMap(false) }}>
                     <Modal.Header className={"farm-registry-modal-header"} closeButton>
                     </Modal.Header>
                     <Modal.Body className={"farm-registry-modal-body"}>
