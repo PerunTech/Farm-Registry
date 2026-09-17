@@ -74,7 +74,7 @@ overrides:
   # To move one deliberately, edit its commit: here for spatial, in
   # `dependencies` for the other two. Not `pnpm update`, which re-resolves the
   # whole tree and drags the others along with it.
-  spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#50f76212ac8a78a858ddfe4c31e685f8fff30c2e
+  spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d
   perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
 
   # --- the build and dev-server toolchain -----------------------------------
