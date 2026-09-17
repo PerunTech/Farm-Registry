@@ -15,7 +15,7 @@
         "url": "https://gitlab.prtech.mk/svarog4/farm-registry.git"
     },
     "dependencies": {
-        "perun-atlas": "git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#08d16cfbdf84d562a3e45ebe1b7dc30c6a6ba066",
+        "perun-atlas": "git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#0fbb1b6158d0269b045cd0c64766dd3aeec4d729",
         "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f"
     },
     "devDependencies": {
@@ -40,7 +40,7 @@
     "license": "ISC",
     "pnpm": {
         "overrides": {
-            "spatial": "git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#f69f909e8b2f257a4a145348cffd40343c450fdb",
+            "spatial": "git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#50f76212ac8a78a858ddfe4c31e685f8fff30c2e",
             "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f",
             "websocket-driver": "^0.7.5",
             "brace-expansion": "^1.1.18",
