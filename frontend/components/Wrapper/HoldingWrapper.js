@@ -210,7 +210,11 @@ const HoldingWrapper = (props, context) => {
                 customSave={true}
             />}
             {show && (
-                <Modal className={`farm-registry-modal${showMap ? " farm-registry-modal--map" : ""}`} size={showMap ? "xl" : undefined} show={show} onHide={() => { setShow(false), setPerson(false), setMap(false) }}>
+                // No `size`: a map needs width and height together, and `size`
+                // only gives width -- as a Bootstrap class the deployment
+                // stylesheet then has to argue with. `farm-registry-modal--map`
+                // is the single hook, and both dimensions are set on it there.
+                <Modal className={`farm-registry-modal${showMap ? " farm-registry-modal--map" : ""}`} show={show} onHide={() => { setShow(false), setPerson(false), setMap(false) }}>
                     <Modal.Header className={"farm-registry-modal-header"} closeButton>
                     </Modal.Header>
                     <Modal.Body className={"farm-registry-modal-body"}>

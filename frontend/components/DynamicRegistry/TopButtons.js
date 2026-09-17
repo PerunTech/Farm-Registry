@@ -620,7 +620,9 @@ const TopButtons = (props, context) => {
         </Modal>
       )}
       {showMapModal && mapConfig && (
-        <Modal className='farm-registry-modal farm-registry-modal--map' show={showMapModal} onHide={() => setShowMapModal(false)} size='xl'>
+        // Sized from `farm-registry-modal--map` in the deployment stylesheet,
+        // not from `size` -- see HoldingWrapper.
+        <Modal className='farm-registry-modal farm-registry-modal--map' show={showMapModal} onHide={() => setShowMapModal(false)}>
           <Modal.Body className='farm-registry-modal-body'>
             <MapPanel
               objConfig={mapConfig?.objectConfiguration}
