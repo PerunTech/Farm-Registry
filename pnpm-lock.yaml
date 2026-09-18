@@ -32,8 +32,8 @@ importers:
   .:
     dependencies:
       perun-atlas:
-        specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#b3e530a525fce2ed0bf73f822657b5f1cd03202f
-        version: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#b3e530a525fce2ed0bf73f822657b5f1cd03202f(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
+        specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#75a6461912cc32d06aee8e7caf2395726c7c109b
+        version: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#75a6461912cc32d06aee8e7caf2395726c7c109b(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
       perun-core:
         specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
         version: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
@@ -2699,8 +2699,8 @@ packages:
     resolution: {integrity: sha512-Uc49J9hUMyuqJk+U+PxlpBpPr96A4HOOfesGx609EPr2ue82+5/Smq/KTAkEqh0/jUGSi1fumvqZ5yAWijJTJg==}
     engines: {node: '>=20'}
 
-  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#b3e530a525fce2ed0bf73f822657b5f1cd03202f:
-    resolution: {commit: b3e530a525fce2ed0bf73f822657b5f1cd03202f, repo: https://git@gitlab.prtech.mk/svarog4/perun-atlas, type: git}
+  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#75a6461912cc32d06aee8e7caf2395726c7c109b:
+    resolution: {commit: 75a6461912cc32d06aee8e7caf2395726c7c109b, repo: https://git@gitlab.prtech.mk/svarog4/perun-atlas, type: git}
     version: 1.0.0
 
   perun-core@git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f:
@@ -6724,7 +6724,7 @@ snapshots:
       pdfkit: 0.19.1
       xmldoc: 2.0.3
 
-  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#b3e530a525fce2ed0bf73f822657b5f1cd03202f(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
+  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#75a6461912cc32d06aee8e7caf2395726c7c109b(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
     dependencies:
       perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
       spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
