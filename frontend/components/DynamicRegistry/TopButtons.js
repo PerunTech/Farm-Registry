@@ -75,7 +75,7 @@ const TopButtons = (props, context) => {
     const btnsWithoutAdditionalData = topButtons.filter(btn => !btn.additionalData?.onSubmit)
     setButtons(btnsWithoutAdditionalData)
     checkAdditionalData(btnsWithAdditionalData)
-  }, [props.additionalTopBtns])
+  }, [props.additionalTopBtns, props.configuration])
 
   useEffect(() => {
     resetState()
