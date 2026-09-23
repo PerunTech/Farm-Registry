@@ -133,7 +133,18 @@ const HoldingWrapper = (props, context) => {
         }
     };
 
-    const handleMapClick = (lat, lng) => {
+    // The picked point as GeoJSON, in the shape /saveHolding reads from
+    // `multypolygeometry`. Coordinates are [lng, lat], as GeoJSON orders them.
+    const toPointGeometry = ({ lat, lng, srid }) => ({
+        type: 'Point',
+        coordinates: [lng, lat],
+        crs: {
+            type: 'name',
+            properties: { name: `EPSG:${srid}` }
+        }
+    })
+
+    const handleMapClick = (lat, lng, point) => {
         const mapInputN = document.getElementById('root_holding.location.info_GPS_NORTH')
         const mapInputE = document.getElementById('root_holding.location.info_GPS_EAST')
 
@@ -149,6 +160,9 @@ const HoldingWrapper = (props, context) => {
             mapInputN.value = lat
             formData["holding.location.info"]['GPS_EAST'] = lng
             mapInputE.value = lng
+            if (point) {
+                formData["multypolygeometry"] = toPointGeometry(point)
+            }
         }
         ComponentManager.setStateForComponent(props.formid, "formTableData", formData);
         props.formInstance.setState({ formTableData: formData });

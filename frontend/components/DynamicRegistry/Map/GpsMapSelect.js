@@ -23,6 +23,9 @@ const PICK_ZOOM = 10
 const GpsMapSelect = (props, context) => {
     // Clicked position in decimal degrees, null until the user picks one
     const [selected, setSelected] = useState(null)
+    // EPSG code the database stores geometry in (sys.gis.default_srid), as
+    // perun-atlas resolved it for this map. Falls back to the schema default.
+    const [dataSrid, setDataSrid] = useState(atlas?.config?.SCHEMA?.dataSrid?.default)
 
     const getLabel = (key) => labelsManager(key, context, 'farm_registry')
 
@@ -35,7 +38,11 @@ const GpsMapSelect = (props, context) => {
 
     const confirmSelection = () => {
         if (!selected) return
-        props.handleMapClick(toDMS(Math.abs(selected.lat)), toDMS(Math.abs(selected.lng)))
+        props.handleMapClick(
+            toDMS(Math.abs(selected.lat)),
+            toDMS(Math.abs(selected.lng)),
+            { lat: selected.lat, lng: selected.lng, srid: dataSrid }
+        )
     }
 
     if (!atlas) {
@@ -75,7 +82,8 @@ const GpsMapSelect = (props, context) => {
             {/* The container is what gives the map its height (75vh, from the
                 deployment's farm-registry stylesheet); AtlasMap fills it. */}
             <div className={'holding-map-container'}>
-                <AtlasMap session={props.session} overrides={{ zoom: PICK_ZOOM }} layerSwitcher>
+                <AtlasMap session={props.session} overrides={{ zoom: PICK_ZOOM }} layerSwitcher
+                    onReady={({ config }) => config?.dataSrid && setDataSrid(config.dataSrid)}>
                     <PointPicker value={selected} onChange={setSelected} />
                 </AtlasMap>
             </div>
