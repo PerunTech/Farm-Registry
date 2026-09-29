@@ -4,7 +4,7 @@ const { jsonToURI, flattenObject, labelsManager } = utils
 const { alertUserResponse, alertUserV2, ReactBootstrap } = elements
 const { Modal } = ReactBootstrap
 const { store, dataToRedux, removeAsyncReducer, updateSelectedRows } = redux
-const { useState } = React
+const { useState, useEffect } = React
 
 const SearchDynamic = (props, context) => {
     const hashHistory = createHashHistory()
@@ -311,6 +311,12 @@ const SearchDynamic = (props, context) => {
         )
     }
 
+    const autoSearch = props.configuration?.autoSearch
+
+    useEffect(() => {
+        if (autoSearch) performSearch({}, true)
+    }, [])
+
     const performSearch = (formData, isForm) => {
         setLastSearchData(formData)
         const searchConfig = props.configuration?.searchForm;
@@ -340,6 +346,8 @@ const SearchDynamic = (props, context) => {
                     setResultsData(res.data.data)
                 } else if (res?.data && Array.isArray(res?.data) && res.data?.length > 0) {
                     setResultsData(res.data)
+                } else if (autoSearch) {
+                    setResultsData([])
                 } else {
                     alertUserResponse({ response: res })
                 }
