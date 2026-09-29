@@ -7,6 +7,25 @@ const { Modal } = ReactBootstrap
 const { store } = redux
 const { labelsManager } = utils
 
+/**
+ * The address whose map button has been opened from a link.
+ *
+ * perun-atlas's Copy link puts `?map=<button ID>` after the record's route, with the map's
+ * view beside it, which the map reads for itself. The buttons are loaded again whenever the
+ * side menu reloads, and a map the reader has closed should stay closed, so a link opens its
+ * map once per address. A reload reads it again.
+ */
+let linkOpenedFor = null
+
+/** The map button a link names, among these buttons and their submenus, or nothing. */
+const linkedMapButton = (buttons) => {
+  const named = new URLSearchParams(window.location.hash.split('?')[1] || '').get('map')
+  if (!named) return undefined
+  return buttons
+    .flatMap(btn => [btn, ...(Array.isArray(btn.data) ? btn.data : [])])
+    .find(btn => btn.type === 'map' && btn.ID === named)
+}
+
 const TopButtons = (props, context) => {
   const [loading, setLoading] = useState(false)
   const [buttons, setButtons] = useState(undefined)
@@ -80,6 +99,16 @@ const TopButtons = (props, context) => {
   useEffect(() => {
     resetState()
   }, [props.activeComponent])
+
+  // A link to one of these maps opens it, as if its button had been pressed.
+  useEffect(() => {
+    if (!buttons || linkOpenedFor === window.location.href) return
+    const linked = linkedMapButton(buttons)
+    if (!linked) return
+    linkOpenedFor = window.location.href
+    setMapConfig(linked)
+    setShowMapModal(true)
+  }, [buttons])
 
 
   const resetState = () => {
@@ -627,6 +656,7 @@ const TopButtons = (props, context) => {
             <MapPanel
               objConfig={mapConfig?.objectConfiguration}
               objectId={props.objectId}
+              linkId={mapConfig?.ID}
               title={mapConfig?.label}
               onClose={() => setShowMapModal(false)}
             />
