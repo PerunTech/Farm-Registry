@@ -42,6 +42,7 @@ const DynamicRegistry = (props, context) => {
                         objectId={props?.match?.params?.objectId}
                         tableName={props?.match?.params?.tableName}
                         activeComponent={props?.match?.params?.component}
+                        routeQuery={props?.location?.search}
                     />
                 )}
                 <div className='dynamic-component-container'>
