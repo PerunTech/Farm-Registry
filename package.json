@@ -5,10 +5,11 @@
     "packageManager": "pnpm@10.15.0",
     "main": "backend/www/farm-registry.js",
     "scripts": {
-        "build": "webpack --mode=production --env=production",
-        "build-dev": "webpack --mode=development --env=development",
-        "dev": "webpack-dev-server --mode=development",
-        "test": "eslint --fix frontend/ || exit 0"
+        "build": "vite build",
+        "build-dev": "vite build --mode development",
+        "dev": "vite",
+        "lint": "oxlint frontend/",
+        "lint:fix": "oxlint --fix frontend/"
     },
     "repository": {
         "type": "git",
@@ -18,23 +19,12 @@
         "perun-atlas": "git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#8ce2bcc9747295630e551fe84acead24a3ad1089",
         "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f"
     },
+    "engines": {
+        "node": ">=22.12.0"
+    },
     "devDependencies": {
-        "@babel/core": "^7.29.7",
-        "@babel/eslint-parser": "^7.29.7",
-        "@babel/plugin-transform-runtime": "^7.29.7",
-        "@babel/preset-env": "^7.29.7",
-        "@babel/preset-react": "^7.29.7",
-        "@eslint/js": "^9.39.5",
-        "babel-loader": "^9.2.1",
-        "css-loader": "^7.1.5",
-        "eslint": "^9.39.5",
-        "eslint-plugin-react": "^7.37.5",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "globals": "^17.12.0",
-        "style-loader": "^4.0.0",
-        "webpack": "^5.111.0",
-        "webpack-cli": "^5.1.4",
-        "webpack-dev-server": "^5.2.6"
+        "oxlint": "^1.86.0",
+        "vite": "^8.3.1"
     },
     "author": "Perun Tech",
     "license": "ISC",
@@ -42,20 +32,11 @@
         "overrides": {
             "spatial": "git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d",
             "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f",
-            "websocket-driver": "^0.7.5",
-            "brace-expansion": "^1.1.18",
-            "js-yaml": "^4.3.2",
-            "minimatch": "^3.1.4",
-            "flatted": "^3.4.2",
             "picomatch": "^2.3.2",
             "postcss": "^8.5.23",
-            "ws": "^8.21.0",
             "fast-uri": "^3.1.7",
             "nanoid": "^3.3.18",
-            "browserslist": "^4.28.7",
-            "ajv@^6": "^6.14.0",
             "ajv@^8": "^8.20.0",
-            "uuid": "^11.1.1",
             "dompurify": "^3.4.15",
             "lodash": "^4.18.1",
             "lodash-es": "^4.18.1",

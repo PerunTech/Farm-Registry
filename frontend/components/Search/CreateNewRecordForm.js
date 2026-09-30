@@ -22,11 +22,10 @@ const CreateNewRecordForm = (props, context) => {
     const url = addFormConfig?.save?.onSave;
     const contentType = addFormConfig?.save?.contentType || 'application/x-www-form-urlencoded';
     const formData = e.formData || e;
-    let data = formData
     const params = addFormConfig?.save?.params || undefined
 
     if (params) {
-      data = Object.assign(formData, params)
+      Object.assign(formData, params)
     }
 
     const reqConfig = { method: 'post', url: `${window.server}${url}`, data: contentType && contentType.includes('application/json') ? formData : encodeURIComponent(JSON.stringify(formData)), headers: { 'Content-Type': contentType } };

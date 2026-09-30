@@ -117,7 +117,7 @@ const TopButtons = (props, context) => {
   }
 
   const getRowData = () => {
-    const { session, objectId, tableName, activeComponent, selectedRow } = props
+    const { session, objectId, tableName, selectedRow } = props
     const url = `${window.server}/ReactElements/getRowDataByObjectId/${session}/${objectId}/${tableName}`
     setLoading(true)
     axios.get(url).then(res => {

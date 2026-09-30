@@ -100,7 +100,6 @@ const SideMenu = (props) => {
     const generateSideMenuButtons = () => {
         if (!configuration || !Array.isArray(configuration)) return <></>;
         return configuration.map(el => {
-            let modifiedID = el.ID.replace(/\d/g, '').replace(/_$/, '');
             if (!el.ID.toUpperCase().includes('SUMMARY')) {
                 return (
                     <React.Fragment key={el.ID}>

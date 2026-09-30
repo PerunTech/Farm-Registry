@@ -12,7 +12,6 @@ const { useState, useEffect, useReducer } = React;
 const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
 let hashHistory = createHashHistory();
-let gridId;
 let _inputholder = "";
 const FarmWrapper = (props, context) => {
     const [show, setShow] = useState(false);

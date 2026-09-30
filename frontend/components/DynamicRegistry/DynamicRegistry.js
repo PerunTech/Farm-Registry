@@ -15,9 +15,6 @@ const DynamicRegistry = (props, context) => {
         setDynamicComponent(comp)
     }
     useEffect(() => {
-        const name = props.match.params.component;
-        const table = name.startsWith("SUB-") ? name.slice(4) : name;
-        const id = props.match.params.objectId;
         GridManager.reloadAllGrids();
     }, [toggledMenu]);
     const toggleSideMenu = (toggleOn) => {

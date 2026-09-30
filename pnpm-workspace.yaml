@@ -35,19 +35,23 @@ blockExoticSubdeps: false
 # so it cannot reach any of these: the 36 advisories it did clear were direct
 # devDependencies the lockfile had frozen below their own declared ranges.
 #
-# Several would resolve to a patched version today without being named here --
-# js-yaml, minimatch, brace-expansion, flatted and ajv@^6 all do, now that
-# eslint 9 asks for newer ranges than eslint 8 did. They stay anyway. A range
-# permitting a patched version is not the same as a lockfile recording one:
-# browserslist sat at 4.24.3 under a `^4.24.0` dependent until it was named
-# here. The list is a floor for every package that has carried an advisory, so
-# the audit does not depend on what a re-resolution happens to pick.
+# Several would resolve to a patched version today without being named here. They
+# stay anyway. A range permitting a patched version is not the same as a lockfile
+# recording one: browserslist sat at 4.24.3 under a `^4.24.0` dependent until it
+# was named here. The list is a floor for every package that has carried an
+# advisory, so the audit does not depend on what a re-resolution happens to pick.
+#
+# It is also only as long as the tree. webpack, webpack-dev-server, the babel
+# loaders and eslint were replaced by vite and oxlint, and took with them the
+# floors only they needed -- websocket-driver, brace-expansion, js-yaml,
+# minimatch, flatted, ws, browserslist, uuid and ajv 6. An override for a package
+# nothing installs is noise that reads as a reason, so they went too; one that
+# comes back with a dependency should be added back.
 #
 # None of what follows reaches backend/www/farm-registry.js. The bundle
 # externalises perun-core and perun-atlas and has no other runtime dependency,
 # so it carries this module's own source and nothing else. The advisories still
-# mattered, because webpack-dev-server runs on developer machines -- shell-quote
-# and websocket-driver are the two that were rated critical.
+# mattered, because the toolchain runs on developer machines and the CI runner.
 overrides:
   # --- the first-party git dependencies -------------------------------------
   # spatial is pinned here because it is the one this module never names: it
@@ -77,27 +81,14 @@ overrides:
   spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d
   perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
 
-  # --- the build and dev-server toolchain -----------------------------------
-  websocket-driver: ^0.7.5
-  brace-expansion: ^1.1.18
-  js-yaml: ^4.3.2
-  minimatch: ^3.1.4
-  flatted: ^3.4.2
+  # --- the build toolchain -----------------------------------
   picomatch: ^2.3.2
   postcss: ^8.5.23
-  ws: ^8.21.0
   fast-uri: ^3.1.7
   nanoid: ^3.3.18
-  browserslist: ^4.28.7
-  # Two majors of ajv are in the tree and they patch separately: eslint and
-  # schema-utils 3 ask for ^6, schema-utils 4 and @rjsf/validator-ajv8 for ^8.
-  # A single override would force one major on both and break whichever lost.
-  ajv@^6: ^6.14.0
+  # Scoped to the major. ajv 6 left the tree with eslint, but a bare `ajv` key
+  # would force 8 on anything that brings 6 back.
   ajv@^8: ^8.20.0
-  # sockjs asks for ^8.3.2 and the advisory is only answered in 11, so this is
-  # a major lift rather than a patch. It uses one symbol -- `require('uuid').v4`
-  # in lib/transport.js -- which uuid 11 still exports from its CJS entry.
-  uuid: ^11.1.1
 
   # --- vendored bundles: audit-only ----------------------------------------
   # These five reach the audit through perun-core, and lifting them here does

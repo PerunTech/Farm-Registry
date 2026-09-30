@@ -5,7 +5,6 @@ const { labelsManager } = utils
 const { alertUserResponse, alertUserV2 } = elements
 const { useState, useEffect } = React
 import SearchFormWrapper from './SearchFormWrapper';
-let searchGridId;
 const SearchComp = (props, context) => {
   const [gridResult, setGridResults] = useState(undefined)
   const [loading, setLoading] = useState(false)
@@ -147,7 +146,6 @@ const SearchComp = (props, context) => {
       configWs = `/ReactElements/getTableFieldList/${props.svSession}/PERSON`
     }
     let dynamic_key = Math.floor(Math.random() * 999999).toString(36)
-    searchGridId = tableName + dynamic_key
     let grid = (<div>
       <ExportableGrid
         gridType={"SEARCH_GRID_DATA"}
