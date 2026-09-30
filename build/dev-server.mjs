@@ -201,8 +201,11 @@ export function devServer(self) {
     return { perunCore, vendors, owned, api: readApiUrl() };
   };
   let site;
-  // Vite's own: the client that reloads the page, and what it imports.
-  const viteOwned = ['/@'];
+  // Vite's own: the client that reloads the page, and what it imports. The client
+  // pulls in `env.mjs` from wherever the package manager put Vite, which pnpm
+  // makes a path under /node_modules/ -- left to the proxy that is the backend's
+  // 404, and the client then never runs.
+  const viteOwned = ['/@', '/node_modules/'];
 
   return {
     name: 'farm-registry:dev-server',
