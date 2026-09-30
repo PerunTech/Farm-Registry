@@ -17,9 +17,14 @@ const { labelsManager } = utils
  */
 let linkOpenedFor = null
 
-/** The map button a link names, among these buttons and their submenus, or nothing. */
-const linkedMapButton = (buttons) => {
-  const named = new URLSearchParams(window.location.hash.split('?')[1] || '').get('map')
+/**
+ * The map button a link names, among these buttons and their submenus, or nothing.
+ *
+ * @param {Object[]} buttons
+ * @param {string} [query] - The query after the route, as the router's location gives it.
+ */
+const linkedMapButton = (buttons, query) => {
+  const named = new URLSearchParams(query || '').get('map')
   if (!named) return undefined
   return buttons
     .flatMap(btn => [btn, ...(Array.isArray(btn.data) ? btn.data : [])])
@@ -100,15 +105,17 @@ const TopButtons = (props, context) => {
     resetState()
   }, [props.activeComponent])
 
-  // A link to one of these maps opens it, as if its button had been pressed.
+  // A link to one of these maps opens it, as if its button had been pressed: when the buttons
+  // load, and when the link is opened in a tab already showing this record, which changes only
+  // the query and so remounts and reloads nothing.
   useEffect(() => {
     if (!buttons || linkOpenedFor === window.location.href) return
-    const linked = linkedMapButton(buttons)
+    const linked = linkedMapButton(buttons, props.routeQuery)
     if (!linked) return
     linkOpenedFor = window.location.href
     setMapConfig(linked)
     setShowMapModal(true)
-  }, [buttons])
+  }, [buttons, props.routeQuery])
 
 
   const resetState = () => {

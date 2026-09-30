@@ -177,7 +177,9 @@ const SideMenu = (props) => {
                     href = `/main/registry/${props.tableName}/${props.objectId}/SUB-${tableName}`
                 }
                 else href = `/main/registry/${props.tableName}/${props.objectId}/${tableName}`
-                hashHistory.push(href)
+                // When the menu loads, it selects the item the address already names. Pushing
+                // the bare path then would drop the query after it, such as a link's `?map=`.
+                if (window.location.hash.split('?')[0] !== `#${href}`) hashHistory.push(href)
                 const customButtonsProps = {
                     key: tableName,
                     tableName,
