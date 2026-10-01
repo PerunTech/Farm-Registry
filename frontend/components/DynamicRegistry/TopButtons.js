@@ -541,7 +541,7 @@ const TopButtons = (props, context) => {
       const url = action?.onSubmit
       const reqConfig = { method: reqType, url: `${window.server}${url}` }
       if (reqType === 'POST') {
-        const data = formData ? { formData, objArray: selectedGridRows } : { objArray: selectedGridRows }
+        const data = action?.flatPayload && formData ? { ...formData } : formData ? { formData, objArray: selectedGridRows } : { objArray: selectedGridRows }
         if (params && Object.keys(params).length > 0) {
           Object.assign(data, params)
         }
