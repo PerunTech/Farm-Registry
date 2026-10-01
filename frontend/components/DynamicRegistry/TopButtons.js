@@ -4,7 +4,7 @@ import { MapPanel } from './Map'
 const { useEffect, useState } = React
 const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap
-const { store } = redux
+const { store, updateSelectedRows } = redux
 const { labelsManager } = utils
 
 /**
@@ -475,6 +475,15 @@ const TopButtons = (props, context) => {
   }
 
   const onActionGridRowClick = (_id, _idx, row) => {
+    // A grid button with a `form` block picks one row, then opens that form for it (single-record action)
+    const rowForm = gridConfig?.objectConfiguration?.form
+    if (rowForm) {
+      store.dispatch(updateSelectedRows([row], gridConfig.ID))
+      setFormConfig({ ...gridConfig, objectConfiguration: rowForm })
+      setShowGridModal(false)
+      setShowFormModal(true)
+      return
+    }
     let actionWs = gridConfig?.objectConfiguration?.action?.onSubmit
     const tableName = gridConfig?.objectConfiguration?.action?.tableName
     const reqType = gridConfig?.objectConfiguration?.action?.type || 'GET'
@@ -521,6 +530,13 @@ const TopButtons = (props, context) => {
     )
   }
 
+  const closeFormModal = () => {
+    setShowFormModal(false)
+    if (formConfig?.objectConfiguration && gridConfig?.objectConfiguration?.form) {
+      store.dispatch(updateSelectedRows([], gridConfig.ID))
+    }
+  }
+
   const resetFormSaveState = () => {
     ComponentManager.setStateForComponent('FARM_REGISTRY_ACTION_FORM', null, { saveExecuted: false })
   }
@@ -555,7 +571,7 @@ const TopButtons = (props, context) => {
           const resType = res.data?.type?.toLowerCase() || 'info'
           if (resType === 'success') {
             refreshGrid()
-            setShowFormModal(false)
+            closeFormModal()
           }
           if (res?.data?.action) {
             alertUserV2({
@@ -646,7 +662,7 @@ const TopButtons = (props, context) => {
         })}
       </div>
       {showFormModal && formConfig && (
-        <Modal className='farm-registry-modal' show={showFormModal} onHide={() => setShowFormModal(false)}>
+        <Modal className='farm-registry-modal' show={showFormModal} onHide={closeFormModal}>
           <Modal.Header className='farm-registry-modal-header' closeButton>
           </Modal.Header>
           <Modal.Body className='farm-registry-modal-body'>
