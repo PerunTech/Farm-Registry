@@ -94,9 +94,11 @@ const SearchDynamic = (props, context) => {
         if (!formConfig) return null
         const rowTableName = props.configuration?.tableName?.toUpperCase() || tableName
         const rowObjectId = clickedRow?.[`${rowTableName}.OBJECT_ID`]
-        const jsonSchemaWs = formConfig?.configuration?.onSubmit
-        const uiSchemaWs = formConfig?.uischema?.onSubmit
-        const formDataWs = formConfig?.data?.onSubmit?.replace('{rowObjectId}', rowObjectId)
+        // The row's id can be written as {rowObjectId} or {TABLE.OBJECT_ID} in any of the form services
+        const withRowId = (ws) => ws?.replace('{rowObjectId}', rowObjectId).replace(`{${rowTableName}.OBJECT_ID}`, rowObjectId)
+        const jsonSchemaWs = withRowId(formConfig?.configuration?.onSubmit)
+        const uiSchemaWs = withRowId(formConfig?.uischema?.onSubmit)
+        const formDataWs = withRowId(formConfig?.data?.onSubmit)
         const saveWs = formConfig?.save?.onSave
         const saveContentType = formConfig?.save?.contentType
         const saveParams = formConfig?.save?.params

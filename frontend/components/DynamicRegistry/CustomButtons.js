@@ -4,6 +4,7 @@ import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
 import ParentChildGrids from './ParentChildGrids'
 import Documents from './Documents'
+import PageLayout from './PageLayout'
 const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
 const { useState, useEffect } = React
@@ -241,7 +242,7 @@ const CustomButtons = (props, context) => {
                 enableMultiSelect={multiSelect}
                 onSelectChangeFunct={customRowSelection}
                 buttonsArray={btnArray ? btnArrCreate(btnArray, multiSelect) : undefined}
-                heightRatio={0.72}
+                heightRatio={props.configuration.objectConfiguration.heightRatio || 0.72}
             />
 
         </div >
@@ -292,9 +293,11 @@ const CustomButtons = (props, context) => {
             uiSchemaConfig = props.configuration.objectConfiguration?.form?.uischema?.onSubmit
             formDataWs = props.configuration.objectConfiguration?.form?.data?.onSubmit
             // If the JSON schema, UI schema or form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
-            jsonSchemaConfig = replaceFunc(jsonSchemaConfig, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
-            uiSchemaConfig = replaceFunc(uiSchemaConfig, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
-            formDataWs = replaceFunc(formDataWs, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
+            // The placeholder names the row's table ({VMP_INVENTORY_ITEM.OBJECT_ID}), which can differ from the menu's id
+            const rowTableName = props.configuration?.tableName || props.tableName
+            jsonSchemaConfig = replaceFunc(jsonSchemaConfig, rowTableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
+            uiSchemaConfig = replaceFunc(uiSchemaConfig, rowTableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
+            formDataWs = replaceFunc(formDataWs, rowTableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
             contentType = props.configuration.objectConfiguration?.form?.save?.contentType
             params = props.configuration.objectConfiguration?.form?.save?.params
@@ -466,6 +469,8 @@ const CustomButtons = (props, context) => {
                 {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
+                {/* PAGE: several items (forms, grids) laid out together */}
+                {props.configuration?.objectConfiguration?.type === 'page' && <PageLayout configuration={props.configuration} objectId={props.objectId} appObjId={props.appObjId} getConfiguration={props.getConfiguration} />}
                 {/* SEARCH-GRID*/}
                 {props.configuration?.objectConfiguration?.type === 'search-grid' && <SearchDynamic tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {/* PARENT-CHILD-GRID */}
