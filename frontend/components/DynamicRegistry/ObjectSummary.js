@@ -1,15 +1,12 @@
 import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM, utils } from "perun-core";
 const { labelsManager } = utils
 const { useEffect, useState } = React;
-const { ReactBootstrap, alertUserResponse, alertUserV2, Icon } = elements;
-const { Modal } = ReactBootstrap;
+const { alertUserResponse, alertUserV2, Icon } = elements;
 const { store } = redux
 const hashHistory = createHashHistory();
 const ObjectSummary = (props, context) => {
     const [loading, setLoading] = useState(false);
-    const [show, setShow] = useState(false);
     const [menuData, setMenuData] = useState([]);
-    const [modalData, setModalData] = useState([]);
     const [actions, setActions] = useState([])
     const [importUrl, setImportUrl] = useState(undefined)
     useEffect(() => {
@@ -42,8 +39,7 @@ const ObjectSummary = (props, context) => {
                     if (resType === 'error') {
                         alertUserResponse({ response: res.data });
                     } else {
-                        setMenuData(res.data?.data?.DETAILED || []);
-                        setModalData(res.data?.data?.SHORT || []);
+                        setMenuData(res.data?.data?.SHORT || []);
                         setActions(res.data?.data?.ACTIONS || [])
                         setImportUrl(res.data?.data?.IMPORT?.[0]['import'] || undefined)
                     }
@@ -77,16 +73,6 @@ const ObjectSummary = (props, context) => {
         )
     }
 
-    const generateModalData = () => (
-        <div className="farm-registry-object-summary-modal">
-            {modalData.map(({ label, value }) => (
-                <div className="farm-registry-object-summary-row" key={label}>
-                    <p>{label}</p>
-                    <p>: {value}</p>
-                </div>
-            ))}
-        </div>
-    );
     const updateData = () => {
         const onConfirm = () => {
             setLoading(true)
@@ -193,33 +179,12 @@ const ObjectSummary = (props, context) => {
                             {generateMenuData()}
                         </div>
                         <div className='farm-registry-object-summary-btn-container'>
-                            {modalData.length > 0 && (
-                                <button
-                                    className="farm-registry-object-summary-show-more"
-                                    onClick={() => setShow(true)}
-                                >
-                                    {labelsManager('show_more', context, 'farm_registry')}
-                                </button>
-                            )}
                             {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{labelsManager("update_data_btn", context, 'farm_registry')} <span className={`update-farm-btn-icon`}>{<Icon name="IconReload" />}</span></span></button>}
                             {actions && generateSummaryActions()}
                         </div>
                     </>
                 )}
             </div>
-            {show && (
-                <Modal
-                    className="farm-registry-modal farm-registry-modal-object-summary"
-                    show={show}
-                    onHide={() => setShow(false)}
-                >
-                    <Modal.Header className="farm-registry-modal-header" closeButton />
-                    <Modal.Body className="farm-registry-modal-body">
-                        {modalData.length > 0 && generateModalData()}
-                    </Modal.Body>
-                    <Modal.Footer className="farm-registry-modal-footer" />
-                </Modal>
-            )}
         </>
     );
 };
