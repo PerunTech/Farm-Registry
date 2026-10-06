@@ -292,7 +292,7 @@ const CustomButtons = (props, context) => {
             jsonSchemaConfig = props.configuration.objectConfiguration?.form?.configuration?.onSubmit
             uiSchemaConfig = props.configuration.objectConfiguration?.form?.uischema?.onSubmit
             formDataWs = props.configuration.objectConfiguration?.form?.data?.onSubmit
-            // If the JSON schema or form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
+            // If the JSON schema, UI schema or form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
             // The placeholder names the row's table ({VMP_INVENTORY_ITEM.OBJECT_ID}), which can differ from the menu's id
             const rowTableName = props.configuration?.tableName || props.tableName
             jsonSchemaConfig = replaceFunc(jsonSchemaConfig, rowTableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
