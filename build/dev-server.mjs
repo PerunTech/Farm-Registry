@@ -299,11 +299,11 @@ export function devServer(self) {
         // would be a second evaluation of the same bundle. Hand the page the
         // shell and let it do the loading, exactly as a deployment does.
         //
-        // The page declares no map settings of its own. spatial 5.0 reads none
-        // from the page, and perun-atlas resolves them from the deployment's
-        // SPATIAL_* parameters -- so dev and production get their projection,
-        // centre and bounds from the same place, which is the whole point of
-        // serving the shell's own page here.
+        // The page declares no map settings of its own. spatial reads none from
+        // the page since 4.2.1, and perun-atlas resolves them from the
+        // deployment's SPATIAL_* parameters -- so dev and production get their
+        // projection, centre and bounds from the same place, which is the whole
+        // point of serving the shell's own page here.
         server.middlewares.use(async (req, res, next) => {
           const { pathname } = new URL(req.url, 'http://localhost');
           if (req.method !== 'GET' || (pathname !== '/' && pathname !== '/index.html')) return next();
