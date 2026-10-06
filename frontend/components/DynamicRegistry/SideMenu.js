@@ -4,7 +4,6 @@ const { alertUserResponse, Icon } = elements
 const { store } = redux;
 import CustomButtons from "./CustomButtons";
 import ObjectSummary from './ObjectSummary';
-import { applyLocalMenu } from './localMenus';
 
 const SideMenu = (props) => {
     const sideMenuRef = useRef(null);
@@ -25,7 +24,6 @@ const SideMenu = (props) => {
         }
     }, [props?.refreshSideMenu]);
 
-    const menuVars = () => ({ TOKEN: props.svSession, OBJECT_ID: props.objectId, PARENT_ID: props.objectId })
     const getConfiguration = () => {
         props.setTopButtons(undefined)
         setLoading(true)
@@ -43,7 +41,7 @@ const SideMenu = (props) => {
                         const component = props.routeParams?.component
                         const isChild = component.includes('SUB-')
                         const tableName = component.replace(/^SUB-/, '')
-                        applyLocalMenu(props.tableName, res.data.data.buttonArray, menuVars()).map(item => {
+                        res.data?.data?.buttonArray?.map(item => {
                             if (item.position === 'top') {
                                 topButtons.push(item)
                             } else {
@@ -188,7 +186,6 @@ const SideMenu = (props) => {
                     objectId: props.objectId,
                     appObjId: props.objectId,
                     configuration,
-                    vars: menuVars(),
                     getConfiguration: (objId) => getConfiguration(objId)
                 }
                 dynamicComponent = <CustomButtons {...customButtonsProps} />

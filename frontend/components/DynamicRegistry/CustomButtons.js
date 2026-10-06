@@ -470,7 +470,7 @@ const CustomButtons = (props, context) => {
                     uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
                 />}
                 {/* PAGE: several items (forms, grids) laid out together */}
-                {props.configuration?.objectConfiguration?.type === 'page' && <PageLayout configuration={props.configuration} objectId={props.objectId} appObjId={props.appObjId} vars={props.vars} getConfiguration={props.getConfiguration} />}
+                {props.configuration?.objectConfiguration?.type === 'page' && <PageLayout configuration={props.configuration} objectId={props.objectId} appObjId={props.appObjId} getConfiguration={props.getConfiguration} />}
                 {/* SEARCH-GRID*/}
                 {props.configuration?.objectConfiguration?.type === 'search-grid' && <SearchDynamic tableName={props.tableName} configuration={props.configuration.objectConfiguration} />}
                 {/* PARENT-CHILD-GRID */}

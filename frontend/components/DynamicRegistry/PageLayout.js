@@ -1,6 +1,5 @@
 import { React, axios } from 'perun-core'
 import CustomButtons from './CustomButtons'
-import { replaceAll } from './localMenus'
 const { useEffect, useState } = React
 
 // A section's width as a percent of the row, e.g. 66. Defaults to the full row.
@@ -29,25 +28,7 @@ const SummaryList = ({ url }) => {
 }
 
 const PageLayout = (props) => {
-    const { header, sections, vars: lateVars } = props.configuration?.objectConfiguration || {}
-    const [fetched, setFetched] = useState({})
-    const vars = { ...(props.vars || {}), ...fetched }
-
-    // Some values (e.g. the holding's responsible person) are only known from the object itself:
-    // `vars` maps a placeholder to { ws, field }, read once and substituted into the sections.
-    useEffect(() => {
-        Object.entries(lateVars || {}).forEach(([name, def]) => {
-            axios.get(`${window.server}${replaceAll(def.ws, props.vars || {})}`).then(res => {
-                const payload = res?.data?.formData ?? res?.data?.data ?? res?.data
-                const value = payload?.[def.field]
-                if (value !== undefined && value !== null) setFetched(prev => ({ ...prev, [name]: value }))
-            }).catch(err => console.error(err))
-        })
-    }, [])
-
-    // A section can depend on values only some objects have (e.g. a holding without a
-    // responsible person); skip it when one of them was never filled in.
-    const visible = (sections || []).filter(s => !(s.requires || []).some(key => vars[key] === undefined || vars[key] === null))
+    const { header, sections } = props.configuration?.objectConfiguration || {}
 
     return (
         <div className="fr-page">
@@ -61,9 +42,9 @@ const PageLayout = (props) => {
                 </div>
             )}
             <div className="fr-page-grid">
-                {visible.map(section => {
+                {(sections || []).map(section => {
                     // The section id is the table name; the item's ID is that plus the object id
-                    const configuration = section.objectConfiguration && replaceAll({ ID: `${section.id}_%OBJECT_ID%`, tableName: section.id, objectConfiguration: section.objectConfiguration }, vars)
+                    const configuration = section.objectConfiguration && { ID: `${section.id}_${props.objectId}`, tableName: section.id, objectConfiguration: section.objectConfiguration }
                     return (
                         <section key={section.ID || section.id} className="fr-page-section fr-col" style={{ '--fr-w': sectionWidth(section.width) }}>
                             {(section.title || section.badge || section.action) && (
@@ -77,7 +58,7 @@ const PageLayout = (props) => {
                                 </div>
                             )}
                             {section.type === 'summary'
-                                ? <SummaryList url={replaceAll(section.url, vars)} />
+                                ? <SummaryList url={section.url} />
                                 : <CustomButtons
                                     tableName={section.id}
                                     objectId={props.objectId}
