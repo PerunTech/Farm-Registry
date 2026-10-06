@@ -291,8 +291,9 @@ const CustomButtons = (props, context) => {
             jsonSchemaConfig = props.configuration.objectConfiguration?.form?.configuration?.onSubmit
             uiSchemaConfig = props.configuration.objectConfiguration?.form?.uischema?.onSubmit
             formDataWs = props.configuration.objectConfiguration?.form?.data?.onSubmit
-            // If the JSON schema or form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
+            // If the JSON schema, UI schema or form data WS contains something like {TABLE_NAME.OBJECT_ID} find it and replace it with the clicked object's ID
             jsonSchemaConfig = replaceFunc(jsonSchemaConfig, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
+            uiSchemaConfig = replaceFunc(uiSchemaConfig, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
             formDataWs = replaceFunc(formDataWs, props?.configuration?.tableName, clickedRowObjectId, props.configuration.objectConfiguration?.isSvarogForm)
             onSubmitWs = props.configuration.objectConfiguration?.form?.save?.onSave
             contentType = props.configuration.objectConfiguration?.form?.save?.contentType
