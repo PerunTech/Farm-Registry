@@ -27,6 +27,28 @@ const SummaryList = ({ url }) => {
     )
 }
 
+// Audit entries ({ LABEL_TITLE, LABEL_TEXT }) from the section's own service, oldest first as returned.
+const HistoryList = ({ url }) => {
+    const [rows, setRows] = useState([])
+    useEffect(() => {
+        if (!url) return
+        axios.get(`${window.server}/${url.replace(/^\//, '')}`).then(res => {
+            const data = Array.isArray(res?.data) ? res.data : res?.data?.data
+            setRows(Array.isArray(data) ? data : [])
+        }).catch(err => console.error(err))
+    }, [url])
+    return (
+        <ul className="fr-history">
+            {rows.map((row, idx) => (
+                <li key={idx}>
+                    <div className="fr-history-title">{row.LABEL_TITLE}</div>
+                    <div className="fr-history-text">{row.LABEL_TEXT}</div>
+                </li>
+            ))}
+        </ul>
+    )
+}
+
 const PageLayout = (props) => {
     const { header, sections } = props.configuration?.objectConfiguration || {}
 
@@ -43,10 +65,10 @@ const PageLayout = (props) => {
             )}
             <div className="fr-page-grid">
                 {(sections || []).map(section => {
-                    // The section id is the table name; the item's ID is that plus the object id
-                    const configuration = section.objectConfiguration && { ID: `${section.id}_${props.objectId}`, tableName: section.id, objectConfiguration: section.objectConfiguration }
+                    // The section ID is the table name; the item's ID is that plus the object id
+                    const configuration = section.objectConfiguration && { ID: `${section.ID}_${props.objectId}`, tableName: section.ID, objectConfiguration: section.objectConfiguration }
                     return (
-                        <section key={section.ID || section.id} className="fr-page-section fr-col" style={{ '--fr-w': sectionWidth(section.width) }}>
+                        <section key={section.ID} className="fr-page-section fr-col" style={{ '--fr-w': sectionWidth(section.width) }}>
                             {(section.title || section.badge || section.action) && (
                                 <div className="fr-page-section-head">
                                     <div>
@@ -57,15 +79,15 @@ const PageLayout = (props) => {
                                     {section.action && <button type="button" className="fr-btn fr-btn-primary">{section.action}</button>}
                                 </div>
                             )}
-                            {section.type === 'summary'
-                                ? <SummaryList url={section.url} />
-                                : <CustomButtons
-                                    tableName={section.id}
-                                    objectId={props.objectId}
-                                    appObjId={props.appObjId}
-                                    configuration={configuration}
-                                    getConfiguration={props.getConfiguration}
-                                />}
+                            {section.type === 'summary' && <SummaryList url={section.url} />}
+                            {section.type === 'history' && <HistoryList url={section.url} />}
+                            {section.type !== 'summary' && section.type !== 'history' && <CustomButtons
+                                tableName={section.ID}
+                                objectId={props.objectId}
+                                appObjId={props.appObjId}
+                                configuration={configuration}
+                                getConfiguration={props.getConfiguration}
+                            />}
                         </section>
                     )
                 })}
