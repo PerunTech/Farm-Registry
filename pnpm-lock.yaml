@@ -5,7 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d
   perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
   picomatch: ^2.3.2
   postcss: ^8.5.23
@@ -23,8 +22,8 @@ importers:
   .:
     dependencies:
       perun-atlas:
-        specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#8ce2bcc9747295630e551fe84acead24a3ad1089
-        version: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#8ce2bcc9747295630e551fe84acead24a3ad1089(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
+        specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#semver:^1.0.0-rc.1
+        version: git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#9aec0824171300874936b44ae6f03ac465467e71(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
       perun-core:
         specifier: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
         version: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
@@ -387,6 +386,9 @@ packages:
   '@tabler/icons@3.46.0':
     resolution: {integrity: sha512-f2RYFl3fzPwj5WO82x6en0dmkjefxEfOm16D1ByM6cj/McNiwOkL4VaPUoP9VVIrXAD9WnTSVFr70px703b//A==}
 
+  '@tmcw/togeojson@7.1.2':
+    resolution: {integrity: sha512-QKnFs9DAuqqBVj4d6c69tV1Dj2TspSBTqffivoN0YoBCVdP/JY1+WaYCJbzU49RkoU5NOSOJ3jtFHCdEUVh21A==}
+
   '@types/hoist-non-react-statics@3.3.7':
     resolution: {integrity: sha512-PQTyIulDkIDro8P+IHbKCsw7U2xxBYflVzW/FgWdCAePD9xGSidgA76/GeJ6lBKoblyhf9pBY763gbrN+1dI8g==}
     peerDependencies:
@@ -472,6 +474,9 @@ packages:
 
   browserify-zlib@0.2.0:
     resolution: {integrity: sha512-Z942RysHXmJrhqk88FmKBVq/v5tqmSkDz7p54G/MGyjMnCFFnC79XWNbg+Vta8W6Wb2qtSZTSxIGkJrRpCFEiA==}
+
+  but-unzip@0.1.10:
+    resolution: {integrity: sha512-hLfQ9WlUimmv/okzsRl6AYG3Ew5HNWhWgUslSR93FsDdeL0MAoQvmC/BJfs35lqEAO5t/QD7Y4vCFcPJtijt3A==}
 
   call-bind-apply-helpers@1.0.1:
     resolution: {integrity: sha512-BhYE+WDaywFg2TBWYNXAE+8B1ATnThNBqXHP5nQu0jWJdVvY2hvkpyB3qOmtmDePiS5/BDQ8wASEWGMWRG148g==}
@@ -916,6 +921,9 @@ packages:
   pako@1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
 
+  parsedbf@2.0.0:
+    resolution: {integrity: sha512-WNjKn/cwgGBkXqQLif+2VMEahcRHkBRU0/RfBWZ7Vj7snRNNW63yW1mVuuHRDyXTRxuGCzAHHBcr/Fn+U/bXjQ==}
+
   path-to-regexp@1.9.0:
     resolution: {integrity: sha512-xIp7/apCFJuUHdDLWe8O1HIkb0kQrOMb/0u6FXQjemHn/ii5LrIzU6bdECnsiTF/GjZkMEKg1xdiZwNqDYlZ6g==}
 
@@ -926,9 +934,9 @@ packages:
     resolution: {integrity: sha512-Uc49J9hUMyuqJk+U+PxlpBpPr96A4HOOfesGx609EPr2ue82+5/Smq/KTAkEqh0/jUGSi1fumvqZ5yAWijJTJg==}
     engines: {node: '>=20'}
 
-  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#8ce2bcc9747295630e551fe84acead24a3ad1089:
-    resolution: {commit: 8ce2bcc9747295630e551fe84acead24a3ad1089, repo: https://git@gitlab.prtech.mk/svarog4/perun-atlas, type: git}
-    version: 1.0.0
+  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#9aec0824171300874936b44ae6f03ac465467e71:
+    resolution: {commit: 9aec0824171300874936b44ae6f03ac465467e71, repo: https://git@gitlab.prtech.mk/svarog4/perun-atlas, type: git}
+    version: 1.0.0-rc.1
     engines: {node: '>=22.12.0'}
 
   perun-core@git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f:
@@ -1208,13 +1216,17 @@ packages:
   setimmediate@1.0.5:
     resolution: {integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA==}
 
+  shpjs@6.2.0:
+    resolution: {integrity: sha512-8cR/RKYHQepmVyBMtzZQ+1bnSbWrtLXS6aoEJmpUlOSHtSUddterebVxYmIWq2g9kOEX9jm2kjHiikyPX7cNQA==}
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
-  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d:
-    resolution: {commit: eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d, repo: https://git@gitlab.prtech.mk/svarog4/svarog-spatial, type: git}
-    version: 5.0.0
+  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#a5bba0b6e86e20e36dbc99c126ba697bc0548d70:
+    resolution: {commit: a5bba0b6e86e20e36dbc99c126ba697bc0548d70, repo: https://git@gitlab.prtech.mk/svarog4/svarog-spatial, type: git}
+    version: 4.2.1-rc.1
+    engines: {node: '>=22.12.0'}
 
   ssf@0.11.2:
     resolution: {integrity: sha512-+idbmIXoYET47hH+d7dfm2epdOMUDjqcB4648sTZ+t2JwoyBFL/insLfB/racrDmsKB3diwsDA696pZMieAC5g==}
@@ -1676,6 +1688,8 @@ snapshots:
 
   '@tabler/icons@3.46.0': {}
 
+  '@tmcw/togeojson@7.1.2': {}
+
   '@types/hoist-non-react-statics@3.3.7(@types/react@18.3.31)':
     dependencies:
       '@types/react': 18.3.31
@@ -1768,6 +1782,8 @@ snapshots:
   browserify-zlib@0.2.0:
     dependencies:
       pako: 1.0.11
+
+  but-unzip@0.1.10: {}
 
   call-bind-apply-helpers@1.0.1:
     dependencies:
@@ -2177,6 +2193,8 @@ snapshots:
 
   pako@1.0.11: {}
 
+  parsedbf@2.0.0: {}
+
   path-to-regexp@1.9.0:
     dependencies:
       isarray: 0.0.1
@@ -2196,10 +2214,14 @@ snapshots:
       pdfkit: 0.19.1
       xmldoc: 2.0.3
 
-  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#8ce2bcc9747295630e551fe84acead24a3ad1089(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
+  perun-atlas@git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#9aec0824171300874936b44ae6f03ac465467e71(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
     dependencies:
+      '@tmcw/togeojson': 7.1.2
+      but-unzip: 0.1.10
       perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
-      spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
+      proj4: 2.10.0
+      shpjs: 6.2.0
+      spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#a5bba0b6e86e20e36dbc99c126ba697bc0548d70(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
     transitivePeerDependencies:
       - '@babel/runtime'
       - '@types/react'
@@ -2607,9 +2629,15 @@ snapshots:
 
   setimmediate@1.0.5: {}
 
+  shpjs@6.2.0:
+    dependencies:
+      but-unzip: 0.1.10
+      parsedbf: 2.0.0
+      proj4: 2.10.0
+
   source-map-js@1.2.1: {}
 
-  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
+  spatial@git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#a5bba0b6e86e20e36dbc99c126ba697bc0548d70(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0):
     dependencies:
       leaflet: 1.5.1
       leaflet-polylinedecorator: 1.6.0
@@ -2617,6 +2645,7 @@ snapshots:
       leaflet.markercluster: 1.5.3(leaflet@1.5.1)
       perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f(@babel/runtime@7.29.7)(@types/react@19.0.2)(monaco-editor@0.56.0)
       proj4: 2.10.0
+      redux: 4.2.1
     transitivePeerDependencies:
       - '@babel/runtime'
       - '@types/react'

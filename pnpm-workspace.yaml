@@ -54,31 +54,28 @@ blockExoticSubdeps: false
 # mattered, because the toolchain runs on developer machines and the CI runner.
 overrides:
   # --- the first-party git dependencies -------------------------------------
-  # spatial is pinned here because it is the one this module never names: it
-  # arrives under perun-atlas, so there is no specifier of ours to carry the
-  # commit. perun-atlas and perun-core are pinned in package.json's
-  # `dependencies` instead, which is where a version belongs when the
-  # repository declares the package itself.
+  # None of them is named by branch. A branch name resolves to whatever the
+  # branch points at on the day of a resolve, and every edit to package.json
+  # causes one -- the overrides below, added on their own, moved spatial
+  # 3f73c54 -> bc8b30f and left perun-core installed twice. Nothing warns, and
+  # the lockfile is the only record of what was actually built.
   #
-  # All three are pinned for the same reason. Their branch names resolve to
-  # whatever the branch points at on the day of a resolve, and every edit to
-  # package.json causes one -- the overrides below, added on their own, moved
-  # spatial 3f73c54 -> bc8b30f and left perun-core installed twice. Nothing
-  # warns, and the lockfile is the only record of what was actually built.
+  # perun-atlas is taken by version, `#semver:^1.0.0-rc.1` in `dependencies`.
+  # pnpm resolves the newest tag in the range and the lockfile records its
+  # commit, so a plain install or an edit to package.json keeps it. A
+  # `pnpm update perun-atlas --lockfile-only` takes the newest release in the
+  # range -- and under pnpm 9 and 10 so does any `pnpm update`, whatever it
+  # names, so check the pins after one. spatial needs nothing here: it arrives
+  # under perun-atlas, at the version that release names.
   #
-  # perun-core is named twice on purpose, and both are load-bearing. The
-  # specifier in `dependencies` fixes what this module builds against; the
-  # override below is what stops a second copy appearing, because perun-atlas
-  # and spatial each declare perun-core#dev of their own and a pinned
-  # specifier does not reach a dependency of a dependency. Resolved cold, with
-  # no lockfile, the specifier alone installs 7846f83 for this module and
-  # 412c4e1 for those two. perun-atlas needs no override for the same reason
-  # inverted: nothing but this repository depends on it.
-  #
-  # To move one deliberately, edit its commit: here for spatial, in
-  # `dependencies` for the other two. Not `pnpm update`, which re-resolves the
-  # whole tree and drags the others along with it.
-  spatial: git+https://git@gitlab.prtech.mk/svarog4/svarog-spatial#eaf12e79c2607772e4a1c1e02cfc56c3e4ee4b2d
+  # perun-core has no tags, so it is pinned by commit, and named twice on
+  # purpose; both are load-bearing. The specifier in `dependencies` fixes what
+  # this module builds against; the override below is what stops a second copy
+  # appearing, because perun-atlas and spatial each declare a perun-core of
+  # their own and a pinned specifier does not reach a dependency of a
+  # dependency. Resolved cold, with no lockfile, the specifier alone once
+  # installed 7846f83 for this module and 412c4e1 for those two. To move it,
+  # edit its commit in `dependencies` and in both override blocks.
   perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
 
   # --- the build toolchain -----------------------------------
