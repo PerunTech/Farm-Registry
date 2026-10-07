@@ -53,6 +53,11 @@ const PageLayout = (props, context) => {
     // Titles and descriptions are label codes; a plain string falls through unchanged as its own default.
     const t = (code) => (code ? context.intl.formatMessage({ id: code, defaultMessage: code }) : code)
     const { header, sections } = props.configuration?.objectConfiguration || {}
+    // Item counts a section reports about itself (an attachments section's files), shown in its header
+    const [counts, setCounts] = useState({})
+    const countLabel = (count) => count === 1
+        ? `1 ${context.intl.formatMessage({ id: 'perun.farm_registry.attachments.count_one', defaultMessage: 'file' })}`
+        : `${count} ${context.intl.formatMessage({ id: 'perun.farm_registry.attachments.count_other', defaultMessage: 'files' })}`
 
     return (
         <div className="fr-page">
@@ -78,6 +83,7 @@ const PageLayout = (props, context) => {
                                         {section.description && <p className="fr-page-section-description">{t(section.description)}</p>}
                                     </div>
                                     {section.badge && <span className="fr-lock">{t(section.badge)}</span>}
+                                    {counts[section.ID] !== undefined && <span className="fr-section-count">{countLabel(counts[section.ID])}</span>}
                                     {section.action && <button type="button" className="fr-btn fr-btn-primary">{t(section.action)}</button>}
                                 </div>
                             )}
@@ -89,6 +95,8 @@ const PageLayout = (props, context) => {
                                 appObjId={props.appObjId}
                                 configuration={configuration}
                                 getConfiguration={props.getConfiguration}
+                                onSectionCount={(count) => setCounts(prev => (prev[section.ID] === count ? prev : { ...prev, [section.ID]: count }))}
+                                inPage
                             />}
                         </section>
                     )

@@ -3,7 +3,7 @@ const { labelsManager, replaceFunc, getDynamicKey, flattenObject } = utils
 import DoubleGrid from './DoubleGrid';
 import SearchDynamic from './SearchDynamic';
 import ParentChildGrids from './ParentChildGrids'
-import Documents from './Documents'
+import AttachmentsTable from './AttachmentsTable'
 import PageLayout from './PageLayout'
 const { ReactBootstrap, alertUserResponse, alertUserV2 } = elements;
 const { Modal } = ReactBootstrap;
@@ -466,8 +466,10 @@ const CustomButtons = (props, context) => {
                 {/* GRID */}
                 {props.configuration?.objectConfiguration?.type === 'grid' && generateGrid()}
                 {/* ATTACHMENTS */}
-                {props.configuration?.objectConfiguration?.type === 'attachment' && <Documents getUploadedFiles={props.configuration?.objectConfiguration?.data.onSubmit}
-                    uploadFileUrl={props.configuration?.objectConfiguration?.attach.onSubmit}
+                {props.configuration?.objectConfiguration?.type === 'attachment' && <AttachmentsTable
+                    configuration={props.configuration.objectConfiguration}
+                    standalone={!props.inPage}
+                    onCount={props.onSectionCount}
                 />}
                 {/* PAGE: several items (forms, grids) laid out together */}
                 {props.configuration?.objectConfiguration?.type === 'page' && <PageLayout configuration={props.configuration} objectId={props.objectId} appObjId={props.appObjId} getConfiguration={props.getConfiguration} />}
