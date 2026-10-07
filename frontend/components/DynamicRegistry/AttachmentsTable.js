@@ -163,6 +163,17 @@ const AttachmentsTable = (props, context) => {
         <div className={`fr-attachments ${props.standalone ? 'fr-attachments-standalone' : ''}`}>
             {loading && <Loading />}
             <input ref={fileInput} type='file' accept={accept || undefined} multiple className='fr-attachments-input' onChange={onPicked} />
+            {/* On its own screen there is no page section to title it, so the card carries the title and file count */}
+            {props.standalone && (
+                <div className='fr-page-section-head'>
+                    <div>
+                        <h2 className='fr-page-section-title'>{t('perun.farm_registry.attachment_title', 'Attachments')}</h2>
+                    </div>
+                    <span className='fr-section-count'>
+                        {files.length} {files.length === 1 ? t('perun.farm_registry.attachments.count_one', 'file') : t('perun.farm_registry.attachments.count_other', 'files')}
+                    </span>
+                </div>
+            )}
             {files.length > 0 && (
                 <div className='fr-attachments-table-wrap'>
                     <table className='fr-attachments-table'>
