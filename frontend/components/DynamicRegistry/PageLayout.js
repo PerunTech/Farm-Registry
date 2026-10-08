@@ -1,5 +1,6 @@
 import { React, axios, PropTypes } from 'perun-core'
 import CustomButtons from './CustomButtons'
+import ObjectStatistics from './ObjectStatistics'
 const { useEffect, useState } = React
 
 // A section's width as a percent of the row, e.g. 66. Defaults to the full row.
@@ -90,7 +91,8 @@ const PageLayout = (props, context) => {
                             )}
                             {section.type === 'summary' && <SummaryList url={section.url} />}
                             {section.type === 'history' && <HistoryList url={section.url} />}
-                            {section.type !== 'summary' && section.type !== 'history' && <CustomButtons
+                            {section.type === 'statistics' && <ObjectStatistics url={section.url} />}
+                            {!['summary', 'history', 'statistics'].includes(section.type) && <CustomButtons
                                 tableName={section.ID}
                                 objectId={props.objectId}
                                 appObjId={props.appObjId}
