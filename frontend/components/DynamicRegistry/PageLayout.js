@@ -72,8 +72,9 @@ const PageLayout = (props, context) => {
             )}
             <div className="fr-page-grid">
                 {(sections || []).map(section => {
-                    // The section ID is the table name; the item's ID is that plus the object id
-                    const configuration = section.objectConfiguration && { ID: `${section.ID}_${props.objectId}`, tableName: section.ID, objectConfiguration: section.objectConfiguration }
+                    // The section ID names its grid, so it must be unique across pages; its table is
+                    // section.tableName, or the ID itself when the two are the same
+                    const configuration = section.objectConfiguration && { ID: `${section.ID}_${props.objectId}`, tableName: section.tableName || section.ID, objectConfiguration: section.objectConfiguration }
                     return (
                         <section key={section.ID} className="fr-page-section fr-col" style={{ '--fr-w': sectionWidth(section.width) }}>
                             {(section.title || section.badge || section.action) && (
