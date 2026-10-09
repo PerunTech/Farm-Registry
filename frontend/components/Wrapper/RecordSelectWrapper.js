@@ -221,6 +221,21 @@ const RecordSelectWrapper = (props, context) => {
       heightRatio: 0.7,
     }
   }
+  // The search window's heading, from the input's config: title and description, both optional, as
+  // a page's header has them. Each is a label code; a plain string falls through unchanged as its
+  // own default. An input with neither keeps the bare header it always had.
+  const modalHeading = (inputConfig) => {
+    const { title, description } = inputConfig || {}
+    if (!title && !description) return null
+    const t = (id) => context.intl.formatMessage({ id, defaultMessage: id })
+    return (
+      <div className='fr-picker-heading'>
+        {title && <h2 className='fr-picker-title'>{t(title)}</h2>}
+        {description && <p className='fr-picker-description'>{t(description)}</p>}
+      </div>
+    )
+  }
+
   const printDoc = () => {
     const { formid } = props
     const wrapperConfig = ComponentManager.getStateForComponent(formid, 'wrapperConfig')
@@ -243,8 +258,8 @@ const RecordSelectWrapper = (props, context) => {
       )}
       {props.children}
       {showGridModal && (
-        <Modal className='farm-registry-modal vmp-modal' show={showGridModal} onHide={() => closeGridModal()}>
-          <Modal.Header className='farm-registry-modal-header' closeButton />
+        <Modal className='farm-registry-modal vmp-modal fr-picker-modal' show={showGridModal} onHide={() => closeGridModal()}>
+          <Modal.Header className='farm-registry-modal-header' closeButton>{modalHeading(singleInputConfig)}</Modal.Header>
           <Modal.Body className='farm-registry-modal-body'>
             {singleInputConfig?.search && Object.keys(singleInputConfig.search).length > 0 && (
               <WrapperSearchForm
@@ -273,8 +288,8 @@ const RecordSelectWrapper = (props, context) => {
         </Modal>
       )}
       {showArrayGridModal && (
-        <Modal className='farm-registry-modal vmp-modal' show={showArrayGridModal} onHide={() => closeArrayGridModal()}>
-          <Modal.Header className='farm-registry-modal-header' closeButton />
+        <Modal className='farm-registry-modal vmp-modal fr-picker-modal' show={showArrayGridModal} onHide={() => closeArrayGridModal()}>
+          <Modal.Header className='farm-registry-modal-header' closeButton>{modalHeading(arrayInputConfig)}</Modal.Header>
           <Modal.Body className='farm-registry-modal-body'>
             {arrayInputConfig?.search && Object.keys(arrayInputConfig.search).length > 0 && (
               <WrapperSearchForm
