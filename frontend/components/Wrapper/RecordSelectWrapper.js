@@ -123,9 +123,16 @@ const RecordSelectWrapper = (props, context) => {
     const { formid } = props
     const formData = ComponentManager.getStateForComponent(formid, 'formTableData')
     if (isArrayInput) {
-      const { tableName, denormalizedField, denormalizedFieldName, displayFieldName, displayValue, firstSectionName, secondSectionName } = arrayInputConfig || {}
+      const { tableName, denormalizedField, denormalizedFieldName, displayFieldName, displayValue, firstSectionName, secondSectionName, additionalFieldsToMap } = arrayInputConfig || {}
       const denormalizedFieldValue = denormalizedField ? row[`${tableName}.${denormalizedField}`] : undefined
       const valueToDisplay = displayValue ? row[`${tableName}.${displayValue}`] : undefined
+      // Same { fieldName, fieldToMap } mapping as for single inputs, applied to the array item (or its second section)
+      const additionalValues = {}
+      if (additionalFieldsToMap && Array.isArray(additionalFieldsToMap) && additionalFieldsToMap.length > 0) {
+        additionalFieldsToMap.forEach(field => {
+          additionalValues[field.fieldName] = row[field.fieldToMap]
+        })
+      }
       if (formData) {
         if (firstSectionName) {
           if (!formData[firstSectionName]) {
@@ -135,17 +142,20 @@ const RecordSelectWrapper = (props, context) => {
             const lastIdx = formData[firstSectionName].length - 1
             if (secondSectionName) {
               formData[firstSectionName][lastIdx] = {
+                ...formData[firstSectionName][lastIdx],
                 [secondSectionName]: {
                   ...formData[firstSectionName][lastIdx]?.[secondSectionName] && { ...formData[firstSectionName][lastIdx]?.[secondSectionName] },
                   ...denormalizedFieldName && denormalizedFieldValue !== undefined && { [denormalizedFieldName]: denormalizedFieldValue },
-                  ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay }
+                  ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay },
+                  ...additionalValues
                 }
               }
             } else {
               formData[firstSectionName][lastIdx] = {
                 ...formData[firstSectionName][lastIdx],
                 ...denormalizedFieldName && denormalizedFieldValue !== undefined && { [denormalizedFieldName]: denormalizedFieldValue },
-                ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay }
+                ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay },
+                ...additionalValues
               }
             }
             // This will remove any empty objects from the array
