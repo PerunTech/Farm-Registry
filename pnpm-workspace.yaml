@@ -60,7 +60,7 @@ overrides:
   # 3f73c54 -> bc8b30f and left perun-core installed twice. Nothing warns, and
   # the lockfile is the only record of what was actually built.
   #
-  # perun-atlas is taken by version, `#semver:^1.0.0-rc.2` in `dependencies`.
+  # perun-atlas is taken by version, `#semver:^1.0.0` in `dependencies`.
   # pnpm resolves the newest tag in the range and the lockfile records its
   # commit, so a plain install or an edit to package.json keeps it. A
   # `pnpm update perun-atlas --lockfile-only` takes the newest release in the
