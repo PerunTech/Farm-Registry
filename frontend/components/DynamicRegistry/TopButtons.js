@@ -1,4 +1,4 @@
-import { React, PropTypes, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM } from 'perun-core'
+import { React, PropTypes, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM, createHashHistory } from 'perun-core'
 import { ActionForm } from '../Utils'
 import { MapPanel } from './Map'
 const { useEffect, useState } = React
@@ -330,6 +330,15 @@ const TopButtons = (props, context) => {
               setLoading(false)
               if (res?.data) {
                 const resType = res.data?.type?.toLowerCase() || 'info'
+                // An action with a `redirect` opens the record it created instead of announcing it
+                const createdObjectId = res.data?.data?.object_id
+                if (resType === 'success' && action?.redirect?.route && createdObjectId) {
+                  const hashHistory = createHashHistory()
+                  store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-object-id', value: props.objectId } })
+                  store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-route', value: hashHistory.location.pathname } })
+                  hashHistory.push(action.redirect.route.replace('{rowObjectId}', createdObjectId))
+                  return
+                }
                 alertUserResponse({ response: res })
                 if (resType === 'success') {
                   refreshGrid()
@@ -344,6 +353,10 @@ const TopButtons = (props, context) => {
           }
           const actionPrompt = () => {
             const { promptTitle, promptMessage } = el
+            if (!promptTitle && !promptMessage) {
+              executeAction()
+              return
+            }
             alertUserV2({
               type: 'info',
               title: promptTitle || '',
