@@ -4,6 +4,10 @@ const { useEffect, useState } = React;
 const { alertUserResponse, alertUserV2, Icon } = elements;
 const { store } = redux
 const hashHistory = createHashHistory();
+// Summary layout: how many meta fields sit on the status line (the rest are listed below it),
+// and whether the title or the first meta value is the copyable identifier
+const INLINE_META_COUNT = 2
+const COPY_TITLE = false
 const ObjectSummary = (props, context) => {
     const [loading, setLoading] = useState(false);
     const [menuData, setMenuData] = useState([]);
@@ -60,24 +64,43 @@ const ObjectSummary = (props, context) => {
         }
     }
 
-    const [statusField, titleField, ...metaFields] = menuData
+    const [statusField, titleField, ...metaFields] = menuData.filter(({ value }) => value !== undefined && value !== null && String(value).trim() !== '')
+    const inlineFields = metaFields.slice(0, INLINE_META_COUNT)
+    const extraFields = metaFields.slice(INLINE_META_COUNT)
     const [copied, setCopied] = useState(false)
 
     const copyValue = (value) => {
-        navigator.clipboard?.writeText(String(value)).then(() => {
+        const text = String(value)
+        const onCopied = () => {
             setCopied(true)
             setTimeout(() => setCopied(false), 1500)
-        })
+        }
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(onCopied)
+            return
+        }
+        // The Clipboard API only exists on https / localhost, so plain-http deployments copy via a hidden textarea
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        textarea.setAttribute('readonly', '')
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        const succeeded = document.execCommand('copy')
+        document.body.removeChild(textarea)
+        if (succeeded) onCopied()
     }
 
     const generateMenuData = () => {
         return (
+            <>
             <div className='farm-registry-summary-flat-meta'>
                 {statusField && <span className='farm-registry-summary-flat-status' data-status={statusField.value} title={statusField.label}>{statusField.value}</span>}
-                {metaFields.map(({ label, value }, i) => (
+                {inlineFields.map(({ label, value }, i) => (
                     <React.Fragment key={label}>
                         {(statusField || i > 0) && <span className='farm-registry-summary-flat-sep' aria-hidden='true'>·</span>}
-                        {i === 0
+                        {i === 0 && !COPY_TITLE
                             ? <button
                                 className='farm-registry-summary-flat-meta-item'
                                 title={`${label}: ${value}`}
@@ -91,6 +114,17 @@ const ObjectSummary = (props, context) => {
                     </React.Fragment>
                 ))}
             </div>
+            {extraFields.length > 0 && (
+                <div className='farm-registry-object-summary-rows-container'>
+                    {extraFields.map(({ label, value }) => (
+                        <div className='farm-registry-object-summary-row' key={label}>
+                            <p>{label}</p>
+                            <p title={value}>{value}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+            </>
         )
     }
 
@@ -193,7 +227,17 @@ const ObjectSummary = (props, context) => {
                         <Icon name='IconChevronLeft' />
                     </button>
                     {statusField && <span className='farm-registry-summary-flat-dot' data-status={statusField.value} title={`${statusField.label}: ${statusField.value}`} />}
-                    <span className='farm-registry-summary-flat-title' title={titleField?.value}>{titleField?.value}</span>
+                    {COPY_TITLE && titleField
+                        ? <button
+                            className='farm-registry-summary-flat-title'
+                            title={`${titleField.label}: ${titleField.value}`}
+                            aria-label={`${titleField.label}: ${titleField.value}`}
+                            onClick={() => copyValue(titleField.value)}
+                        >
+                            <span>{titleField.value}</span>
+                            <Icon name={copied ? 'IconCheck' : 'IconCopy'} />
+                        </button>
+                        : <span className='farm-registry-summary-flat-title' title={titleField?.value}>{titleField?.value}</span>}
                     <button
                         title={labelsManager(props.toggledMenu ? 'expand' : 'collapse', context, 'general')}
                         aria-label={labelsManager(props.toggledMenu ? 'expand' : 'collapse', context, 'general')}
