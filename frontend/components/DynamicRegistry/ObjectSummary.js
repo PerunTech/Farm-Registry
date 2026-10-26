@@ -60,18 +60,34 @@ const ObjectSummary = (props, context) => {
         }
     }
 
-    // Flat header layout, in the order the summary returns it: status, title, then the meta line.
-    // Status colouring is done in CSS from data-status (same as the grid status pills)
     const [statusField, titleField, ...metaFields] = menuData
+    const [copied, setCopied] = useState(false)
+
+    const copyValue = (value) => {
+        navigator.clipboard?.writeText(String(value)).then(() => {
+            setCopied(true)
+            setTimeout(() => setCopied(false), 1500)
+        })
+    }
 
     const generateMenuData = () => {
         return (
             <div className='farm-registry-summary-flat-meta'>
                 {statusField && <span className='farm-registry-summary-flat-status' data-status={statusField.value} title={statusField.label}>{statusField.value}</span>}
-                {metaFields.map(({ label, value }) => (
+                {metaFields.map(({ label, value }, i) => (
                     <React.Fragment key={label}>
-                        <span className='farm-registry-summary-flat-sep' aria-hidden='true'>·</span>
-                        <span className='farm-registry-summary-flat-meta-item' title={`${label}: ${value}`}>{value}</span>
+                        {(statusField || i > 0) && <span className='farm-registry-summary-flat-sep' aria-hidden='true'>·</span>}
+                        {i === 0
+                            ? <button
+                                className='farm-registry-summary-flat-meta-item'
+                                title={`${label}: ${value}`}
+                                aria-label={`${label}: ${value}`}
+                                onClick={() => copyValue(value)}
+                            >
+                                <span>{value}</span>
+                                <Icon name={copied ? 'IconCheck' : 'IconCopy'} />
+                            </button>
+                            : <span className='farm-registry-summary-flat-meta-item' title={`${label}: ${value}`}>{value}</span>}
                     </React.Fragment>
                 ))}
             </div>
