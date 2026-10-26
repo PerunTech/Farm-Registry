@@ -2,7 +2,6 @@ import {
     React,
     connect,
     ComponentManager,
-    PropTypes,
 } from "perun-core";
 import SaveFormAndAttachments from '../utils_tools/SaveFormAndAttachments';
 
@@ -31,8 +30,4 @@ const DocumentsWrapper = (props) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 });
-DocumentsWrapper.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
-
 export default connect(mapStateToProps)(DocumentsWrapper);

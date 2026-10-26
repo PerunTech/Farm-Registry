@@ -1,13 +1,15 @@
 import {
     React,
+    useIntl,
     connect,
     ComponentManager,
-    PropTypes, utils
+    utils
 } from "perun-core";
 const { labelsManager } = utils
 import WrapperSearch from '../utils_tools/WrapperSearch'
 const { useState, useEffect } = React;
-const GmpauditproductWrapper = (props, context) => {
+const GmpauditproductWrapper = (props) => {
+    const intl = useIntl()
     const [show, setShow] = useState(false);
     const [tableName, setTableName] = useState(false);
     const [searchWs, setSearchWs] = useState(undefined);
@@ -61,7 +63,7 @@ const GmpauditproductWrapper = (props, context) => {
             if (el) {
                 el.style.cursor = "pointer";
                 el.onclick = action;
-                el.placeholder = labelsManager("click_to_choose", context, "farm_registry");
+                el.placeholder = labelsManager("click_to_choose", intl, "farm_registry");
                 el.style.background = '#b9cfba';
                 el.style.color = '#ffffff';
             }
@@ -86,9 +88,5 @@ const GmpauditproductWrapper = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 });
-
-GmpauditproductWrapper.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
 
 export default connect(mapStateToProps)(GmpauditproductWrapper);

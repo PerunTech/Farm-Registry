@@ -1,4 +1,4 @@
-import { React, PropTypes, GenericForm, ComponentManager, axios, elements, createHashHistory, utils } from 'perun-core'
+import { React, useIntl, GenericForm, ComponentManager, axios, elements, createHashHistory, utils } from 'perun-core'
 const { alertUserResponse } = elements
 const { labelsManager } = utils
 
@@ -10,7 +10,8 @@ const formatWrapperName = (businessObjectName = '') =>
     .replace(/_/g, '')
     .trim();
 
-const CreateNewRecordForm = (props, context) => {
+const CreateNewRecordForm = (props) => {
+  const intl = useIntl()
   const hashHistory = createHashHistory()
 
   const resetFormSaveState = () => {
@@ -80,16 +81,12 @@ const CreateNewRecordForm = (props, context) => {
       uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
       tableFormDataMethod={addFormConfig?.data?.onSubmit}
       addSaveFunction={(e) => onSubmit(e)}
-      customSaveButtonName={labelsManager('save', context, 'farm_registry')}
+      customSaveButtonName={labelsManager('save', intl, 'farm_registry')}
       hideBtns={'closeAndDelete'}
       isAddForm={true}
       inputWrapper={inputWrapper}
     />
   )
-}
-
-CreateNewRecordForm.contextTypes = {
-  intl: PropTypes.object.isRequired,
 }
 
 export default CreateNewRecordForm

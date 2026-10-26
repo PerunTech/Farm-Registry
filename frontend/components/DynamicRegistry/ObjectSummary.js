@@ -1,10 +1,11 @@
-import { React, connect, PropTypes, Loading, axios, elements, createHashHistory, redux, ReactDOM, utils } from "perun-core";
+import { React, useIntl, connect, Loading, axios, elements, createHashHistory, redux, ReactDOM, createRoot, utils } from "perun-core";
 const { labelsManager } = utils
 const { useEffect, useState } = React;
 const { alertUserResponse, alertUserV2, Icon } = elements;
 const { store } = redux
 const hashHistory = createHashHistory();
-const ObjectSummary = (props, context) => {
+const ObjectSummary = (props) => {
+    const intl = useIntl()
     const [loading, setLoading] = useState(false);
     const [menuData, setMenuData] = useState([]);
     const [actions, setActions] = useState([])
@@ -111,12 +112,12 @@ const ObjectSummary = (props, context) => {
         }
         alertUserV2({
             type: 'info',
-            title: labelsManager('confirm_update_action', context, 'farm_registry'),
-            message: labelsManager('confirm_update_action_msg', context, 'farm_registry'),
-            confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+            title: labelsManager('confirm_update_action', intl, 'farm_registry'),
+            message: labelsManager('confirm_update_action_msg', intl, 'farm_registry'),
+            confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
             onConfirm,
             showCancel: true,
-            cancelButtonText: labelsManager('no', context, 'farm_registry')
+            cancelButtonText: labelsManager('no', intl, 'farm_registry')
         })
     }
 
@@ -134,9 +135,10 @@ const ObjectSummary = (props, context) => {
 
     const generateCheckList = (data) => {
         const customElement = document.createElement('div');
-        ReactDOM.render(
+        // flushSync: SweetAlert takes the element as it is, so it has to be rendered before it is handed over
+        ReactDOM.flushSync(() => createRoot(customElement).render(
             <div className='farm-registry-alert'>
-                <div className='farm-registry-alert-title'><p>{labelsManager('alert-title', context, 'farm_registry')}</p></div>
+                <div className='farm-registry-alert-title'><p>{labelsManager('alert-title', intl, 'farm_registry')}</p></div>
                 <div className='farm-registry-alert-fields'>
                     {data['FIELDS'].map((el, index) => (
                         <div className='farm-registry-alert-field' key={index}>
@@ -145,9 +147,8 @@ const ObjectSummary = (props, context) => {
                         </div>
                     ))}
                 </div>
-            </div>,
-            customElement
-        );
+            </div>
+        ));
         alertUserV2({
             html: customElement,
             allowOutsideClick: true,
@@ -186,8 +187,8 @@ const ObjectSummary = (props, context) => {
                 <div className="farm-registry-summary-flat-top">
                     <button
                         className='farm-registry-summary-flat-icon-btn farm-registry-summary-flat-back'
-                        title={labelsManager('back', context, 'farm_registry')}
-                        aria-label={labelsManager('back', context, 'farm_registry')}
+                        title={labelsManager('back', intl, 'farm_registry')}
+                        aria-label={labelsManager('back', intl, 'farm_registry')}
                         onClick={() => backButtonFunction()}
                     >
                         <Icon name='IconChevronLeft' />
@@ -195,8 +196,8 @@ const ObjectSummary = (props, context) => {
                     {statusField && <span className='farm-registry-summary-flat-dot' data-status={statusField.value} title={`${statusField.label}: ${statusField.value}`} />}
                     <span className='farm-registry-summary-flat-title' title={titleField?.value}>{titleField?.value}</span>
                     <button
-                        title={labelsManager(props.toggledMenu ? 'expand' : 'collapse', context, 'general')}
-                        aria-label={labelsManager(props.toggledMenu ? 'expand' : 'collapse', context, 'general')}
+                        title={labelsManager(props.toggledMenu ? 'expand' : 'collapse', intl, 'general')}
+                        aria-label={labelsManager(props.toggledMenu ? 'expand' : 'collapse', intl, 'general')}
                         className='farm-registry-summary-flat-icon-btn aims-registry-collapse'
                         onClick={() => props.toggleSideMenu()}
                     >
@@ -207,7 +208,7 @@ const ObjectSummary = (props, context) => {
                     <>
                         {generateMenuData()}
                         <div className='farm-registry-summary-flat-actions'>
-                            {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{labelsManager("update_data_btn", context, 'farm_registry')} <span className={`update-farm-btn-icon`}>{<Icon name="IconReload" />}</span></span></button>}
+                            {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{labelsManager("update_data_btn", intl, 'farm_registry')} <span className={`update-farm-btn-icon`}>{<Icon name="IconReload" />}</span></span></button>}
                             {actions && generateSummaryActions()}
                         </div>
                     </>
@@ -222,9 +223,5 @@ const mapStateToProps = (state) => ({
     businessLogicReducer: state.businessLogicReducer,
     refreshSummary: state.businessLogicReducer?.refreshSummary
 });
-
-ObjectSummary.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
 
 export default connect(mapStateToProps)(ObjectSummary);

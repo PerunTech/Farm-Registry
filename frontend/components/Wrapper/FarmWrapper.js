@@ -1,9 +1,9 @@
 import {
     React,
+    useIntl,
     connect,
     elements,
     ComponentManager,
-    PropTypes,
     createHashHistory, utils
 } from "perun-core";
 import SearchComponent from '../SearchComp/SearchComponent'
@@ -13,7 +13,8 @@ const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
 let hashHistory = createHashHistory();
 let _inputholder = "";
-const FarmWrapper = (props, context) => {
+const FarmWrapper = (props) => {
+    const intl = useIntl()
     const [show, setShow] = useState(false);
     const initialState = {
         firstInputId: "root_ID_NO",
@@ -38,7 +39,7 @@ const FarmWrapper = (props, context) => {
             firstInput.onclick = handleShow;
             firstInput.placeholder = labelsManager(
                 "click_to_choose",
-                context,
+                intl,
                 "farm_registry"
             )
             firstInput.style.background = '#b9cfba';
@@ -48,7 +49,7 @@ const FarmWrapper = (props, context) => {
             secondInput.onclick = handleShow;
             secondInput.placeholder = labelsManager(
                 "click_to_choose",
-                context,
+                intl,
                 "farm_registry"
             )
             secondInput.style.background = '#b9cfba';
@@ -94,15 +95,15 @@ const FarmWrapper = (props, context) => {
                     <Modal.Header className={"farm-registry-modal-header"} closeButton>
                         <Modal.Title>{labelsManager(
                             "search_person",
-                            context,
+                            intl,
                             "farm_registry"
                         )}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className={"farm-registry-modal-body"}>
                         <SearchComponent person={true} onRowClick={handleRowClick} />
-                        <p className={'redirect-to-pr-initial'}>{labelsManager('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
+                        <p className={'redirect-to-pr-initial'}>{labelsManager('register-person', intl, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
                             hashHistory.push('/main/persons-registry')
-                        }}>{labelsManager('redirect-person', context, 'farm_registry')}</span></p>
+                        }}>{labelsManager('redirect-person', intl, 'farm_registry')}</span></p>
                     </Modal.Body >
                     <Modal.Footer className={"farm-registry-modal-footer"}></Modal.Footer>
                 </Modal >
@@ -114,8 +115,4 @@ const FarmWrapper = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 });
-FarmWrapper.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
-
 export default connect(mapStateToProps)(FarmWrapper);

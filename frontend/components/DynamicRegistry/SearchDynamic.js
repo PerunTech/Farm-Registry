@@ -1,4 +1,4 @@
-import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory, utils } from 'perun-core'
+import { React, useIntl, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory, utils } from 'perun-core'
 import TopButtons from './TopButtons'
 const { jsonToURI, flattenObject, labelsManager } = utils
 const { alertUserResponse, alertUserV2, ReactBootstrap } = elements
@@ -6,7 +6,8 @@ const { Modal } = ReactBootstrap
 const { store, dataToRedux, removeAsyncReducer, updateSelectedRows } = redux
 const { useState, useEffect } = React
 
-const SearchDynamic = (props, context) => {
+const SearchDynamic = (props) => {
+    const intl = useIntl()
     const hashHistory = createHashHistory()
     const tableName = props.tableName?.toUpperCase() || ''
     const gridId = `${props.tableName}_SEARCH`
@@ -32,7 +33,7 @@ const SearchDynamic = (props, context) => {
                 addSaveFunction={(e) => {
                     performSearch(e.formData, true)
                 }}
-                customSaveButtonName={labelsManager('search', context, 'farm_registry')}
+                customSaveButtonName={labelsManager('search', intl, 'farm_registry')}
             />
         )
     }
@@ -149,9 +150,9 @@ const SearchDynamic = (props, context) => {
         const selectedGridRows = store.getState()?.['selectedGridRows']?.['selectedGridRows'] || []
 
         const executeAction = () => {
-            let promptLabel = labelsManager('confirm_submit_action', context, 'farm_registry')
+            let promptLabel = labelsManager('confirm_submit_action', intl, 'farm_registry')
             if (el.useMulti) {
-                promptLabel = labelsManager('confirm_action_execution', context, 'farm_registry')
+                promptLabel = labelsManager('confirm_action_execution', intl, 'farm_registry')
             }
             let saveUrl = `${window.server}${el?.['onSave']}`
             let data
@@ -173,10 +174,10 @@ const SearchDynamic = (props, context) => {
                     alertUserV2({
                         type: 'info',
                         title: promptLabel,
-                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+                        confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
                         onConfirm: executeGetAction,
                         showCancel: true,
-                        cancelButtonText: labelsManager('no', context, 'farm_registry')
+                        cancelButtonText: labelsManager('no', intl, 'farm_registry')
                     })
                     break;
                 }
@@ -207,10 +208,10 @@ const SearchDynamic = (props, context) => {
                     alertUserV2({
                         type: 'info',
                         title: promptLabel,
-                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+                        confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
                         onConfirm: executePostAction,
                         showCancel: true,
-                        cancelButtonText: labelsManager('no', context, 'farm_registry')
+                        cancelButtonText: labelsManager('no', intl, 'farm_registry')
                     })
                     break;
                 }
@@ -244,10 +245,10 @@ const SearchDynamic = (props, context) => {
                     alertUserV2({
                         type: 'info',
                         title: promptLabel,
-                        confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+                        confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
                         onConfirm: action,
                         showCancel: true,
-                        cancelButtonText: labelsManager('no', context, 'farm_registry')
+                        cancelButtonText: labelsManager('no', intl, 'farm_registry')
                     })
                     break;
                 }
@@ -265,7 +266,7 @@ const SearchDynamic = (props, context) => {
             if (selectedGridRows.length > 0) {
                 executeAction()
             } else {
-                alertUserV2({ type: 'info', title: labelsManager('select_multi', context, 'farm_registry') })
+                alertUserV2({ type: 'info', title: labelsManager('select_multi', intl, 'farm_registry') })
             }
         } else {
             executeAction()
@@ -386,9 +387,5 @@ const SearchDynamic = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 })
-
-SearchDynamic.contextTypes = {
-    intl: PropTypes.object.isRequired,
-}
 
 export default connect(mapStateToProps)(SearchDynamic)

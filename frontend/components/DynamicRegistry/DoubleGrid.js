@@ -1,11 +1,12 @@
-import { React, PropTypes, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, utils } from 'perun-core'
+import { React, useIntl, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, createHashHistory, utils } from 'perun-core'
 const { labelsManager } = utils
 const { ReactBootstrap, alertUserResponse } = elements;
 const { store, updateSelectedRows } = redux;
 const { Modal } = ReactBootstrap;
 const { useState } = React
 
-const DoubleGrid = (props, context) => {
+const DoubleGrid = (props) => {
+    const intl = useIntl()
     let hashHistory = createHashHistory();
     const [show, setShow] = useState(false)
     const handleRowClick = (_id, _rowIdx, row, grid) => {
@@ -46,7 +47,7 @@ const DoubleGrid = (props, context) => {
                 buttonsArray={buttonsArray}
                 toggleCustomButton={grid.additionalBtns ? true : false}
                 customButton={() => { setShow(true) }}
-                customButtonLabel={labelsManager('add', context, 'farm_registry')}
+                customButtonLabel={labelsManager('add', intl, 'farm_registry')}
                 enableMultiSelect={multiSelect}
                 onSelectChangeFunct={customRowSelection}
             />
@@ -67,7 +68,7 @@ const DoubleGrid = (props, context) => {
                 uiSchemaConfigMethod={addFormConfig?.uischema?.onSubmit}
                 tableFormDataMethod={addFormConfig?.data?.onSubmit}
                 addSaveFunction={(e) => onSubmit(e)}
-                customSaveButtonName={labelsManager('save', context, 'farm_registry')}
+                customSaveButtonName={labelsManager('save', intl, 'farm_registry')}
                 hideBtns={'closeAndDelete'}
                 objectId={props.farmObjId}
                 closeModal={closeModal}
@@ -141,9 +142,5 @@ const DoubleGrid = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 })
-
-DoubleGrid.contextTypes = {
-    intl: PropTypes.object.isRequired,
-}
 
 export default connect(mapStateToProps)(DoubleGrid)

@@ -1,11 +1,12 @@
-import { React, PropTypes, ComponentManager, ExportableGrid, elements, utils } from 'perun-core'
+import { React, useIntl, ComponentManager, ExportableGrid, elements, utils } from 'perun-core'
 import WrapperSearchForm from './WrapperSearchForm'
 const { useEffect, useRef, useState } = React
 const { getDynamicKey, labelsManager } = utils
 const { ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap
 
-const RecordSelectWrapper = (props, context) => {
+const RecordSelectWrapper = (props) => {
+  const intl = useIntl()
   const mounted = useRef()
   const [gridId, setGridId] = useState('')
   const [showGridModal, setShowGridModal] = useState(false)
@@ -53,7 +54,7 @@ const RecordSelectWrapper = (props, context) => {
     input.style.cursor = 'pointer'
     input.setAttribute('readonly', 'readonly')
     input.addEventListener('keydown', e => e.preventDefault())
-    input.placeholder = context.intl.formatMessage({
+    input.placeholder = intl.formatMessage({
       id: placeholderLabelCode || 'Missing label',
       defaultMessage: placeholderLabelCode || 'Missing label'
     })
@@ -237,7 +238,7 @@ const RecordSelectWrapper = (props, context) => {
   const modalHeading = (inputConfig) => {
     const { title, description } = inputConfig || {}
     if (!title && !description) return null
-    const t = (id) => context.intl.formatMessage({ id, defaultMessage: id })
+    const t = (id) => intl.formatMessage({ id, defaultMessage: id })
     return (
       <div className='fr-picker-heading'>
         {title && <h2 className='fr-picker-title'>{t(title)}</h2>}
@@ -261,7 +262,7 @@ const RecordSelectWrapper = (props, context) => {
       {showPrintButton && (
         <div className='perun-menu-buttons-container'>
           <button className='btn-success btn_save_form download-menu-btn' onClick={printDoc}>
-            {labelsManager("printout", context, "farm_registry")}
+            {labelsManager("printout", intl, "farm_registry")}
             <span className='download-span'>{<Icon name="IconPrinter" />}</span>
           </button>
         </div>
@@ -329,10 +330,6 @@ const RecordSelectWrapper = (props, context) => {
       )}
     </>
   )
-}
-
-RecordSelectWrapper.contextTypes = {
-  intl: PropTypes.object.isRequired,
 }
 
 export default RecordSelectWrapper
