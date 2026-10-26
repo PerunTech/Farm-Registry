@@ -15,21 +15,9 @@ blockExoticSubdeps: false
 
 # Dependency overrides, lifting transitive packages that carry advisories.
 #
-# Where each pnpm major reads these differs, so they are declared twice, here
-# and under `pnpm.overrides` in package.json. pnpm 9 reads overrides from
-# package.json only; pnpm 11 reads them from this file only; pnpm 10, pinned in
-# packageManager and installed by CI, reads both. The two blocks must be kept in
-# step. npm's plain top-level `overrides` key is not a third option -- pnpm
-# ignores that one silently, at every version.
-#
-# pnpm 10 prints "the pnpm field in package.json is no longer read ...
-# pnpm.overrides ignored" on every command. Do not believe it. Not only is that
-# field still read, it *wins*: set uuid to 8.3.2 there and 11.1.1 here under
-# 10.15.0 and the lockfile resolves 8.3.2. Editing this file alone is a silent
-# no-op on pnpm 10 -- the change never reaches the lockfile and the install
-# reports success. So the two blocks are not decoration to keep tidy; whichever
-# one a given pnpm reads is the one in force, and they have to say the same
-# thing. The warning is announcing pnpm 11, where only this file is read.
+# pnpm 9 reads overrides only from package.json, so it cannot install this tree.
+# npm's plain top-level `overrides` key in package.json is not an alternative --
+# pnpm ignores that one silently, at every version.
 #
 # Everything below is transitive. `pnpm update` moves direct dependencies only,
 # so it cannot reach any of these: the 36 advisories it did clear were direct
@@ -75,7 +63,7 @@ overrides:
   # their own and a pinned specifier does not reach a dependency of a
   # dependency. Resolved cold, with no lockfile, the specifier alone once
   # installed 7846f83 for this module and 412c4e1 for those two. To move it,
-  # edit its commit in `dependencies` and in both override blocks.
+  # edit its commit in `dependencies` and here.
   perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
 
   # --- the build toolchain -----------------------------------
