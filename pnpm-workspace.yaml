@@ -56,15 +56,12 @@ overrides:
   # names, so check the pins after one. spatial needs nothing here: it arrives
   # under perun-atlas, at the version that release names.
   #
-  # perun-core has no tags, so it is pinned by commit, and named twice on
-  # purpose; both are load-bearing. The specifier in `dependencies` fixes what
-  # this module builds against; the override below is what stops a second copy
-  # appearing, because perun-atlas and spatial each declare a perun-core of
-  # their own and a pinned specifier does not reach a dependency of a
-  # dependency. Resolved cold, with no lockfile, the specifier alone once
-  # installed 7846f83 for this module and 412c4e1 for those two. To move it,
-  # edit its commit in `dependencies` and here.
-  perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f
+  # perun-core is taken by version too, `#semver:^4.5.8-rc.2`, and named twice on
+  # purpose. The specifier in `dependencies` fixes what this module builds
+  # against; the override below is what keeps it one copy, because perun-atlas and
+  # spatial each declare a perun-core of their own and a specifier here does not
+  # reach a dependency of a dependency. To change the range, edit it in both places.
+  perun-core: git+https://git@gitlab.prtech.mk/svarog4/perun-core#semver:^4.5.8-rc.2
 
   # --- the build toolchain -----------------------------------
   picomatch: ^2.3.2

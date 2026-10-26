@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "perun-atlas": "git+https://git@gitlab.prtech.mk/svarog4/perun-atlas#semver:^1.0.1-rc.1",
-        "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#7846f837560007aca7495ba4567b96e831ac053f"
+        "perun-core": "git+https://git@gitlab.prtech.mk/svarog4/perun-core#semver:^4.5.8-rc.2"
     },
     "engines": {
         "node": ">=22.12.0"
