@@ -1,15 +1,16 @@
-import { React, PropTypes, connect, utils, GridManager } from 'perun-core'
+import { React, useIntl, connect, utils, GridManager } from 'perun-core'
 import SideMenu from './SideMenu'
 import TopButtons from './TopButtons'
 const { updateIdScreen } = utils
 const { useState, useEffect } = React
 
-const DynamicRegistry = (props, context) => {
+const DynamicRegistry = (props) => {
+    const intl = useIntl()
     const [dynamicComponent, setDynamicComponent] = useState(undefined)
     const [topButtons, setTopButtons] = useState(undefined)
     const [toggledMenu, setToggledMenu] = useState(false)
     useEffect(() => {
-        updateIdScreen('farm_registry', context)
+        updateIdScreen('farm_registry', intl)
     }, [])
     const setDynamicComponentFunction = (comp) => {
         setDynamicComponent(comp)
@@ -57,9 +58,5 @@ const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
     additionalTopBtns: state.businessLogicReducer?.['farm-registry-module-additional-top-buttons'],
 });
-
-DynamicRegistry.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
 
 export default connect(mapStateToProps)(DynamicRegistry);

@@ -1,4 +1,4 @@
-import { React, PropTypes, connect, utils } from "perun-core";
+import { React, useIntl, connect, utils } from "perun-core";
 import * as atlas from 'perun-atlas';
 import { AtlasMap, PointPicker } from 'perun-atlas';
 const { labelsManager } = utils
@@ -20,14 +20,15 @@ const { useState } = React;
 // chosen from a view of the whole country.
 const PICK_ZOOM = 10
 
-const GpsMapSelect = (props, context) => {
+const GpsMapSelect = (props) => {
+    const intl = useIntl()
     // Clicked position in decimal degrees, null until the user picks one
     const [selected, setSelected] = useState(null)
     // EPSG code the database stores geometry in (sys.gis.default_srid), as
     // perun-atlas resolved it for this map. Falls back to the schema default.
     const [dataSrid, setDataSrid] = useState(atlas?.config?.SCHEMA?.dataSrid?.default)
 
-    const getLabel = (key) => labelsManager(key, context, 'farm_registry')
+    const getLabel = (key) => labelsManager(key, intl, 'farm_registry')
 
     const toDMS = (deg) => {
         const d = String(Math.floor(deg)).padStart(2, '0');
@@ -57,17 +58,17 @@ const GpsMapSelect = (props, context) => {
                 {selected ? (
                     <div className={'gps-select-coords'}>
                         <span>
-                            <b>{labelsManager('gps_north', context, 'farm_registry')}</b>
+                            <b>{labelsManager('gps_north', intl, 'farm_registry')}</b>
                             {toDMS(Math.abs(selected.lat))}
                         </span>
                         <span>
-                            <b>{labelsManager('gps_east', context, 'farm_registry')}</b>
+                            <b>{labelsManager('gps_east', intl, 'farm_registry')}</b>
                             {toDMS(Math.abs(selected.lng))}
                         </span>
                     </div>
                 ) : (
                     <span className={'gps-select-hint'}>
-                        {labelsManager('click_map_to_select', context, 'farm_registry')}
+                        {labelsManager('click_map_to_select', intl, 'farm_registry')}
                     </span>
                 )}
                 <button
@@ -76,7 +77,7 @@ const GpsMapSelect = (props, context) => {
                     disabled={!selected}
                     onClick={confirmSelection}
                 >
-                    {labelsManager('confirm_selected_coords', context, 'farm_registry')}
+                    {labelsManager('confirm_selected_coords', intl, 'farm_registry')}
                 </button>
             </div>
             {/* The container is what gives the map its height (75vh, from the
@@ -89,10 +90,6 @@ const GpsMapSelect = (props, context) => {
             </div>
         </>
     );
-};
-
-GpsMapSelect.contextTypes = {
-    intl: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({

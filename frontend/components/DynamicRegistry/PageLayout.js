@@ -1,4 +1,4 @@
-import { React, axios, PropTypes } from 'perun-core'
+import { React, useIntl, axios } from 'perun-core'
 import CustomButtons from './CustomButtons'
 import ObjectStatistics from './ObjectStatistics'
 const { useEffect, useState } = React
@@ -50,15 +50,16 @@ const HistoryList = ({ url }) => {
     )
 }
 
-const PageLayout = (props, context) => {
+const PageLayout = (props) => {
+    const intl = useIntl()
     // Titles and descriptions are label codes; a plain string falls through unchanged as its own default.
-    const t = (code) => (code ? context.intl.formatMessage({ id: code, defaultMessage: code }) : code)
+    const t = (code) => (code ? intl.formatMessage({ id: code, defaultMessage: code }) : code)
     const { header, sections } = props.configuration?.objectConfiguration || {}
     // Item counts a section reports about itself (an attachments section's files), shown in its header
     const [counts, setCounts] = useState({})
     const countLabel = (count) => count === 1
-        ? `1 ${context.intl.formatMessage({ id: 'perun.farm_registry.attachments.count_one', defaultMessage: 'file' })}`
-        : `${count} ${context.intl.formatMessage({ id: 'perun.farm_registry.attachments.count_other', defaultMessage: 'files' })}`
+        ? `1 ${intl.formatMessage({ id: 'perun.farm_registry.attachments.count_one', defaultMessage: 'file' })}`
+        : `${count} ${intl.formatMessage({ id: 'perun.farm_registry.attachments.count_other', defaultMessage: 'files' })}`
 
     return (
         <div className="fr-page">
@@ -107,10 +108,6 @@ const PageLayout = (props, context) => {
             </div>
         </div>
     )
-}
-
-PageLayout.contextTypes = {
-    intl: PropTypes.object.isRequired,
 }
 
 export default PageLayout

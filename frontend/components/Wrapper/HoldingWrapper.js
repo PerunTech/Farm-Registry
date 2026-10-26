@@ -1,9 +1,9 @@
 import {
     React,
+    useIntl,
     connect,
     elements,
     ComponentManager,
-    PropTypes,
     createHashHistory,
     GenericForm, axios, utils
 } from "perun-core";
@@ -15,7 +15,8 @@ const { ReactBootstrap } = elements;
 const { Modal } = ReactBootstrap;
 let hashHistory = createHashHistory();
 let _inputholder = "";
-const HoldingWrapper = (props, context) => {
+const HoldingWrapper = (props) => {
+    const intl = useIntl()
     const [show, setShow] = useState(false);
     const [showPerson, setPerson] = useState(false)
     const [showMap, setMap] = useState(false)
@@ -54,7 +55,7 @@ const HoldingWrapper = (props, context) => {
             firstInput.onclick = handleShowPerson;
             firstInput.placeholder = labelsManager(
                 "click_to_choose",
-                context,
+                intl,
                 "farm_registry"
             )
             firstInput.style.background = '#b9cfba';
@@ -69,7 +70,7 @@ const HoldingWrapper = (props, context) => {
             mapInputE.onclick = handleShowMap;
             mapInputE.placeholder = labelsManager(
                 "click_to_choose",
-                context,
+                intl,
                 "farm_registry"
             )
             mapInputE.style.background = '#33628775';
@@ -80,7 +81,7 @@ const HoldingWrapper = (props, context) => {
             mapInputN.onclick = handleShowMap;
             mapInputN.placeholder = labelsManager(
                 "click_to_choose",
-                context,
+                intl,
                 "farm_registry"
             )
             mapInputN.style.background = '#33628775';
@@ -215,7 +216,7 @@ const HoldingWrapper = (props, context) => {
                 uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/ADDRESS`}
                 tableFormDataMethod={`/farm-registry/getPersonAddressFormData/${props.svSession}/${personId}`}
                 addSaveFunction={(e) => saveMultipleForms(e.formData)}
-                customSaveButtonName={labelsManager('save', context, 'farm_registry')}
+                customSaveButtonName={labelsManager('save', intl, 'farm_registry')}
                 hideBtns={'closeAndDelete'}
                 customSave={true}
             />}
@@ -230,9 +231,9 @@ const HoldingWrapper = (props, context) => {
                     <Modal.Body className={"farm-registry-modal-body"}>
                         {showPerson && <>
                             <SearchComponent person={true} onRowClick={handleRowClick} />
-                            <p className={'redirect-to-pr-initial'}>{labelsManager('register-person', context, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
+                            <p className={'redirect-to-pr-initial'}>{labelsManager('register-person', intl, 'farm_registry')}<span className={'redirect-person'} onClick={() => {
                                 hashHistory.push('/main/persons-registry')
-                            }}>{labelsManager('redirect-person', context, 'farm_registry')}</span></p></>}
+                            }}>{labelsManager('redirect-person', intl, 'farm_registry')}</span></p></>}
                         {showMap && <GpsMapSelect handleMapClick={handleMapClick} />}
                     </Modal.Body >
                     <Modal.Footer className={"farm-registry-modal-footer"}></Modal.Footer>
@@ -245,8 +246,4 @@ const HoldingWrapper = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 });
-HoldingWrapper.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
-
 export default connect(mapStateToProps)(HoldingWrapper);

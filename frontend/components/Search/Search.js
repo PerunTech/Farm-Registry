@@ -1,4 +1,4 @@
-import { React, PropTypes, ExportableGrid, Loading, ComponentManager, connect, redux, elements, axios, GenericForm, createHashHistory, utils } from 'perun-core'
+import { React, useIntl, ExportableGrid, Loading, ComponentManager, connect, redux, elements, axios, GenericForm, createHashHistory, utils } from 'perun-core'
 const { labelsManager, jsonToURI, flattenObject, updateIdScreen } = utils
 import CreateNewRecordForm from './CreateNewRecordForm'
 const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
@@ -7,7 +7,8 @@ const { store, dataToRedux, removeAsyncReducer } = redux
 const { useState, useEffect } = React
 const hashHistory = createHashHistory()
 
-const Search = (props, context) => {
+const Search = (props) => {
+  const intl = useIntl()
   const [businessObjectName, setBusinessObjectName] = useState(undefined)
   const [gridId, setGridId] = useState(undefined)
   const [loading, setLoading] = useState(false)
@@ -17,7 +18,7 @@ const Search = (props, context) => {
   const [toggleSearch, setToggleSearch] = useState(true)
 
   useEffect(() => {
-    updateIdScreen('farm_registry', context, 'farm_registry')
+    updateIdScreen('farm_registry', intl, 'farm_registry')
     getBusinessObjectName()
     store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-additional-top-buttons', value: undefined } })
     store.dispatch({ type: 'SAVE', payload: { key: 'refreshSummary', value: false } })
@@ -72,7 +73,7 @@ const Search = (props, context) => {
       setLoading(false)
       if (res?.data) {
         if (res.data.length === 0) {
-          alertUserV2({ type: 'info', title: labelsManager('no_farm_data', context, 'farm_registry') })
+          alertUserV2({ type: 'info', title: labelsManager('no_farm_data', intl, 'farm_registry') })
         } else {
           const href = `/main/registry/${businessObjectName}/${res.data[0][`${businessObjectName}.OBJECT_ID`]}/summary`
           hashHistory.push(href)
@@ -202,7 +203,7 @@ const Search = (props, context) => {
         type: 'button',
         id: 'add-new-record-btn-grid-toolbar',
         action: () => setShowRegistrationModal(true),
-        name: `${labelsManager('add', context, 'farm_registry')}`
+        name: `${labelsManager('add', intl, 'farm_registry')}`
       }
       buttonsArray.push(addButton)
     }
@@ -271,7 +272,7 @@ const Search = (props, context) => {
         uiSchemaConfigMethod={searchConfig?.uischema?.onSubmit}
         tableFormDataMethod={searchConfig?.data?.onSubmit}
         hideBtns='closeAndDelete'
-        customSaveButtonName={labelsManager('search', context, 'farm_registry')}
+        customSaveButtonName={labelsManager('search', intl, 'farm_registry')}
         addSaveFunction={() => handleSearch()}
         customSave
       />
@@ -285,7 +286,7 @@ const Search = (props, context) => {
           <div className='back-button-container'>
             <button className='btn back-btn' onClick={() => hashHistory.push('/main')}>
               <i className='fas fa-chevron-left' />
-              <span className='back-btn-text'>{labelsManager('back', context, 'farm_registry')}</span>
+              <span className='back-btn-text'>{labelsManager('back', intl, 'farm_registry')}</span>
             </button>
           </div>
           <div className="farm-registry-sidemenu-buttons-container">
@@ -294,13 +295,13 @@ const Search = (props, context) => {
               <span className="sidemenu-btn-title">
                 <span className="sidemenu-dynamic-comp-icon-holder">
                   {<Icon size="25" name="IconHomePlus" />}
-                </span><p>{labelsManager(`add_${businessObjectName?.toLowerCase()}`, context, 'farm_registry')}</p></span></button>}
+                </span><p>{labelsManager(`add_${businessObjectName?.toLowerCase()}`, intl, 'farm_registry')}</p></span></button>}
 
             {configuration && <button id="search_vmp" onClick={() => setToggleSearch(!toggleSearch)} className={`sidemenu-btn_sub ${toggleSearch && 'sidemenu-active'}`}>
               <span className="sidemenu-btn-title">
                 <span className="sidemenu-dynamic-comp-icon-holder">
                   {<Icon size="25" name="IconHomeSearch" />}
-                </span><p>{labelsManager(`search_${businessObjectName?.toLowerCase()}`, context, 'farm_registry')}</p></span></button>}
+                </span><p>{labelsManager(`search_${businessObjectName?.toLowerCase()}`, intl, 'farm_registry')}</p></span></button>}
           </div>
         </div>
         <div className='farm-registry-search-grid-container farm-search-container-background'>
@@ -310,7 +311,7 @@ const Search = (props, context) => {
         {showRegistrationModal && (
           <Modal className='farm-registry-modal' show={showRegistrationModal} onHide={() => setShowRegistrationModal(false)}>
             <Modal.Header className='farm-registry-modal-header' closeButton>
-              <Modal.Title>{labelsManager(`register_new_${businessObjectName?.toLowerCase()}`, context, 'farm_registry')}</Modal.Title>
+              <Modal.Title>{labelsManager(`register_new_${businessObjectName?.toLowerCase()}`, intl, 'farm_registry')}</Modal.Title>
             </Modal.Header>
             <Modal.Body className='farm-registry-modal-body'>
               <CreateNewRecordForm
@@ -331,9 +332,5 @@ const mapStateToProps = (state) => ({
   svSession: state.security.svSession,
   samlFlag: state.security?.saml
 })
-
-Search.contextTypes = {
-  intl: PropTypes.object.isRequired,
-}
 
 export default connect(mapStateToProps)(Search)
