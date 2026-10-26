@@ -60,16 +60,21 @@ const ObjectSummary = (props, context) => {
         }
     }
 
+    // Flat header layout, in the order the summary returns it: status, title, then the meta line.
+    // Status colouring is done in CSS from data-status (same as the grid status pills)
+    const [statusField, titleField, ...metaFields] = menuData
+
     const generateMenuData = () => {
         return (
-            <>
-                {menuData.map(({ label, value }) => (
-                    <div className="farm-registry-object-summary-row" key={label}>
-                        <p>{label} :</p>
-                        <p>{value}</p>
-                    </div>
+            <div className='farm-registry-summary-flat-meta'>
+                {statusField && <span className='farm-registry-summary-flat-status' data-status={statusField.value} title={statusField.label}>{statusField.value}</span>}
+                {metaFields.map(({ label, value }) => (
+                    <React.Fragment key={label}>
+                        <span className='farm-registry-summary-flat-sep' aria-hidden='true'>·</span>
+                        <span className='farm-registry-summary-flat-meta-item' title={`${label}: ${value}`}>{value}</span>
+                    </React.Fragment>
                 ))}
-            </>
+            </div>
         )
     }
 
@@ -161,24 +166,31 @@ const ObjectSummary = (props, context) => {
     return (
         <>
             {loading && <Loading />}
-            <div className="farm-registry-object-summary">
-                <div className="summary-buttons">
-                    <button className='farm-registry-summary-back-btn' onClick={() => backButtonFunction()}>
-                        <i className='fas fa-chevron-left' />
-                        <span className='back-btn-text'>{labelsManager('back', context, 'farm_registry')}</span>
+            <div className="farm-registry-summary-flat">
+                <div className="farm-registry-summary-flat-top">
+                    <button
+                        className='farm-registry-summary-flat-icon-btn farm-registry-summary-flat-back'
+                        title={labelsManager('back', context, 'farm_registry')}
+                        aria-label={labelsManager('back', context, 'farm_registry')}
+                        onClick={() => backButtonFunction()}
+                    >
+                        <Icon name='IconChevronLeft' />
                     </button>
-                    <button title={labelsManager(props.toggledMenu ? 'expand' : 'collapse', context, 'general')} className='farm-registry-summary-back-btn aims-registry-collapse' onClick={() => props.toggleSideMenu()}>
-                        <div className='aims-collapse-icon-holder epi-module-icon-holder'>
-                            <Icon name='IconChevronsLeft' />
-                        </div>
+                    {statusField && <span className='farm-registry-summary-flat-dot' data-status={statusField.value} title={`${statusField.label}: ${statusField.value}`} />}
+                    <span className='farm-registry-summary-flat-title' title={titleField?.value}>{titleField?.value}</span>
+                    <button
+                        title={labelsManager(props.toggledMenu ? 'expand' : 'collapse', context, 'general')}
+                        aria-label={labelsManager(props.toggledMenu ? 'expand' : 'collapse', context, 'general')}
+                        className='farm-registry-summary-flat-icon-btn aims-registry-collapse'
+                        onClick={() => props.toggleSideMenu()}
+                    >
+                        <Icon name='IconChevronsLeft' />
                     </button>
                 </div>
                 {menuData.length > 0 && (
                     <>
-                        <div className='farm-registry-object-summary-rows-container'>
-                            {generateMenuData()}
-                        </div>
-                        <div className='farm-registry-object-summary-btn-container'>
+                        {generateMenuData()}
+                        <div className='farm-registry-summary-flat-actions'>
                             {importUrl && <button className={`update-farm-btn`} onClick={() => updateData()}><span className={`update-farm-btn-container`}>{labelsManager("update_data_btn", context, 'farm_registry')} <span className={`update-farm-btn-icon`}>{<Icon name="IconReload" />}</span></span></button>}
                             {actions && generateSummaryActions()}
                         </div>
