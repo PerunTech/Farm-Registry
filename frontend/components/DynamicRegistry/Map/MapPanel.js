@@ -1,4 +1,4 @@
-import { React, PropTypes, utils } from 'perun-core'
+import { React, useIntl, utils } from 'perun-core'
 import * as atlas from 'perun-atlas'
 import { ConfiguredMap } from 'perun-atlas'
 const { labelsManager } = utils
@@ -19,7 +19,8 @@ const { labelsManager } = utils
  * the case `window` cannot: perun-atlas evaluating *after* this bundle leaves the
  * global set and every binding here undefined for the life of the page.
  */
-const MapPanel = (props, context) => {
+const MapPanel = (props) => {
+  const intl = useIntl()
   /**
    * A label code, resolved, or nothing.
    *
@@ -29,12 +30,12 @@ const MapPanel = (props, context) => {
    * the label is registered.
    *
    * Nothing in this depends on perun-atlas: the resolver is perun-core's and the
-   * context is the shell's, so the label is available in exactly the case this
+   * intl object is the shell's, so the label is available in exactly the case this
    * component exists to report.
    */
   const getLabel = (code) => {
     if (!code) return undefined
-    const value = labelsManager(code, context, 'farm_registry')
+    const value = labelsManager(code, intl, 'farm_registry')
     return !value || value === `perun.farm_registry.${code}` ? undefined : value
   }
 
@@ -47,10 +48,6 @@ const MapPanel = (props, context) => {
   }
 
   return <ConfiguredMap {...props} labelDomain='farm_registry' />
-}
-
-MapPanel.contextTypes = {
-  intl: PropTypes.object.isRequired,
 }
 
 export default MapPanel

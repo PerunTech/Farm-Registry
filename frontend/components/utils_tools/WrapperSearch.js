@@ -1,9 +1,10 @@
 import {
     React,
+    useIntl,
     connect,
     elements,
     ComponentManager,
-    PropTypes, axios, GenericForm, redux,
+    axios, GenericForm, redux,
     Loading, ExportableGrid, GridManager, utils
 } from "perun-core";
 const { labelsManager, flattenObject, jsonToURI } = utils
@@ -11,7 +12,8 @@ const { useState, useEffect } = React;
 const { alertUserResponse, ReactBootstrap } = elements
 const { Modal } = ReactBootstrap
 const { store, dataToRedux, removeAsyncReducer } = redux
-const WrapperSearch = (props, context) => {
+const WrapperSearch = (props) => {
+    const intl = useIntl()
     const gridId = `${props.tableName}`
     const [loading, setLoading] = useState(false)
     const [resultsData, setResultsData] = useState(undefined)
@@ -103,7 +105,7 @@ const WrapperSearch = (props, context) => {
             {loading && <Loading />}
             {show && <Modal className='farm-registry-modal vmp-modal' show={show} onHide={() => props.handleShow()}>
                 <Modal.Header className='farm-registry-modal-header' closeButton>
-                    <Modal.Title>{labelsManager('search', context, 'farm_registry')}</Modal.Title>
+                    <Modal.Title>{labelsManager('search', intl, 'farm_registry')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='farm-registry-modal-body'>
                     {props.searchWs && <GenericForm
@@ -117,7 +119,7 @@ const WrapperSearch = (props, context) => {
                         addSaveFunction={(e) => {
                             performSearch(e.formData, true)
                         }}
-                        customSaveButtonName={labelsManager('search', context, 'farm_registry')}
+                        customSaveButtonName={labelsManager('search', intl, 'farm_registry')}
                         customSave
                         hideBtns={'closeAndDelete'}
                     />}
@@ -135,8 +137,4 @@ const WrapperSearch = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 });
-WrapperSearch.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
-
 export default connect(mapStateToProps)(WrapperSearch);

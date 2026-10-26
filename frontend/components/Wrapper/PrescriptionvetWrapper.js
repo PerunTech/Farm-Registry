@@ -1,15 +1,17 @@
 import {
     React,
+    useIntl,
     connect,
     ComponentManager,
-    PropTypes, utils,
+    utils,
     elements
 } from "perun-core";
 const { labelsManager } = utils
 import WrapperSearch from '../utils_tools/WrapperSearch'
 const { useState, useEffect } = React;
 const { Icon } = elements
-const PrescriptionvetWrapper = (props, context) => {
+const PrescriptionvetWrapper = (props) => {
+    const intl = useIntl()
     const [show, setShow] = useState(false);
     const [tableName, setTableName] = useState(false);
     const [searchWs, setSearchWs] = useState(undefined);
@@ -127,7 +129,7 @@ const PrescriptionvetWrapper = (props, context) => {
             if (el) {
                 el.style.cursor = "pointer";
                 el.onclick = action;
-                el.placeholder = labelsManager("click_to_choose", context, "farm_registry");
+                el.placeholder = labelsManager("click_to_choose", intl, "farm_registry");
                 el.style.background = '#b9cfba';
                 el.style.color = '#ffffff';
             }
@@ -145,7 +147,7 @@ const PrescriptionvetWrapper = (props, context) => {
             {objectId && (
                 <div className='perun-menu-buttons-container'>
                     <button className='btn-success btn_save_form download-menu-btn' onClick={downloadPDF}>
-                        {labelsManager("download_prescription", context, "farm_registry")}
+                        {labelsManager("download_prescription", intl, "farm_registry")}
                         <span className='download-span'>{<Icon name="IconPrinter" />}</span>
                     </button>
                 </div>
@@ -166,9 +168,5 @@ const PrescriptionvetWrapper = (props, context) => {
 const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
 });
-
-PrescriptionvetWrapper.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
 
 export default connect(mapStateToProps)(PrescriptionvetWrapper);

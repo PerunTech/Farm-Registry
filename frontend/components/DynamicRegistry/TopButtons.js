@@ -1,4 +1,4 @@
-import { React, PropTypes, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM, createHashHistory } from 'perun-core'
+import { React, useIntl, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM, createRoot, createHashHistory } from 'perun-core'
 import { ActionForm } from '../Utils'
 import { MapPanel } from './Map'
 const { useEffect, useState } = React
@@ -31,7 +31,8 @@ const linkedMapButton = (buttons, query) => {
     .find(btn => btn.type === 'map' && btn.ID === named)
 }
 
-const TopButtons = (props, context) => {
+const TopButtons = (props) => {
+  const intl = useIntl()
   const [loading, setLoading] = useState(false)
   const [buttons, setButtons] = useState(undefined)
   const [formConfig, setFormConfig] = useState(undefined)
@@ -228,9 +229,9 @@ const TopButtons = (props, context) => {
             title: res.data?.title || '',
             showCancel: true,
             showDeny: true,
-            confirmButtonText: labelsManager('yes', context, 'farm_registry'),
-            cancelButtonText: labelsManager('cancel', context, 'farm_registry'),
-            denyButtonText: labelsManager('no', context, 'farm_registry'),
+            confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
+            cancelButtonText: labelsManager('cancel', intl, 'farm_registry'),
+            denyButtonText: labelsManager('no', intl, 'farm_registry'),
             denyButtonColor: '#87adbd',
             onConfirm: () => {
               window.open(window.server + res.data.action, '_blank')
@@ -274,12 +275,12 @@ const TopButtons = (props, context) => {
         if (el.eSignature && el.eSignature.enabled === true) {
           alertUserV2({
             type: 'question',
-            title: labelsManager('e_sign_report_prompt', context, 'farm_registry'),
+            title: labelsManager('e_sign_report_prompt', intl, 'farm_registry'),
             showCancel: true,
             showDeny: true,
-            confirmButtonText: labelsManager('yes', context, 'farm_registry'),
-            cancelButtonText: labelsManager('cancel', context, 'farm_registry'),
-            denyButtonText: labelsManager('no', context, 'farm_registry'),
+            confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
+            cancelButtonText: labelsManager('cancel', intl, 'farm_registry'),
+            denyButtonText: labelsManager('no', intl, 'farm_registry'),
             denyButtonColor: '#87adbd',
             onConfirm: () => printReport(true, 'true'),
             onCancel: () => Swal.close(),
@@ -294,12 +295,12 @@ const TopButtons = (props, context) => {
         if (!hasChildren) {
           alertUserV2({
             type: 'question',
-            title: labelsManager('transition_to_selected_status', context, 'farm_registry'),
-            confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+            title: labelsManager('transition_to_selected_status', intl, 'farm_registry'),
+            confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
             confirmButtonColor: '#87adbd',
             onConfirm: () => handleAction(el),
             showCancel: true,
-            cancelButtonText: labelsManager('no', context, 'farm_registry'),
+            cancelButtonText: labelsManager('no', intl, 'farm_registry'),
           })
         }
         break;
@@ -361,10 +362,10 @@ const TopButtons = (props, context) => {
               type: 'info',
               title: promptTitle || '',
               message: promptMessage || '',
-              confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+              confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
               onConfirm: executeAction,
               showCancel: true,
-              cancelButtonText: labelsManager('no', context, 'farm_registry'),
+              cancelButtonText: labelsManager('no', intl, 'farm_registry'),
             })
           }
           if (!useMulti || useMulti === false) {
@@ -399,10 +400,10 @@ const TopButtons = (props, context) => {
                         title: res.data?.title || '',
                         message: res.data?.message || '',
                         ...res.data?.message && { html: res.data?.message?.replace(/\n/g, '<br>') },
-                        confirmButtonText: labelsManager('proceed', context, 'farm_registry'),
+                        confirmButtonText: labelsManager('proceed', intl, 'farm_registry'),
                         onConfirm: executeAction,
                         showCancel: true,
-                        cancelButtonText: labelsManager('cancel', context, 'farm_registry')
+                        cancelButtonText: labelsManager('cancel', intl, 'farm_registry')
                       })
                     }
                   }).catch(err => {
@@ -415,7 +416,7 @@ const TopButtons = (props, context) => {
                 actionPrompt()
               }
             } else {
-              alertUserV2({ type: 'info', title: labelsManager('no_rows_selected', context, 'farm_registry') })
+              alertUserV2({ type: 'info', title: labelsManager('no_rows_selected', intl, 'farm_registry') })
             }
           }
         }
@@ -457,16 +458,17 @@ const TopButtons = (props, context) => {
                       })}
                     </>
                   )
-                  ReactDOM.render(customInputs, customInputsContainer)
+                  // flushSync: SweetAlert takes the element as it is, so it has to be rendered before it is handed over
+                  ReactDOM.flushSync(() => createRoot(customInputsContainer).render(customInputs))
                 }
                 alertUserV2({
                   type: 'info',
                   title: el?.promptTitle || '',
                   message: el?.promptMessage || '',
-                  confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+                  confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
                   onConfirm: () => executeGeneralAction(el),
                   showCancel: true,
-                  cancelButtonText: labelsManager('no', context, 'farm_registry'),
+                  cancelButtonText: labelsManager('no', intl, 'farm_registry'),
                   onCancel: () => store.dispatch({ type: 'SAVE', payload: { key: 'farm-registry-module-custom-inputs-data', value: {} } }),
                   ...customInputs && { html: customInputsContainer }
                 })
@@ -474,7 +476,7 @@ const TopButtons = (props, context) => {
                 executeGeneralAction(el)
               }
             } else {
-              alertUserV2({ type: 'info', title: labelsManager('no_rows_selected', context, 'lims_sar') })
+              alertUserV2({ type: 'info', title: labelsManager('no_rows_selected', intl, 'lims_sar') })
             }
           }
         }
@@ -591,11 +593,11 @@ const TopButtons = (props, context) => {
               type: resType,
               title: res.data?.title,
               message: res.data?.message,
-              confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+              confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
               onConfirm: () => { window.open(window.server + res.data?.action, '_blank'); resetFormSaveState() },
               onCancel: resetFormSaveState,
               showCancel: true,
-              cancelButtonText: labelsManager('no', context, 'farm_registry')
+              cancelButtonText: labelsManager('no', intl, 'farm_registry')
             })
           } else { alertUserResponse({ response: res, onConfirm: resetFormSaveState }) }
         }
@@ -610,10 +612,10 @@ const TopButtons = (props, context) => {
       type: 'info',
       title: promptTitle || '',
       message: promptMessage || '',
-      confirmButtonText: labelsManager('yes', context, 'farm_registry'),
+      confirmButtonText: labelsManager('yes', intl, 'farm_registry'),
       onConfirm: executeAction,
       showCancel: true,
-      cancelButtonText: labelsManager('no', context, 'farm_registry'),
+      cancelButtonText: labelsManager('no', intl, 'farm_registry'),
       onCancel: resetFormSaveState
     })
   }
@@ -711,10 +713,6 @@ const TopButtons = (props, context) => {
       )}
     </div>
   )
-}
-
-TopButtons.contextTypes = {
-  intl: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state, ownProps) => ({

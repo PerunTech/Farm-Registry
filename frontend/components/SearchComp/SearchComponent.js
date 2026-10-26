@@ -1,11 +1,12 @@
 import {
-  React, connect, PropTypes, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements, Loading, utils
+  React, useIntl, connect, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements, Loading, utils
 } from "perun-core";
 const { labelsManager } = utils
 const { alertUserResponse, alertUserV2 } = elements
 const { useState, useEffect } = React
 import SearchFormWrapper from './SearchFormWrapper';
-const SearchComp = (props, context) => {
+const SearchComp = (props) => {
+  const intl = useIntl()
   const [gridResult, setGridResults] = useState(undefined)
   const [loading, setLoading] = useState(false)
 
@@ -49,7 +50,7 @@ const SearchComp = (props, context) => {
           uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/${tableName}`}
           tableFormDataMethod={`/ReactElements/getTableFormData/${props.svSession}/0/${tableName}`}
           addSaveFunction={(e) => assignSearchResultGrid(e.formData)}
-          customSaveButtonName={labelsManager('search', context, 'farm_registry')}
+          customSaveButtonName={labelsManager('search', intl, 'farm_registry')}
           hideBtns={'closeAndDelete'}
           customSave={true}
           inputWrapper={SearchFormWrapper}
@@ -70,7 +71,7 @@ const SearchComp = (props, context) => {
       setLoading(false)
       if (res?.data) {
         if (res.data.length === 0) {
-          alertUserV2({ type: 'info', title: labelsManager('no_farm_data', context, 'farm_registry') })
+          alertUserV2({ type: 'info', title: labelsManager('no_farm_data', intl, 'farm_registry') })
         } else {
           props.onRowClick(null, null, res.data[0])
         }
@@ -131,7 +132,7 @@ const SearchComp = (props, context) => {
     } else {
       alertUserV2({
         type: 'info',
-        title: labelsManager('enter_valid_criteria', context, 'farm_registry'),
+        title: labelsManager('enter_valid_criteria', intl, 'farm_registry'),
         onConfirm: () => ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false })
       })
     }
@@ -182,9 +183,5 @@ const mapStateToProps = (state) => ({
   farmObjId: state['farm_registry.mapData']?.farmData?.objectId,
   samlFlag: state.security?.saml
 });
-
-SearchComp.contextTypes = {
-  intl: PropTypes.object.isRequired,
-};
 
 export default connect(mapStateToProps)(SearchComp);

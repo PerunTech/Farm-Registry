@@ -1,9 +1,9 @@
 import {
     React,
+    useIntl,
     connect,
     elements,
     ComponentManager,
-    PropTypes,
     axios,
     GridManager, utils
 } from "perun-core";
@@ -11,7 +11,8 @@ const { labelsManager } = utils
 const { useState, useEffect } = React;
 const { alertUserResponse, alertUserV2 } = elements;
 
-const CadparcelWrapper = (props, context) => {
+const CadparcelWrapper = (props) => {
+    const intl = useIntl()
     const [firstInputId, _setFirst] = useState("root_CODCADASTRAL")
     useEffect(() => {
         const { formid } = props
@@ -58,8 +59,8 @@ const CadparcelWrapper = (props, context) => {
         } else {
             alertUserV2({
                 type: 'info',
-                title: labelsManager("invalid_cad_parcel", context, "farm_registry"),
-                message: labelsManager("invalid_cad_parcel_msg", context, "farm_registry"),
+                title: labelsManager("invalid_cad_parcel", intl, "farm_registry"),
+                message: labelsManager("invalid_cad_parcel_msg", intl, "farm_registry"),
                 onConfirm: () => ComponentManager.setStateForComponent(formid, null, { saveExecuted: false })
             })
         }
@@ -112,8 +113,4 @@ const mapStateToProps = (state) => ({
     svSession: state.security.svSession,
     farmObjId: state['farm_registry.mapData']?.farmData?.objectId,
 });
-CadparcelWrapper.contextTypes = {
-    intl: PropTypes.object.isRequired,
-};
-
 export default connect(mapStateToProps)(CadparcelWrapper);
