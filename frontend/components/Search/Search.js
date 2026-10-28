@@ -1,5 +1,5 @@
 import { React, useIntl, ExportableGrid, Loading, ComponentManager, connect, redux, elements, axios, GenericForm, createHashHistory, utils } from 'perun-core'
-const { labelsManager, jsonToURI, flattenObject, updateIdScreen } = utils
+const { labelsManager, jsonToURI, flattenObject, updateIdScreen, getDynamicKey } = utils
 import CreateNewRecordForm from './CreateNewRecordForm'
 const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap
@@ -16,6 +16,8 @@ const Search = (props) => {
   const [resultsData, setResultsData] = useState(undefined)
   const [showRegistrationModal, setShowRegistrationModal] = useState(false)
   const [toggleSearch, setToggleSearch] = useState(true)
+  // A fixed id could hand this screen the form slice, and so the search handler, of the one before it
+  const [searchFormId] = useState(() => getDynamicKey())
 
   useEffect(() => {
     updateIdScreen('farm_registry', intl, 'farm_registry')
@@ -232,7 +234,7 @@ const Search = (props) => {
     const contentType = searchConfig?.save?.contentType || 'application/x-www-form-urlencoded'
     const url = searchConfig?.save?.onSave
     const shouldEncode = searchConfig?.save?.encode
-    const formData = ComponentManager.getStateForComponent('AR_SEARCH_FORM', 'formTableData')
+    const formData = ComponentManager.getStateForComponent(searchFormId, 'formTableData')
     const reqConfig = { method: searchType, url: `${window.server}${url}` }
     if (searchType === 'POST') {
       reqConfig.data = shouldEncode ? jsonToURI(flattenObject(formData)) : encodeURIComponent(JSON.stringify(flattenObject(formData)))
@@ -266,8 +268,8 @@ const Search = (props) => {
       <GenericForm
         className='form-test person-registry-forms admin-console-search-from person-registry-search-form'
         params='FORM_DATA'
-        key='AR_SEARCH_FORM'
-        id='AR_SEARCH_FORM'
+        key={searchFormId}
+        id={searchFormId}
         method={searchConfig?.configuration?.onSubmit}
         uiSchemaConfigMethod={searchConfig?.uischema?.onSubmit}
         tableFormDataMethod={searchConfig?.data?.onSubmit}

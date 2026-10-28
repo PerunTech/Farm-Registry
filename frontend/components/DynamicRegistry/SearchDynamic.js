@@ -1,6 +1,6 @@
 import { React, useIntl, ExportableGrid, connect, redux, elements, axios, GenericForm, ComponentManager, GridManager, Loading, createHashHistory, utils } from 'perun-core'
 import TopButtons from './TopButtons'
-const { jsonToURI, flattenObject, labelsManager } = utils
+const { jsonToURI, flattenObject, labelsManager, getDynamicKey } = utils
 const { alertUserResponse, alertUserV2, ReactBootstrap } = elements
 const { Modal } = ReactBootstrap
 const { store, dataToRedux, removeAsyncReducer, updateSelectedRows } = redux
@@ -16,6 +16,8 @@ const SearchDynamic = (props) => {
     const [lastSearchData, setLastSearchData] = useState(undefined)
     const [showRowFormModal, setShowRowFormModal] = useState(false)
     const [clickedRow, setClickedRow] = useState(undefined)
+    // A fixed id could hand this form the slice, and so the search handler, of the one before it
+    const [searchFormId] = useState(() => getDynamicKey())
 
     const generateForm = () => {
         const searchConfig = props.configuration?.searchForm
@@ -23,8 +25,8 @@ const SearchDynamic = (props) => {
             <GenericForm
                 className={`sectioned-search-form aims-forms hide-all-form-legends`}
                 params='FORM_DATA'
-                key={gridId + '_FORM'}
-                id={gridId + '_FORM'}
+                key={searchFormId}
+                id={searchFormId}
                 method={searchConfig?.configuration?.onSubmit}
                 uiSchemaConfigMethod={searchConfig?.uischema?.onSubmit}
                 tableFormDataMethod={searchConfig?.data?.onSubmit}
@@ -361,7 +363,7 @@ const SearchDynamic = (props) => {
                 alertUserResponse({ response: err })
                 // Handle form-specific error logic
                 if (isForm) {
-                    ComponentManager.setStateForComponent(`${gridId}_FORM`, null, {
+                    ComponentManager.setStateForComponent(searchFormId, null, {
                         saveExecuted: false,
                     });
                 }

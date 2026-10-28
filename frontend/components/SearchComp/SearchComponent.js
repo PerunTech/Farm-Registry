@@ -1,7 +1,7 @@
 import {
   React, useIntl, connect, ExportableGrid, ComponentManager, GenericForm, axios, GridManager, elements, Loading, utils
 } from "perun-core";
-const { labelsManager } = utils
+const { labelsManager, getDynamicKey } = utils
 const { alertUserResponse, alertUserV2 } = elements
 const { useState, useEffect } = React
 import SearchFormWrapper from './SearchFormWrapper';
@@ -9,6 +9,8 @@ const SearchComp = (props) => {
   const intl = useIntl()
   const [gridResult, setGridResults] = useState(undefined)
   const [loading, setLoading] = useState(false)
+  // A fixed id could hand this form the slice, and so the search handler, of the one before it
+  const [searchFormId] = useState(() => getDynamicKey())
 
   useEffect(() => {
     if (props?.samlFlag) {
@@ -44,8 +46,8 @@ const SearchComp = (props) => {
         <GenericForm
           className={`farm-registry-forms farm-registry-form-SC`}
           params={'READ_URL'}
-          key={`${tableName}_SEARCH_FORM`}
-          id={`${tableName}_SEARCH_FORM`}
+          key={searchFormId}
+          id={searchFormId}
           method={configWs}
           uiSchemaConfigMethod={`/ReactElements/getTableUISchema/${props.svSession}/${tableName}`}
           tableFormDataMethod={`/ReactElements/getTableFormData/${props.svSession}/0/${tableName}`}
@@ -85,13 +87,11 @@ const SearchComp = (props) => {
   }
 
   const assignSearchResultGrid = (data) => {
-    let tableName = "FARM"
     let url = `${window.server}/WsFarmUtils/search-farm-person/sid/${props.svSession}`
     if (props.person) {
-      tableName = "PERSON"
       url = `${window.server}/SvPersonRegistry/getPersonsByCriteria/${props.svSession}/PERSON`
     }
-    ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, {
+    ComponentManager.setStateForComponent(searchFormId, null, {
       saveExecuted: false,
     });
     let formData = data
@@ -119,21 +119,21 @@ const SearchComp = (props) => {
           } else {
             searchResult(res?.data, data)
           }
-          ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false });
+          ComponentManager.setStateForComponent(searchFormId, null, { saveExecuted: false });
         }
       }).catch(err => {
         console.error(err)
         setLoading(false)
         alertUserResponse({
           response: err,
-          onConfirm: () => ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false })
+          onConfirm: () => ComponentManager.setStateForComponent(searchFormId, null, { saveExecuted: false })
         })
       })
     } else {
       alertUserV2({
         type: 'info',
         title: labelsManager('enter_valid_criteria', intl, 'farm_registry'),
-        onConfirm: () => ComponentManager.setStateForComponent(`${tableName}_SEARCH_FORM`, null, { saveExecuted: false })
+        onConfirm: () => ComponentManager.setStateForComponent(searchFormId, null, { saveExecuted: false })
       })
     }
   };
