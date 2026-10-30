@@ -43,8 +43,9 @@ const RecordSelectWrapper = (props) => {
     setShowArrayGridModal(false)
   }
 
-  const onArrayInputClick = (inputConfig) => {
-    setArrayInputConfig(inputConfig)
+  // index: the array item the clicked input belongs to
+  const onArrayInputClick = (inputConfig, index) => {
+    setArrayInputConfig({ ...inputConfig, index })
     setSearchResult(undefined)
     setShowArrayGridModal(true)
   }
@@ -66,10 +67,10 @@ const RecordSelectWrapper = (props) => {
     arrayInputsConfig.forEach((inputConfig) => {
       const { firstSectionName, secondSectionName, displayFieldName, placeholderLabelCode } = inputConfig
       const middlePart = secondSectionName ? `_${secondSectionName}_${displayFieldName}` : `_${displayFieldName}`
-      const regex = new RegExp('^root_' + firstSectionName + '_\\d+' + middlePart + '$')
+      const regex = new RegExp('^root_' + firstSectionName + '_(\\d+)' + middlePart + '$')
       const inputs = Array.from(document.querySelectorAll('input')).filter((input) => regex.test(input.id))
       if (inputs && inputs.length > 0) {
-        inputs.forEach(input => handleInputTransformation(input, placeholderLabelCode, () => onArrayInputClick(inputConfig)))
+        inputs.forEach(input => handleInputTransformation(input, placeholderLabelCode, () => onArrayInputClick(inputConfig, Number(input.id.match(regex)[1]))))
       }
     })
   }
@@ -122,9 +123,10 @@ const RecordSelectWrapper = (props) => {
 
   const onRowClick = (_id, _idx, row, isArrayInput) => {
     const { formid } = props
-    const formData = ComponentManager.getStateForComponent(formid, 'formTableData')
+    const currentFormData = ComponentManager.getStateForComponent(formid, 'formTableData')
+    const formData = currentFormData && { ...currentFormData }
     if (isArrayInput) {
-      const { tableName, denormalizedField, denormalizedFieldName, displayFieldName, displayValue, firstSectionName, secondSectionName, additionalFieldsToMap } = arrayInputConfig || {}
+      const { tableName, denormalizedField, denormalizedFieldName, displayFieldName, displayValue, firstSectionName, secondSectionName, additionalFieldsToMap, index } = arrayInputConfig || {}
       const denormalizedFieldValue = denormalizedField ? row[`${tableName}.${denormalizedField}`] : undefined
       const valueToDisplay = displayValue ? row[`${tableName}.${displayValue}`] : undefined
       // Same { fieldName, fieldToMap } mapping as for single inputs, applied to the array item (or its second section)
@@ -136,32 +138,19 @@ const RecordSelectWrapper = (props) => {
       }
       if (formData) {
         if (firstSectionName) {
-          if (!formData[firstSectionName]) {
-            formData[firstSectionName] = []
+          const items = Array.isArray(formData[firstSectionName]) ? [...formData[firstSectionName]] : []
+          // the item whose input was clicked (falls back to the last one)
+          const itemIdx = Number.isInteger(index) ? index : Math.max(items.length - 1, 0)
+          const item = items[itemIdx] || {}
+          const pickedValues = {
+            ...denormalizedFieldName && denormalizedFieldValue !== undefined && { [denormalizedFieldName]: denormalizedFieldValue },
+            ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay },
+            ...additionalValues
           }
-          if (formData[firstSectionName] && Array.isArray(formData[firstSectionName])) {
-            const lastIdx = formData[firstSectionName].length - 1
-            if (secondSectionName) {
-              formData[firstSectionName][lastIdx] = {
-                ...formData[firstSectionName][lastIdx],
-                [secondSectionName]: {
-                  ...formData[firstSectionName][lastIdx]?.[secondSectionName] && { ...formData[firstSectionName][lastIdx]?.[secondSectionName] },
-                  ...denormalizedFieldName && denormalizedFieldValue !== undefined && { [denormalizedFieldName]: denormalizedFieldValue },
-                  ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay },
-                  ...additionalValues
-                }
-              }
-            } else {
-              formData[firstSectionName][lastIdx] = {
-                ...formData[firstSectionName][lastIdx],
-                ...denormalizedFieldName && denormalizedFieldValue !== undefined && { [denormalizedFieldName]: denormalizedFieldValue },
-                ...displayFieldName && valueToDisplay !== undefined && { [displayFieldName]: valueToDisplay },
-                ...additionalValues
-              }
-            }
-            // This will remove any empty objects from the array
-            formData[firstSectionName] = formData[firstSectionName].filter(item => Object.keys(item).length > 0)
-          }
+          items[itemIdx] = secondSectionName
+            ? { ...item, [secondSectionName]: { ...item[secondSectionName], ...pickedValues } }
+            : { ...item, ...pickedValues }
+          formData[firstSectionName] = items
           ComponentManager.setStateForComponent(formid, 'formTableData', formData)
           props.formInstance.setState({ formTableData: formData })
           props.formInstance.onInputChange(formData)
@@ -174,9 +163,7 @@ const RecordSelectWrapper = (props) => {
       const valueToDisplay = displayValue ? row[`${tableName}.${displayValue}`] : undefined
       if (formData) {
         if (sectionName) {
-          if (!formData[sectionName]) {
-            formData[sectionName] = {}
-          }
+          formData[sectionName] = { ...formData[sectionName] }
           if (denormalizedFieldName && denormalizedFieldValue !== undefined) {
             formData[sectionName][denormalizedFieldName] = denormalizedFieldValue
           }
