@@ -53,11 +53,23 @@ const DoubleGrid = (props) => {
             />
         )
     }
+    // The backend adds default configuration, uischema and save beside a nested objectConfiguration; the nested keys win
+    const getAddFormConfig = () => {
+        const addForm = props.configuration?.addForm
+        return { ...addForm, ...addForm?.objectConfiguration }
+    }
     const generateForm = () => {
-        const addFormConfig = props.configuration?.addForm
-        const Wrapper = typeof props.configuration?.wrapper === 'string'
-            ? window.__farmRegistryWrappers.getWrapper(props.configuration.wrapper)
+        const addFormConfig = getAddFormConfig()
+        const { getWrapper } = window.__farmRegistryWrappers
+        const wrapperConfig = typeof addFormConfig.wrapper === 'object' && Object.keys(addFormConfig.wrapper || {}).length > 0
+            ? addFormConfig.wrapper
             : undefined
+        let Wrapper
+        if (wrapperConfig) {
+            Wrapper = getWrapper('RecordSelectWrapper')
+        } else if (typeof props.configuration?.wrapper === 'string') {
+            Wrapper = getWrapper(props.configuration.wrapper)
+        }
         return (
             <GenericForm
                 className={`form-test custom-farm-registry-form`}
@@ -73,6 +85,7 @@ const DoubleGrid = (props) => {
                 objectId={props.farmObjId}
                 closeModal={closeModal}
                 inputWrapper={Wrapper}
+                wrapperConfig={wrapperConfig}
             />
         )
     }
@@ -80,9 +93,10 @@ const DoubleGrid = (props) => {
     const onSubmit = (e) => {
         let formData = e.formData
         const resetFormSaveState = () => ComponentManager.setStateForComponent(props.configuration.leftGrid.ID + '_FORM', null, { saveExecuted: false })
-        const url = props.configuration?.addForm?.save?.onSave
-        const contentType = props.configuration?.addForm?.save?.contentType
-        let params = props.configuration?.addForm?.save?.params
+        const saveConfig = getAddFormConfig().save
+        const url = saveConfig?.onSave
+        const contentType = saveConfig?.contentType
+        let params = saveConfig?.params
         if (params) {
             Object.assign(formData, { ...params })
         }
