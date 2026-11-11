@@ -37,9 +37,13 @@ const Search = (props) => {
   }, [businessObjectName])
 
   useEffect(() => {
-    if (configuration) {
-      prefillPoaHoldings()
+    // A logout clears the session before this screen unmounts
+    if (!configuration || !props.svSession) {
+      return
     }
+    let cancelled = false
+    prefillPoaHoldings(() => cancelled)
+    return () => { cancelled = true }
   }, [configuration, props.svSession])
 
   const ssOLogin = () => {
@@ -120,7 +124,7 @@ const Search = (props) => {
    * single holding has nothing to pick from, so that holding is opened right away,
    * and one empowered over none is left with just the search form.
    */
-  const prefillPoaHoldings = async () => {
+  const prefillPoaHoldings = async (isCancelled) => {
     setLoading(true)
     let singleHolding = undefined
     try {
@@ -131,19 +135,21 @@ const Search = (props) => {
           const holdings = await getPoaObjects(userObjectId, businessObjectName)
           if (holdings.length === 1) {
             singleHolding = holdings[0]
-          } else if (holdings.length > 1) {
+          } else if (holdings.length > 1 && !isCancelled()) {
             setResultsData(holdings)
           }
         }
       }
     } catch (err) {
       console.error(err)
-      alertUserResponse({ response: err })
+      if (!isCancelled()) {
+        alertUserResponse({ response: err })
+      }
     } finally {
       setLoading(false)
     }
     // navigate only once the screen is done loading, since it unmounts on redirect
-    if (singleHolding) {
+    if (singleHolding && !isCancelled()) {
       onRowClick(null, null, singleHolding)
     }
   }
