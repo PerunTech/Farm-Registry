@@ -1,6 +1,7 @@
 import { React, useIntl, Tooltip, Swal, Loading, ExportableGrid, ComponentManager, GridManager, axios, connect, elements, redux, utils, ReactDOM, createRoot, createHashHistory } from 'perun-core'
 import { ActionForm } from '../Utils'
 import { MapPanel } from './Map'
+import { printPost } from './printPost'
 const { useEffect, useState } = React
 const { alertUserResponse, alertUserV2, ReactBootstrap, Icon } = elements
 const { Modal } = ReactBootstrap
@@ -264,6 +265,10 @@ const TopButtons = (props) => {
   const onClick = (el, hasChildren) => {
     switch (el.type) {
       case 'print': {
+        if (el.method === 'POST') {
+          printPost(el, intl)
+          break
+        }
         const printReport = (needsSignature, shouldSign) => {
           let url = `${window.server}${el.onSubmit}`
           if (needsSignature) {
