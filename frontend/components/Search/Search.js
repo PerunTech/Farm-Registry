@@ -272,7 +272,7 @@ const Search = (props) => {
     const searchConfig = configuration?.searchForm
     return (
       <GenericForm
-        className='form-test person-registry-forms admin-console-search-from person-registry-search-form'
+        className='form-test person-registry-forms admin-console-search-from person-registry-search-form farm-registry-two-row-search'
         params='FORM_DATA'
         key={searchFormId}
         id={searchFormId}
