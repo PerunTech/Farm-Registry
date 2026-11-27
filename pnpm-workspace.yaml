@@ -1,6 +1,12 @@
 # pnpm 9 refuses this file without a packages list; there are no sub-packages.
 packages: []
 
+# Our own releases, taken as soon as they are published.
+minimumReleaseAgeExclude:
+  - perun-core
+  - perun-atlas
+  - svarog-spatial
+
 # Floors for transitive packages that have carried advisories, which `pnpm update` cannot reach.
 overrides:
   picomatch: ^2.3.2
