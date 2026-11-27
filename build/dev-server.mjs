@@ -3,25 +3,13 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { build } from 'vite';
 
-/**
- * The dev server: the shell, the bundles it loads, and this module's own build.
- *
- * The bundle this repository ships is a UMD file the shell fetches as a plugin,
- * not a page, so Vite's module-by-module dev server has nothing to serve for it.
- * What `pnpm dev` does instead is what a deployment does, with this module
- * swapped for the local build: it serves perun-core's page, the bundles that page
- * loads, and `backend/www/farm-registry.js`, rebuilt whenever a source file
- * changes. Everything else is proxied to the backend.
- *
- * `.mjs` for the same reason vite.config.mjs is: this package has no `type`
- * field, so a `.js` here would be read as CommonJS.
- */
+// The shipped bundle is a UMD plugin the shell fetches, not a page, so this serves the shell,
+// its vendor bundles and a watch build of this module, and proxies the rest to the backend.
 
 const root = path.resolve(import.meta.dirname, '..');
 const www = path.join(root, 'backend/www');
 const require = createRequire(import.meta.url);
 
-/** The nearest package.json at or above a directory, or null. */
 const manifestNear = (dir) => {
   let current = dir;
   for (;;) {
@@ -33,28 +21,8 @@ const manifestNear = (dir) => {
   }
 };
 
-/**
- * The bundles the shell provides at runtime.
- *
- * In a deployment these are loaded as separate plugin scripts and every module
- * shares one copy. Locally we serve the very same files, rather than bundling
- * them into this one, so dev behaves like production.
- *
- * Bundling them instead does not work: perun-core's package entry is a full,
- * code-split application, and the chunks it lazy-loads are not published -- a
- * dev-bundled copy dies on `Loading chunk 304 failed` partway through its own
- * bootstrap.
- *
- * A sibling checkout wins over the installed package when one is present. Two
- * reasons, and the first is not a convenience: perun-core code-splits with
- * chunkFilename '[name].perun-core.js', but only the entry chunk is committed,
- * so the installed package asks for chunks that were never published. A local
- * build has them. The second is the dev loop -- rebuild perun-atlas next door
- * and reload this page, with no publish and no reinstall in between.
- *
- * The checkout is also the fallback when the package is not installed at all,
- * which is the state of any machine that cannot reach gitlab.prtech.mk.
- */
+// Served as separate scripts, as in a deployment, not bundled in. A sibling checkout wins over
+// the install, so a rebuild next door shows up on reload.
 const vendorBundle = (name, from, sibling) => {
   const local = sibling && path.resolve(root, '..', sibling);
 
@@ -85,30 +53,10 @@ const vendorBundle = (name, from, sibling) => {
   );
 };
 
-/**
- * The `window.server` assignments a browser would actually run.
- *
- * Anchored to the start of a line, so a commented-out host is skipped rather
- * than read -- and global, so where several are live every one is found. Built
- * fresh per call because a `g` regex carries `lastIndex` between uses.
- *
- * This was `source.match(...)` with no anchor and no flag, which takes the first
- * occurrence anywhere in the file, comments included. A config.js that keeps its
- * previous host on a `//` line above the live one therefore pointed the proxy at
- * that old host while rewriting the same commented line for the page -- leaving
- * the page on the real host, loading spatial and perun-atlas from the deployment
- * and silently ignoring every locally built bundle.
- */
+// Anchored so commented-out hosts are skipped; built per call because a `g` regex keeps lastIndex.
 const serverLine = () => /^([ \t]*)window\.server\s*=\s*['"]([^'"]+)['"]/gm;
 
-/**
- * The API origin, taken from the config.js that already sits beside index.html
- * so there is only one place to change it.
- *
- * The browser refuses a cross-origin request from localhost to that host, so in
- * dev we proxy the same path instead and hand the page a relative URL. The last
- * live assignment is the one JavaScript would leave standing.
- */
+// The last live assignment is the one the page ends up with.
 const readApiUrl = () => {
   const source = fs.readFileSync(path.join(www, 'config.js'), 'utf8');
   const found = [...source.matchAll(serverLine())];
@@ -134,14 +82,8 @@ const TYPES = {
   '.eot': 'application/vnd.ms-fontobject',
 };
 
-/**
- * Serve a directory under a URL prefix; anything it does not hold goes on.
- *
- * `no-store` on everything. The shell appends this module's script itself, with
- * no version in the URL, so a browser is free to keep the copy it fetched first
- * -- and a rebuild then changes nothing on screen until its cache is cleared
- * by hand, which is indistinguishable from the new code not running.
- */
+// no-store: the shell loads this module's script with no version in the URL, so a cached copy
+// would hide every rebuild.
 const serveDir = (prefix, dir) => (req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
   const { pathname } = new URL(req.url, 'http://localhost');
@@ -167,44 +109,27 @@ const serveDir = (prefix, dir) => (req, res, next) => {
 };
 
 /**
- * @param {{ name: string, file: string }} self  This module, as the shell
- *   addresses it: a context path and the file the backend serves under it.
+ * @param {{ name: string, file: string }} self  This module's context path and bundle file.
  */
 export function devServer(self) {
-  // Resolved when the server starts, not when the config is read: `vite build`
-  // loads this same config, on a CI runner with no config.js and no sibling
-  // checkouts, and has no use for any of it.
+  // Lazy: `vite build` loads this config on CI, where there is no config.js or sibling checkout.
   const resolve = () => {
     const perunCore = vendorBundle('perun-core', null, 'perun-core/www');
     const perunAtlas = vendorBundle('perun-atlas', null, 'perun-atlas/backend/www');
-    // spatial is not a dependency of this module, and deliberately so -- it comes
-    // in under perun-atlas, which is the only thing that talks to the map engine.
-    // The shell still loads it as its own script, so the dev server still serves
-    // it.
+    // Not a dependency here: it comes in under perun-atlas, but the shell loads it as its own script.
     const spatial = vendorBundle(
       'spatial',
       path.dirname(require.resolve('perun-atlas/package.json')),
       'svarog-spatial/backend/www'
     );
     const vendors = [perunCore, spatial, perunAtlas];
-
-    /**
-     * The paths the dev server answers for itself. Everything else is the
-     * backend's.
-     *
-     * Each package's npm name is also its context path on the server, so mounting
-     * them under `/<name>` puts the local copy at the very URL the shell asks
-     * for, and the shell loads it without knowing the difference.
-     */
+    // Each package's name is its context path on the server, so these mounts shadow the deployed copies.
     const owned = [...vendors, self].map(v => `/${v.name}/`);
 
     return { perunCore, vendors, owned, api: readApiUrl() };
   };
   let site;
-  // Vite's own: the client that reloads the page, and what it imports. The client
-  // pulls in `env.mjs` from wherever the package manager put Vite, which pnpm
-  // makes a path under /node_modules/ -- left to the proxy that is the backend's
-  // 404, and the client then never runs.
+  // Vite's client imports env.mjs from under /node_modules/; proxied, it would 404 and never run.
   const viteOwned = ['/@', '/node_modules/'];
 
   return {
@@ -215,18 +140,13 @@ export function devServer(self) {
       site = resolve();
       const { api, owned } = site;
       return {
-        // The shell's page is served below, not Vite's.
         appType: 'custom',
         publicDir: false,
         server: {
           port: 8080,
           proxy: api ? {
-            // Inverted on purpose. The dev server owns a short, known list of
-            // paths; everything else belongs to the backend -- the API, the other
-            // plugins, and the shared assets whose location the server only
-            // reveals at runtime through FRONTEND_ASSETS_LOCATION, so they cannot
-            // be listed here. A request this plugin did not answer has reached the
-            // proxy, so what is left to exempt is only what Vite answers next.
+            // Everything not owned here goes to the backend, including assets whose location the
+            // server only reveals at runtime (FRONTEND_ASSETS_LOCATION).
             '^/': {
               target: api.origin,
               changeOrigin: true,
@@ -245,38 +165,29 @@ export function devServer(self) {
 
     async configureServer(server) {
       const { perunCore, vendors, api } = site;
-      // Not just a page: this module's bundle, rebuilt on every change, straight
-      // into backend/www where `pnpm build` puts it. The dev entry, which
-      // registers with the shell's plugin manager (see frontend/client.js).
       const watcher = await build({
         configFile: server.config.configFile,
         mode: 'development',
         build: { watch: {} },
       });
 
-      // Held back until the first bundle is written, so the first page load does
-      // not meet the previous run's file, or none.
+      // Wait for the first bundle, so the first page load does not get a stale one.
       let ready;
       const built = new Promise(resolve => { ready = resolve; });
       watcher.on('event', (event) => {
         if (event.code === 'BUNDLE_END') {
           event.result.close();
-          // The job live reload did: a rebuilt bundle is a new page.
           server.ws.send({ type: 'full-reload', path: '*' });
           ready();
         } else if (event.code === 'ERROR') {
-          // Vite has already printed it; the server stays up for the next save.
           ready();
         }
       });
       server.httpServer?.once('close', () => watcher.close());
       await built;
 
-      // Serve the real config.js with only the API URL rewritten.
-      //
-      // Same-origin in dev, so the proxy handles the API and CORS never applies.
-      // Everything else in the file is left alone.
       if (api) {
+        // A relative window.server, so the API goes through the proxy and CORS never applies.
         server.middlewares.use((req, res, next) => {
           if (req.method !== 'GET' || new URL(req.url, 'http://localhost').pathname !== '/config.js') {
             return next();
@@ -285,25 +196,12 @@ export function devServer(self) {
           res.setHeader('Content-Type', TYPES['.js']);
           res.setHeader('Cache-Control', 'no-store');
           res.end(
-            // Every live assignment, indentation kept; commented-out hosts are
-            // left exactly as written so the file still documents them.
             source.replace(serverLine(), (_match, indent) => `${indent}window.server = '${api.pathname}'`)
           );
         });
 
-        // Serve index.html as the shell's own page: perun-core and nothing else.
-        //
-        // The committed file loads this module directly, which is right for the
-        // standalone page it describes but wrong here -- the shell loads every
-        // plugin itself, in dependency order, and a second copy from a script tag
-        // would be a second evaluation of the same bundle. Hand the page the
-        // shell and let it do the loading, exactly as a deployment does.
-        //
-        // The page declares no map settings of its own. spatial reads none from
-        // the page since 4.2.1, and perun-atlas resolves them from the
-        // deployment's SPATIAL_* parameters -- so dev and production get their
-        // projection, centre and bounds from the same place, which is the whole
-        // point of serving the shell's own page here.
+        // The committed page loads this module itself; here the shell does, as in a deployment,
+        // and a script tag as well would evaluate the bundle twice.
         server.middlewares.use(async (req, res, next) => {
           const { pathname } = new URL(req.url, 'http://localhost');
           if (req.method !== 'GET' || (pathname !== '/' && pathname !== '/index.html')) return next();
@@ -313,20 +211,13 @@ export function devServer(self) {
           );
           res.setHeader('Content-Type', TYPES['.html']);
           res.setHeader('Cache-Control', 'no-store');
-          // Through Vite, for the client that turns a rebuild into a reload.
           res.end(await server.transformIndexHtml(req.url, html));
         });
       }
 
       for (const v of vendors) server.middlewares.use(serveDir(`/${v.name}/`, v.dir));
-      // This module's build, at the path the shell fetches plugins from.
-      //
-      // Without this the page runs the copy deployed on the server and quietly
-      // discards the local one: perun-core's Router loads `/<context>/<file>.js`
-      // off the API origin.
+      // Without this the shell loads the deployed copy of this module from the API origin.
       server.middlewares.use(serveDir(`/${self.name}/`, www));
-      // With no API to proxy to there is no shell page either, so the committed
-      // index.html stands as the standalone page it describes.
       if (!api) server.middlewares.use(serveDir('/', www));
     },
   };
